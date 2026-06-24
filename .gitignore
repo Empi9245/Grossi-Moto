@@ -1,0 +1,28 @@
+.next/
+out/
+node_modules/
+
+.env*.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+dev-next.*
+dev-server.*
+
+# Large files / media
+*.mp4
+*.zip
+*.tar.gz
+
+# QA screenshots & browser profiles
+qa-screenshots/
+
+# Agent configuration / caches
+.agents/
+.codex/
+.kiro/
+.superdesign/

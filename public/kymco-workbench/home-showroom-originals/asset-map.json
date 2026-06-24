@@ -1,0 +1,44 @@
+﻿[
+    {
+        "order":  1,
+        "id":  "people-s-125-abs",
+        "name":  "People S 125 ABS",
+        "source":  "/kymco-all/models/people-s-125-abs/antracite-scais-opaco-nh263/main-color-01-antracite-scais-opaco-nh263.jpg",
+        "copy":  "/kymco-workbench/home-showroom-originals/01-people-s-125-abs.jpg"
+    },
+    {
+        "order":  2,
+        "id":  "agility-s-125",
+        "name":  "Agility S 125",
+        "source":  "/kymco-all/models/agility-s-125/bianco-cevedale-opaco-cn607/main-color-01-bianco-cevedale-opaco-cn607.jpg",
+        "copy":  "/kymco-workbench/home-showroom-originals/02-agility-s-125.jpg"
+    },
+    {
+        "order":  3,
+        "id":  "downtown-350-gt",
+        "name":  "Downtown 350 GT",
+        "source":  "/foto sezione show/Downtown 350 GT-main-color-01-nero-collio-opaco-nh105_no_bg.png",
+        "copy":  "/kymco-workbench/home-showroom-originals/03-downtown-350-gt.png"
+    },
+    {
+        "order":  4,
+        "id":  "agility-350",
+        "name":  "Agility 350",
+        "source":  "/foto sezione show/Agility 350-main-color-01-blu-petrolio-cg411_no_bg.png",
+        "copy":  "/kymco-workbench/home-showroom-originals/04-agility-350.png"
+    },
+    {
+        "order":  5,
+        "id":  "x-town-250st",
+        "name":  "X-Town 250ST",
+        "source":  "/kymco-all/models/x-town-250st/antracite-scais-opaco-nh263/main-color-01-antracite-scais-opaco-nh263.jpg",
+        "copy":  "/kymco-workbench/home-showroom-originals/05-x-town-250st.jpg"
+    },
+    {
+        "order":  6,
+        "id":  "ak575-premium",
+        "name":  "AK575 Premium",
+        "source":  "/kymco-all/models/ak575-premium/nero-odolo-opaco-nh294/main-color-02-nero-odolo-opaco-nh294.jpg",
+        "copy":  "/kymco-workbench/home-showroom-originals/06-ak575-premium.jpg"
+    }
+]

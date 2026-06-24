@@ -1,0 +1,121 @@
+﻿[
+    {
+        "order":  1,
+        "id":  "dtx-360-350",
+        "name":  "DTX 360 350",
+        "source":  "/foto sezione show/DTX 360 350-main-color-01-nero-verde-dorizzo-gg353_no_bg.png",
+        "copy":  "/kymco-workbench/catalog-products-originals/01-dtx-360-350_no_bg.png"
+    },
+    {
+        "order":  2,
+        "id":  "downtown-350-gt",
+        "name":  "Downtown 350 GT",
+        "source":  "/foto sezione show/Downtown 350 GT-main-color-01-nero-collio-opaco-nh105_no_bg.png",
+        "copy":  "/kymco-workbench/catalog-products-originals/02-downtown-350-gt_no_bg.png"
+    },
+    {
+        "order":  3,
+        "id":  "agility-350",
+        "name":  "Agility 350",
+        "source":  "/foto sezione show/Agility 350-main-color-01-blu-petrolio-cg411_no_bg.png",
+        "copy":  "/kymco-workbench/catalog-products-originals/03-agility-350_no_bg.png"
+    },
+    {
+        "order":  4,
+        "id":  "x-town-300",
+        "name":  "X-Town 300",
+        "source":  "/foto sezione show/X-Town 300-main-color-01-antracite-scais-opaco-nh263_no_bg.png",
+        "copy":  "/kymco-workbench/catalog-products-originals/04-x-town-300_no_bg.png"
+    },
+    {
+        "order":  5,
+        "id":  "skytown-125",
+        "name":  "Skytown 125",
+        "source":  "/foto sezione show/Skytown 125-main-color-01-nero-allione-opaco-cn397_no_bg.png",
+        "copy":  "/kymco-workbench/catalog-products-originals/05-skytown-125_no_bg.png"
+    },
+    {
+        "order":  6,
+        "id":  "ak575-premium",
+        "name":  "AK575 Premium",
+        "source":  "/kymco-all/models/ak575-premium/nero-odolo-opaco-nh294/main-color-02-nero-odolo-opaco-nh294.jpg",
+        "copy":  "/kymco-workbench/catalog-products-originals/06-ak575-premium_no_bg.png"
+    },
+    {
+        "order":  7,
+        "id":  "xciting-vs-400",
+        "name":  "Xciting VS 400",
+        "source":  "/kymco-all/models/xciting-vs-400/nero-allione-opaco-nh397/main-color-01-nero-allione-opaco-nh397.jpg",
+        "copy":  "/kymco-workbench/catalog-products-originals/07-xciting-vs-400_no_bg.png"
+    },
+    {
+        "order":  8,
+        "id":  "agility-50-r16-plus",
+        "name":  "Agility 50 R16 Plus",
+        "source":  "/kymco-all/models/agility-50-r16-plus/antracite-scais-opaco-nh263/main-color-01-antracite-scais-opaco-nh263.jpg",
+        "copy":  "/kymco-workbench/catalog-products-originals/08-agility-50-r16-plus_no_bg.png"
+    },
+    {
+        "order":  9,
+        "id":  "agility-s-125",
+        "name":  "Agility S 125",
+        "source":  "/kymco-all/models/agility-s-125/bianco-cevedale-opaco-cn607/main-color-01-bianco-cevedale-opaco-cn607.jpg",
+        "copy":  "/kymco-workbench/catalog-products-originals/09-agility-s-125_no_bg.png"
+    },
+    {
+        "order":  10,
+        "id":  "dink-x-125",
+        "name":  "DINK X 125",
+        "source":  "/kymco-all/models/dink-x-125/blu-flat-deep-cb001/main-color-01-blu-flat-deep-cb001.jpg",
+        "copy":  "/kymco-workbench/catalog-products-originals/10-dink-x-125_no_bg.png"
+    },
+    {
+        "order":  11,
+        "id":  "filly-50",
+        "name":  "Filly 50",
+        "source":  "/kymco-all/models/filly-50/bianco-cevedale-opaco-cn607/main-color-01-bianco-cevedale-opaco-cn607.jpg",
+        "copy":  "/kymco-workbench/catalog-products-originals/11-filly-50_no_bg.png"
+    },
+    {
+        "order":  12,
+        "id":  "like-125",
+        "name":  "Like 125",
+        "source":  "/kymco-all/models/like-125/antracite-scais-opaco-nh263/main-color-01-antracite-scais-opaco-nh263.jpg",
+        "copy":  "/kymco-workbench/catalog-products-originals/12-like-125_no_bg.png"
+    },
+    {
+        "order":  13,
+        "id":  "micare-125",
+        "name":  "Micare 125",
+        "source":  "/kymco-all/models/micare-125/grey-earth-cy132/main-color-01-grey-earth-cy132.jpg",
+        "copy":  "/kymco-workbench/catalog-products-originals/13-micare-125_no_bg.png"
+    },
+    {
+        "order":  14,
+        "id":  "people-s-125-abs",
+        "name":  "People S 125 ABS",
+        "source":  "/kymco-all/models/people-s-125-abs/antracite-scais-opaco-nh263/main-color-01-antracite-scais-opaco-nh263.jpg",
+        "copy":  "/kymco-workbench/catalog-products-originals/14-people-s-125-abs_no_bg.png"
+    },
+    {
+        "order":  15,
+        "id":  "people-s-200",
+        "name":  "People S 200",
+        "source":  "/kymco-all/models/people-s-200/color-unknown/gallery-04-dsc8312-scaled.jpg",
+        "copy":  "/kymco-workbench/catalog-products-originals/15-people-s-200_no_bg.png"
+    },
+    {
+        "order":  16,
+        "id":  "super-8-50-r",
+        "name":  "SUPER 8 50 R",
+        "source":  "/kymco-all/models/super-8-50-r/color-unknown/gallery-01-dsc1050-scaled.jpg",
+        "copy":  "/kymco-workbench/catalog-products-originals/16-super-8-50-r_no_bg.png"
+    },
+    {
+        "order":  17,
+        "id":  "x-town-250st",
+        "name":  "X-Town 250ST",
+        "source":  "/kymco-all/models/x-town-250st/antracite-scais-opaco-nh263/main-color-01-antracite-scais-opaco-nh263.jpg",
+        "copy":  "/kymco-workbench/catalog-products-originals/17-x-town-250st_no_bg.png"
+    }
+]

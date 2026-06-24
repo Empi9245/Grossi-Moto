@@ -1,0 +1,67 @@
+@import "tailwindcss";
+
+:root {
+  --background: oklch(18% 0.012 40);
+  --page-background: oklch(88% 0.015 78);
+  --foreground: oklch(94% 0.01 80);
+  --muted: oklch(78% 0.015 75);
+  --panel: oklch(91% 0.014 78);
+  --accent-red: oklch(36% 0.09 28);
+  --font-display: "Bahnschrift", "DIN Alternate", "Aptos Display", "Arial Narrow",
+    "Helvetica Neue", Arial, ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Aptos", "Segoe UI Variable", "Segoe UI", "Helvetica Neue", Arial,
+    ui-sans-serif, system-ui, sans-serif;
+  --font-ui: "Bahnschrift", "Aptos", "Segoe UI Variable", "Segoe UI", Arial,
+    ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-body);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--page-background);
+  color: var(--foreground);
+}
+
+body {
+  margin: 0;
+  overflow-x: clip;
+  background: var(--page-background);
+  color: var(--foreground);
+  font-family: var(--font-body);
+  text-rendering: geometricPrecision;
+}
+
+::selection {
+  background: oklch(62% 0.08 32 / 0.38);
+  color: oklch(97% 0.008 80);
+}
+
+.font-display {
+  font-family: var(--font-display);
+  font-variation-settings: "wdth" 92;
+}
+
+.font-ui {
+  font-family: var(--font-ui);
+  font-variation-settings: "wdth" 96;
+}
+
+.font-numeric {
+  font-family: var(--font-display);
+  font-variant-numeric: tabular-nums;
+  font-variation-settings: "wdth" 88;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
