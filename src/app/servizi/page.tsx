@@ -4,62 +4,18 @@ import Image from "next/image";
 import {
   ArrowLeft,
   ArrowUpRight,
-  ClipboardCheck,
   Cog,
-  CreditCard,
-  Handshake,
-  Package,
   PhoneCall,
-  Settings2,
-  Wrench,
 } from "lucide-react";
 
 import { ServicesHero } from "@/components/ui/services-hero";
+import { StickyScrollShowcase } from "@/components/sections/StickyScrollShowcase";
 
 export const metadata: Metadata = {
   title: "Servizi | Grossimoto KYMCO e VOGE Roma",
   description:
     "Servizi ufficiali KYMCO e VOGE a Roma: tagliandi, officina specializzata, ricambi originali, finanziamenti, permute e consulenza. Grossi Moto in Via Festo Porzio.",
 };
-
-const serviceCards = [
-  {
-    icon: Wrench,
-    title: "Officina specializzata",
-    description:
-      "Interventi su scooter e moto KYMCO e VOGE con attrezzature dedicate e tecnici certificati.",
-  },
-  {
-    icon: ClipboardCheck,
-    title: "Tagliandi ufficiali",
-    description:
-      "Manutenzione programmata secondo le specifiche del costruttore per mantenere la garanzia attiva.",
-  },
-  {
-    icon: Package,
-    title: "Ricambi originali",
-    description:
-      "Ricambi genuini KYMCO e VOGE sempre disponibili in sede o ordinabili in tempi rapidi.",
-  },
-  {
-    icon: CreditCard,
-    title: "Finanziamenti",
-    description:
-      "Soluzioni di pagamento rateale personalizzate per acquisto scooter nuovi e usati.",
-  },
-  {
-    icon: Handshake,
-    title: "Permute",
-    description:
-      "Valutazione gratuita del tuo usato per passare al modello KYMCO o VOGE più adatto.",
-  },
-  {
-    icon: Settings2,
-    title: "Consulenza dedicata",
-    description:
-      "Scelta del modello, configurazione accessori e consigli personalizzati in base alle tue esigenze.",
-  },
-];
 
 const processSteps = [
   {
@@ -109,50 +65,8 @@ export default function ServiziPage() {
       {/* ── Hero ──────────────────────────────────────────────── */}
       <ServicesHero />
 
-      {/* ── Service Cards Grid ────────────────────────────────── */}
-      <section className="bg-[var(--page-background)] px-5 py-20 sm:px-7 sm:py-28 md:px-10 lg:px-14 lg:py-32 xl:px-20">
-        <div className="mx-auto max-w-[80rem]">
-          <div className="mb-14 max-w-[42rem] sm:mb-20">
-            <p className="font-ui text-[0.65rem] font-bold uppercase tracking-[0.22em] text-[oklch(36%_0.09_28)] sm:text-xs">
-              I nostri servizi
-            </p>
-            <h2 className="font-display mt-4 text-[clamp(2.4rem,6vw,5rem)] font-bold leading-[0.9] tracking-tight text-[oklch(17%_0.014_50)]">
-              Tutto quello che serve
-              <br />
-              al tuo scooter.
-            </h2>
-            <p className="mt-5 max-w-[34rem] text-base leading-7 text-[oklch(29%_0.014_56/0.72)] sm:text-lg">
-              Un unico punto di riferimento per la cura completa del tuo
-              veicolo, dalla manutenzione ordinaria alla consulenza
-              all&rsquo;acquisto.
-            </p>
-          </div>
-
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {serviceCards.map((service) => {
-              const Icon = service.icon;
-              return (
-                <div
-                  key={service.title}
-                  className="group rounded-2xl border border-[oklch(17%_0.014_50/0.08)] bg-[oklch(94.5%_0.011_78)] p-6 transition-shadow duration-300 hover:shadow-[0_24px_64px_oklch(18%_0.014_56/0.08)] sm:rounded-3xl sm:p-8"
-                >
-                  <Icon
-                    aria-hidden="true"
-                    className="h-6 w-6 text-[oklch(36%_0.09_28)]"
-                    strokeWidth={1.6}
-                  />
-                  <h3 className="font-ui mt-5 text-lg font-bold tracking-normal text-[oklch(17%_0.014_50)] sm:text-xl">
-                    {service.title}
-                  </h3>
-                  <p className="mt-3 text-sm leading-6 text-[oklch(29%_0.014_56/0.72)] sm:text-base sm:leading-7">
-                    {service.description}
-                  </p>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
+      {/* ── Sticky Scroll Showcase ───────────────────────────── */}
+      <StickyScrollShowcase />
 
       {/* ── Showroom Image Break ──────────────────────────────── */}
       <section className="relative h-[50svh] min-h-[320px] overflow-hidden sm:h-[60svh]">

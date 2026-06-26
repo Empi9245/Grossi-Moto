@@ -44,23 +44,30 @@ const accessoryBlocks: AccessoryBlock[] = [
 
 export function AccessoriesSection() {
   return (
-    <section className="bg-[oklch(91%_0.014_78)] px-4 py-16 text-[oklch(17%_0.014_50)] sm:px-6 sm:py-20 lg:px-10 lg:py-24">
-      <div className="mx-auto max-w-[92rem]">
-        <div className="grid gap-8 border-t border-[oklch(18%_0.014_56/0.14)] pt-8 lg:grid-cols-[minmax(0,0.78fr)_minmax(26rem,0.52fr)] lg:items-end">
-          <div>
-            <p className="font-ui text-[0.68rem] font-bold uppercase tracking-[0.18em] text-[oklch(36%_0.09_28)]">
+    <section className="relative overflow-hidden bg-[oklch(91%_0.014_78)] px-4 py-20 text-[oklch(17%_0.014_50)] sm:px-6 sm:py-24 lg:px-10 lg:py-32">
+      <div
+        aria-hidden="true"
+        className="font-display pointer-events-none absolute -right-[0.08em] top-8 hidden text-[clamp(8rem,18vw,22rem)] font-[900] uppercase leading-none text-[oklch(17%_0.014_50/0.045)] lg:block"
+      >
+        Accessori
+      </div>
+
+      <div className="relative mx-auto max-w-[92rem]">
+        <div className="grid gap-12 border-t border-[oklch(18%_0.014_56/0.18)] pt-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(25rem,0.46fr)] lg:items-start">
+          <div className="min-w-0">
+            <p className="font-ui text-[0.68rem] font-bold uppercase tracking-[0.22em] text-[oklch(36%_0.09_28)]">
               Accessori
             </p>
-            <h2 className="font-display mt-4 max-w-[12ch] text-[clamp(2.6rem,7vw,5.8rem)] font-bold leading-[0.9] tracking-normal">
-              Tutto quello che serve, scelto sul tuo scooter.
+            <h2 className="font-display mt-5 max-w-[13ch] text-[clamp(3.8rem,10vw,9.5rem)] font-[900] uppercase leading-[0.82]">
+              Scelti sul mezzo, non a catalogo.
             </h2>
           </div>
-          <div>
-            <p className="max-w-[38rem] text-base leading-7 text-[oklch(29%_0.014_56/0.72)] sm:text-lg">
+          <div className="lg:pt-[18svh]">
+            <p className="max-w-[34rem] text-[clamp(1.45rem,2.2vw,2.55rem)] font-semibold leading-[1] text-[oklch(24%_0.018_50)]">
               Non un e-commerce generico: accessori disponibili o ordinabili
               con verifica diretta di compatibilita, montaggio e uso reale.
             </p>
-            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-9 flex flex-col gap-3 sm:flex-row lg:flex-col xl:flex-row">
               <a
                 href="tel:+393289185029"
                 className="font-ui inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[oklch(16%_0.014_48)] px-6 py-3 text-sm font-bold uppercase tracking-[0.08em] text-[oklch(94%_0.01_78)] transition-[background,transform] duration-200 hover:bg-[oklch(22%_0.016_50)] active:translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(38%_0.08_28)] focus-visible:ring-offset-4 focus-visible:ring-offset-[oklch(91%_0.014_78)]"
@@ -78,37 +85,40 @@ export function AccessoriesSection() {
           </div>
         </div>
 
-        <div className="mt-12 grid gap-x-8 gap-y-10 md:grid-cols-2 lg:grid-cols-[1.15fr_0.95fr_1.05fr_0.9fr]">
-          {accessoryBlocks.map((block) => {
+        <div className="mt-16 grid border-t border-[oklch(18%_0.014_56/0.16)] lg:mt-24 lg:grid-cols-2 lg:gap-x-14">
+          {accessoryBlocks.map((block, index) => {
             const Icon = block.icon;
 
             return (
               <article
                 key={block.title}
-                className="border-t border-[oklch(18%_0.014_56/0.13)] pt-5"
+                className="grid gap-5 border-b border-[oklch(18%_0.014_56/0.16)] py-7 sm:grid-cols-[3rem_minmax(0,1fr)] sm:gap-7 lg:py-10"
               >
-                <Icon
-                  aria-hidden="true"
-                  className="h-6 w-6 text-[oklch(36%_0.09_28)]"
-                  strokeWidth={1.6}
-                />
-                <h3 className="font-ui mt-5 text-xl font-bold tracking-normal text-[oklch(16%_0.014_50)]">
-                  {block.title}
-                </h3>
-                <p className="mt-3 text-sm leading-6 text-[oklch(29%_0.014_56/0.68)]">
-                  {block.copy}
-                </p>
-                <ul className="mt-5 space-y-2 text-sm font-medium text-[oklch(22%_0.014_56)]">
-                  {block.items.map((item) => (
-                    <li key={item} className="flex gap-2">
-                      <span
-                        aria-hidden="true"
-                        className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[oklch(36%_0.09_28)]"
-                      />
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
+                <div className="flex items-center justify-between gap-4 sm:block">
+                  <span className="font-display text-3xl font-[900] leading-none text-[oklch(17%_0.014_50/0.2)]">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <Icon
+                    aria-hidden="true"
+                    className="h-5 w-5 text-[oklch(36%_0.09_28)] sm:mt-8"
+                    strokeWidth={1.6}
+                  />
+                </div>
+                <div>
+                  <h3 className="font-display max-w-[12ch] text-[clamp(1.9rem,3vw,3.4rem)] font-[900] uppercase leading-[0.9] text-[oklch(16%_0.014_50)]">
+                    {block.title}
+                  </h3>
+                  <p className="mt-5 max-w-[34rem] text-base leading-7 text-[oklch(29%_0.014_56/0.68)]">
+                    {block.copy}
+                  </p>
+                  <ul className="mt-7 flex flex-wrap gap-x-5 gap-y-2 text-xs font-bold uppercase tracking-[0.12em] text-[oklch(22%_0.014_56)]">
+                    {block.items.map((item) => (
+                      <li key={item} className="border-t border-[oklch(36%_0.09_28/0.42)] pt-2">
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </article>
             );
           })}

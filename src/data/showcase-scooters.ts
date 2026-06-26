@@ -55,17 +55,13 @@ function publicSourceAsset(image: string) {
 
 const showroomImages = {
   peopleS:
-    "/kymco-all/models/people-s-125-abs/antracite-scais-opaco-nh263/main-color-01-antracite-scais-opaco-nh263.jpg",
-  agilityS:
-    "/kymco-all/models/agility-s-125/bianco-cevedale-opaco-cn607/main-color-01-bianco-cevedale-opaco-cn607.jpg",
+    "/kymco-workbench/home-showroom-originals/01-people-s-125-abs.webp",
+  agilityS: "/kymco-workbench/home-showroom-originals/02-agility-s-125.webp",
   downtown:
-    "/foto sezione show/Downtown 350 GT-main-color-01-nero-collio-opaco-nh105_no_bg.png",
-  agility:
-    "/foto sezione show/Agility 350-main-color-01-blu-petrolio-cg411_no_bg.png",
-  xTownSt:
-    "/kymco-all/models/x-town-250st/antracite-scais-opaco-nh263/main-color-01-antracite-scais-opaco-nh263.jpg",
-  ak575:
-    "/kymco-all/models/ak575-premium/nero-odolo-opaco-nh294/main-color-02-nero-odolo-opaco-nh294.jpg",
+    "/kymco-workbench/home-showroom-originals/03-downtown-350-gt.webp",
+  agility: "/kymco-workbench/home-showroom-originals/04-agility-350.png",
+  xTownSt: "/kymco-workbench/home-showroom-originals/05-x-town-250st.jpg",
+  ak575: "/kymco-workbench/home-showroom-originals/06-ak575-premium.jpg",
 } as const;
 
 const peopleS = catalogScooter("people-s-125-abs");

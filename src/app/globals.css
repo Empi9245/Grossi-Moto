@@ -2,17 +2,20 @@
 
 :root {
   --background: oklch(18% 0.012 40);
-  --page-background: oklch(88% 0.015 78);
-  --foreground: oklch(94% 0.01 80);
+  --page-background: #e7e3dc;
+  --foreground: #f4f0e8;
   --muted: oklch(78% 0.015 75);
-  --panel: oklch(91% 0.014 78);
-  --accent-red: oklch(36% 0.09 28);
-  --font-display: "Bahnschrift", "DIN Alternate", "Aptos Display", "Arial Narrow",
+  --panel: #ece8e1;
+  --ink: #1b0e0d;
+  --font-display: "Clash Grotesk", "Bahnschrift", "DIN Alternate",
+    "Aptos Display", "Arial Narrow", "Helvetica Neue", Arial, ui-sans-serif,
+    system-ui, sans-serif;
+  --font-body: "General Sans", "Aptos", "Segoe UI Variable", "Segoe UI",
     "Helvetica Neue", Arial, ui-sans-serif, system-ui, sans-serif;
-  --font-body: "Aptos", "Segoe UI Variable", "Segoe UI", "Helvetica Neue", Arial,
-    ui-sans-serif, system-ui, sans-serif;
-  --font-ui: "Bahnschrift", "Aptos", "Segoe UI Variable", "Segoe UI", Arial,
-    ui-sans-serif, system-ui, sans-serif;
+  --font-ui: "General Sans", "Bahnschrift", "Aptos", "Segoe UI Variable",
+    "Segoe UI", Arial, ui-sans-serif, system-ui, sans-serif;
+  --font-tech: "IBM Plex Mono", "Cascadia Mono", "Roboto Mono", Consolas,
+    ui-monospace, monospace;
   font-family: var(--font-body);
 }
 
@@ -49,10 +52,59 @@ body {
   font-variation-settings: "wdth" 96;
 }
 
+.font-tech {
+  font-family: var(--font-tech);
+}
+
 .font-numeric {
   font-family: var(--font-display);
   font-variant-numeric: tabular-nums;
   font-variation-settings: "wdth" 88;
+}
+
+.service-noise {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.065;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23noise)' opacity='0.72'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+}
+
+.liquid-glass {
+  background: rgba(255, 255, 255, 0.01);
+  background-blend-mode: luminosity;
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  border: none;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.liquid-glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.4px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.45) 0%,
+    rgba(255, 255, 255, 0.15) 20%,
+    rgba(255, 255, 255, 0) 40%,
+    rgba(255, 255, 255, 0) 60%,
+    rgba(255, 255, 255, 0.15) 80%,
+    rgba(255, 255, 255, 0.45) 100%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
