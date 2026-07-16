@@ -166,11 +166,9 @@ export function StickyScrollShowcase() {
       <div className="grid lg:grid-cols-[minmax(30rem,41vw)_6.5rem_minmax(0,1fr)] lg:items-start">
         <div className="relative hidden min-h-full lg:block">
           <div className="sticky top-0 flex h-[100svh] items-center px-5 py-8 xl:px-10">
-            <figure className="liquid-glass relative h-[84svh] w-full rounded-[2rem] shadow-[0_34px_90px_rgba(27,14,13,0.25)]">
-              <span
-                aria-hidden="true"
-                className="absolute inset-0 rounded-[inherit] bg-[#120D0C]/72"
-              />
+            {/* FIX P1: overflow-hidden aggiunto → rounded-[2rem] clipa correttamente immagine e figcaption.
+                Span bg-[#120D0C]/72 rimosso: oscurava la foto; il gradient overlay gestisce già il contrasto. */}
+            <figure className="liquid-glass relative h-[84svh] w-full overflow-hidden rounded-[2rem] shadow-[0_34px_90px_rgba(27,14,13,0.25)]">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeIndex}
@@ -292,18 +290,21 @@ export function StickyScrollShowcase() {
                 data-service-index={index}
                 className="relative grid max-w-full scroll-mt-8 overflow-x-clip border-t border-[#1B0E0D]/10 px-5 pb-20 pt-12 first:border-none first:pt-8 sm:px-7 sm:pb-28 sm:pt-20 md:px-10 lg:min-h-[108svh] lg:grid-rows-[auto_minmax(0,1fr)_auto] lg:px-8 lg:py-[9svh] xl:px-16"
               >
-                <div className="liquid-glass mb-8 rounded-[2rem] shadow-[0_24px_60px_rgba(27,14,13,0.18)] lg:hidden">
-                  <span
-                    aria-hidden="true"
-                    className="absolute inset-0 rounded-[inherit] bg-[#120D0C]/72"
-                  />
+                {/* FIX P2: relative + overflow-hidden sul wrapper → il border-radius clipa l'immagine.
+                    Span assoluto rimosso (si posizionava sull'<article>, non sul wrapper).
+                    rounded-[2rem] sull'<Image>. Gradient div in coda sostituisce lo span per l'overlay. */}
+                <div className="liquid-glass relative mb-8 overflow-hidden rounded-[2rem] shadow-[0_24px_60px_rgba(27,14,13,0.18)] lg:hidden">
                   <Image
                     src={service.image}
                     alt={service.alt}
                     width={900}
                     height={680}
                     sizes="100vw"
-                    className="h-[48svh] min-h-[320px] w-full object-cover brightness-[0.82] contrast-[1.12] saturate-[0.74]"
+                    className="h-[48svh] min-h-[320px] w-full rounded-[2rem] object-cover brightness-[0.82] contrast-[1.12] saturate-[0.74]"
+                  />
+                  <div
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-0 rounded-[2rem] bg-[linear-gradient(180deg,transparent_45%,rgba(18,13,12,0.75)_100%)]"
                   />
                 </div>
 
@@ -340,7 +341,9 @@ export function StickyScrollShowcase() {
                   }
                   transition={{ duration: 0.46, ease: premiumEase }}
                 >
-                  <h3 className="font-display max-w-full text-[clamp(3.2rem,14vw,6.2rem)] font-bold uppercase leading-[0.82] tracking-[-0.05em] [overflow-wrap:anywhere] lg:max-w-[11ch] lg:text-[clamp(4.2rem,5.8vw,6.8rem)] xl:text-[clamp(4.6rem,5.2vw,7.4rem)]">
+                  {/* FIX P3: clamp mobile 3.2rem/14vw → 2.6rem/11vw; whitespace-nowrap mobile +
+                      lg:whitespace-normal → titoli sempre su una riga su small viewport. */}
+                  <h3 className="font-display max-w-full whitespace-nowrap text-[clamp(2.6rem,11vw,6.2rem)] font-bold uppercase leading-[0.82] tracking-[-0.05em] [overflow-wrap:anywhere] lg:max-w-[11ch] lg:whitespace-normal lg:text-[clamp(4.2rem,5.8vw,6.8rem)] xl:text-[clamp(4.6rem,5.2vw,7.4rem)]">
                     {service.title}
                     <span className="text-[#1B0E0D]">.</span>
                   </h3>
