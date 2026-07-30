@@ -55,13 +55,13 @@ function publicSourceAsset(image: string) {
 
 const showroomImages = {
   peopleS:
-    "/kymco-workbench/home-showroom-originals/01-people-s-125-abs.webp",
-  agilityS: "/kymco-workbench/home-showroom-originals/02-agility-s-125.webp",
+    "/kymco-workbench/home-showroom-originals/01-people-s-125-abs.png",
+  agilityS: "/kymco-workbench/home-showroom-originals/02-agility-s-125.png",
   downtown:
-    "/kymco-workbench/home-showroom-originals/03-downtown-350-gt.webp",
+    "/kymco-workbench/home-showroom-originals/03-downtown-350-gt.png",
   agility: "/kymco-workbench/home-showroom-originals/04-agility-350.png",
-  xTownSt: "/kymco-workbench/home-showroom-originals/05-x-town-250st.jpg",
-  ak575: "/kymco-workbench/home-showroom-originals/06-ak575-premium.jpg",
+  xTownSt: "/kymco-workbench/home-showroom-originals/05-x-town-250st.png",
+  ak575: "/kymco-workbench/home-showroom-originals/06-ak575-premium.png",
 } as const;
 
 const peopleS = catalogScooter("people-s-125-abs");

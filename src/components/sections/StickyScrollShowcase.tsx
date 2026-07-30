@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
-import { ArrowUpRight, Check, PhoneCall } from "lucide-react";
+import { Check, PhoneCall } from "lucide-react";
 
 const services = [
   {
@@ -166,7 +166,7 @@ export function StickyScrollShowcase() {
       <div className="grid lg:grid-cols-[minmax(30rem,41vw)_6.5rem_minmax(0,1fr)] lg:items-start">
         <div className="relative hidden min-h-full lg:block">
           <div className="sticky top-0 flex h-[100svh] items-center px-5 py-8 xl:px-10">
-            {/* FIX P1: overflow-hidden aggiunto → rounded-[2rem] clipa correttamente immagine e figcaption.
+            {/* FIX P1: overflow-hidden aggiunto → rounded-[2rem] clipa correttamente l'immagine.
                 Span bg-[#120D0C]/72 rimosso: oscurava la foto; il gradient overlay gestisce già il contrasto. */}
             <figure className="liquid-glass relative h-[84svh] w-full overflow-hidden rounded-[2rem] shadow-[0_34px_90px_rgba(27,14,13,0.25)]">
               <AnimatePresence mode="wait">
@@ -202,37 +202,6 @@ export function StickyScrollShowcase() {
                 className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(18,13,12,0)_34%,rgba(18,13,12,0.86)_100%),radial-gradient(circle_at_74%_22%,rgba(244,240,232,0.22),transparent_0_28%,transparent_46%)]"
               />
 
-              <figcaption className="liquid-glass absolute bottom-6 left-6 z-10 w-[min(30rem,calc(100%-3rem))] rounded-[1.45rem] p-5 text-[#F4F0E8]">
-                <span
-                  aria-hidden="true"
-                  className="absolute inset-0 rounded-[inherit] bg-[#080706]/54"
-                />
-                <div className="flex items-start justify-between gap-5">
-                  <div className="relative z-10">
-                    <p className="font-tech text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#F4F0E8]/62">
-                      {String(activeIndex + 1).padStart(2, "0")} /{" "}
-                      {String(services.length).padStart(2, "0")}
-                    </p>
-                    <p className="font-ui mt-4 max-w-[13rem] text-[1.7rem] font-bold uppercase leading-[0.88] tracking-[-0.03em]">
-                      {services[activeIndex].title}
-                    </p>
-                    <p className="mt-3 max-w-[20rem] text-sm font-medium leading-6 text-[#F4F0E8]/70">
-                      {services[activeIndex].statement}
-                    </p>
-                  </div>
-                  <a
-                    href="tel:+393289185029"
-                    className="font-tech group relative z-10 inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-full bg-[#F4F0E8]/8 px-4 text-[0.62rem] font-bold uppercase tracking-[0.12em] text-[#F4F0E8] shadow-[inset_0_0_0_1px_rgba(244,240,232,0.18)] transition-[background,color,transform] duration-[320ms] ease-[cubic-bezier(0.165,0.84,0.44,1)] hover:bg-[#F4F0E8] hover:text-[#1B0E0D] active:translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F4F0E8]/70 focus-visible:ring-offset-4 focus-visible:ring-offset-[#080706]"
-                  >
-                    Prenota
-                    <ArrowUpRight
-                      aria-hidden="true"
-                      className="h-3.5 w-3.5"
-                      strokeWidth={1.8}
-                    />
-                  </a>
-                </div>
-              </figcaption>
             </figure>
           </div>
         </div>
@@ -341,9 +310,16 @@ export function StickyScrollShowcase() {
                   }
                   transition={{ duration: 0.46, ease: premiumEase }}
                 >
-                  {/* FIX P3: clamp mobile 3.2rem/14vw → 2.6rem/11vw; whitespace-nowrap mobile +
-                      lg:whitespace-normal → titoli sempre su una riga su small viewport. */}
-                  <h3 className="font-display max-w-full whitespace-nowrap text-[clamp(2.6rem,11vw,6.2rem)] font-bold uppercase leading-[0.82] tracking-[-0.05em] [overflow-wrap:anywhere] lg:max-w-[11ch] lg:whitespace-normal lg:text-[clamp(4.2rem,5.8vw,6.8rem)] xl:text-[clamp(4.6rem,5.2vw,7.4rem)]">
+                  {/* FIX P3: clamp mobile 3.2rem/14vw -> 2.6rem/11vw; Finanziamenti resta
+                      su una riga nei viewport desktop ampi, senza forzare overflow su laptop stretti. */}
+                  <h3
+                    className={[
+                      "font-display max-w-full whitespace-nowrap text-[clamp(2.6rem,11vw,6.2rem)] font-bold uppercase leading-[0.82] tracking-[-0.05em] [overflow-wrap:anywhere] lg:whitespace-normal lg:text-[clamp(4.2rem,5.8vw,6.8rem)] xl:text-[clamp(4.6rem,5.2vw,7.4rem)]",
+                      service.title === "Finanziamenti"
+                        ? "xl:max-w-none xl:whitespace-nowrap"
+                        : "lg:max-w-[11ch]",
+                    ].join(" ")}
+                  >
                     {service.title}
                     <span className="text-[#1B0E0D]">.</span>
                   </h3>

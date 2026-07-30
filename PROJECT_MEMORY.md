@@ -136,9 +136,10 @@ Server production e screenshot QA possono esistere localmente da sessioni preced
 - Fix sticky servizi del 2026-06-24: il pannello immagine non deve essere direttamente lo sticky grid item, perche la CSS Grid puo stirarlo all'altezza della colonna destra e neutralizzare `position: sticky`. Usare un wrapper di colonna e un figlio `sticky top-0 h-[100svh]`.
 - Direzione UI aggiornata 2026-06-24: usare trattamento premium brutalist/editorial dove serve a evitare sezioni generiche o troppo vuote. Applicato a `StickyScrollShowcase`, `AccessoriesSection` e `WorkshopSection` con titoli oversized, numeri fantasma, hairline rules e layout piu sparsi. Non applicarlo indiscriminatamente a Hero, showcase scooter o ZoomParallax, che hanno gia una regia specifica.
 - Redesign servizi 2026-06-26: la hero `/servizi` mantiene il comportamento a due stati con GSAP ScrollTrigger. Prima mostra l'intro `Assistenza. Officina. Esperienza.`, poi allo scroll entra la board finale `Tutto / in / sede.` con navigatore 2x3 verso `#service-01`...`#service-06`.
-- Materiale servizi 2026-06-26: `.liquid-glass` e utility globale per le card vetrose. Nella pagina servizi e usato su navigator hero, foto sticky, caption nella foto, rail numerico 01-06, chip numerici e box descrizione. I pannelli liquid e la pagina servizi devono restare quasi interamente su neutri crema/ink: non usare verde, e usare il rosso solo come accento tipografico strettamente necessario. Stato corrente: unico rosso intenzionale su `sede.` nella seconda fase hero.
-- Sticky servizi 2026-06-26: la caption con indice/nome servizio dentro la foto sticky deve restare un pannello compatto interno, ancorato in basso a sinistra (`bottom-6 left-6`) con larghezza massima, non full-width sull'immagine.
+- Materiale servizi 2026-06-26: `.liquid-glass` e utility globale per le card vetrose. Nella pagina servizi e usato su navigator hero, foto sticky, rail numerico 01-06, chip numerici e box descrizione. I pannelli liquid e la pagina servizi devono restare quasi interamente su neutri crema/ink: non usare verde, e usare il rosso solo come accento tipografico strettamente necessario. Stato corrente: unico rosso intenzionale su `sede.` nella seconda fase hero.
+- Sticky servizi 2026-07-30: non usare piu caption o pannelli di copy dentro la foto sticky. Il contenuto del servizio deve restare nella colonna editoriale, per evitare duplicazioni e tagli del pannello interno.
 - Fix leggibilita sticky servizi 2026-06-26: nella colonna destra i titoli lunghi devono usare scala massima contenuta e `overflow-wrap` per non uscire dal viewport. Il blocco statement + card liquid descrittiva deve restare stacked fino a viewport molto larghi (`2xl`) per evitare che la card copra o comprima il testo.
+- Fix card immagine sticky servizi 2026-07-30: rimosso il `figcaption` sovrapposto dentro le foto desktop, che duplicava il contenuto del servizio e risultava tagliato in alto. Il titolo `Finanziamenti` usa ora una larghezza libera nei viewport desktop ampi per restare su una sola riga senza forzare overflow su laptop stretti.
 
 ### Catalogo `/scooters`
 
@@ -224,7 +225,7 @@ Workbench asset KYMCO creato il 2026-06-15:
 - `public/kymco-workbench/README.md` descrive lo scopo delle cartelle;
 - le 17 immagini `catalog-products-originals/*_no_bg.png` sono ora collegate al catalogo prodotti tramite `src/data/catalog-scooters.ts`;
 - `src/data/showcase-scooters.ts` usa path showroom espliciti per non ereditare automaticamente le immagini catalogo prodotti;
-- le 6 immagini 4K/ottimizzate in `home-showroom-originals/` sono ora collegate allo showroom home tramite `src/data/showcase-scooters.ts`.
+- le 6 immagini PNG trasparenti in `home-showroom-originals/` sono ora collegate allo showroom home tramite `src/data/showcase-scooters.ts` e tracciate in `asset-map.json`.
 
 `ZoomParallax` e implementato in `src/components/ui/zoom-parallax.tsx`:
 
