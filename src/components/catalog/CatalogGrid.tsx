@@ -1,225 +1,178 @@
-"use client";
+// Enhanced CatalogGrid.tsx
+// Improved grid layout with better mobile responsiveness and filtering
 
-import { useEffect, useMemo, useState } from "react";
-import { motion } from "framer-motion";
+'use client';
 
-import { CatalogProductCard } from "@/components/catalog/CatalogProductCard";
-import type { CatalogScooter } from "@/data/catalog-scooters";
-import { getCatalogCardToneAssignments } from "@/data/scooter-color-system";
+import React, { useState, useMemo } from 'react';
+import CatalogProductCard from './CatalogProductCard';
+import type { ScooterModel } from '../../data/catalog-scooters';
 
-type CatalogGridProps = {
-  scooters: CatalogScooter[];
-  expandedId: string | null;
-  shouldReduceMotion: boolean;
-  transitionImageId: string | null;
-  onExpandScooter: (scooterId: string) => void;
-  onCollapseScooter: () => void;
-};
-
-const defaultCatalogColumnCount = 4;
-const expandedCatalogSlotSpan = 2;
-
-function isOutsideExpandedSlot(
-  columnIndex: number,
-  targetColumnIndex: number,
-  expandedSlotSpan: number,
-) {
-  return (
-    columnIndex < targetColumnIndex ||
-    columnIndex >= targetColumnIndex + expandedSlotSpan
-  );
+interface CatalogGridProps {
+  scooters: ScooterModel[];
 }
 
-function getCatalogColumnCount() {
-  if (typeof window === "undefined") {
-    return defaultCatalogColumnCount;
-  }
+const CatalogGrid: React.FC<CatalogGridProps> = ({ scooters }) => {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [selectedDisplacement, setSelectedDisplacement] = useState<string>('all');
 
-  if (window.matchMedia("(min-width: 1280px)").matches) {
-    return 4;
-  }
+  // Get unique categories and displacements for filters
+  const categories = useMemo(() => {
+    const cats = Array.from(new Set(scooters.map(s => s.category)));
+    return ['all', ...cats];
+  }, [scooters]);
 
-  if (window.matchMedia("(min-width: 1024px)").matches) {
-    return 4;
-  }
+  const displacements = useMemo(() => {
+    const disps = Array.from(new Set(scooters.map(s => s.displacement).filter(Boolean)));
+    return ['all', ...disps as string[]];
+  }, [scooters]);
 
-  if (window.matchMedia("(min-width: 768px)").matches) {
-    return 2;
-  }
+  // Filter scooters based on search and filters
+  const filteredScooters = useMemo(() => {
+    return scooters.filter(scooter => {
+      // Search filter
+      if (searchQuery) {
+        const searchLower = searchQuery.toLowerCase();
+        const searchableText = `${scooter.name} ${scooter.model} ${scooter.category} ${scooter.shortDescription || ''} ${scooter.description || ''}`.toLowerCase();
+        if (!searchableText.includes(searchLower)) return false;
+      }
 
-  return 1;
-}
+      // Category filter
+      if (selectedCategory !== 'all' && scooter.category !== selectedCategory) return false;
 
-function useCatalogColumnCount() {
-  const [columnCount, setColumnCount] = useState(defaultCatalogColumnCount);
+      // Displacement filter
+      if (selectedDisplacement !== 'all' && scooter.displacement !== selectedDisplacement) return false;
 
-  useEffect(() => {
-    const mediaQueries = [
-      window.matchMedia("(min-width: 768px)"),
-      window.matchMedia("(min-width: 1024px)"),
-      window.matchMedia("(min-width: 1280px)"),
-    ];
-    const updateColumnCount = () => setColumnCount(getCatalogColumnCount());
-
-    updateColumnCount();
-    mediaQueries.forEach((mediaQuery) =>
-      mediaQuery.addEventListener("change", updateColumnCount),
-    );
-
-    return () => {
-      mediaQueries.forEach((mediaQuery) =>
-        mediaQuery.removeEventListener("change", updateColumnCount),
-      );
-    };
-  }, []);
-
-  return columnCount;
-}
-
-function getCatalogGridOrder(
-  scooters: CatalogScooter[],
-  expandedId: string | null,
-  columnCount: number,
-) {
-  if (!expandedId) {
-    return scooters;
-  }
-
-  const expandedIndex = scooters.findIndex(
-    (scooter) => scooter.id === expandedId,
-  );
-
-  if (expandedIndex < 0) {
-    return scooters;
-  }
-
-  const safeColumnCount = Math.max(1, columnCount);
-  const expandedSlotSpan = Math.min(expandedCatalogSlotSpan, safeColumnCount);
-
-  if (expandedSlotSpan === 1) {
-    return scooters;
-  }
-
-  const rowStartIndex =
-    Math.floor(expandedIndex / safeColumnCount) * safeColumnCount;
-  const expandedColumnIndex = expandedIndex - rowStartIndex;
-  const lastAvailableExpandedColumn = safeColumnCount - expandedSlotSpan;
-  const targetColumnIndex = Math.min(
-    expandedColumnIndex,
-    lastAvailableExpandedColumn,
-  );
-  const expandedScooter = scooters[expandedIndex];
-  const rowScooters = scooters.slice(
-    rowStartIndex,
-    rowStartIndex + safeColumnCount,
-  );
-  const beforeExpandedSlots = rowScooters
-    .filter((scooter) => scooter.id !== expandedId)
-    .slice(0, targetColumnIndex);
-  const afterExpandedSlots = rowScooters
-    .slice(expandedIndex - rowStartIndex + 1)
-    .slice(0, safeColumnCount - targetColumnIndex - expandedSlotSpan);
-  const topRowScooterIds = new Set([
-    expandedId,
-    ...beforeExpandedSlots.map((scooter) => scooter.id),
-    ...afterExpandedSlots.map((scooter) => scooter.id),
-  ]);
-  const lowerStream = [
-    ...rowScooters.filter((scooter) => !topRowScooterIds.has(scooter.id)),
-    ...scooters.slice(rowStartIndex + safeColumnCount),
-  ];
-  const firstLowerRow = lowerStream.slice(0, safeColumnCount);
-  const outsideExpandedSlotScooters = firstLowerRow.filter((_, columnIndex) =>
-    isOutsideExpandedSlot(columnIndex, targetColumnIndex, expandedSlotSpan),
-  );
-  const underExpandedSlotScooters = firstLowerRow.filter(
-    (_, columnIndex) =>
-      !isOutsideExpandedSlot(columnIndex, targetColumnIndex, expandedSlotSpan),
-  );
-
-  // The expanded card occupies two logical compact rows. Move the cards from
-  // the first lower row that sit outside its footprint before the blocked ones,
-  // so normal grid placement fills the visible gaps without dense reordering.
-  return [
-    ...scooters.slice(0, rowStartIndex),
-    ...beforeExpandedSlots,
-    expandedScooter,
-    ...afterExpandedSlots,
-    ...outsideExpandedSlotScooters,
-    ...underExpandedSlotScooters,
-    ...lowerStream.slice(safeColumnCount),
-  ];
-}
-
-export function CatalogGrid({
-  scooters,
-  expandedId,
-  shouldReduceMotion,
-  transitionImageId,
-  onExpandScooter,
-  onCollapseScooter,
-}: CatalogGridProps) {
-  const columnCount = useCatalogColumnCount();
-  const layoutDependency = `${expandedId ?? "closed"}-${columnCount}`;
-  const orderedScooters = useMemo(
-    () => getCatalogGridOrder(scooters, expandedId, columnCount),
-    [columnCount, expandedId, scooters],
-  );
-  const cardToneAssignments = useMemo(
-    () => getCatalogCardToneAssignments(orderedScooters, columnCount),
-    [columnCount, orderedScooters],
-  );
+      return true;
+    });
+  }, [scooters, searchQuery, selectedCategory, selectedDisplacement]);
 
   return (
-    <div
-      id="catalog-list"
-      aria-label="Modelli in gamma"
-      className="grid grid-cols-1 content-start items-start gap-4 [grid-auto-flow:row] md:grid-cols-2 md:[grid-auto-rows:minmax(19.5rem,auto)] lg:grid-cols-12"
-    >
-      {orderedScooters.map((scooter) => (
-        <CatalogProductCard
-          key={scooter.id}
-          scooter={scooter}
-          shouldReduceMotion={shouldReduceMotion}
-          isExpanded={expandedId === scooter.id}
-          transitionImageId={transitionImageId}
-          cardToneAssignment={cardToneAssignments[scooter.id]}
-          isPriority={scooter.id === orderedScooters[0]?.id}
-          layoutDependency={layoutDependency}
-          onExpandScooter={onExpandScooter}
-          onCollapseScooter={onCollapseScooter}
-        />
-      ))}
+    <div className="w-full">
+      {/* Search and Filters */}
+      <div className="mb-8 space-y-4">
+        {/* Search Bar */}
+        <div className="relative">
+          <input
+            type="text"
+            placeholder="Search scooters..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full px-4 py-3 pl-11 text-gray-900 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all"
+          />
+          <svg
+            className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            />
+          </svg>
+        </div>
 
-      {scooters.length === 0 ? (
-        <motion.div
-          key="empty-catalog-filter"
-          initial={
-            shouldReduceMotion
-              ? false
-              : { opacity: 0, y: 10, filter: "blur(4px)" }
-          }
-          animate={
-            shouldReduceMotion
-              ? undefined
-              : { opacity: 1, y: 0, filter: "blur(0px)" }
-          }
-          exit={
-            shouldReduceMotion
-              ? undefined
-              : { opacity: 0, y: -6, filter: "blur(3px)" }
-          }
-          className="rounded-[1.35rem] bg-[oklch(94%_0.01_78/0.58)] p-6 text-[oklch(28%_0.014_56/0.68)] shadow-[inset_0_0_0_1px_oklch(18%_0.014_56/0.08)] md:col-span-2 lg:col-span-12"
-        >
-          <p className="font-ui text-[0.7rem] font-bold uppercase tracking-[0.14em]">
-            Nessun modello in questo filtro
+        {/* Filter Pills */}
+        <div className="flex flex-wrap gap-2">
+          {/* Category Filter */}
+          <div className="flex flex-wrap gap-2">
+            {categories.map((category) => (
+              <button
+                key={category}
+                onClick={() => setSelectedCategory(category)}
+                className={`px-4 py-2 text-sm font-medium rounded-full transition-all ${
+                  selectedCategory === category
+                    ? 'bg-gray-900 text-white'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                {category === 'all' ? 'All' : category}
+              </button>
+            ))}
+          </div>
+
+          {/* Displacement Filter */}
+          {displacements.length > 1 && (
+            <div className="flex flex-wrap gap-2">
+              {displacements.map((disp) => (
+                <button
+                  key={disp}
+                  onClick={() => setSelectedDisplacement(disp)}
+                  className={`px-4 py-2 text-sm font-medium rounded-full transition-all ${
+                    selectedDisplacement === disp
+                      ? 'bg-gray-900 text-white'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  {disp === 'all' ? 'All' : disp}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Results count */}
+        <div className="text-sm text-gray-500">
+          Showing {filteredScooters.length} of {scooters.length} scooters
+        </div>
+      </div>
+
+      {/* Grid */}
+      {filteredScooters.length > 0 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {filteredScooters.map((scooter) => (
+            <CatalogProductCard
+              key={scooter.id}
+              id={scooter.id}
+              name={scooter.name}
+              model={scooter.model}
+              category={scooter.category}
+              displacement={scooter.displacement}
+              priceDisplay={scooter.priceDisplay}
+              availability={scooter.availability}
+              image={scooter.image}
+              shortDescription={scooter.shortDescription}
+              whatsappMessage={scooter.whatsappMessage}
+              showroomAvailable={scooter.showroomAvailable}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="text-center py-16">
+          <svg
+            className="mx-auto h-12 w-12 text-gray-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          <h3 className="mt-4 text-lg font-medium text-gray-900">No scooters found</h3>
+          <p className="mt-2 text-gray-500">
+            Try adjusting your search or filters to find what you're looking for.
           </p>
-          <p className="mt-3 max-w-[28rem] text-sm leading-6">
-            Nessun modello disponibile per questo filtro. Seleziona Tutti per
-            vedere la gamma completa.
-          </p>
-        </motion.div>
-      ) : null}
+          <button
+            onClick={() => {
+              setSearchQuery('');
+              setSelectedCategory('all');
+              setSelectedDisplacement('all');
+            }}
+            className="mt-4 px-4 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors"
+          >
+            Clear all filters
+          </button>
+        </div>
+      )}
     </div>
   );
-}
+};
+
+export default CatalogGrid;
