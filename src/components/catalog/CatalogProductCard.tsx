@@ -1,310 +1,158 @@
-import type { ComponentType, CSSProperties } from "react";
-import Image from "next/image";
-import {
-  ArrowRight,
-  Gauge,
-  Layers2,
-  MapPinned,
-  Minimize2,
-  PhoneCall,
-  Route,
-  ShieldCheck,
-} from "lucide-react";
-import { motion } from "framer-motion";
-import { clsx } from "clsx";
+// Enhanced CatalogProductCard.tsx
+// Improved product card with better information hierarchy and WhatsApp CTA
 
-import {
-  getCatalogScooterBrand,
-  type CatalogScooter,
-  type CatalogSpecIcon,
-} from "@/data/catalog-scooters";
-import type { ProductCardToneAssignment } from "@/data/scooter-color-system";
+'use client';
 
-type CatalogProductCardProps = {
-  scooter: CatalogScooter;
-  shouldReduceMotion: boolean;
-  isExpanded: boolean;
-  transitionImageId: string | null;
-  cardToneAssignment?: ProductCardToneAssignment;
-  isPriority?: boolean;
-  layoutDependency: string;
-  onExpandScooter: (scooterId: string) => void;
-  onCollapseScooter: () => void;
-};
+import React from 'react';
+import Link from 'next/link';
 
-type ProductCardStyle = CSSProperties & Record<`--${string}`, string>;
+interface ScooterCardProps {
+  id: string;
+  name: string;
+  model: string;
+  category: string;
+  displacement?: string;
+  priceDisplay?: string;
+  availability?: string;
+  image?: string;
+  shortDescription?: string;
+  whatsappMessage?: string;
+  showroomAvailable?: boolean;
+}
 
-type IconComponent = ComponentType<{
-  className?: string;
-  "aria-hidden"?: boolean;
-  strokeWidth?: number;
-}>;
+const CatalogProductCard: React.FC<ScooterCardProps> = ({
+  id,
+  name,
+  model,
+  category,
+  displacement,
+  priceDisplay,
+  availability,
+  image,
+  shortDescription,
+  whatsappMessage,
+  showroomAvailable,
+}) => {
+  // WhatsApp phone number (replace with actual Grossi Moto number)
+  const WHATSAPP_NUMBER = '393331234567';
 
-const specIcons: Record<CatalogSpecIcon, IconComponent> = {
-  gauge: Gauge,
-  layers: Layers2,
-  route: Route,
-  shield: ShieldCheck,
-  map: MapPinned,
-};
-
-const productEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
-const productLayoutDuration = 0.32;
-const expandedContentDuration = 0.22;
-
-export function CatalogProductCard({
-  scooter,
-  shouldReduceMotion,
-  isExpanded,
-  transitionImageId,
-  cardToneAssignment,
-  isPriority = false,
-  layoutDependency,
-  onExpandScooter,
-  onCollapseScooter,
-}: CatalogProductCardProps) {
-  const style: ProductCardStyle = {
-    "--product-accent": scooter.accentTone,
-    "--product-muted": scooter.mutedTone,
-    "--product-shadow": scooter.shadowTone,
-    background: isExpanded
-      ? scooter.featureSurface
-      : (cardToneAssignment?.cardSurface ?? scooter.cardSurface),
-    color: scooter.textTone,
+  // Create WhatsApp link with pre-filled message
+  const getWhatsAppLink = () => {
+    const message = whatsappMessage || `Hi, I'd like more information about the KYMCO ${name}. Is it available to see or test at your showroom?`;
+    const encodedMessage = encodeURIComponent(message);
+    return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
   };
-  const brand = getCatalogScooterBrand(scooter);
-  const cardTitleId = `catalog-card-title-${scooter.id}`;
-  const expandedContentId = `catalog-card-content-${scooter.id}`;
-  const sharedImageLayoutId =
-    !shouldReduceMotion && isExpanded && transitionImageId === scooter.id
-      ? `scooter-image-${scooter.id}`
-      : undefined;
-  const imageSizes = isExpanded
-    ? "(max-width: 767px) 88vw, (max-width: 1279px) 44vw, 38vw"
-    : "(max-width: 767px) 82vw, (max-width: 1279px) 42vw, 22vw";
-  const imageClassName = clsx(
-    "relative z-10 w-full object-contain object-center",
-    isExpanded
-      ? "h-[14rem] max-h-[22rem] sm:h-[16.5rem] md:h-full md:max-h-[28rem]"
-      : "h-[12.25rem] max-h-[12.25rem]",
-  );
-  const expandedContentMotion = shouldReduceMotion
-    ? { initial: false as const }
-    : {
-        initial: { opacity: 0, y: 6, filter: "blur(3px)" },
-        animate: { opacity: 1, y: 0, filter: "blur(0px)" },
-        transition: { duration: expandedContentDuration, ease: productEase },
-      };
-  const cardLayout = shouldReduceMotion ? false : "position";
 
   return (
-    <motion.div
-      layout={cardLayout}
-      layoutDependency={layoutDependency}
-      transition={{
-        layout: {
-          duration: shouldReduceMotion ? 0.01 : productLayoutDuration,
-          ease: productEase,
-        },
-      }}
-      className={clsx(
-        isExpanded
-          ? "self-stretch md:col-span-2 md:row-span-2 lg:col-span-6"
-          : "self-start md:col-span-1 md:row-span-1 lg:col-span-3",
-      )}
-      data-scooter-id={scooter.id}
-      data-expanded={isExpanded}
-      data-card-tone={cardToneAssignment?.toneId ?? scooter.cardToneId}
-      >
-      <article
-        aria-labelledby={cardTitleId}
-        className={clsx(
-          "group relative overflow-hidden rounded-[1.35rem] p-4 shadow-[0_0_0_1px_oklch(18%_0.014_56/0.052),0_18px_46px_oklch(18%_0.014_56/0.09)] sm:p-5",
-          isExpanded
-            ? "h-full min-h-0 sm:min-h-[35rem]"
-            : "min-h-[17.75rem] sm:min-h-[19.5rem]",
-          !isExpanded &&
-            "transition-[box-shadow,transform] duration-200 hover:shadow-[0_0_0_1px_oklch(18%_0.014_56/0.075),0_22px_56px_oklch(18%_0.014_56/0.12)]",
+    <div className="group relative bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100">
+      {/* Image Section */}
+      <Link href={`/scooters/${id}`} className="block relative aspect-[4/3] overflow-hidden bg-gray-50">
+        {image ? (
+          <img
+            src={image}
+            alt={name}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            loading="lazy"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
+            <span className="text-gray-400 text-sm">Image coming soon</span>
+          </div>
         )}
-        style={style}
-      >
-        <div
-          className={clsx(
-            "relative z-10 grid gap-5",
-            isExpanded
-              ? "grid h-full min-h-0 gap-5 sm:min-h-[31rem] md:grid-cols-[minmax(0,0.88fr)_minmax(0,1.12fr)] md:grid-rows-[auto_minmax(12rem,1fr)_auto]"
-              : "min-h-[15.75rem] grid-rows-[auto_minmax(10rem,1fr)_auto] sm:min-h-[17rem] sm:grid-rows-[auto_minmax(11.25rem,1fr)_auto]",
-          )}
-        >
-          <div className="flex min-w-0 items-start justify-between gap-4 md:col-start-1 md:row-start-1">
-            <div className="min-w-0">
-              <div className="mb-3 flex min-w-0 flex-wrap items-center gap-2">
-                <span className="font-ui inline-flex min-h-7 items-center rounded-full bg-[oklch(96%_0.006_78/0.42)] px-2.5 text-[0.58rem] font-bold uppercase tracking-[0.14em] text-current shadow-[inset_0_0_0_1px_oklch(18%_0.014_56/0.1)]">
-                  {brand}
-                </span>
-                <span className="font-ui truncate text-[0.58rem] font-bold uppercase tracking-[0.14em] text-[var(--product-muted)]">
-                  {scooter.family}
-                </span>
-              </div>
-              <h2
-                id={cardTitleId}
-                className={clsx(
-                  "font-display font-bold tracking-normal text-current",
-                  isExpanded
-                    ? "text-[clamp(2.45rem,10vw,4.2rem)] leading-[0.9] md:text-[clamp(2.4rem,4.4vw,4.7rem)]"
-                    : "text-[1.55rem] leading-none",
-                )}
-              >
-                {scooter.name}
-              </h2>
-              <p className="font-ui mt-2 text-[0.68rem] font-bold uppercase tracking-[0.13em] text-[var(--product-muted)]">
-                {scooter.subtitle}
-              </p>
+        
+        {/* Availability Badge */}
+        {availability && (
+          <div className="absolute top-3 left-3">
+            <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
+              availability === 'In Stock' 
+                ? 'bg-green-100 text-green-800' 
+                : availability === 'Available'
+                ? 'bg-blue-100 text-blue-800'
+                : 'bg-gray-100 text-gray-800'
+            }`}>
+              {availability}
+            </span>
+          </div>
+        )}
+      </Link>
+
+      {/* Content Section */}
+      <div className="p-5">
+        {/* Category */}
+        <div className="mb-2">
+          <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+            {category}
+          </span>
+        </div>
+
+        {/* Model Name */}
+        <Link href={`/scooters/${id}`}>
+          <h3 className="text-lg font-semibold text-gray-900 group-hover:text-gray-700 transition-colors mb-1">
+            {name}
+          </h3>
+        </Link>
+
+        {/* Short Description */}
+        {shortDescription && (
+          <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+            {shortDescription}
+          </p>
+        )}
+
+        {/* Specs */}
+        <div className="flex items-center gap-4 mb-4 text-sm text-gray-500">
+          {displacement && (
+            <div className="flex items-center gap-1.5">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+              <span>{displacement}</span>
             </div>
-
-            {isExpanded ? (
-              <button
-                type="button"
-                aria-label={`Comprimi ${scooter.name}`}
-                onClick={(event) => {
-                  event.stopPropagation();
-                  onCollapseScooter();
-                }}
-                className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-[oklch(96%_0.006_78/0.46)] text-current shadow-[inset_0_0_0_1px_oklch(18%_0.014_56/0.12)] outline-none transition-[background,transform] duration-200 hover:bg-[oklch(98%_0.004_78/0.64)] active:translate-y-px focus-visible:ring-2 focus-visible:ring-[var(--product-accent)]"
-              >
-                <Minimize2
-                  aria-hidden="true"
-                  className="h-4 w-4"
-                  strokeWidth={1.8}
-                />
-              </button>
-            ) : null}
-          </div>
-
-          <div
-            className={clsx(
-              "relative flex min-h-0 items-center justify-center",
-              isExpanded
-                ? "min-h-[15rem] md:col-start-2 md:row-span-2 md:row-start-1 md:min-h-0"
-                : "min-h-[11.25rem]",
-            )}
-          >
-            <div
-              aria-hidden="true"
-              className={clsx(
-                "absolute left-1/2 -translate-x-1/2 rounded-[50%] bg-[var(--product-shadow)]",
-                isExpanded
-                  ? "bottom-[8%] h-[10%] w-[80%] blur-[13px]"
-                  : "bottom-[7%] h-[9%] w-[76%] blur-[10px]",
-              )}
-            />
-            {sharedImageLayoutId ? (
-              <motion.img
-                layoutId={sharedImageLayoutId}
-                src={scooter.image}
-                alt={scooter.imageAlt}
-                width={780}
-                height={585}
-                draggable={false}
-                decoding="async"
-                className={imageClassName}
-                transition={{ type: "spring", duration: 0.46, bounce: 0 }}
-              />
-            ) : (
-              <Image
-                src={scooter.image}
-                alt={scooter.imageAlt}
-                width={780}
-                height={585}
-                sizes={imageSizes}
-                priority={isPriority}
-                draggable={false}
-                className={imageClassName}
-              />
-            )}
-          </div>
-
-          {isExpanded ? (
-            <motion.div
-              key="expanded-content"
-              {...expandedContentMotion}
-              id={expandedContentId}
-              className="min-w-0 md:col-span-2 md:row-start-3"
-            >
-              <p className="max-w-[46rem] text-[0.98rem] leading-7 text-[var(--product-muted)] sm:text-base">
-                {scooter.positioning}
-              </p>
-
-              <div className="mt-5 grid gap-2 sm:grid-cols-3">
-                {scooter.specs.slice(0, 3).map((spec) => {
-                  const Icon = specIcons[spec.icon];
-
-                  return (
-                    <div
-                      key={`${scooter.id}-${spec.label}`}
-                      className="min-w-0 rounded-[0.9rem] bg-[oklch(96%_0.006_78/0.36)] px-3.5 py-3 shadow-[inset_0_0_0_1px_oklch(18%_0.014_56/0.09)]"
-                    >
-                      <Icon
-                        aria-hidden
-                        className="h-4 w-4 text-[var(--product-accent)]"
-                        strokeWidth={1.7}
-                      />
-                      <p className="font-display mt-3 truncate text-xl font-bold leading-none text-current">
-                        {spec.value}
-                      </p>
-                      <p className="font-ui mt-2 truncate text-[0.61rem] font-bold uppercase tracking-[0.13em] text-[var(--product-muted)]">
-                        {spec.label}
-                      </p>
-                    </div>
-                  );
-                })}
-              </div>
-
-              <div className="mt-5 flex flex-col gap-3 sm:flex-row">
-                <a
-                  href="tel:+393289185029"
-                  aria-label={`Richiedi consulenza per ${scooter.name}`}
-                  className="font-ui inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-[oklch(18%_0.014_56)] px-5 py-3 text-[0.72rem] font-bold uppercase tracking-[0.1em] text-[oklch(94%_0.01_78)] outline-none transition-[background,transform] duration-200 hover:bg-[oklch(23%_0.016_56)] active:translate-y-px focus-visible:ring-2 focus-visible:ring-[var(--product-accent)] focus-visible:ring-offset-4 focus-visible:ring-offset-[oklch(88%_0.015_78)] sm:w-fit"
-                >
-                  <PhoneCall
-                    aria-hidden="true"
-                    className="h-4 w-4"
-                    strokeWidth={1.8}
-                  />
-                  Richiedi consulenza
-                </a>
-              </div>
-            </motion.div>
-          ) : (
-            <div className="flex items-end justify-between gap-4">
-              <div className="min-w-0">
-                <p className="font-ui text-[0.62rem] font-bold uppercase tracking-[0.13em] text-[var(--product-muted)]">
-                  {scooter.displacement}
-                </p>
-                <p className="mt-1 truncate text-sm leading-5 text-[var(--product-muted)]">
-                  {scooter.idealUse}
-                </p>
-              </div>
-
-              <button
-                type="button"
-                aria-controls={expandedContentId}
-                aria-expanded={false}
-                aria-label={`Apri la scheda di ${scooter.name}`}
-                onClick={() => onExpandScooter(scooter.id)}
-                className="font-ui inline-flex min-h-11 shrink-0 items-center gap-3 rounded-full px-2 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-current outline-none transition-[background,color] duration-200 hover:bg-[oklch(96%_0.006_78/0.38)] group-hover:text-[var(--product-accent)] focus-visible:ring-2 focus-visible:ring-[var(--product-accent)] focus-visible:ring-offset-2"
-              >
-                Apri la scheda
-                <ArrowRight
-                  aria-hidden="true"
-                  className="h-4 w-4"
-                  strokeWidth={1.8}
-                />
-              </button>
+          )}
+          {showroomAvailable && (
+            <div className="flex items-center gap-1.5">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              <span>Showroom</span>
             </div>
           )}
         </div>
-      </article>
-    </motion.div>
+
+        {/* Price */}
+        {priceDisplay && (
+          <div className="mb-4">
+            <span className="text-lg font-semibold text-gray-900">{priceDisplay}</span>
+          </div>
+        )}
+
+        {/* CTAs */}
+        <div className="flex gap-2">
+          {/* Discover Model */}
+          <Link
+            href={`/scooters/${id}`}
+            className="flex-1 inline-flex items-center justify-center px-4 py-2.5 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
+          >
+            Discover
+          </Link>
+
+          {/* WhatsApp */}
+          <a
+            href={getWhatsAppLink()}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center px-4 py-2.5 text-sm font-medium text-green-700 bg-green-50 rounded-lg hover:bg-green-100 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+            aria-label={`Contact us about ${name} on WhatsApp`}
+          >
+            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
   );
-}
+};
+
+export default CatalogProductCard;
