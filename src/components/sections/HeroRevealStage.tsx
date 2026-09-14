@@ -7,6 +7,7 @@ import {
   useMemo,
   useRef,
   useState,
+  useSyncExternalStore,
 } from "react";
 import {
   animate,
@@ -48,6 +49,22 @@ const heroCardRevealedState = {
 const useBrowserLayoutEffect =
   typeof window === "undefined" ? useEffect : useLayoutEffect;
 
+function useDesktopViewport() {
+  const subscribe = useCallback((onStoreChange: () => void) => {
+    const mediaQuery = window.matchMedia("(min-width: 1024px)");
+    mediaQuery.addEventListener("change", onStoreChange);
+
+    return () => mediaQuery.removeEventListener("change", onStoreChange);
+  }, []);
+
+  const getSnapshot = useCallback(
+    () => window.matchMedia("(min-width: 1024px)").matches,
+    [],
+  );
+
+  return useSyncExternalStore(subscribe, getSnapshot, () => false);
+}
+
 export function HeroRevealStage() {
   const stageRef = useRef<HTMLElement | null>(null);
   const showcaseRef = useRef<HTMLDivElement | null>(null);
@@ -59,6 +76,7 @@ export function HeroRevealStage() {
   const isHeroAnimatingRef = useRef(false);
   const heroControls = useAnimationControls();
   const shouldReduceMotion = useReducedMotion();
+  const isDesktopViewport = useDesktopViewport();
   const [hasHeroRevealed, setHasHeroRevealed] = useState(false);
 
   const cardMotion = useMemo(
@@ -245,7 +263,7 @@ export function HeroRevealStage() {
   ]);
 
   useBrowserLayoutEffect(() => {
-    if (shouldReduceMotion) {
+    if (shouldReduceMotion || !isDesktopViewport) {
       return;
     }
 
@@ -333,10 +351,11 @@ export function HeroRevealStage() {
     restoreHero,
     revealHero,
     shouldReduceMotion,
+    isDesktopViewport,
   ]);
 
   useEffect(() => {
-    if (shouldReduceMotion) {
+    if (shouldReduceMotion || !isDesktopViewport) {
       return;
     }
 
@@ -363,10 +382,10 @@ export function HeroRevealStage() {
         capture: true,
       });
     };
-  }, [shouldReduceMotion]);
+  }, [isDesktopViewport, shouldReduceMotion]);
 
   useEffect(() => {
-    if (shouldReduceMotion) {
+    if (shouldReduceMotion || !isDesktopViewport) {
       return;
     }
 
@@ -450,13 +469,14 @@ export function HeroRevealStage() {
     getShowcaseTop,
     markReverseScrollIntent,
     restoreHero,
+    isDesktopViewport,
     shouldReduceMotion,
   ]);
 
   useEffect(() => {
     const stage = stageRef.current;
 
-    if (!stage || shouldReduceMotion) {
+    if (!stage || shouldReduceMotion || !isDesktopViewport) {
       return;
     }
 
@@ -531,10 +551,11 @@ export function HeroRevealStage() {
     isHeroTriggerArea,
     markForwardScrollIntent,
     revealHero,
+    isDesktopViewport,
     shouldReduceMotion,
   ]);
 
-  if (shouldReduceMotion) {
+  if (shouldReduceMotion || !isDesktopViewport) {
     return (
       <>
         <Hero />

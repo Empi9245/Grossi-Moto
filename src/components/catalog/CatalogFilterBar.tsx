@@ -1,4 +1,3 @@
-import { SlidersHorizontal } from "lucide-react";
 import { clsx } from "clsx";
 
 import { catalogFilters, type CatalogFilter } from "@/data/catalog-scooters";
@@ -13,12 +12,12 @@ export function CatalogFilterBar({
   onFilterChange,
 }: CatalogFilterBarProps) {
   return (
-    <div className="px-5 pt-7 sm:px-7 lg:px-10">
+    <div className="catalog-filter-bar sticky top-0 z-30 bg-[oklch(94.5%_0.011_78/0.9)] px-5 pb-3 pt-5 backdrop-blur-xl sm:px-7 sm:pt-7 lg:px-10">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div
-          role="tablist"
-          aria-label="Filtra gamma per cilindrata"
-          className="flex min-h-14 w-full min-w-0 gap-1 overflow-x-auto overscroll-x-contain rounded-full bg-[oklch(91.5%_0.012_78/0.72)] p-1.5 shadow-[inset_0_0_0_1px_oklch(18%_0.014_56/0.1)] sm:max-w-[34rem]"
+          aria-label="Filtra i modelli per cilindrata"
+          className="hide-scrollbar flex min-h-14 w-full min-w-0 gap-1 overflow-x-auto overscroll-x-contain rounded-full bg-[oklch(91.5%_0.012_78/0.72)] p-1.5 shadow-[inset_0_0_0_1px_oklch(18%_0.014_56/0.1)] sm:max-w-[34rem]"
+          role="group"
         >
           {catalogFilters.map((filter) => {
             const isActive = activeFilter === filter.id;
@@ -27,8 +26,7 @@ export function CatalogFilterBar({
               <button
                 key={filter.id}
                 type="button"
-                role="tab"
-                aria-selected={isActive}
+                aria-pressed={isActive}
                 onClick={() => onFilterChange(filter.id)}
                 className={clsx(
                   "font-ui inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-full px-5 text-[0.74rem] font-bold tracking-[0.02em] outline-none transition-[background,color,box-shadow,transform] duration-200 active:translate-y-px focus-visible:ring-2 focus-visible:ring-[oklch(38%_0.08_28)] focus-visible:ring-offset-2 focus-visible:ring-offset-[oklch(94%_0.01_78)]",
@@ -49,19 +47,6 @@ export function CatalogFilterBar({
           })}
         </div>
 
-        <button
-          type="button"
-          aria-label="Ordina e filtra i modelli"
-          onClick={() => onFilterChange("all")}
-          className="font-ui inline-flex min-h-12 w-full items-center justify-center gap-3 rounded-full px-5 text-[0.74rem] font-bold tracking-[0.02em] text-[oklch(20%_0.014_56)] shadow-[inset_0_0_0_1px_oklch(18%_0.014_56/0.12)] outline-none transition-[background,transform,box-shadow] duration-200 hover:bg-[oklch(88%_0.014_76/0.58)] active:translate-y-px focus-visible:ring-2 focus-visible:ring-[oklch(38%_0.08_28)] focus-visible:ring-offset-2 focus-visible:ring-offset-[oklch(94%_0.01_78)] sm:w-auto"
-        >
-          Ordina e filtra
-          <SlidersHorizontal
-            aria-hidden="true"
-            className="h-4 w-4"
-            strokeWidth={1.8}
-          />
-        </button>
       </div>
     </div>
   );

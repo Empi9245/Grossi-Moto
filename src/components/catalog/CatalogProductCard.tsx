@@ -1,4 +1,4 @@
-import type { ComponentType, CSSProperties, KeyboardEvent } from "react";
+import type { ComponentType, CSSProperties } from "react";
 import Image from "next/image";
 import {
   ArrowRight,
@@ -26,6 +26,7 @@ type CatalogProductCardProps = {
   isExpanded: boolean;
   transitionImageId: string | null;
   cardToneAssignment?: ProductCardToneAssignment;
+  isPriority?: boolean;
   layoutDependency: string;
   onExpandScooter: (scooterId: string) => void;
   onCollapseScooter: () => void;
@@ -57,6 +58,7 @@ export function CatalogProductCard({
   isExpanded,
   transitionImageId,
   cardToneAssignment,
+  isPriority = false,
   layoutDependency,
   onExpandScooter,
   onCollapseScooter,
@@ -72,6 +74,7 @@ export function CatalogProductCard({
   };
   const brand = getCatalogScooterBrand(scooter);
   const cardTitleId = `catalog-card-title-${scooter.id}`;
+  const expandedContentId = `catalog-card-content-${scooter.id}`;
   const sharedImageLayoutId =
     !shouldReduceMotion && isExpanded && transitionImageId === scooter.id
       ? `scooter-image-${scooter.id}`
@@ -82,7 +85,7 @@ export function CatalogProductCard({
   const imageClassName = clsx(
     "relative z-10 w-full object-contain object-center",
     isExpanded
-      ? "h-[16.5rem] max-h-[22rem] md:h-full md:max-h-[28rem]"
+      ? "h-[14rem] max-h-[22rem] sm:h-[16.5rem] md:h-full md:max-h-[28rem]"
       : "h-[12.25rem] max-h-[12.25rem]",
   );
   const expandedContentMotion = shouldReduceMotion
@@ -93,21 +96,6 @@ export function CatalogProductCard({
         transition: { duration: expandedContentDuration, ease: productEase },
       };
   const cardLayout = shouldReduceMotion ? false : "position";
-
-  const handleCardClick = () => {
-    if (!isExpanded) {
-      onExpandScooter(scooter.id);
-    }
-  };
-
-  const handleCardKeyDown = (event: KeyboardEvent<HTMLElement>) => {
-    if (isExpanded || (event.key !== "Enter" && event.key !== " ")) {
-      return;
-    }
-
-    event.preventDefault();
-    onExpandScooter(scooter.id);
-  };
 
   return (
     <motion.div
@@ -127,21 +115,16 @@ export function CatalogProductCard({
       data-scooter-id={scooter.id}
       data-expanded={isExpanded}
       data-card-tone={cardToneAssignment?.toneId ?? scooter.cardToneId}
-    >
+      >
       <article
-        role={isExpanded ? undefined : "button"}
-        tabIndex={isExpanded ? undefined : 0}
-        aria-expanded={isExpanded}
         aria-labelledby={cardTitleId}
-        onClick={isExpanded ? undefined : handleCardClick}
-        onKeyDown={handleCardKeyDown}
         className={clsx(
-          "group relative overflow-hidden rounded-[1.35rem] p-5 shadow-[0_0_0_1px_oklch(18%_0.014_56/0.052),0_18px_46px_oklch(18%_0.014_56/0.09)] outline-none focus-visible:ring-2 focus-visible:ring-[var(--product-accent)] focus-visible:ring-offset-4 focus-visible:ring-offset-[oklch(88%_0.015_78)]",
+          "group relative overflow-hidden rounded-[1.35rem] p-4 shadow-[0_0_0_1px_oklch(18%_0.014_56/0.052),0_18px_46px_oklch(18%_0.014_56/0.09)] sm:p-5",
           isExpanded
-            ? "h-full min-h-[35rem] cursor-default"
-            : "min-h-[19.5rem] cursor-pointer",
+            ? "h-full min-h-0 sm:min-h-[35rem]"
+            : "min-h-[17.75rem] sm:min-h-[19.5rem]",
           !isExpanded &&
-            "transition-shadow duration-200 hover:shadow-[0_0_0_1px_oklch(18%_0.014_56/0.075),0_22px_56px_oklch(18%_0.014_56/0.12)]",
+            "transition-[box-shadow,transform] duration-200 hover:shadow-[0_0_0_1px_oklch(18%_0.014_56/0.075),0_22px_56px_oklch(18%_0.014_56/0.12)]",
         )}
         style={style}
       >
@@ -149,8 +132,8 @@ export function CatalogProductCard({
           className={clsx(
             "relative z-10 grid gap-5",
             isExpanded
-              ? "grid h-full min-h-[31rem] gap-5 md:grid-cols-[minmax(0,0.88fr)_minmax(0,1.12fr)] md:grid-rows-[auto_minmax(12rem,1fr)_auto]"
-              : "min-h-[17rem] grid-rows-[auto_minmax(11.25rem,1fr)_auto]",
+              ? "grid h-full min-h-0 gap-5 sm:min-h-[31rem] md:grid-cols-[minmax(0,0.88fr)_minmax(0,1.12fr)] md:grid-rows-[auto_minmax(12rem,1fr)_auto]"
+              : "min-h-[15.75rem] grid-rows-[auto_minmax(10rem,1fr)_auto] sm:min-h-[17rem] sm:grid-rows-[auto_minmax(11.25rem,1fr)_auto]",
           )}
         >
           <div className="flex min-w-0 items-start justify-between gap-4 md:col-start-1 md:row-start-1">
@@ -187,7 +170,7 @@ export function CatalogProductCard({
                   event.stopPropagation();
                   onCollapseScooter();
                 }}
-                className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[oklch(96%_0.006_78/0.46)] text-current shadow-[inset_0_0_0_1px_oklch(18%_0.014_56/0.12)] outline-none transition-[background,transform] duration-200 hover:bg-[oklch(98%_0.004_78/0.64)] active:translate-y-px focus-visible:ring-2 focus-visible:ring-[var(--product-accent)]"
+                className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-[oklch(96%_0.006_78/0.46)] text-current shadow-[inset_0_0_0_1px_oklch(18%_0.014_56/0.12)] outline-none transition-[background,transform] duration-200 hover:bg-[oklch(98%_0.004_78/0.64)] active:translate-y-px focus-visible:ring-2 focus-visible:ring-[var(--product-accent)]"
               >
                 <Minimize2
                   aria-hidden="true"
@@ -234,6 +217,7 @@ export function CatalogProductCard({
                 width={780}
                 height={585}
                 sizes={imageSizes}
+                priority={isPriority}
                 draggable={false}
                 className={imageClassName}
               />
@@ -244,6 +228,7 @@ export function CatalogProductCard({
             <motion.div
               key="expanded-content"
               {...expandedContentMotion}
+              id={expandedContentId}
               className="min-w-0 md:col-span-2 md:row-start-3"
             >
               <p className="max-w-[46rem] text-[0.98rem] leading-7 text-[var(--product-muted)] sm:text-base">
@@ -279,7 +264,7 @@ export function CatalogProductCard({
                 <a
                   href="tel:+393289185029"
                   aria-label={`Richiedi consulenza per ${scooter.name}`}
-                  className="font-ui inline-flex min-h-11 w-fit items-center justify-center gap-2 rounded-full bg-[oklch(18%_0.014_56)] px-5 py-3 text-[0.72rem] font-bold uppercase tracking-[0.1em] text-[oklch(94%_0.01_78)] outline-none transition-[background,transform] duration-200 hover:bg-[oklch(23%_0.016_56)] active:translate-y-px focus-visible:ring-2 focus-visible:ring-[var(--product-accent)] focus-visible:ring-offset-4 focus-visible:ring-offset-[oklch(88%_0.015_78)]"
+                  className="font-ui inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-[oklch(18%_0.014_56)] px-5 py-3 text-[0.72rem] font-bold uppercase tracking-[0.1em] text-[oklch(94%_0.01_78)] outline-none transition-[background,transform] duration-200 hover:bg-[oklch(23%_0.016_56)] active:translate-y-px focus-visible:ring-2 focus-visible:ring-[var(--product-accent)] focus-visible:ring-offset-4 focus-visible:ring-offset-[oklch(88%_0.015_78)] sm:w-fit"
                 >
                   <PhoneCall
                     aria-hidden="true"
@@ -301,14 +286,21 @@ export function CatalogProductCard({
                 </p>
               </div>
 
-              <span className="font-ui inline-flex min-h-10 shrink-0 items-center gap-3 rounded-full text-[0.68rem] font-bold uppercase tracking-[0.12em] text-current transition-colors duration-200 group-hover:text-[var(--product-accent)]">
-                Scopri
+              <button
+                type="button"
+                aria-controls={expandedContentId}
+                aria-expanded={false}
+                aria-label={`Apri la scheda di ${scooter.name}`}
+                onClick={() => onExpandScooter(scooter.id)}
+                className="font-ui inline-flex min-h-11 shrink-0 items-center gap-3 rounded-full px-2 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-current outline-none transition-[background,color] duration-200 hover:bg-[oklch(96%_0.006_78/0.38)] group-hover:text-[var(--product-accent)] focus-visible:ring-2 focus-visible:ring-[var(--product-accent)] focus-visible:ring-offset-2"
+              >
+                Apri la scheda
                 <ArrowRight
                   aria-hidden="true"
                   className="h-4 w-4"
                   strokeWidth={1.8}
                 />
-              </span>
+              </button>
             </div>
           )}
         </div>

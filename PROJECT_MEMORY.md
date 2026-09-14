@@ -1,6 +1,6 @@
 # Project Memory
 
-Ultimo aggiornamento operativo: 2026-06-24.
+Ultimo aggiornamento operativo: 2026-07-30.
 
 ## Stato Corrente
 
@@ -130,7 +130,7 @@ Server production e screenshot QA possono esistere localmente da sessioni preced
 - Fix hero servizi del 2026-06-24: il finale dello scroll non usa piu sei label libere sovrapposte all'headline. La hero separa due stati: intro testuale (`Assistenza. Officina. Esperienza.`) che esce con opacity/translate/blur, poi service board finale con sei moduli numerati.
 - Ritocco UI hero servizi del 2026-06-24: quando entra la service board, la parte sinistra non resta piu vuota; compare un claim tipografico grande (`Tutto / in sede`) animato con line reveal e blur/translate leggero, mentre la tabella resta sulla destra.
 - La service board e decorativa (`aria-hidden`) per evitare heading duplicati: la sezione servizi sottostante mantiene la gerarchia accessibile e il contenuto esteso.
-- Motion hero servizi: ScrollTrigger pinned con `end: +=120%`, `scrub: 0.45`, immagine con zoom leggero `scale: 1.12`, overlay finale `opacity: 0.72`, senza lasciare headline e sei servizi visibili nello stesso momento.
+- Motion hero servizi: ScrollTrigger pinned con `end: +=120%`, `scrub: 0.45`, immagine con zoom leggero `scale: 1.12`, overlay finale `opacity: 0.72`, senza lasciare headline e sei servizi visibili nello stesso momento. I wrapper delle righe headline usano padding verticale compensato da margine negativo per evitare il taglio ottico della display font durante la reveal.
 - Reduced motion hero servizi: non viene creato ScrollTrigger; resta la composizione statica iniziale e la board finale resta nascosta, evitando sovrapposizioni.
 - Dopo la hero, `/servizi` usa `StickyScrollShowcase`: su desktop la foto rimane sticky a sinistra e il copy scrolla a destra con titoli e statement oversized per riempire lo spazio, senza card grid strette; su mobile torna a layout stacked con immagine sopra e copy grande sotto.
 - Fix sticky servizi del 2026-06-24: il pannello immagine non deve essere direttamente lo sticky grid item, perche la CSS Grid puo stirarlo all'altezza della colonna destra e neutralizzare `position: sticky`. Usare un wrapper di colonna e un figlio `sticky top-0 h-[100svh]`.
@@ -140,6 +140,7 @@ Server production e screenshot QA possono esistere localmente da sessioni preced
 - Sticky servizi 2026-07-30: non usare piu caption o pannelli di copy dentro la foto sticky. Il contenuto del servizio deve restare nella colonna editoriale, per evitare duplicazioni e tagli del pannello interno.
 - Fix leggibilita sticky servizi 2026-06-26: nella colonna destra i titoli lunghi devono usare scala massima contenuta e `overflow-wrap` per non uscire dal viewport. Il blocco statement + card liquid descrittiva deve restare stacked fino a viewport molto larghi (`2xl`) per evitare che la card copra o comprima il testo.
 - Fix card immagine sticky servizi 2026-07-30: rimosso il `figcaption` sovrapposto dentro le foto desktop, che duplicava il contenuto del servizio e risultava tagliato in alto. Il titolo `Finanziamenti` usa ora una larghezza libera nei viewport desktop ampi per restare su una sola riga senza forzare overflow su laptop stretti.
+- Asset servizi 2026-07-30: le nuove foto operative sono state copiate da `public/da usare/` a URL puliti sotto `public/grossimoto/`. La hero servizi usa `public/grossimoto/servizi-hero/agility-s-125-consulenza.jpg`, lo stacco immagine usa `public/grossimoto/servizi-hero/agility-s-125-showroom.jpg`, e `StickyScrollShowcase` usa i sei asset verticali in `public/grossimoto/servizi/`. Non usare per ora i due asset sciolti di garanzia presenti in `public/da usare/`.
 
 ### Catalogo `/scooters`
 
@@ -229,12 +230,13 @@ Workbench asset KYMCO creato il 2026-06-15:
 
 `ZoomParallax` e implementato in `src/components/ui/zoom-parallax.tsx`:
 
-- pattern zoom-parallax stile demo con `h-[300vh]`, sticky `100svh`, massimo 7 immagini e scale progressive `[4,5,6,5,6,8,9]`;
+- pattern zoom-parallax stile demo con `h-[480vh]`, sticky `100svh`, massimo 7 immagini e scale progressive `[4,5,6,5,6,8,9]`;
+- Asset home scroll 2026-07-30: i sette media default di `ZoomParallax` puntano a `public/grossimoto/home-scroll/`, copiati dalla sottocartella `public/da usare/home (scroll con 7 foto e quella centrale si ingrandisce)/`;
 - la prima immagine parte come tile centrale `25vh / 25vw`, scala fino a coprire tutta la sticky section e resta sopra le altre immagini;
-- il progress dello zoom e separato dal progress totale: lo zoom completa circa al 74% della sezione, poi mantiene una fase finale full-screen per evitare il taglio/scomparsa al termine del pin;
-- il copy `Dallo showroom all'officina / Un punto di riferimento KYMCO a Roma` non sta piu sopra la sezione prima della gallery: compare come overlay solo dopo che la prima foto ha gia raggiunto il full-screen;
+- il progress dello zoom e separato dal progress totale: lo zoom mantiene una durata percepita simile pur completando circa al 43% della sezione; il copy entra tra 48% e 58% e resta full-screen per una fase finale molto piu lunga. Un velo ink progressivo e una lieve text-shadow accompagnano il copy, cosi resta leggibile anche sugli asset fotografici chiari;
+- il copy `Dallo showroom all'officina / La scelta continua dopo la consegna.` non sta piu sopra la sezione prima della gallery: compare come overlay solo dopo che la prima foto ha gia raggiunto il full-screen;
 - `GrossimotoExperienceSection` non deve avere `overflow-hidden`: il clipping va tenuto dentro il viewport sticky di `ZoomParallax`, altrimenti la sticky puo essere tagliata o comportarsi come se la sezione sparisse;
-- fallback statico su mobile e `prefers-reduced-motion`, con prima immagine full-screen e testo subito visibile;
+- fallback statico solo con `prefers-reduced-motion`, con prima immagine full-screen e testo subito visibile; su mobile/tablet il percorso zoom resta attivo con altezza responsive per mantenere l'effetto senza una sezione eccessiva;
 - rispetto di `prefers-reduced-motion`.
 
 Nota critica:
@@ -306,10 +308,10 @@ Fase 1: Hero Video Theatre + reveal.
 - Wrapper full viewport con padding esterno e theatre interno arrotondato.
 - Navbar minimale con logo/testo Grossimoto a sinistra, menu desktop e CTA telefono.
 - Background cinematico dark con video locale in loop.
-- Badge matte: `Dealer KYMCO autorizzato a Roma`.
-- Headline: `L'eccellenza KYMCO, su misura per Roma`.
-- CTA: `Esplora la gamma` e `Prenota consulenza`.
-- Bottom-left panel con `21` modelli scooter.
+- Badge matte: `Rivenditore ufficiale KYMCO a Roma`.
+- Headline: `Trova lo scooter giusto per Roma`.
+- CTA: `Vedi la gamma` e `Prenota una consulenza`.
+- Bottom-left panel con `27` modelli in gamma.
 - Bottom-right faux-cutout showroom/officina.
 - Reveal: trigger-based, non scrubbed.
 - Intento corretto del reveal: la card Hero si chiude verticalmente dal basso verso l'alto e lascia emergere la showcase sottostante senza linea di distacco netta.
@@ -338,6 +340,32 @@ Implementata.
 - Il comportamento corretto e espansione in-place della card, non promozione a una featured card separata.
 - La route non sostituisce la home: e una continuazione della showroom experience.
 
+## Aggiornamento Copy E SEO 2026-07-30
+
+- Eseguita una revisione editoriale delle route `/`, `/scooters`, `/servizi` e `/contatti`, includendo hero, navbar, showcase, catalogo, accessori, officina, contatti, footer, CTA, microcopy, alt text e aria-label.
+- Il posizionamento ora presenta Grossi Moto come punto vendita e centro assistenza scooter a Roma, mantiene il riferimento ufficiale KYMCO in Home e Contatti e introduce Voge in modo naturale nella Home, nel catalogo e nei servizi pertinenti.
+- Aggiornati title e meta description con il Metadata API template globale `%s | Grossimoto`, senza aggiungere canonical o URL non verificati.
+- Rimossi o ammorbiditi claim non documentati nella pagina Servizi, tra cui servizi ufficiali Voge, tecnici certificati, ricambi originali e garanzia preservata.
+- Non sono stati modificati layout, motion, routing, asset, dati di contatto, chiavi dei dataset o comportamento delle card.
+
+## Aggiornamento Marketing E CRO 2026-07-30
+
+- Aggiunto `.agents/product-marketing.md` come contesto condiviso v1 per posizionamento, pubblico, obiezioni, proof point da validare e conversioni.
+- Rafforzato il percorso marketing discovery -> confronto -> contatto: Hero con CTA `Confronta la gamma` e `Parla con un consulente`, card catalogo con `Apri la scheda` e maggiore evidenza del catalogo multi-brand KYMCO + Voge.
+- Ridotta la frizione del form contatti con argomenti più vicini alle intenzioni reali (`Scelta di uno scooter`, `Disponibilità e acquisto`), placeholder orientato a modello/uso/lavoro e CTA `Invia la richiesta`.
+- Non sono stati introdotti sconti, urgenze, recensioni, numeri di performance o promesse di risposta non verificati; non sono stati modificati campi, endpoint o comportamento del form.
+
+## Responsive Tablet E Mobile 2026-07-30
+
+- Hero mobile/tablet: copy, titolo e CTA hanno larghezze vincolate per evitare testo tagliato; il pannello modelli diventa compatto sotto `sm`, cosi non copre la maggior parte dell'hero, mentre il link mappa resta compatto su viewport molto piccoli e torna completo da `sm`.
+- Navigazione: Home, Gamma, Servizi e Contatti sono nuovamente disponibili in una barra compatta sotto `lg`, sia nell'hero della Home sia nella navbar del catalogo; il menu desktop resta invariato.
+- Showcase home: sotto `lg` il blocco laterale mostra solo il modello attivo invece dell'elenco completo dei sei modelli, gia rappresentato dalla rail orizzontale; le larghezze delle slide sono ridotte su `sm`/`md` per evitare che le immagini prodotto escano dal viewport o vengano tagliate.
+- Pagina servizi: i titoli dei singoli servizi ora possono andare a capo su mobile/tablet, evitando che `Officina per scooter` e `Ricambi e accessori` escano dal viewport.
+- ZoomParallax: il percorso zoom resta attivo anche su mobile/tablet, con sezione piu corta sui viewport compatti; il fallback statico viene usato solo con `prefers-reduced-motion`, cosi l'effetto non sparisce senza motivo.
+- Contatti e CTA: orari in griglia responsiva per evitare righe compresse su telefoni stretti; le CTA principali della chiusura showcase diventano full-width su mobile e tornano a larghezza contenuto da `sm`.
+- Stabilita: corretto il narrowing TypeScript del form contatti per mantenere `lint` e `build` puliti.
+- Verifica: `C:\Program Files\nodejs\npm.cmd run lint` e `C:\Program Files\nodejs\npm.cmd run build` completati senza errori.
+
 ## Dati Business Confermati
 
 - Nome: Grossi Moto di Angelo Grossi.
@@ -352,6 +380,13 @@ Implementata.
 - Nota sede: showroom/ufficio in spostamento accanto all'officina. Non inventare nuovo indirizzo.
 
 ## Regole Operative
+
+## Aggiornamento Contatti, Privacy E SEO 2026-07-30
+
+- Il modulo `/contatti` usa `src/components/contact/ContactForm.tsx`, invia via `fetch` a `https://formspree.io/f/grossimoto`, include email obbligatoria, `_subject`, honeypot `_gotcha`, validazione nativa/accessibile, stati live e mantiene i dati in caso di errore.
+- Aggiunte le route `/privacy` e `/cookie-policy`; la privacy contiene TODO espliciti per base giuridica, conservazione, destinatari e ruolo legale definitivo di Formspree.
+- `SiteFooter` è condiviso su Home, `/scooters`, `/servizi`, `/contatti` e include contatti, Maps, navigazione, Privacy e Cookie Policy.
+- Aggiunti skip link, `main#main-content`, `robots.ts`, `sitemap.ts`, `icon.svg` e metadata configurabile tramite `NEXT_PUBLIC_SITE_URL`; senza variabile non vengono emessi URL assoluti falsi.
 
 - Usare `C:\Program Files\nodejs\npm.cmd`; `pnpm` non e disponibile e `npm.ps1` e bloccato.
 - MCP 21st.dev Magic configurato nella config utente Codex: `C:\Users\empi0\.codex\config.toml`, server `magic`, comando `C:\Program Files\nodejs\npx.cmd -y @21st-dev/magic@latest`, chiave solo in `env.API_KEY` e non documentata nel repo.
@@ -373,8 +408,29 @@ Implementata.
 - A fine lavoro aggiornare sempre la documentazione quando sono cambiate implementazioni, pattern, decisioni operative o comportamenti rilevanti. `PROJECT_MEMORY.md` va tenuto allineato allo stato reale; `AGENTS.md` e `docs/LOCAL_RUNBOOK.md` vanno aggiornati quando cambiano regole o procedure.
 - Il controllo visuale tramite browser, screenshot, Chrome headless o Browser in-app va fatto solo se richiesto esplicitamente dall'utente. In assenza di richiesta esplicita, limitarsi a lint/build, verifiche HTTP o controlli tecnici concordati.
 
+## Audit Responsive E Browser 2026-09-10
+
+- Corretto l'overflow min-content delle route mobile causato dal grid wrapper di `PageTransitionProvider`: il provider e la pagina animata ora usano `min-w-0`, con `w-full` sul layer di pagina. `body.scrollWidth` coincide con la viewport utile sulle route verificate.
+- L'hero `/servizi` usa un wrapper `relative` corretto per l'immagine `next/image` con `fill`; il titolo hero usa una scala realmente mobile-first e non supera il bordo a 320px.
+- Le immagini catalogo sopra la piega ora possono essere marcate `priority` per il primo modello visibile, evitando il warning LCP di Next.js.
+- Il deep link `/scooters?focus=<id>` apre la scheda corretta e porta subito la card espansa in viewport con scroll `auto`, senza animazione lunga su distanze estese.
+- QA production completato su `/`, `/scooters`, `/servizi`, `/contatti` e `/scooters?focus=agility-s-125` a 320, 360, 375, 390, 414, 768, 820, 1024 landscape e 1440px: 45/45 combinazioni senza overflow o immagini rotte.
+- Verificati su browser: apertura/chiusura card, filtri con rail interno, deep link, form contatti a 320px, scroll rapido avanti/indietro, footer raggiungibile e console pulita.
+- `C:\Program Files\nodejs\npm.cmd run lint` e `C:\Program Files\nodejs\npm.cmd run build` completati senza errori.
+
 ## Skill/Agenti Utili
 
 - Design/build: `impeccable`, `design-taste-frontend`, `next-best-practices`.
 - Motion: `design-motion-principles`; `gsap-react` e `gsap-scrolltrigger` solo se servono davvero.
 - Verifica: `web-quality-audit`, Browser in-app, `reviewer`, `performance-engineer`, `accessibility-tester`.
+
+## Esperienza App Mobile E Tablet 2026-09-10
+
+- Applicata la skill Apple Design per rendere i viewport compatti piu diretti e tattili: navigazione persistente, target touch da almeno 48px, safe-area iOS, feedback active e meno chrome duplicata.
+- Aggiunto `src/components/layout/MobileAppNav.tsx`: tab bar inferiore Home, Gamma, Servizi e Contatti, attiva sotto `lg`, con stato `aria-current`, icone Lucide e barra leggibile su fondi chiari e scuri.
+- Il layout globale riserva spazio alla tab bar e usa `scroll-padding-bottom` per evitare che ancore e contenuti focalizzati finiscano sotto la barra; la top navigation mobile resta limitata a brand e azione primaria.
+- La Gamma ora usa statistiche compatte a tre colonne su mobile, filtro a rail orizzontale sticky e card con densita ridotta e feedback touch; il layout desktop resta invariato da `lg`.
+- La hero Servizi usa scroll naturale su mobile/tablet fino a 1023px, senza pinning GSAP da desktop; le CTA restano sopra la tab bar con padding safe-area.
+- Le card flottanti della Home sono state riposizionate sopra la tab bar sui viewport compatti e il link mappa resta una affordance desktop per non sovrapporsi al chrome mobile.
+- QA browser in-app: `/`, `/scooters`, `/servizi`, `/contatti` a 320, 390, 768 e 820px; 16/16 senza overflow orizzontale. Verificato anche il passaggio touch Home -> Gamma e target da 48px.
+- Sessione browser pulita sulla Home senza warning/errori console; `C:\Program Files\nodejs\npm.cmd run lint` e `C:\Program Files\nodejs\npm.cmd run build` completati senza errori.

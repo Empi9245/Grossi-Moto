@@ -15,10 +15,10 @@ export function Navbar() {
   const shouldReduceMotion = useReducedMotion();
 
   return (
-    <nav className="relative z-20 flex w-full items-center justify-between px-4 py-4 sm:px-6 sm:py-5 lg:px-8 lg:py-6 xl:px-10 xl:py-7">
+    <nav className="relative z-20 flex w-full flex-wrap items-center justify-between gap-x-4 gap-y-3 px-4 py-4 sm:px-6 sm:py-5 lg:flex-nowrap lg:px-8 lg:py-6 xl:px-10 xl:py-7">
       <motion.a
         href="/"
-        aria-label="Grossimoto homepage"
+        aria-label="Grossimoto, pagina iniziale"
         {...revealMotion(shouldReduceMotion, {
           duration: 0.48,
           scale: 0.99,
@@ -30,7 +30,7 @@ export function Navbar() {
           Grossimoto
         </span>
         <span className="text-[0.62rem] font-medium uppercase tracking-[0.18em] text-[oklch(82%_0.016_78)] sm:text-[0.68rem]">
-          KYMCO Roma
+          Scooter a Roma
         </span>
       </motion.a>
 
@@ -63,7 +63,7 @@ export function Navbar() {
           y: 8,
         })}
         {...subtleHover(shouldReduceMotion)}
-        className="font-ui inline-flex items-center gap-2 rounded-full bg-[oklch(92%_0.014_78)] px-3.5 py-2.5 text-sm font-medium text-[oklch(17%_0.012_40)] shadow-[0_14px_38px_rgba(20,14,11,0.2)] transition-opacity duration-200 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(84%_0.04_72)] focus-visible:ring-offset-4 focus-visible:ring-offset-[oklch(14%_0.012_40)] sm:px-4"
+        className="font-ui order-2 inline-flex shrink-0 items-center gap-2 rounded-full bg-[oklch(92%_0.014_78)] px-3.5 py-2.5 text-sm font-medium text-[oklch(17%_0.012_40)] shadow-[0_14px_38px_rgba(20,14,11,0.2)] transition-opacity duration-200 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(84%_0.04_72)] focus-visible:ring-offset-4 focus-visible:ring-offset-[oklch(14%_0.012_40)] sm:px-4 lg:order-none"
       >
         <Phone aria-hidden="true" className="h-4 w-4 lg:hidden" strokeWidth={1.8} />
         <span className="hidden sm:inline">Chiama ora</span>

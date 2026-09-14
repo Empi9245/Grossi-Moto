@@ -174,7 +174,7 @@ export function CatalogGrid({
     <div
       id="catalog-list"
       aria-label="Modelli in gamma"
-      className="grid grid-cols-1 content-start items-start gap-4 [grid-auto-flow:row] [grid-auto-rows:minmax(19.5rem,auto)] md:grid-cols-2 lg:grid-cols-12"
+      className="grid grid-cols-1 content-start items-start gap-4 [grid-auto-flow:row] md:grid-cols-2 md:[grid-auto-rows:minmax(19.5rem,auto)] lg:grid-cols-12"
     >
       {orderedScooters.map((scooter) => (
         <CatalogProductCard
@@ -184,6 +184,7 @@ export function CatalogGrid({
           isExpanded={expandedId === scooter.id}
           transitionImageId={transitionImageId}
           cardToneAssignment={cardToneAssignments[scooter.id]}
+          isPriority={scooter.id === orderedScooters[0]?.id}
           layoutDependency={layoutDependency}
           onExpandScooter={onExpandScooter}
           onCollapseScooter={onCollapseScooter}
@@ -211,11 +212,11 @@ export function CatalogGrid({
           className="rounded-[1.35rem] bg-[oklch(94%_0.01_78/0.58)] p-6 text-[oklch(28%_0.014_56/0.68)] shadow-[inset_0_0_0_1px_oklch(18%_0.014_56/0.08)] md:col-span-2 lg:col-span-12"
         >
           <p className="font-ui text-[0.7rem] font-bold uppercase tracking-[0.14em]">
-            Gamma filtrata
+            Nessun modello in questo filtro
           </p>
           <p className="mt-3 max-w-[28rem] text-sm leading-6">
-            Nessun modello visibile per questo filtro. Torna su Tutti per
-            confrontare la gamma completa.
+            Nessun modello disponibile per questo filtro. Seleziona Tutti per
+            vedere la gamma completa.
           </p>
         </motion.div>
       ) : null}

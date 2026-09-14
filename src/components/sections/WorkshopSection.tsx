@@ -6,7 +6,7 @@ const workshopItems = [
   "Diagnosi",
   "Controlli prima della consegna",
   "Montaggio accessori",
-  "Assistenza scooter KYMCO",
+  "Assistenza scooter",
 ];
 
 export function WorkshopSection() {

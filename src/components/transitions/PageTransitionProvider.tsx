@@ -119,7 +119,7 @@ export function PageTransitionProvider({ children }: { children: ReactNode }) {
   return (
     <PageTransitionContext.Provider value={contextValue}>
       <LayoutGroup id="grossimoto-page-transition">
-        <div className="grid min-h-[100dvh]">
+        <div className="grid min-h-[100dvh] min-w-0">
           <AnimatePresence mode="sync" initial={false}>
             <motion.div
               key={pathname}
@@ -132,7 +132,7 @@ export function PageTransitionProvider({ children }: { children: ReactNode }) {
                     ? 0.01
                     : showroomMorphCleanupDelayMs / 1000,
               }}
-              className="col-start-1 row-start-1 min-h-[100dvh]"
+              className="col-start-1 row-start-1 min-h-[100dvh] min-w-0 w-full"
             >
               {children}
             </motion.div>

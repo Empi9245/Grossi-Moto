@@ -10,11 +10,13 @@ import {
 
 import { ServicesHero } from "@/components/ui/services-hero";
 import { StickyScrollShowcase } from "@/components/sections/StickyScrollShowcase";
+import { SiteFooter } from "@/components/layout/SiteFooter";
 
 export const metadata: Metadata = {
-  title: "Servizi | Grossimoto KYMCO e VOGE Roma",
+  title: "Assistenza e servizi per scooter",
   description:
-    "Servizi ufficiali KYMCO e VOGE a Roma: tagliandi, officina specializzata, ricambi originali, finanziamenti, permute e consulenza. Grossi Moto in Via Festo Porzio.",
+    "Assistenza scooter a Roma: tagliandi, officina, ricambi, accessori, finanziamenti, permute e consulenza da Grossi Moto.",
+  alternates: { canonical: "/servizi" },
 };
 
 const processSteps = [
@@ -28,13 +30,13 @@ const processSteps = [
     step: "02",
     title: "Diagnosi",
     description:
-      "Analisi del veicolo con strumentazione dedicata KYMCO e VOGE per identificare ogni necessità.",
+      "Controllo del veicolo e individuazione delle necessità prima di definire il lavoro.",
   },
   {
     step: "03",
     title: "Intervento",
     description:
-      "Manutenzione, riparazione o montaggio accessori con ricambi originali e garanzia sul lavoro.",
+      "Manutenzione, riparazione o montaggio accessori con materiali adatti al modello e lavorazioni concordate.",
   },
   {
     step: "04",
@@ -46,7 +48,7 @@ const processSteps = [
 
 export default function ServiziPage() {
   return (
-    <main className="min-h-screen bg-[#111111]">
+    <main id="main-content" className="min-h-screen bg-[#111111]">
       {/* ── Nav back ──────────────────────────────────────────── */}
       <div className="fixed left-0 top-0 z-50 w-full px-5 py-4 sm:px-7 md:px-10 lg:px-14 xl:px-20">
         <Link
@@ -58,7 +60,7 @@ export default function ServiziPage() {
             className="h-3.5 w-3.5"
             strokeWidth={2}
           />
-          Home
+          Torna alla home
         </Link>
       </div>
 
@@ -71,8 +73,8 @@ export default function ServiziPage() {
       {/* ── Showroom Image Break ──────────────────────────────── */}
       <section className="relative h-[50svh] min-h-[320px] overflow-hidden sm:h-[60svh]">
         <Image
-          src="/kymco-all/sections/xciting-vs-400-dsc8274-scaled-dsc8274-scaled.jpg"
-          alt="KYMCO Xciting VS 400 dettaglio laterale in studio"
+          src="/grossimoto/servizi-hero/agility-s-125-showroom.jpg"
+          alt="Scooter Agility S 125 in contesto urbano, servizi Grossimoto"
           fill
           sizes="100vw"
           className="object-cover"
@@ -128,7 +130,7 @@ export default function ServiziPage() {
               strokeWidth={1.4}
             />
             <h2 className="font-display mt-6 text-[clamp(2.4rem,6vw,5rem)] font-bold leading-[0.9] tracking-tight">
-              Prenota il tuo
+              Prenota un
               <br />
               intervento.
             </h2>
@@ -154,7 +156,7 @@ export default function ServiziPage() {
               href="/contatti"
               className="font-ui inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#F7F4EF]/8 px-7 py-3 text-sm font-bold uppercase tracking-[0.08em] text-[#F7F4EF] shadow-[inset_0_0_0_1px_rgba(247,244,239,0.16)] transition-[background,transform] duration-200 hover:bg-[#F7F4EF]/14 active:translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F7F4EF]/60 focus-visible:ring-offset-4 focus-visible:ring-offset-[oklch(14%_0.014_42)]"
             >
-              Contattaci
+              Parla con Grossi Moto
               <ArrowUpRight
                 aria-hidden="true"
                 className="h-4 w-4"
@@ -166,13 +168,7 @@ export default function ServiziPage() {
       </section>
 
       {/* ── Footer line ───────────────────────────────────────── */}
-      <div className="bg-[oklch(14%_0.014_42)] px-5 pb-8 sm:px-7 md:px-10 lg:px-14 xl:px-20">
-        <div className="mx-auto max-w-[80rem] border-t border-[#F7F4EF]/8 pt-6">
-          <p className="font-ui text-xs font-bold uppercase tracking-[0.14em] text-[#F7F4EF]/30">
-            Grossimoto / Servizi KYMCO e VOGE Roma
-          </p>
-        </div>
-      </div>
+      <SiteFooter />
     </main>
   );
 }

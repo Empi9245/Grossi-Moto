@@ -16,7 +16,7 @@ export function CatalogNavbar() {
     <header className="border-b border-[oklch(18%_0.014_56/0.1)]">
       <nav
         aria-label="Navigazione catalogo Grossimoto"
-        className="grid min-h-[4.8rem] grid-cols-[1fr_auto] items-center gap-3 px-4 py-3 text-[oklch(18%_0.014_56)] sm:px-6 lg:grid-cols-[1fr_auto_1fr] lg:px-7"
+        className="flex min-h-[4.8rem] flex-wrap items-center justify-between gap-3 px-4 py-3 text-[oklch(18%_0.014_56)] sm:px-6 lg:grid lg:grid-cols-[1fr_auto_1fr] lg:px-7"
       >
         <Link
           href="/"
@@ -27,7 +27,7 @@ export function CatalogNavbar() {
             Grossimoto
           </span>
           <span className="mt-1 text-[0.62rem] font-bold uppercase tracking-[0.17em] text-[oklch(30%_0.014_56/0.62)]">
-            KYMCO Roma
+            Scooter a Roma
           </span>
         </Link>
 
@@ -53,7 +53,7 @@ export function CatalogNavbar() {
           )}
         </div>
 
-        <div className="flex shrink-0 items-center justify-end gap-2">
+        <div className="order-2 flex shrink-0 items-center justify-end gap-2 lg:order-none">
           <a
             href="tel:+393289185029"
             className="font-ui inline-flex min-h-11 items-center gap-2 rounded-full bg-[oklch(16%_0.014_48)] px-3.5 py-2 text-[0.72rem] font-bold uppercase tracking-[0.1em] text-[oklch(94%_0.01_78)] shadow-[0_12px_30px_oklch(18%_0.014_56/0.18)] outline-none transition-[background,transform] duration-200 hover:bg-[oklch(22%_0.016_50)] active:translate-y-px focus-visible:ring-2 focus-visible:ring-[oklch(38%_0.08_28)] focus-visible:ring-offset-4 focus-visible:ring-offset-[oklch(94%_0.01_78)] sm:px-4"

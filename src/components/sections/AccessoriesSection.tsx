@@ -18,26 +18,26 @@ type AccessoryBlock = {
 const accessoryBlocks: AccessoryBlock[] = [
   {
     title: "Protezione personale",
-    copy: "Scelta guidata per accessori da usare ogni giorno, con taglie e compatibilita da verificare in sede.",
+    copy: "Scelta guidata per accessori da usare ogni giorno, con taglie e compatibilità da verificare in sede.",
     items: ["Caschi", "Guanti e abbigliamento tecnico"],
     icon: ShieldCheck,
   },
   {
     title: "Comfort urbano",
-    copy: "Soluzioni pratiche per rendere lo scooter piu adatto a lavoro, commissioni e tragitti lunghi.",
+    copy: "Soluzioni pratiche per rendere lo scooter più adatto a lavoro, commissioni e tragitti lunghi.",
     items: ["Bauletti", "Parabrezza"],
     icon: PackageCheck,
   },
   {
     title: "Sicurezza e sosta",
-    copy: "Dispositivi e montaggi pensati per lasciare lo scooter con piu tranquillita nei quartieri di Roma.",
-    items: ["Antifurti", "Accessori KYMCO e compatibili"],
+    copy: "Dispositivi e montaggi pensati per lasciare lo scooter con più tranquillità nei quartieri di Roma.",
+    items: ["Antifurti", "Accessori scooter e compatibili"],
     icon: Wrench,
   },
   {
     title: "Uso quotidiano",
     copy: "Dettagli piccoli, ma decisivi quando lo scooter diventa il mezzo principale della giornata.",
-    items: ["Supporti smartphone", "Accessori KYMCO e compatibili"],
+    items: ["Supporti smartphone", "Accessori scooter e compatibili"],
     icon: Smartphone,
   },
 ];
@@ -59,20 +59,20 @@ export function AccessoriesSection() {
               Accessori
             </p>
             <h2 className="font-display mt-5 max-w-[13ch] text-[clamp(3.8rem,10vw,9.5rem)] font-[900] uppercase leading-[0.82]">
-              Scelti sul mezzo, non a catalogo.
+              Scelti sul mezzo, non solo a catalogo.
             </h2>
           </div>
           <div className="lg:pt-[18svh]">
             <p className="max-w-[34rem] text-[clamp(1.45rem,2.2vw,2.55rem)] font-semibold leading-[1] text-[oklch(24%_0.018_50)]">
-              Non un e-commerce generico: accessori disponibili o ordinabili
-              con verifica diretta di compatibilita, montaggio e uso reale.
+              Valutiamo disponibilità, compatibilità e montaggio in base al tuo
+              scooter e all’uso che ne fai ogni giorno.
             </p>
             <div className="mt-9 flex flex-col gap-3 sm:flex-row lg:flex-col xl:flex-row">
               <a
                 href="tel:+393289185029"
                 className="font-ui inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[oklch(16%_0.014_48)] px-6 py-3 text-sm font-bold uppercase tracking-[0.08em] text-[oklch(94%_0.01_78)] transition-[background,transform] duration-200 hover:bg-[oklch(22%_0.016_50)] active:translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(38%_0.08_28)] focus-visible:ring-offset-4 focus-visible:ring-offset-[oklch(91%_0.014_78)]"
               >
-                Chiedi disponibilit&agrave;
+                Chiedi compatibilità e disponibilità
                 <ArrowUpRight aria-hidden="true" className="h-4 w-4" strokeWidth={1.8} />
               </a>
               <Link

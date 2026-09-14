@@ -5,6 +5,8 @@ const footerLinks = [
   { label: "Gamma", href: "/scooters" },
   { label: "Servizi", href: "/servizi" },
   { label: "Contatti", href: "/contatti" },
+  { label: "Privacy", href: "/privacy" },
+  { label: "Cookie Policy", href: "/cookie-policy" },
 ];
 
 export function SiteFooter() {
@@ -17,7 +19,7 @@ export function SiteFooter() {
             Grossi Moto di Angelo Grossi
           </p>
           <p className="mt-4 text-sm font-medium text-[oklch(86%_0.01_78)]">
-            KYMCO Roma
+            Scooter e assistenza a Roma
           </p>
           <p className="mt-2 max-w-[28rem] text-sm leading-6 text-[oklch(76%_0.012_74)]">
             Via Festo Porzio, 22, 00174 Roma RM
@@ -25,6 +27,10 @@ export function SiteFooter() {
             <a href="tel:+393289185029" className="hover:text-[oklch(96%_0.008_80)]">
               +39 328 918 5029
             </a>
+            <br />
+            <a href="mailto:info@grossimoto.it" className="hover:text-[oklch(96%_0.008_80)]">info@grossimoto.it</a>
+            <br />
+            <a href="https://share.google/ppfR023TdQcVrYya3" target="_blank" rel="noopener noreferrer" className="hover:text-[oklch(96%_0.008_80)]">Google Maps</a>
           </p>
         </div>
 

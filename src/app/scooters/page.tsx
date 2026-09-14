@@ -3,9 +3,10 @@ import type { Metadata } from "next";
 import { CatalogPage } from "@/components/catalog/CatalogPage";
 
 export const metadata: Metadata = {
-  title: "Gamma KYMCO e Voge | Grossimoto Roma",
+  title: "Gamma scooter KYMCO e Voge",
   description:
-    "Catalogo Grossimoto a Roma con scooter KYMCO, modelli KYMCO Sport e gamma Voge, filtrabili per cilindrata e distinti per brand.",
+    "Confronta la gamma Grossimoto: scooter KYMCO e Voge da 50cc a 900cc, con schede per cilindrata, categoria e uso.",
+  alternates: { canonical: "/scooters" },
 };
 
 type ScootersPageProps = {

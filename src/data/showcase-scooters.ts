@@ -82,7 +82,7 @@ export const showcaseScooters: ShowcaseScooter[] = [
     specs: [
       { label: "Cilindrata", value: "125", unit: "CC" },
       { label: "Categoria", value: "Alte", unit: "Ruote" },
-      { label: "Uso", value: "Centro", unit: "Roma" },
+      { label: "Uso", value: "Città", unit: "Roma" },
     ],
     statement: peopleS.positioning,
     watermark: "125",
@@ -104,8 +104,8 @@ export const showcaseScooters: ShowcaseScooter[] = [
     sourceAsset: publicSourceAsset(showroomImages.agilityS),
     specs: [
       { label: "Cilindrata", value: "125", unit: "CC" },
-      { label: "Categoria", value: "Urban", unit: "" },
-      { label: "Uso", value: "Daily", unit: "Roma" },
+      { label: "Categoria", value: "Urbano", unit: "" },
+      { label: "Uso", value: "Quotidiano", unit: "Roma" },
     ],
     statement: agilityS.positioning,
     watermark: "S125",
@@ -128,7 +128,7 @@ export const showcaseScooters: ShowcaseScooter[] = [
     specs: [
       { label: "Cilindrata", value: "350", unit: "CC" },
       { label: "Categoria", value: "GT", unit: "" },
-      { label: "Uso", value: "Lungo", unit: "Roma" },
+      { label: "Uso", value: "Lungo raggio", unit: "" },
     ],
     statement: downtown.positioning,
     watermark: "GT",
@@ -151,7 +151,7 @@ export const showcaseScooters: ShowcaseScooter[] = [
     specs: [
       { label: "Cilindrata", value: "350", unit: "CC" },
       { label: "Categoria", value: "Alte", unit: "Ruote" },
-      { label: "Uso", value: "Daily", unit: "Roma" },
+      { label: "Uso", value: "Quotidiano", unit: "Roma" },
     ],
     statement: agility.positioning,
     watermark: "350",
@@ -197,7 +197,7 @@ export const showcaseScooters: ShowcaseScooter[] = [
     specs: [
       { label: "Cilindrata", value: "575", unit: "CC" },
       { label: "Categoria", value: "Sport", unit: "" },
-      { label: "Uso", value: "Touring", unit: "" },
+      { label: "Uso", value: "Lungo raggio", unit: "" },
     ],
     statement: ak575.positioning,
     watermark: "AK",

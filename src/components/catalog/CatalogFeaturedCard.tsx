@@ -133,11 +133,11 @@ export function CatalogFeaturedCard({
 
         <a
           href="tel:+393289185029"
-          aria-label={`Scopri ${scooter.name} chiamando Grossimoto`}
+          aria-label={`Richiedi consulenza per ${scooter.name}`}
           className="font-ui inline-flex min-h-11 w-fit items-center gap-3 rounded-full text-[0.74rem] font-bold uppercase tracking-[0.12em] text-current outline-none transition-[color,transform] duration-200 hover:text-[var(--catalog-accent)] active:translate-y-px focus-visible:ring-2 focus-visible:ring-[var(--catalog-accent)] focus-visible:ring-offset-4 focus-visible:ring-offset-[oklch(88%_0.015_78)] lg:col-start-1"
         >
           <span className="border-b border-[oklch(18%_0.014_56/0.22)] pb-1">
-            Scopri di piu
+            Vedi dettagli
           </span>
           <ArrowRight aria-hidden="true" className="h-4 w-4" strokeWidth={1.8} />
         </a>

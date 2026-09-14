@@ -9,9 +9,10 @@ import { ShowcaseCoverCta } from "@/components/sections/ShowcaseCoverCta";
 import { WorkshopSection } from "@/components/sections/WorkshopSection";
 
 export const metadata: Metadata = {
-  title: "Grossimoto KYMCO Roma | Scooter, accessori e officina",
+  title: "Scooter, accessori e officina a Roma",
   description:
-    "Grossi Moto di Angelo Grossi a Roma: dealer KYMCO, scelta scooter, accessori dedicati e officina in Via Festo Porzio 22.",
+    "Scooter KYMCO e Voge a Roma, consulenza in showroom, accessori e assistenza in officina. Grossi Moto, Via Festo Porzio 22.",
+  alternates: { canonical: "/" },
 };
 
 const localBusinessJsonLd = {
@@ -20,7 +21,7 @@ const localBusinessJsonLd = {
   name: "Grossi Moto di Angelo Grossi",
   alternateName: "Grossimoto",
   description:
-    "Rivenditore e officina KYMCO a Roma con consulenza scooter, accessori e assistenza.",
+    "Punto vendita e officina scooter a Roma con gamma KYMCO e Voge, consulenza, accessori e assistenza.",
   telephone: "+393289185029",
   address: {
     "@type": "PostalAddress",
@@ -61,7 +62,7 @@ const localBusinessJsonLd = {
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-[var(--page-background)]">
+    <main id="main-content" className="min-h-screen bg-[var(--page-background)]">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

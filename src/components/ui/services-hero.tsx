@@ -21,7 +21,7 @@ gsap.registerPlugin(ScrollTrigger, useGSAP);
 const SERVICE_ITEMS = [
   {
     code: "01",
-    title: "Officina autorizzata",
+    title: "Officina per scooter",
     shortTitle: "Officina",
     description: "Diagnosi e interventi senza improvvisazioni.",
     href: "#service-01",
@@ -31,15 +31,15 @@ const SERVICE_ITEMS = [
     code: "02",
     title: "Tagliandi",
     shortTitle: "Tagliandi",
-    description: "Manutenzione ufficiale, tempi chiari.",
+    description: "Manutenzione programmata, tempi chiari.",
     href: "#service-02",
     icon: Tag,
   },
   {
     code: "03",
-    title: "Ricambi originali",
+    title: "Ricambi e accessori",
     shortTitle: "Ricambi",
-    description: "Componenti corretti, tracciati in sede.",
+    description: "Componenti adatti al modello, verificati in sede.",
     href: "#service-03",
     icon: Box,
   },
@@ -70,8 +70,8 @@ const SERVICE_ITEMS = [
 ] as const;
 
 const HERO_IMAGE = {
-  src: "/kymco-all/sections/ak575-premium-dsc3316-b-scaled-dsc3316-b-scaled.jpg",
-  alt: "Dettaglio faro anteriore KYMCO AK575 Premium in studio, servizi Grossimoto",
+  src: "/grossimoto/servizi-hero/agility-s-125-consulenza.jpg",
+  alt: "Consulenza scooter Grossimoto con Agility S 125 in contesto urbano",
 };
 
 export function ServicesHero() {
@@ -82,6 +82,7 @@ export function ServicesHero() {
       const reducedMotion = window.matchMedia(
         "(prefers-reduced-motion: reduce)",
       ).matches;
+      const compactViewport = window.matchMedia("(max-width: 1023px)").matches;
 
       const container = containerRef.current;
       if (!container) return;
@@ -130,7 +131,7 @@ export function ServicesHero() {
 
       const cleanups: Array<() => void> = [];
 
-      if (reducedMotion) {
+      if (reducedMotion || compactViewport) {
         return;
       }
 
@@ -347,7 +348,7 @@ export function ServicesHero() {
       className="relative min-h-[100svh] w-full overflow-hidden bg-[#050504] text-[#F4F0E8]"
     >
       <div data-hero-img-wrapper className="absolute inset-0 z-0">
-        <div data-hero-img className="h-full w-full origin-center">
+        <div data-hero-img className="relative h-full w-full origin-center">
           <Image
             src={HERO_IMAGE.src}
             alt={HERO_IMAGE.alt}
@@ -377,23 +378,23 @@ export function ServicesHero() {
 
       <div
         data-hero-intro
-        className="relative z-10 flex min-h-[100svh] w-full flex-col justify-between px-5 pb-[clamp(1.5rem,4svh,3rem)] pt-24 [will-change:transform,opacity,filter] sm:px-7 md:px-10 lg:px-14 lg:pt-28 xl:px-20"
+        className="relative z-10 flex min-h-[100svh] w-full flex-col justify-between px-5 pb-[calc(6.4rem+env(safe-area-inset-bottom))] pt-24 [will-change:transform,opacity,filter] sm:px-7 sm:pb-[calc(7rem+env(safe-area-inset-bottom))] md:px-10 lg:px-14 lg:pb-[clamp(1.5rem,4svh,3rem)] lg:pt-28 xl:px-20"
       >
         <div data-hero-label>
           <p className="font-tech text-[0.64rem] font-semibold uppercase tracking-[0.18em] text-[#F4F0E8]/72 sm:text-xs">
-            Servizi KYMCO
+            Assistenza scooter
           </p>
         </div>
 
         <div className="flex flex-1 flex-col items-start justify-center">
-          <h1 className="font-display max-w-[12ch] text-[clamp(4.1rem,16vw,8.5rem)] font-bold uppercase leading-[0.82] tracking-[-0.05em] text-[#F4F0E8] sm:text-[clamp(5.2rem,12vw,10rem)] lg:text-[clamp(6rem,9vw,12rem)]">
-            <span data-hero-line-wrapper className="block overflow-hidden pb-[0.03em]">
+          <h1 className="font-display max-w-[12ch] text-[clamp(2.8rem,13vw,5rem)] font-bold uppercase leading-[0.82] tracking-[-0.05em] text-[#F4F0E8] sm:text-[clamp(4rem,10vw,7rem)] lg:text-[clamp(6rem,9vw,12rem)]">
+            <span data-hero-line-wrapper className="-my-[0.08em] block overflow-hidden py-[0.08em]">
               <span className="block">Assistenza.</span>
             </span>
-            <span data-hero-line-wrapper className="block overflow-hidden pb-[0.03em]">
+            <span data-hero-line-wrapper className="-my-[0.08em] block overflow-hidden py-[0.08em]">
               <span className="block">Officina.</span>
             </span>
-            <span data-hero-line-wrapper className="block overflow-hidden pb-[0.03em]">
+            <span data-hero-line-wrapper className="-my-[0.08em] block overflow-hidden py-[0.08em]">
               <span className="block">Esperienza.</span>
             </span>
           </h1>
@@ -402,8 +403,8 @@ export function ServicesHero() {
         <div className="flex flex-col gap-8 pb-2 sm:pb-4 lg:flex-row lg:items-end lg:justify-between lg:gap-12">
           <div data-hero-desc className="max-w-[600px]">
             <p className="max-w-[30rem] text-base font-medium leading-7 text-[#F4F0E8]/78 sm:text-lg sm:leading-8">
-              Servizi ufficiali KYMCO e VOGE. Tagliandi, officina
-              specializzata, ricambi originali e consulenza.
+              Assistenza per scooter KYMCO e Voge: tagliandi, diagnosi,
+              montaggio accessori e consulenza.
             </p>
           </div>
 
@@ -415,7 +416,7 @@ export function ServicesHero() {
               href="tel:+393289185029"
               className="font-tech group inline-flex min-h-12 items-center justify-center gap-3 rounded-full bg-[#F4F0E8] px-7 py-3 text-[0.72rem] font-bold uppercase tracking-[0.12em] text-[#1B0E0D] shadow-[0_20px_58px_rgba(0,0,0,0.28)] transition-[background,color,box-shadow,transform] duration-[320ms] ease-[cubic-bezier(0.165,0.84,0.44,1)] hover:bg-[#E7E3DC] hover:shadow-[0_24px_70px_rgba(0,0,0,0.34)] active:translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F4F0E8]/70 focus-visible:ring-offset-4 focus-visible:ring-offset-[#050504]"
             >
-              Prenota intervento
+              Prenota un intervento
               <ArrowUpRight
                 aria-hidden="true"
                 className="h-4 w-4 transition-transform duration-[320ms] ease-[cubic-bezier(0.165,0.84,0.44,1)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
@@ -426,7 +427,7 @@ export function ServicesHero() {
               href="/contatti"
               className="font-tech group inline-flex min-h-12 items-center justify-center gap-3 rounded-full bg-[#F4F0E8]/7 px-7 py-3 text-[0.72rem] font-bold uppercase tracking-[0.12em] text-[#F4F0E8] shadow-[inset_0_0_0_1px_rgba(244,240,232,0.22)] backdrop-blur-md transition-[background,color,box-shadow,transform] duration-[320ms] ease-[cubic-bezier(0.165,0.84,0.44,1)] hover:bg-[#F4F0E8]/14 active:translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F4F0E8]/70 focus-visible:ring-offset-4 focus-visible:ring-offset-[#050504]"
             >
-              Contattaci
+              Parla con Grossi Moto
               <PhoneCall
                 aria-hidden="true"
                 className="h-4 w-4"
@@ -451,17 +452,17 @@ export function ServicesHero() {
               Assistenza completa
             </p>
             <p className="font-display text-[clamp(5.8rem,10.8vw,13rem)] font-bold uppercase leading-[0.78] tracking-[-0.05em] text-[#F4F0E8]">
-              <span className="block overflow-hidden pb-[0.04em]">
+              <span className="-my-[0.08em] block overflow-hidden py-[0.08em]">
                 <span data-service-statement-line className="block">
                   Tutto
                 </span>
               </span>
-              <span className="block overflow-hidden pb-[0.04em]">
+              <span className="-my-[0.08em] block overflow-hidden py-[0.08em]">
                 <span data-service-statement-line className="block">
                   in
                 </span>
               </span>
-              <span className="block overflow-hidden pb-[0.04em]">
+              <span className="-my-[0.08em] block overflow-hidden py-[0.08em]">
                 <span
                   data-service-statement-line
                   className="block text-[#C72A09]"
@@ -471,7 +472,7 @@ export function ServicesHero() {
               </span>
             </p>
             <p className="mt-7 max-w-[28rem] text-lg font-medium leading-8 text-[#F4F0E8]/64">
-              Officina, vendita, ricambi e consulenza entrano nello stesso
+              Vendita, officina, ricambi e consulenza entrano nello stesso
               percorso, senza passaggi dispersi.
             </p>
           </div>

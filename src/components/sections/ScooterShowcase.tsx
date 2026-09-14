@@ -307,7 +307,7 @@ export function ScooterShowcase({
   return (
     <section
       ref={containerRef}
-      aria-label="Showcase scooter KYMCO Grossimoto"
+      aria-label="Showcase scooter Grossimoto"
       className="relative z-10 bg-[var(--page-background)]"
       data-showcase-mode="pinned"
       style={{
@@ -413,7 +413,11 @@ function ShowcaseFrame({
               {activeScooter.watermark}
             </span>
 
-            <ol className="relative z-10 space-y-0.5 lg:space-y-1">
+            <p className="font-display relative z-10 block text-[clamp(2.35rem,11vw,4.8rem)] font-bold leading-[0.9] tracking-normal text-[var(--showcase-text)] lg:hidden">
+              {activeScooter.shortName}
+            </p>
+
+            <ol className="relative z-10 hidden space-y-0.5 lg:block lg:space-y-1">
               {showcaseScooters.map((scooter, index) => (
                 <li key={scooter.id}>
                   <span
@@ -521,7 +525,7 @@ function ScooterSlide({
 
   return (
     <motion.div
-      className="relative aspect-[4/3] w-[min(92vw,30rem)] sm:w-[min(76vw,38rem)] lg:w-[min(56vw,52rem)] xl:w-[min(54vw,58rem)]"
+      className="relative aspect-[4/3] w-[min(92vw,30rem)] sm:w-[min(78vw,32rem)] md:w-[min(64vw,31rem)] lg:w-[min(56vw,52rem)] xl:w-[min(54vw,58rem)]"
       animate={{
         opacity: isActive ? 1 : 0.28,
         filter: isActive ? "blur(0px)" : "blur(7px)",
@@ -562,7 +566,7 @@ function ScooterSlide({
           <motion.img
             layoutId={sharedImageLayoutId}
             src={scooter.image}
-            alt={`KYMCO ${scooter.name}`}
+            alt={`Scooter ${scooter.name} in vista laterale`}
             width={500}
             height={375}
             draggable={false}
@@ -573,7 +577,7 @@ function ScooterSlide({
         ) : (
           <Image
             src={scooter.image}
-            alt={`KYMCO ${scooter.name}`}
+            alt={`Scooter ${scooter.name} in vista laterale`}
             width={500}
             height={375}
             priority={slideIndex === 0}
@@ -627,8 +631,8 @@ function ModelRail({ activeIndex }: { activeIndex: number }) {
 function StaticShowcase() {
   return (
     <section
-      aria-label="Scooter KYMCO in evidenza"
-      className="bg-[var(--page-background)] px-4 py-16 text-[oklch(18%_0.014_56)] sm:px-6 lg:px-10 lg:py-24"
+      aria-label="Scooter in evidenza"
+      className="bg-[var(--page-background)] px-4 py-14 text-[oklch(18%_0.014_56)] sm:px-6 sm:py-16 lg:px-10 lg:py-24"
       data-showcase-mode="static"
     >
       <div className="mx-auto max-w-[92rem]">
@@ -637,15 +641,15 @@ function StaticShowcase() {
             Gamma in evidenza
           </p>
           <h2 className="font-display mt-3 max-w-[12ch] text-[clamp(3rem,10vw,6rem)] font-bold leading-[0.92] tracking-normal text-[oklch(18%_0.014_56)]">
-            KYMCO in showroom
+            Scooter in showroom
           </h2>
         </div>
 
-        <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <div className="hide-scrollbar -mx-4 mt-8 flex snap-x snap-proximity gap-4 overflow-x-auto overscroll-x-contain px-4 pb-3 md:mx-0 md:mt-10 md:grid md:grid-cols-2 md:overflow-visible md:px-0 md:pb-0 xl:grid-cols-4">
           {showcaseScooters.map((scooter) => (
             <article
               key={scooter.id}
-              className="relative overflow-hidden rounded-lg p-4 shadow-[0_0_0_1px_oklch(20%_0.014_56/0.08),0_18px_48px_oklch(20%_0.014_56/0.08)]"
+              className="relative w-[min(82vw,20rem)] shrink-0 snap-start overflow-hidden rounded-[1.35rem] p-4 shadow-[0_0_0_1px_oklch(20%_0.014_56/0.08),0_18px_48px_oklch(20%_0.014_56/0.08)] md:w-auto"
               data-source-asset={scooter.sourceAsset}
               style={{
                 background: scooter.backgroundSurface,
@@ -672,7 +676,7 @@ function StaticShowcase() {
                 >
                   <Image
                     src={scooter.image}
-                    alt={`KYMCO ${scooter.name}`}
+                    alt={`Scooter ${scooter.name} in vista laterale`}
                     width={500}
                     height={375}
                     sizes="(max-width: 767px) 92vw, (max-width: 1279px) 45vw, 23vw"
@@ -703,6 +707,18 @@ function StaticShowcase() {
             </article>
           ))}
         </div>
+
+        <p className="font-ui mt-2 text-xs font-semibold text-[oklch(24%_0.014_56/0.56)] md:hidden">
+          Scorri per vedere i modelli in evidenza.
+        </p>
+
+        <a
+          href="/scooters"
+          className="font-ui mt-7 inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[oklch(18%_0.014_56)] px-5 py-3 text-sm font-bold text-[oklch(96%_0.01_78)] transition-colors hover:bg-[oklch(26%_0.014_56)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(38%_0.08_28)] focus-visible:ring-offset-4"
+        >
+          Apri tutta la gamma
+          <ArrowUpRight aria-hidden="true" className="h-4 w-4" strokeWidth={1.8} />
+        </a>
       </div>
     </section>
   );

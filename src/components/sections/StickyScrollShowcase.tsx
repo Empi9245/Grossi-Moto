@@ -5,58 +5,60 @@ import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import { Check, PhoneCall } from "lucide-react";
 
+import { useMediaQuery } from "@/hooks/useMediaQuery";
+
 const services = [
   {
-    title: "Officina autorizzata",
+    title: "Officina per scooter",
     statement: "Diagnosi e interventi senza improvvisazioni.",
     description:
-      "Tecnici dedicati a KYMCO e VOGE, attrezzatura corretta e un controllo chiaro prima di ogni lavoro.",
+      "Controllo del mezzo, attrezzatura adatta e un quadro chiaro prima di ogni lavoro.",
     features: [
       "Diagnosi strumentale",
-      "Tecnici certificati",
+      "Lavoro documentato",
       "Presa in carico chiara",
     ],
-    image: "/kymco-all/sections/ak575-premium-dsc3298-scaled-dsc3298-scaled.jpg",
-    alt: "Officina autorizzata KYMCO e VOGE, Grossi Moto Roma",
+    image: "/grossimoto/servizi/officina-autorizzata.png",
+    alt: "Officina scooter Grossi Moto a Roma",
   },
   {
     title: "Tagliandi",
     statement: "La manutenzione segue il veicolo, non il calendario.",
     description:
-      "Programmiamo controlli, materiali e tempistiche in base a modello, chilometri e uso reale a Roma.",
+      "Definiamo controlli, materiali e tempistiche in base a modello, chilometri e uso reale a Roma.",
     features: [
       "Piano su chilometraggio",
-      "Materiali ufficiali",
-      "Garanzia preservata",
+      "Materiali adatti al modello",
+      "Lavori concordati",
     ],
-    image: "/kymco-all/sections/xciting-vs-400-dsc6438-scaled-dsc6438-scaled.jpg",
-    alt: "Tagliandi ufficiali KYMCO, Grossi Moto Roma",
+    image: "/grossimoto/servizi/tagliandi.png",
+    alt: "Tagliando scooter a Roma, Grossi Moto",
   },
   {
-    title: "Ricambi originali",
+    title: "Ricambi e accessori",
     statement: "Componenti giusti, montati nel modo giusto.",
     description:
-      "Ricambi originali e accessori compatibili, ordinati o disponibili in sede con tracciabilita del lavoro.",
+      "Ricambi e accessori compatibili, ordinati o disponibili in sede con tracciabilità del lavoro.",
     features: [
-      "Componenti KYMCO e VOGE",
-      "Compatibilita verificata",
+      "Componenti per KYMCO e Voge",
+      "Compatibilità verificata",
       "Montaggio in officina",
     ],
-    image: "/kymco-all/sections/people-s-125-abs-dsc8687-scaled-dsc8687-scaled.jpg",
-    alt: "Ricambi originali KYMCO, Grossi Moto Roma",
+    image: "/grossimoto/servizi/ricambi-originali.png",
+    alt: "Ricambi e accessori scooter a Roma, Grossi Moto",
   },
   {
     title: "Finanziamenti",
     statement: "Il mezzo si sceglie prima della rata.",
     description:
-      "Costruiamo una proposta sostenibile su anticipo, durata e modello, senza spingere soluzioni standard.",
+      "Valutiamo insieme anticipo, durata e modello, senza partire dalla rata.",
     features: [
       "Proposte su misura",
       "Anticipo modulabile",
       "Scelta prima della rata",
     ],
-    image: "/kymco-all/sections/x-town-300-dsc3448-scaled-dsc3448-scaled.jpg",
-    alt: "Finanziamenti scooter KYMCO, Grossi Moto Roma",
+    image: "/grossimoto/servizi/finanziamenti.png",
+    alt: "Finanziamento scooter a Roma, Grossi Moto",
   },
   {
     title: "Permute",
@@ -68,8 +70,8 @@ const services = [
       "Lettura dello stato reale",
       "Passaggio senza tempi morti",
     ],
-    image: "/kymco-all/sections/agility-s-125-dsc4978-scaled-dsc4978-scaled.jpg",
-    alt: "Permuta scooter usato KYMCO, Grossi Moto Roma",
+    image: "/grossimoto/servizi/permute.png",
+    alt: "Valutazione permuta scooter usato a Roma, Grossi Moto",
   },
   {
     title: "Consulenza",
@@ -81,8 +83,8 @@ const services = [
       "Postura e cilindrata",
       "Accessori coerenti",
     ],
-    image: "/kymco-all/sections/skytown-125-dsc2583-b-scaled-dsc2583-b-scaled.jpg",
-    alt: "Consulenza acquisto scooter KYMCO, Grossi Moto Roma",
+    image: "/grossimoto/servizi/consulenza.png",
+    alt: "Consulenza per scegliere uno scooter a Roma, Grossi Moto",
   },
 ];
 
@@ -91,6 +93,7 @@ const premiumEase: [number, number, number, number] = [0.165, 0.84, 0.44, 1];
 export function StickyScrollShowcase() {
   const contentRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
+  const isDesktopViewport = useMediaQuery("(min-width: 1024px)");
   const [isReduced] = useState(
     () =>
       typeof window !== "undefined" &&
@@ -99,7 +102,7 @@ export function StickyScrollShowcase() {
 
   useEffect(() => {
     const content = contentRef.current;
-    if (!content) return;
+    if (!content || isReduced || !isDesktopViewport) return;
 
     let frame = 0;
 
@@ -146,7 +149,7 @@ export function StickyScrollShowcase() {
         window.cancelAnimationFrame(frame);
       }
     };
-  }, []);
+  }, [isDesktopViewport, isReduced]);
 
   return (
     <section className="relative overflow-clip rounded-t-[2rem] bg-[#E7E3DC] text-[#1B0E0D] shadow-[0_-1px_0_rgba(231,227,220,0.2)] lg:rounded-t-[2.5rem]">
@@ -174,13 +177,13 @@ export function StickyScrollShowcase() {
                   key={activeIndex}
                   className="absolute inset-0"
                   initial={
-                    isReduced
+                    isReduced || !isDesktopViewport
                       ? {}
                       : { opacity: 0, scale: 1.065, filter: "blur(7px)" }
                   }
                   animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
                   exit={
-                    isReduced
+                    isReduced || !isDesktopViewport
                       ? {}
                       : { opacity: 0, scale: 0.985, filter: "blur(5px)" }
                   }
@@ -262,18 +265,18 @@ export function StickyScrollShowcase() {
                 {/* FIX P2: relative + overflow-hidden sul wrapper → il border-radius clipa l'immagine.
                     Span assoluto rimosso (si posizionava sull'<article>, non sul wrapper).
                     rounded-[2rem] sull'<Image>. Gradient div in coda sostituisce lo span per l'overlay. */}
-                <div className="liquid-glass relative mb-8 overflow-hidden rounded-[2rem] shadow-[0_24px_60px_rgba(27,14,13,0.18)] lg:hidden">
+                <div className="liquid-glass relative mb-7 overflow-hidden rounded-[1.5rem] shadow-[0_24px_60px_rgba(27,14,13,0.18)] lg:hidden sm:mb-8 sm:rounded-[2rem]">
                   <Image
                     src={service.image}
                     alt={service.alt}
                     width={900}
                     height={680}
                     sizes="100vw"
-                    className="h-[48svh] min-h-[320px] w-full rounded-[2rem] object-cover brightness-[0.82] contrast-[1.12] saturate-[0.74]"
+                    className="h-[min(34svh,18rem)] min-h-[15rem] w-full rounded-[1.5rem] object-cover brightness-[0.82] contrast-[1.12] saturate-[0.74] sm:h-[38svh] sm:min-h-[17rem] sm:rounded-[2rem]"
                   />
                   <div
                     aria-hidden="true"
-                    className="pointer-events-none absolute inset-0 rounded-[2rem] bg-[linear-gradient(180deg,transparent_45%,rgba(18,13,12,0.75)_100%)]"
+                    className="pointer-events-none absolute inset-0 rounded-[1.5rem] bg-[linear-gradient(180deg,transparent_45%,rgba(18,13,12,0.75)_100%)] sm:rounded-[2rem]"
                   />
                 </div>
 
@@ -294,14 +297,14 @@ export function StickyScrollShowcase() {
                   </span>
                   <span className="h-px flex-1 bg-[#1B0E0D]/14" />
                   <span className="font-tech max-w-[13rem] text-right text-[0.64rem] font-semibold uppercase leading-5 tracking-[0.18em] text-[#1B0E0D]/46">
-                    Grossimoto servizi
+                    Servizi Grossimoto
                   </span>
                 </div>
 
                 <motion.div
                   className="relative z-10 grid h-full w-full min-w-0 content-center"
                   animate={
-                    isReduced
+                    isReduced || !isDesktopViewport
                       ? {}
                       : {
                           opacity: isActive ? 1 : 0.34,
@@ -314,7 +317,7 @@ export function StickyScrollShowcase() {
                       su una riga nei viewport desktop ampi, senza forzare overflow su laptop stretti. */}
                   <h3
                     className={[
-                      "font-display max-w-full whitespace-nowrap text-[clamp(2.6rem,11vw,6.2rem)] font-bold uppercase leading-[0.82] tracking-[-0.05em] [overflow-wrap:anywhere] lg:whitespace-normal lg:text-[clamp(4.2rem,5.8vw,6.8rem)] xl:text-[clamp(4.6rem,5.2vw,7.4rem)]",
+                      "font-display max-w-full whitespace-normal text-[clamp(2.6rem,11vw,6.2rem)] font-bold uppercase leading-[0.82] tracking-[-0.05em] [overflow-wrap:anywhere] lg:whitespace-normal lg:text-[clamp(4.2rem,5.8vw,6.8rem)] xl:text-[clamp(4.6rem,5.2vw,7.4rem)]",
                       service.title === "Finanziamenti"
                         ? "xl:max-w-none xl:whitespace-nowrap"
                         : "lg:max-w-[11ch]",
@@ -328,7 +331,7 @@ export function StickyScrollShowcase() {
                 <motion.div
                   className="relative z-10 grid min-w-0 gap-8 2xl:grid-cols-[minmax(0,0.9fr)_minmax(21rem,0.68fr)] 2xl:items-end"
                   animate={
-                    isReduced
+                    isReduced || !isDesktopViewport
                       ? {}
                       : {
                           opacity: isActive ? 1 : 0.42,
@@ -343,9 +346,9 @@ export function StickyScrollShowcase() {
                     </p>
                     <a
                       href="tel:+393289185029"
-                      className="font-tech group mt-8 inline-flex min-h-12 items-center justify-center gap-3 rounded-full bg-[#1B0E0D] px-6 py-3 text-[0.7rem] font-bold uppercase tracking-[0.13em] text-[#F4F0E8] transition-[background,color,transform] duration-[320ms] ease-[cubic-bezier(0.165,0.84,0.44,1)] hover:bg-[#F4F0E8] hover:text-[#1B0E0D] active:translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1B0E0D]/38 focus-visible:ring-offset-4 focus-visible:ring-offset-[#E7E3DC]"
+                      className="font-tech group mt-8 hidden min-h-12 items-center justify-center gap-3 rounded-full bg-[#1B0E0D] px-6 py-3 text-[0.7rem] font-bold uppercase tracking-[0.13em] text-[#F4F0E8] transition-[background,color,transform] duration-[320ms] ease-[cubic-bezier(0.165,0.84,0.44,1)] hover:bg-[#F4F0E8] hover:text-[#1B0E0D] active:translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1B0E0D]/38 focus-visible:ring-offset-4 focus-visible:ring-offset-[#E7E3DC] lg:inline-flex"
                     >
-                      Prenota intervento
+                      Prenota un intervento
                       <PhoneCall
                         aria-hidden="true"
                         className="h-4 w-4"

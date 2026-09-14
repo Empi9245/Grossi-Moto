@@ -18,7 +18,7 @@ export function HeroBadge() {
       className="font-ui inline-flex items-center gap-2 rounded-full bg-[oklch(91%_0.014_78)] px-4 py-2 text-xs font-medium text-[oklch(19%_0.014_42)] shadow-[0_12px_36px_rgba(20,14,11,0.18)] sm:text-sm"
     >
       <MapPin aria-hidden="true" className="h-4 w-4" strokeWidth={1.8} />
-      <span>Dealer KYMCO autorizzato a Roma</span>
+      <span>Rivenditore ufficiale KYMCO a Roma</span>
     </motion.div>
   );
 }

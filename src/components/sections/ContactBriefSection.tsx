@@ -13,7 +13,7 @@ export function ContactBriefSection() {
       <div className="mx-auto grid max-w-[92rem] gap-8 border-y border-[oklch(18%_0.014_56/0.14)] py-8 lg:grid-cols-[minmax(0,0.8fr)_minmax(23rem,0.52fr)] lg:items-center">
         <div>
           <p className="font-ui text-[0.68rem] font-bold uppercase tracking-[0.18em] text-[oklch(36%_0.09_28)]">
-            Contatto rapido
+            Contatti e orari
           </p>
           <h2 className="font-display mt-4 text-[clamp(2.3rem,6vw,4.8rem)] font-bold leading-[0.92] tracking-normal">
             Grossi Moto di Angelo Grossi
@@ -72,7 +72,7 @@ export function ContactBriefSection() {
               href="/contatti"
               className="font-ui inline-flex min-h-11 items-center justify-center rounded-full bg-transparent px-5 py-2.5 text-xs font-bold uppercase tracking-[0.08em] text-[oklch(18%_0.014_56)] transition-colors duration-200 hover:text-[oklch(36%_0.09_28)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(38%_0.08_28)] focus-visible:ring-offset-4 focus-visible:ring-offset-[oklch(88%_0.015_78)]"
             >
-              Vai ai contatti
+              Contatti, orari e form
             </Link>
           </div>
         </div>
