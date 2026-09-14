@@ -1,15 +1,10 @@
 "use client";
 
-import { ArrowUpRight, Phone } from "lucide-react";
-import { motion, useReducedMotion } from "framer-motion";
+import { Phone } from "lucide-react";
+import { motion } from "framer-motion";
 
 import { revealMotion, subtleHover } from "./motion";
-
-const navItems = [
-  { label: "Gamma", href: "/scooters" },
-  { label: "Servizi", href: "/servizi" },
-  { label: "Contatti", href: "/contatti" },
-];
+import { useReducedMotion } from "framer-motion";
 
 export function Navbar() {
   const shouldReduceMotion = useReducedMotion();
@@ -22,11 +17,12 @@ export function Navbar() {
         {...revealMotion(shouldReduceMotion, {
           duration: 0.48,
           scale: 0.99,
-          y: 8,
+          y: 12,
         })}
-        className="font-ui group flex min-w-0 flex-col rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-[oklch(84%_0.04_72)] focus-visible:ring-offset-4 focus-visible:ring-offset-[oklch(14%_0.012_40)]"
+        {...subtleHover(shouldReduceMotion)}
+        className="inline-flex flex-col items-start"
       >
-        <span className="text-sm font-medium tracking-normal text-[oklch(96%_0.008_78)] transition-opacity duration-200 group-hover:opacity-80 sm:text-base xl:text-lg">
+        <span className="text-base font-semibold leading-5 text-[oklch(95%_0.01_80)] sm:text-lg">
           Grossimoto
         </span>
         <span className="text-[0.62rem] font-medium uppercase tracking-[0.18em] text-[oklch(82%_0.016_78)] sm:text-[0.68rem]">
@@ -34,32 +30,33 @@ export function Navbar() {
         </span>
       </motion.a>
 
-      <motion.div
-        {...revealMotion(shouldReduceMotion, {
-          delay: 0.08,
-          duration: 0.5,
-          scale: 0.99,
-          y: 8,
-        })}
-        className="font-ui hidden items-center gap-1 rounded-full bg-[oklch(11%_0.01_40/0.72)] p-1 text-sm text-[oklch(88%_0.01_78)] shadow-[inset_0_0_0_1px_oklch(96%_0.008_80/0.1)] lg:flex"
-      >
-        {navItems.map((item) => (
-          <a
-            key={item.label}
-            href={item.href}
-            className="rounded-full px-4 py-2 transition-colors duration-200 hover:bg-[oklch(92%_0.012_78/0.1)] hover:text-[oklch(97%_0.008_78)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(84%_0.04_72)]"
-          >
-            {item.label}
-          </a>
-        ))}
-      </motion.div>
+      <div className="hidden items-center gap-6 lg:flex">
+        <a
+          href="/scooters"
+          className="text-sm font-medium text-[oklch(84%_0.012_78)] transition-colors hover:text-[oklch(95%_0.01_80)]"
+        >
+          Gamma
+        </a>
+        <a
+          href="/servizi"
+          className="text-sm font-medium text-[oklch(84%_0.012_78)] transition-colors hover:text-[oklch(95%_0.01_80)]"
+        >
+          Servizi
+        </a>
+        <a
+          href="/contatti"
+          className="text-sm font-medium text-[oklch(84%_0.012_78)] transition-colors hover:text-[oklch(95%_0.01_80)]"
+        >
+          Contatti
+        </a>
+      </div>
 
       <motion.a
         href="tel:+393289185029"
+        aria-label="Chiama Grossi Moto"
         {...revealMotion(shouldReduceMotion, {
-          delay: 0.14,
-          duration: 0.52,
-          scale: 0.98,
+          duration: 0.48,
+          scale: 0.99,
           y: 8,
         })}
         {...subtleHover(shouldReduceMotion)}
@@ -68,7 +65,6 @@ export function Navbar() {
         <Phone aria-hidden="true" className="h-4 w-4 lg:hidden" strokeWidth={1.8} />
         <span className="hidden sm:inline">Chiama ora</span>
         <span className="sm:hidden">Chiama</span>
-        <ArrowUpRight aria-hidden="true" className="hidden h-4 w-4 lg:block" strokeWidth={1.8} />
       </motion.a>
     </nav>
   );

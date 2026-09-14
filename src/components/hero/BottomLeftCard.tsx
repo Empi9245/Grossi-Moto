@@ -1,23 +1,27 @@
 "use client";
 
+import { useReducedMotion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 
-import { revealMotion, subtleHover } from "./motion";
+import { subtleHover } from "./motion";
+import type { revealMotion } from "./motion";
 
-export function BottomLeftCard() {
+type BottomLeftCardProps = {
+  cardAriaHidden?: boolean;
+  cardMotion?: ReturnType<typeof revealMotion>;
+  cardMotionStyle?: React.CSSProperties;
+};
+
+export function BottomLeftCard({ cardAriaHidden, cardMotion, cardMotionStyle }: BottomLeftCardProps) {
   const shouldReduceMotion = useReducedMotion();
 
   return (
-    <motion.aside
-      data-qa="bottom-left-card"
-      {...revealMotion(shouldReduceMotion, {
-        delay: 0.38,
-        duration: 0.62,
-        scale: 0.96,
-        y: 22,
-      })}
-      className="absolute bottom-[calc(5.25rem+env(safe-area-inset-bottom))] left-3 z-20 w-[min(11.5rem,calc(100vw-6.5rem))] rounded-[1.15rem] bg-[var(--panel)] p-3 text-[oklch(17%_0.012_40)] shadow-[0_24px_80px_rgba(17,11,9,0.34)] sm:bottom-[calc(6rem+env(safe-area-inset-bottom))] sm:left-5 sm:w-[13rem] sm:rounded-[1.35rem] sm:p-4 md:bottom-[calc(6.25rem+env(safe-area-inset-bottom))] md:left-7 md:w-[14rem] md:rounded-[1.55rem] md:p-5 lg:bottom-8 lg:left-8 lg:w-[18.25rem] xl:bottom-10 xl:left-10 xl:w-[19.5rem] xl:rounded-[1.65rem] xl:p-5"
+    <motion.div
+      aria-hidden={cardAriaHidden}
+      style={cardMotionStyle}
+      {...cardMotion}
+      className="absolute bottom-[calc(5.25rem+env(safe-area-inset-bottom))] left-3 z-20 w-[min(11.5rem,calc(100vw-6.5rem))] rounded-[1.15rem] bg-[oklch(94.5%_0.011_78)] p-3 text-[oklch(17%_0.012_40)] shadow-[0_24px_80px_rgba(17,11,9,0.34)] sm:bottom-[calc(6rem+env(safe-area-inset-bottom))] sm:left-5 sm:w-[13rem] sm:rounded-[1.35rem] sm:p-4 md:bottom-[calc(6.25rem+env(safe-area-inset-bottom))] md:left-7 md:w-[14rem] md:rounded-[1.55rem] md:p-5 lg:bottom-8 lg:left-8 lg:w-[18.25rem] xl:bottom-10 xl:left-10 xl:w-[19.5rem] xl:rounded-[1.65rem] xl:p-5"
     >
       <div className="flex items-start justify-between gap-4">
         <p className="font-numeric text-[2.4rem] leading-[0.82] font-normal tracking-normal sm:text-[3rem] lg:text-[3.8rem] xl:text-[4.45rem]">
@@ -29,13 +33,13 @@ export function BottomLeftCard() {
       </div>
 
       <p className="font-ui mt-2 text-[0.67rem] leading-4 font-semibold uppercase tracking-[0.08em] text-[oklch(24%_0.014_45)] sm:mt-3 sm:text-xs">
-        modelli KYMCO + Voge
+        MODELLI KYMCO + VOGE
       </p>
 
       <div className="my-4 hidden h-px w-full bg-[oklch(24%_0.016_45/0.14)] lg:block" />
 
       <p className="hidden text-sm leading-6 text-[oklch(35%_0.018_50)] lg:block">
-        Da 50cc a 900cc
+        125cc, ruote alte, GT e maxi scooter.
       </p>
 
       <motion.a
@@ -48,6 +52,6 @@ export function BottomLeftCard() {
           <ArrowUpRight aria-hidden="true" className="h-3.5 w-3.5" strokeWidth={1.8} />
         </span>
       </motion.a>
-    </motion.aside>
+    </motion.div>
   );
 }

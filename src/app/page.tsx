@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 
-import { SiteFooter } from "@/components/layout/SiteFooter";
 import { AccessoriesSection } from "@/components/sections/AccessoriesSection";
 import { ContactBriefSection } from "@/components/sections/ContactBriefSection";
 import { GrossimotoExperienceSection } from "@/components/sections/GrossimotoExperienceSection";
 import { HeroRevealStage } from "@/components/sections/HeroRevealStage";
+import { HomeTrustSection } from "@/components/sections/HomeTrustSection";
 import { ShowcaseCoverCta } from "@/components/sections/ShowcaseCoverCta";
 import { WorkshopSection } from "@/components/sections/WorkshopSection";
+import { SiteFooter } from "@/components/layout/SiteFooter";
 
 export const metadata: Metadata = {
   title: "Scooter, accessori e officina a Roma",
@@ -17,7 +18,7 @@ export const metadata: Metadata = {
 
 const localBusinessJsonLd = {
   "@context": "https://schema.org",
-  "@type": ["LocalBusiness", "MotorcycleDealer", "AutoRepair"],
+  "@type": "LocalBusiness",
   name: "Grossi Moto di Angelo Grossi",
   alternateName: "Grossimoto",
   description:
@@ -26,29 +27,15 @@ const localBusinessJsonLd = {
   address: {
     "@type": "PostalAddress",
     streetAddress: "Via Festo Porzio, 22",
-    postalCode: "00174",
     addressLocality: "Roma",
-    addressRegion: "RM",
+    postalCode: "00174",
     addressCountry: "IT",
   },
-  areaServed: "Roma",
-  hasMap: "https://share.google/ppfR023TdQcVrYya3",
-  openingHours: [
-    "Mo-Fr 08:30-13:00",
-    "Mo-Fr 14:30-19:00",
-    "Sa 08:30-13:00",
-  ],
   openingHoursSpecification: [
     {
       "@type": "OpeningHoursSpecification",
       dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
       opens: "08:30",
-      closes: "13:00",
-    },
-    {
-      "@type": "OpeningHoursSpecification",
-      dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-      opens: "14:30",
       closes: "19:00",
     },
     {
@@ -58,7 +45,12 @@ const localBusinessJsonLd = {
       closes: "13:00",
     },
   ],
-};
+  url: "https://grossi-moto.vercel.app/",
+  sameAs: [
+    "https://share.google/ppfR023TdQcVrYya3",
+  ],
+  priceRange: "€€",
+} as const;
 
 export default function Home() {
   return (
@@ -66,11 +58,13 @@ export default function Home() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(localBusinessJsonLd).replace(/</g, "\\u003c"),
+          __html: JSON.stringify(localBusinessJsonLd),
         }}
       />
+
       <HeroRevealStage />
       <ShowcaseCoverCta />
+      <HomeTrustSection />
       <GrossimotoExperienceSection />
       <AccessoriesSection />
       <WorkshopSection />
