@@ -370,7 +370,7 @@ export function StickyScrollShowcase() {
                         {service.features.map((feature) => (
                           <li
                             key={feature}
-                            className="flex items-start gap-3 text-sm font-semibold uppercase leading-5 tracking-[-0.01em] text-[#1B0E0D]/78"
+                            className="flex items-start gap-3 text-sm font-normal uppercase leading-5 tracking-[-0.01em] text-[#1B0E0D]/78"
                           >
                             <span className="liquid-glass inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[#1B0E0D]/62">
                               <span
