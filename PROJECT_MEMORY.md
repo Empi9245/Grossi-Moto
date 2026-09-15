@@ -1,5 +1,27 @@
 # Project Memory
 
+## Asset mobile/tablet — prompt 01 completato 2026-09-15
+
+- Creato `docs/prompts/mobile-tablet/ASSET-MANIFEST.md`: sette utilizzi pronti per Accessori e Officina, URL, soggetti osservati, provenienza, dimensioni, crop, object-position e alt prudenti. Voce 01 di `STATO.md` completata; nessun altro prompt avviato.
+- Quattro nuove immagini illustrative imagegen in `public/grossimoto/accessori/` (casco/guanti, bauletto, bloccadisco, supporto smartphone); in `public/grossimoto/servizi/` aggiunti montaggio accessori illustrativo e due WebP di dettaglio ricavati dagli originali tagliandi/diagnosi, conservati senza modifiche.
+- Le immagini esistenti hanno origine ignota: non attribuire foto, persone o attrezzature alla sede. Per l'integrazione futura mantenere nota visibile «Immagini illustrative» e alt del manifest; nessuna prova di disponibilità, compatibilità o certificazione del prodotto.
+- Master generati, prompt esatti, report con SHA-256 e tavole di verifica conservati in `docs/prompts/mobile-tablet/asset-sources/`, fuori da `public`. Tutti i sette WebP visti a 300 px; alternative 4:3 approvate solo per bauletto e bloccadisco. Peso complessivo 351 632 byte (343,4 KiB), decodifica e ratio verificati con Sharp già disponibile.
+- Passaggio solo asset/documentazione: nessuna UI o codice modificato, nessun browser, lint/build o deploy eseguito.
+
+## Pacchetto prompt mobile/tablet 2026-09-15
+
+- Preparati 12 prompt di implementazione separati in `docs/prompts/mobile-tablet/`, con indice `README.md`, contesto comune `CONTESTO.md` e registro `STATO.md`.
+- Il pacchetto copre asset, fix hero tablet, Accessori e Officina Home, policy input/navigazione, lifecycle hero Servizi, selettore Servizi, processo, showroom, catalogo, contatti e QA integrata.
+- Questa fase ha prodotto soltanto documentazione e prompt: nessun redesign eseguito o deploy. Lo stato di ciascuna futura implementazione va registrato in `STATO.md`.
+
+## Audit live mobile e tablet 2026-09-15
+
+- Eseguito audit richiesto dall'utente su `grossi-moto.vercel.app` con browser responsive a 375, 768, 820 e 1024px; dettaglio in `docs/AUDIT_MOBILE_TABLET_2026-09-15.md`.
+- Difetto da correggere: a 1024x768 la card Home `27 modelli` copre parte della CTA `Confronta la gamma`.
+- Proposte, non implementate: Accessori fotografici sfogliabili, selettore dei sei Servizi, sequenza interattiva `Dal contatto alla riconsegna`, Officina con foto e scelte per esigenza. Nessuna modifica al sito/deploy durante l'audit.
+- Stato corrente confermato da codice e live: sotto 1024px Home usa showroom statico (rail sotto 768px, griglia a due colonne da 768px) e ZoomParallax diventa un'immagine statica. Le indicazioni storiche seguenti sullo zoom attivo mobile/tablet sono superate.
+- Navigazione mobile, filtro 125cc e apertura schede catalogo verificati; nessun overflow orizzontale nelle combinazioni misurate. Lint e build locali completati. Verifica in browser responsive, senza dispositivi fisici o invio del form.
+
 Ultimo aggiornamento operativo: 2026-07-30.
 
 ## Stato Corrente
