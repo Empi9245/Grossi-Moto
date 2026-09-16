@@ -496,3 +496,16 @@ Implementata.
 - Modulo: protezione sincrona dai doppi invii, timeout 20 secondi, stato di invio mantenuto durante modifiche, telefono cliccabile in caso di errore. Endpoint configurabile con `NEXT_PUBLIC_FORMSPREE_ENDPOINT`, mantenendo quello preesistente come fallback.
 - Lint e build passati. Verifica HTTP locale production: 6 pagine con status 200, un H1 e canonical corretto; 5 casi del modulo (modello valido, officina, ID sconosciuto, parametro ripetuto, nessun parametro); sitemap con 6 URL e riferimento robots corretto. Nessuna QA visuale o invio reale a Formspree.
 - Limiti: accesso live fallito dall’ambiente; nessun dato Search Console/analytics/CWV sul campo disponibile. Ricezione Formspree non confermata. Informativa privacy preesistente contiene ancora dati e testo da validare con il titolare; non inventare condizioni legali. Nessun deploy effettuato.
+
+## Correzione doppia scrollbar hero — 2026-09-16
+
+- Rimossi `overflow-y-auto`, altezza massima e intercettazione wheel/touch dal wrapper Hero: la pagina è l’unico contenitore di scorrimento verticale.
+- `HeroRevealStage` mantiene il reveal quando la hero entra nella viewport. Un ResizeObserver sull’altezza reale del wrapper seleziona il flusso naturale se il contenuto è più alto dello schermo, evitando clipping di CTA e testi a viewport basse o con testo ingrandito. Observer e listener vengono puliti allo smontaggio.
+- Lint e build production completati senza errori. Nessuna QA visuale automatica richiesta o eseguita.
+
+## Video hero assente nel deploy — 2026-09-16
+
+- Il percorso originale `public/video hero/videoplayback.mp4` era escluso da Git dalla regola globale `*.mp4`; i deploy dal repository non potevano includerlo.
+- Creata copia distribuibile `public/hero-video.mp4` con FFmpeg già installato: H.264, yuv420p, 1280x720, 25 fps, faststart, senza audio, durata 116,52 secondi. File ridotto da 76.270.334 a 15.718.037 byte; originale preservato.
+- Aggiornato il source nella hero e aggiunta eccezione mirata `!/public/hero-video.mp4` in `.gitignore`. Il nuovo file deve essere incluso nel prossimo commit/deploy. Restano rispettati reduced motion e fallback per errori/autoplay bloccato.
+- FFprobe conferma formato e durata; lint e build passati. Nessun deploy eseguito in questa correzione.

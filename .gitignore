@@ -26,3 +26,6 @@ qa-screenshots/
 .codex/
 .kiro/
 .superdesign/
+
+# Hero video required by the public site
+!/public/hero-video.mp4

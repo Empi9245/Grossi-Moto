@@ -15,12 +15,13 @@ import { revealMotion, subtleHover } from "./motion";
 type HeroProps = {
   cardAriaHidden?: boolean;
   cardMotion?: MotionProps;
+  onOverflowChange?: (overflows: boolean) => void;
 };
 
-export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
+export function Hero({ cardAriaHidden, cardMotion, onOverflowChange }: HeroProps = {}) {
   const shouldReduceMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
   const { style: cardMotionStyle, ...cardMotionProps } = cardMotion ?? {};
-  const touchY = useRef<number | null>(null);
+  const viewportRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [videoPlaying, setVideoPlaying] = useState(false);
 
@@ -52,48 +53,27 @@ export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
     };
   }, [shouldReduceMotion]);
 
-  // The existing desktop stage clips to one viewport. Let enlarged content
-  // scroll inside the hero before passing the gesture back to that stage.
-  const canScrollContent = (element: HTMLDivElement, deltaY: number) =>
-    Boolean(cardMotion) &&
-    (deltaY > 0
-      ? element.scrollTop + element.clientHeight < element.scrollHeight - 1
-      : deltaY < 0 && element.scrollTop > 0);
+  useEffect(() => {
+    const viewport = viewportRef.current;
+    if (!viewport || !onOverflowChange) return;
+
+    // Use layout height, unaffected by the reveal transform or clip-path.
+    const measure = () => onOverflowChange(viewport.offsetHeight > window.innerHeight + 1);
+    const observer = new ResizeObserver(measure);
+    observer.observe(viewport);
+    window.addEventListener("resize", measure);
+    measure();
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, [onOverflowChange]);
 
   return (
     <div
+      ref={viewportRef}
       data-qa="hero-viewport"
-      data-contained={cardMotion ? "true" : undefined}
-      onWheelCapture={(event) => {
-        if (canScrollContent(event.currentTarget, event.deltaY)) {
-          event.stopPropagation();
-        }
-      }}
-      onTouchStartCapture={(event) => {
-        touchY.current =
-          event.touches.length === 1 ? event.touches[0].clientY : null;
-      }}
-      onTouchMoveCapture={(event) => {
-        const nextY =
-          event.touches.length === 1 ? event.touches[0].clientY : null;
-        if (
-          nextY !== null &&
-          touchY.current !== null &&
-          canScrollContent(event.currentTarget, touchY.current - nextY)
-        ) {
-          event.stopPropagation();
-        }
-        touchY.current = nextY;
-      }}
-      onTouchEndCapture={() => {
-        touchY.current = null;
-      }}
-      onTouchCancelCapture={() => {
-        touchY.current = null;
-      }}
-      // Cancel the document's mobile-nav scroll padding for these desktop links;
-      // preserve native focus scrolling inside the hero when content grows.
-      className="min-h-[100svh] w-full bg-[var(--page-background)] p-2 data-[contained=true]:max-h-[100svh] data-[contained=true]:overflow-y-auto data-[contained=true]:scroll-pb-[calc(6.5rem+env(safe-area-inset-bottom))] data-[contained=true]:[&_a]:scroll-mb-[calc(-6.5rem-env(safe-area-inset-bottom))] sm:p-3 lg:p-4 2xl:p-5"
+      className="min-h-[100svh] w-full bg-[var(--page-background)] p-2 sm:p-3 lg:p-4 2xl:p-5"
     >
       <motion.section
         {...cardMotionProps}
@@ -128,7 +108,7 @@ export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
             onEmptied={() => setVideoPlaying(false)}
           >
             <source
-              src="/video%20hero/videoplayback.mp4"
+              src="/hero-video.mp4"
               type="video/mp4"
               onError={() => setVideoPlaying(false)}
             />

@@ -76,7 +76,9 @@ export function HeroRevealStage() {
   const isHeroAnimatingRef = useRef(false);
   const heroControls = useAnimationControls();
   const shouldReduceMotion = useReducedMotion();
-  const isDesktopViewport = useDesktopViewport();
+  const desktopViewport = useDesktopViewport();
+  const [heroOverflows, setHeroOverflows] = useState(false);
+  const isDesktopViewport = desktopViewport && !heroOverflows;
   const [hasHeroRevealed, setHasHeroRevealed] = useState(false);
 
   const cardMotion = useMemo(
@@ -558,7 +560,7 @@ export function HeroRevealStage() {
   if (shouldReduceMotion || !isDesktopViewport) {
     return (
       <>
-        <Hero />
+        <Hero onOverflowChange={setHeroOverflows} />
         <ScooterShowcase mode="static" />
       </>
     );
@@ -586,6 +588,7 @@ export function HeroRevealStage() {
             }}
           >
             <Hero
+              onOverflowChange={setHeroOverflows}
               cardAriaHidden={hasHeroRevealed}
               cardMotion={cardMotion}
             />
