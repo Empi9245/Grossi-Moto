@@ -10,6 +10,7 @@ import {
 
 import { ServicesHero } from "@/components/ui/services-hero";
 import { StickyScrollShowcase } from "@/components/sections/StickyScrollShowcase";
+import { ServiceProcess } from "@/components/sections/ServiceProcess";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 
 export const metadata: Metadata = {
@@ -18,33 +19,6 @@ export const metadata: Metadata = {
     "Assistenza scooter a Roma: tagliandi, officina, ricambi, accessori, finanziamenti, permute e consulenza da Grossi Moto.",
   alternates: { canonical: "/servizi" },
 };
-
-const processSteps = [
-  {
-    step: "01",
-    title: "Contatto",
-    description:
-      "Chiamaci o passa in sede per fissare un appuntamento in officina o per una consulenza.",
-  },
-  {
-    step: "02",
-    title: "Diagnosi",
-    description:
-      "Controllo del veicolo e individuazione delle necessità prima di definire il lavoro.",
-  },
-  {
-    step: "03",
-    title: "Intervento",
-    description:
-      "Manutenzione, riparazione o montaggio accessori con materiali adatti al modello e lavorazioni concordate.",
-  },
-  {
-    step: "04",
-    title: "Riconsegna",
-    description:
-      "Controllo finale, spiegazione dei lavori eseguiti e consegna del veicolo pronto su strada.",
-  },
-];
 
 export default function ServiziPage() {
   return (
@@ -99,24 +73,7 @@ export default function ServiziPage() {
             </h2>
           </div>
 
-          <div className="grid gap-px overflow-hidden rounded-2xl bg-[#F7F4EF]/8 sm:grid-cols-2 lg:grid-cols-4">
-            {processSteps.map((item) => (
-              <div
-                key={item.step}
-                className="flex flex-col bg-[#111111] p-6 sm:p-8"
-              >
-                <span className="font-display text-[2.5rem] font-[900] leading-none tracking-tight text-[#F7F4EF]/12">
-                  {item.step}
-                </span>
-                <h3 className="font-ui mt-4 text-lg font-bold tracking-normal sm:text-xl">
-                  {item.title}
-                </h3>
-                <p className="mt-3 text-sm leading-6 text-[#F7F4EF]/60 sm:text-base sm:leading-7">
-                  {item.description}
-                </p>
-              </div>
-            ))}
-          </div>
+          <ServiceProcess />
         </div>
       </section>
 
@@ -135,8 +92,7 @@ export default function ServiziPage() {
               intervento.
             </h2>
             <p className="mt-5 max-w-[32rem] text-base leading-7 text-[#F7F4EF]/60 sm:text-lg">
-              Chiama direttamente Grossi Moto per fissare un appuntamento in
-              officina o per una consulenza personalizzata.
+              Hai un tagliando da fare o un problema da capire? Chiamaci con modello e chilometraggio, oppure descrivici la tua esigenza nel modulo.
             </p>
           </div>
 
@@ -156,7 +112,7 @@ export default function ServiziPage() {
               href="/contatti"
               className="font-ui inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#F7F4EF]/8 px-7 py-3 text-sm font-bold uppercase tracking-[0.08em] text-[#F7F4EF] shadow-[inset_0_0_0_1px_rgba(247,244,239,0.16)] transition-[background,transform] duration-200 hover:bg-[#F7F4EF]/14 active:translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F7F4EF]/60 focus-visible:ring-offset-4 focus-visible:ring-offset-[oklch(14%_0.014_42)]"
             >
-              Parla con Grossi Moto
+              Scrivi all’officina
               <ArrowUpRight
                 aria-hidden="true"
                 className="h-4 w-4"

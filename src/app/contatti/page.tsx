@@ -20,7 +20,7 @@ const hours = [
 
 const channels = [
   { icon: Phone, label: "Telefono", value: "+39 328 918 5029", href: "tel:+393289185029", cta: "Chiama ora", note: "Parla direttamente con il punto vendita" },
-  { icon: Mail, label: "Email", value: "info@grossimoto.it", href: "mailto:info@grossimoto.it", cta: "Scrivi un’email", note: "Modelli, servizi e accessori" },
+  { icon: Mail, label: "Email", value: "info@grossimoto.it", href: "mailto:info@grossimoto.it", cta: "Scrivi un’email", note: "Descrivi il mezzo o il lavoro che ti serve" },
   { icon: MapPin, label: "Dove siamo", value: "Via Festo Porzio, 22 · Roma 00174", href: "https://share.google/ppfR023TdQcVrYya3", cta: "Apri su Google Maps", note: "Showroom e officina in sede" },
 ];
 
@@ -36,7 +36,7 @@ export default function ContattiPage() {
           <p className="font-ui text-[0.68rem] font-bold uppercase tracking-[0.18em] text-[oklch(36%_0.09_28)]">Contatti</p>
           <h1 className="font-display mt-4 max-w-[14ch] text-[clamp(3rem,9vw,7.5rem)] font-bold leading-[0.88]">Parla con Grossi Moto.</h1>
           <p className="mt-5 max-w-[44rem] text-base leading-7 text-[oklch(29%_0.014_56/0.72)] sm:text-lg">
-            Siamo a Roma, in Via Festo Porzio 22. Grossi Moto è rivenditore ufficiale KYMCO e propone anche modelli Voge. Puoi chiedere orientamento, verificare disponibilità e organizzare l’assistenza nello stesso posto.
+            Cerchi il mezzo giusto, vuoi conoscerne prezzo e disponibilità o hai bisogno dell’officina? Chiamaci o scrivici. Ci trovi a Roma, in Via Festo Porzio 22.
           </p>
         </div>
 
@@ -62,7 +62,7 @@ export default function ContattiPage() {
           <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(22rem,0.44fr)]">
             <div className="rounded-[1.1rem] bg-[oklch(94.5%_0.011_78)] p-6 shadow-[0_0_0_1px_oklch(18%_0.014_56/0.045),0_4px_24px_oklch(18%_0.014_56/0.07)] sm:p-8">
               <p className="font-ui text-[0.65rem] font-bold uppercase tracking-[0.16em] text-[oklch(36%_0.09_28)]">Invia la tua richiesta</p>
-              <p className="mt-1 text-sm text-[oklch(29%_0.014_56/0.6)]">Indica il modello, l’uso che ne fai o il lavoro da richiedere: partiamo da quello che ti serve.</p>
+              <p className="mt-1 text-sm text-[oklch(29%_0.014_56/0.6)]">Non hai ancora scelto un modello? Raccontaci i tuoi percorsi. Per l’officina, indica il mezzo e cosa hai notato.</p>
               <ContactForm />
             </div>
 

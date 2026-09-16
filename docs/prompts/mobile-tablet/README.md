@@ -1,32 +1,27 @@
-# Grossi Moto: 12 prompt per mobile, tablet e nuove interazioni
+# Grossi Moto: prompt compatti per mobile, tablet e nuove interazioni
 
-Pacchetto pronto per esecuzioni separate. Scritto sulla base dell'audit live del 15 settembre 2026 e del codice locale. Nessun prompt è stato eseguito durante la preparazione.
+Pacchetto operativo ridotto dopo il completamento dei primi tre passaggi. Scritto sulla base dell'audit live del 15 settembre 2026, del codice locale e dello stato aggiornato in `STATO.md`.
 
 ## Come usarlo
-Apri un prompt e copia il contenuto in una chat del progetto Grossi Moto, oppure chiedi direttamente di eseguire quel file. Procedi uno alla volta, nell'ordine indicato. Non incollare l'intero pacchetto come incarico unico.
+Apri un prompt e copia il contenuto in una chat del progetto Grossi Moto, oppure chiedi direttamente di eseguire quel file. Procedi uno alla volta, nell'ordine indicato. Ogni prompt è più ampio della versione iniziale, ma resta abbastanza separato da poter essere gestito bene.
 
 Esempio, pronto da copiare:
-> Esegui esclusivamente il prompt C:/Progetti Exeva/Grossi Moto/docs/prompts/mobile-tablet/01-ASSET.md. Usa il contesto comune e lo stato richiamati nel file. Completa il suo risultato e le verifiche previste, poi fermati senza avviare altri prompt.
+> Esegui esclusivamente il prompt C:/Progetti Exeva/Grossi Moto/docs/prompts/mobile-tablet/04-OFFICINA.md. Usa il contesto comune e lo stato richiamati nel file. Completa il suo risultato e le verifiche previste, poi fermati senza avviare altri prompt.
 
 Per il passaggio successivo cambia solo il nome del file. Non serve avviare automaticamente nuovi task. Puoi continuare nella stessa chat finché il contesto resta chiaro, oppure usare una nuova chat nello stesso progetto: i file salvati trasmettono il contesto essenziale.
 
 ## Ordine
 | Prompt | Unico risultato principale | Dipendenze |
 |---|---|---|
-| [01 · Asset](01-ASSET.md) | Foto pertinenti e manifest riutilizzabile | Nessuna |
-| [02 · Hero tablet](02-HERO-TABLET.md) | Card modelli senza coprire la CTA | Nessuna |
-| [03 · Accessori](03-ACCESSORI.md) | Selezione fotografica da sfogliare nella Home | 01 |
-| [04 · Officina](04-OFFICINA.md) | Foto e tre esigenze selezionabili nella Home | 01, tre utilizzi pronti |
-| [05 · Input e navigazione](05-INPUT-E-NAVIGAZIONE.md) | Contratto coerente per touch, desktop e rotazione | Preservare 02–04 |
-| [06 · Hero Servizi](06-HERO-SERVIZI-RESPONSIVE.md) | Pinning e cleanup corretti ai cambi di modalità | 05 |
-| [07 · Selettore Servizi](07-SELETTORE-SERVIZI.md) | Sei servizi consultabili con tab e link diretti | 05–06 |
-| [08 · Processo](08-PROCESSO.md) | Quattro passaggi sfogliabili | Contesto comune |
-| [09 · Showroom](09-SHOWROOM.md) | Rail tablet e link al singolo scooter | 05 |
-| [10 · Catalogo](10-CATALOGO.md) | Scheda mobile più compatta | Contesto comune |
-| [11 · Contatti](11-CONTATTI.md) | Azioni e dati più rapidi da raggiungere | Contesto comune |
-| [12 · Verifica finale](12-VERIFICA-FINALE.md) | Audit integrato dei lavori realmente completati | Passaggi eseguiti |
+| [01 · Asset](01-ASSET.md) | Foto pertinenti e manifest riutilizzabile | Completato |
+| [02 · Hero tablet](02-HERO-TABLET.md) | Card modelli senza coprire la CTA | Già fatto dall'utente |
+| [03 · Accessori](03-ACCESSORI.md) | Selezione fotografica da sfogliare nella Home | Già fatto dall'utente |
+| [04 · Officina](04-OFFICINA.md) | Home Officina fotografica con tre esigenze selezionabili | 01, preservare 02–03 |
+| [05 · Responsive e Servizi](05-RESPONSIVE-E-SERVIZI.md) | Policy input, hero Servizi, sei servizi e processo | Preservare 02–04 |
+| [06 · Showroom, Catalogo, Contatti](06-SHOWROOM-CATALOGO-CONTATTI.md) | Tre rifiniture compatte senza redesign | 05 consigliato |
+| [07 · Verifica finale](07-VERIFICA-FINALE.md) | Audit integrato dei lavori realmente completati | Passaggi eseguiti |
 
-Per concentrarti prima sulle due sezioni Home richieste, 01–04 costituiscono il primo gruppo. 10–11 sono rifiniture secondarie dell'audit. Il controllo finale può verificare anche un gruppo parziale, dichiarandone chiaramente l'ambito.
+Il lavoro essenziale rimasto è 04 e 05. Il prompt 06 contiene rifiniture utili emerse dall'audit, ma può essere saltato se vuoi fermarti dopo Home e Servizi. Il controllo finale può verificare anche un gruppo parziale, dichiarandone chiaramente l'ambito.
 
 ## Come sono specificate le animazioni
 - Accessori: foto e testo seguono il dito in un rail nativo; anticipo della scheda seguente, frecce e indicatore sincronizzato.
@@ -38,7 +33,7 @@ Tempi, trigger, elementi, interruzioni, immagini in caricamento e reduced motion
 ## Contesto senza ripetizioni
 [CONTESTO.md](CONTESTO.md) contiene stack, identità, contratti e verifiche condivise.
 [STATO.md](STATO.md) passa solo risultati e blocchi da una fase alla successiva.
-ASSET-MANIFEST.md sarà prodotto da 01: è un output futuro, non un file mancante del pacchetto.
+[ASSET-MANIFEST.md](ASSET-MANIFEST.md) è stato prodotto da 01 e va usato per Accessori e Officina.
 
 I prompt contengono il risultato, i file pertinenti e l'accettazione; evitano esplorazione generale e risposte lunghe. Leggere più testo costa comunque token: il beneficio cercato è ridurre ricerche, decisioni ripetute e rifacimenti. Nessuna percentuale di risparmio è garantita.
 

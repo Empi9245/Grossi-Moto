@@ -263,7 +263,7 @@ export function CatalogProductCard({
               <div className="mt-5 flex flex-col gap-3 sm:flex-row">
                 <a
                   href="tel:+393289185029"
-                  aria-label={`Richiedi consulenza per ${scooter.name}`}
+                  aria-label={`Chiama per informazioni su ${scooter.name}`}
                   className="font-ui inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-[oklch(18%_0.014_56)] px-5 py-3 text-[0.72rem] font-bold uppercase tracking-[0.1em] text-[oklch(94%_0.01_78)] outline-none transition-[background,transform] duration-200 hover:bg-[oklch(23%_0.016_56)] active:translate-y-px focus-visible:ring-2 focus-visible:ring-[var(--product-accent)] focus-visible:ring-offset-4 focus-visible:ring-offset-[oklch(88%_0.015_78)] sm:w-fit"
                 >
                   <PhoneCall
@@ -271,7 +271,7 @@ export function CatalogProductCard({
                     className="h-4 w-4"
                     strokeWidth={1.8}
                   />
-                  Richiedi consulenza
+                  Chiedi disponibilità
                 </a>
               </div>
             </motion.div>

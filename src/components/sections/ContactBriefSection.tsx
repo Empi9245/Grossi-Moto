@@ -72,7 +72,7 @@ export function ContactBriefSection() {
               href="/contatti"
               className="font-ui inline-flex min-h-11 items-center justify-center rounded-full bg-transparent px-5 py-2.5 text-xs font-bold uppercase tracking-[0.08em] text-[oklch(18%_0.014_56)] transition-colors duration-200 hover:text-[oklch(36%_0.09_28)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(38%_0.08_28)] focus-visible:ring-offset-4 focus-visible:ring-offset-[oklch(88%_0.015_78)]"
             >
-              Contatti, orari e form
+              Scrivici cosa ti serve
             </Link>
           </div>
         </div>

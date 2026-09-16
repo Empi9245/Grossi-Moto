@@ -136,7 +136,7 @@ export function ContactForm() {
 
       <div className="flex flex-col gap-1.5">
         <label htmlFor="contact-message" className="font-ui text-[0.65rem] font-bold uppercase tracking-[0.12em] text-[oklch(18%_0.014_56/0.72)]">Messaggio</label>
-        <textarea id="contact-message" name="message" rows={5} required aria-invalid={Boolean(errors.message)} aria-describedby={describedBy("message")} placeholder="Modello, uso o lavoro da richiedere…" className={`${inputClass("message")} resize-none`} onChange={() => handleChange("message")} onInvalid={() => handleInvalid("message")} />
+        <textarea id="contact-message" name="message" rows={5} required aria-invalid={Boolean(errors.message)} aria-describedby={describedBy("message")} placeholder="Es. cerco uno scooter per andare al lavoro, oppure vorrei un tagliando per il mio modello…" className={`${inputClass("message")} resize-none`} onChange={() => handleChange("message")} onInvalid={() => handleInvalid("message")} />
         {errors.message && <p id="message-error" className="text-xs text-[oklch(42%_0.13_28)]">{errors.message}</p>}
       </div>
 
@@ -147,8 +147,8 @@ export function ContactForm() {
       </div>
 
       <div aria-live="polite" aria-atomic="true" className="min-h-6 text-sm">
-        {status === "success" && <p className="text-[oklch(35%_0.1_145)]">Richiesta inviata. Grazie, ti ricontatteremo usando i dati indicati.</p>}
-        {status === "error" && <p className="text-[oklch(42%_0.13_28)]">Non è stato possibile inviare la richiesta. I dati sono ancora presenti: riprova o scrivi a info@grossimoto.it.</p>}
+        {status === "success" && <p className="text-[oklch(35%_0.1_145)]">La tua richiesta è stata inviata. Ti ricontatteremo ai recapiti che hai indicato.</p>}
+        {status === "error" && <p className="text-[oklch(42%_0.13_28)]">Invio non riuscito. Il messaggio è ancora qui: puoi riprovare o chiamarci al +39 328 918 5029.</p>}
       </div>
 
       <button type="submit" disabled={status === "sending"} aria-busy={status === "sending"} className="font-ui mt-1 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-[oklch(16%_0.014_48)] px-6 py-3 text-sm font-bold uppercase tracking-[0.08em] text-[oklch(94%_0.01_78)] transition-[background,transform] duration-200 hover:bg-[oklch(22%_0.016_50)] active:translate-y-px disabled:cursor-wait disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(38%_0.08_28)] focus-visible:ring-offset-4 focus-visible:ring-offset-[oklch(94.5%_0.011_78)] sm:w-auto">

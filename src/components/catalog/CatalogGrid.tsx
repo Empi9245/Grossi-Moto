@@ -215,7 +215,7 @@ export function CatalogGrid({
             Nessun modello in questo filtro
           </p>
           <p className="mt-3 max-w-[28rem] text-sm leading-6">
-            Nessun modello disponibile per questo filtro. Seleziona Tutti per
+            Nessun modello corrisponde a questo filtro. Seleziona Tutti per
             vedere la gamma completa.
           </p>
         </motion.div>

@@ -25,8 +25,7 @@ export function ShowcaseCoverCta() {
 
         <div className="max-w-[34rem]">
           <p className="text-base leading-7 text-[oklch(82%_0.012_74)] sm:text-lg">
-            Le proporzioni cambiano quando sali in sella. In showroom puoi
-            confrontare posizione, altezza e uso reale prima di scegliere.
+            Tra due modelli, la differenza si sente in sella. Confrontiamo insieme altezza, posizione di guida e spazio in base ai tuoi tragitti.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link
@@ -40,7 +39,7 @@ export function ShowcaseCoverCta() {
               href="tel:+393289185029"
               className="font-ui inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-[oklch(94%_0.01_80/0.08)] px-6 py-3 text-center text-sm font-bold uppercase tracking-[0.08em] text-[oklch(94%_0.01_80)] shadow-[inset_0_0_0_1px_oklch(94%_0.01_80/0.16)] transition-colors duration-200 hover:bg-[oklch(94%_0.01_80/0.12)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(72%_0.06_32)] focus-visible:ring-offset-4 focus-visible:ring-offset-[oklch(13%_0.014_42)] sm:w-auto"
             >
-              Parla con Grossi Moto
+              Chiedi un consiglio
               <PhoneCall aria-hidden="true" className="h-4 w-4" strokeWidth={1.8} />
             </a>
           </div>

@@ -1,0 +1,302 @@
+[
+  {
+    "file": "src/components/hero/Hero.tsx",
+    "before": "KYMCO e Voge, consulenza in showroom, accessori e assistenza in officina. Via Festo Porzio 22.",
+    "after": "Confronta KYMCO e Voge con chi ti segue anche in officina. Ti aspettiamo a Roma, in Via Festo Porzio 22."
+  },
+  {
+    "file": "src/components/hero/Hero.tsx",
+    "before": "Parla con un consulente",
+    "after": "Chiamaci per scegliere"
+  },
+  {
+    "file": "src/components/sections/ShowcaseCoverCta.tsx",
+    "before": "Le proporzioni cambiano quando sali in sella. In showroom puoi confrontare posizione, altezza e uso reale prima di scegliere.",
+    "after": "Tra due modelli, la differenza si sente in sella. Confrontiamo insieme altezza, posizione di guida e spazio in base ai tuoi tragitti."
+  },
+  {
+    "file": "src/components/sections/ShowcaseCoverCta.tsx",
+    "before": "Parla con Grossi Moto",
+    "after": "Chiedi un consiglio"
+  },
+  {
+    "file": "src/components/ui/zoom-parallax.tsx",
+    "before": "Dalla scelta dello scooter alla manutenzione, Grossi Moto ti segue con consulenza diretta, assistenza e accessori adatti al tuo uso.",
+    "after": "Scegli il mezzo con noi e ritrovi lo stesso punto di riferimento per tagliandi, assistenza e accessori. Tutto in Via Festo Porzio 22."
+  },
+  {
+    "file": "src/components/sections/WorkshopSection.tsx",
+    "before": "Dopo l&apos;acquisto resta il banco.",
+    "after": "Il tuo scooter, seguito nel tempo."
+  },
+  {
+    "file": "src/components/sections/WorkshopSection.tsx",
+    "before": "L&rsquo;officina Grossi Moto segue il tuo scooter anche dopo l&rsquo;acquisto: tagliandi, manutenzione, diagnosi e montaggio accessori in sede a Roma.",
+    "after": "Un tagliando da fare, un rumore da capire, un accessorio da montare. Raccontaci cosa serve al tuo scooter: partiamo da lì."
+  },
+  {
+    "file": "src/components/sections/WorkshopSection.tsx",
+    "before": "Prenota un controllo",
+    "after": "Chiama l’officina"
+  },
+  {
+    "file": "src/components/sections/WorkshopSection.tsx",
+    "before": "Preparazione, verifica e spiegazione pratica prima di portare lo scooter su strada.",
+    "after": "Prima di partire, controlliamo il mezzo e ti spieghiamo come usarlo."
+  },
+  {
+    "file": "src/components/sections/WorkshopSection.tsx",
+    "before": "Interventi ordinari e controlli tecnici per mantenere affidabile lo scooter nel tempo.",
+    "after": "Dal tagliando al controllo di un problema: valutiamo il lavoro in base al mezzo e al suo utilizzo."
+  },
+  {
+    "file": "src/components/sections/ContactBriefSection.tsx",
+    "before": "Contatti, orari e form",
+    "after": "Scrivici cosa ti serve"
+  },
+  {
+    "file": "src/components/catalog/CatalogPage.tsx",
+    "before": "Gamma scooter",
+    "after": "Moto e scooter"
+  },
+  {
+    "file": "src/components/catalog/CatalogPage.tsx",
+    "before": "Confronta modelli KYMCO e Voge per cilindrata, categoria e uso. Apri una scheda per vedere i dati essenziali e chiedere una consulenza.",
+    "after": "Esplora KYMCO e Voge e apri le schede per confrontare i modelli. Per prezzo, disponibilità e consigli sulla scelta, chiamaci."
+  },
+  {
+    "file": "src/components/catalog/CatalogProductCard.tsx",
+    "before": "Richiedi consulenza per",
+    "after": "Chiama per informazioni su"
+  },
+  {
+    "file": "src/components/catalog/CatalogProductCard.tsx",
+    "before": "Richiedi consulenza",
+    "after": "Chiedi disponibilità"
+  },
+  {
+    "file": "src/components/catalog/CatalogGrid.tsx",
+    "before": "Nessun modello disponibile per questo filtro.",
+    "after": "Nessun modello corrisponde a questo filtro."
+  },
+  {
+    "file": "src/components/sections/StickyScrollShowcase.tsx",
+    "before": "Diagnosi e interventi senza improvvisazioni.",
+    "after": "Capire il problema è il primo passo."
+  },
+  {
+    "file": "src/components/sections/StickyScrollShowcase.tsx",
+    "before": "Controllo del mezzo, attrezzatura adatta e un quadro chiaro prima di ogni lavoro.",
+    "after": "Descrivici cosa hai notato. Controlliamo il mezzo per individuare le necessità e definire il lavoro."
+  },
+  {
+    "file": "src/components/sections/StickyScrollShowcase.tsx",
+    "before": "Lavoro documentato",
+    "after": "Spiegazione degli interventi"
+  },
+  {
+    "file": "src/components/sections/StickyScrollShowcase.tsx",
+    "before": "Presa in carico chiara",
+    "after": "Controllo del veicolo"
+  },
+  {
+    "file": "src/components/sections/StickyScrollShowcase.tsx",
+    "before": "La manutenzione segue il veicolo, non il calendario.",
+    "after": "Il tagliando adatto al tuo scooter."
+  },
+  {
+    "file": "src/components/sections/StickyScrollShowcase.tsx",
+    "before": "Definiamo controlli, materiali e tempistiche in base a modello, chilometri e uso reale a Roma.",
+    "after": "Modello, chilometri e tempo trascorso dall’ultimo tagliando ci aiutano a valutare i controlli necessari."
+  },
+  {
+    "file": "src/components/sections/StickyScrollShowcase.tsx",
+    "before": "Piano su chilometraggio",
+    "after": "Chilometri e scadenze"
+  },
+  {
+    "file": "src/components/sections/StickyScrollShowcase.tsx",
+    "before": "Componenti giusti, montati nel modo giusto.",
+    "after": "Compatibili con il mezzo e con il tuo uso."
+  },
+  {
+    "file": "src/components/sections/StickyScrollShowcase.tsx",
+    "before": "Ricambi e accessori compatibili, ordinati o disponibili in sede con tracciabilità del lavoro.",
+    "after": "Ci dici il modello e cosa ti serve. Verifichiamo compatibilità, disponibilità e possibilità di montaggio in officina."
+  },
+  {
+    "file": "src/components/sections/StickyScrollShowcase.tsx",
+    "before": "Compatibilità verificata",
+    "after": "Verifica della compatibilità"
+  },
+  {
+    "file": "src/components/sections/StickyScrollShowcase.tsx",
+    "before": "Il mezzo si sceglie prima della rata.",
+    "after": "Valuta anche come acquistarlo."
+  },
+  {
+    "file": "src/components/sections/StickyScrollShowcase.tsx",
+    "before": "Valutiamo insieme anticipo, durata e modello, senza partire dalla rata.",
+    "after": "Chiedici quali soluzioni di finanziamento sono disponibili per il modello che hai scelto e quali condizioni prevedono."
+  },
+  {
+    "file": "src/components/sections/StickyScrollShowcase.tsx",
+    "before": "Proposte su misura",
+    "after": "Soluzioni da verificare in sede"
+  },
+  {
+    "file": "src/components/sections/StickyScrollShowcase.tsx",
+    "before": "Anticipo modulabile",
+    "after": "Informazioni su anticipo e durata"
+  },
+  {
+    "file": "src/components/sections/StickyScrollShowcase.tsx",
+    "before": "Scelta prima della rata",
+    "after": "Condizioni da valutare"
+  },
+  {
+    "file": "src/components/sections/StickyScrollShowcase.tsx",
+    "before": "Il tuo usato entra nella trattativa con trasparenza.",
+    "after": "Vuoi cambiare scooter? Partiamo dal tuo."
+  },
+  {
+    "file": "src/components/sections/StickyScrollShowcase.tsx",
+    "before": "Valutazione diretta, lettura dello stato del mezzo e passaggio verso il nuovo senza tempi morti.",
+    "after": "Portaci le informazioni sul tuo mezzo. Ne valutiamo lo stato per capire insieme la possibilità di una permuta."
+  },
+  {
+    "file": "src/components/sections/StickyScrollShowcase.tsx",
+    "before": "Lettura dello stato reale",
+    "after": "Verifica dello stato del mezzo"
+  },
+  {
+    "file": "src/components/sections/StickyScrollShowcase.tsx",
+    "before": "Passaggio senza tempi morti",
+    "after": "Possibilità di permuta"
+  },
+  {
+    "file": "src/components/sections/StickyScrollShowcase.tsx",
+    "before": "Scegliere bene evita modifiche dopo.",
+    "after": "La scelta parte dai tuoi percorsi."
+  },
+  {
+    "file": "src/components/sections/StickyScrollShowcase.tsx",
+    "before": "Confrontiamo uso, postura, cilindrata e accessori prima dell'acquisto o dell'intervento.",
+    "after": "Traffico, passeggero, tragitti più lunghi: raccontaci come ti muovi. Confrontiamo postura, cilindrata e accessori adatti al tuo uso."
+  },
+  {
+    "file": "src/components/sections/StickyScrollShowcase.tsx",
+    "before": "Uso quotidiano letto bene",
+    "after": "Confronto sull’uso quotidiano"
+  },
+  {
+    "file": "src/components/sections/StickyScrollShowcase.tsx",
+    "before": "Accessori coerenti",
+    "after": "Accessori adatti al mezzo"
+  },
+  {
+    "file": "src/components/sections/StickyScrollShowcase.tsx",
+    "before": "Prenota un intervento",
+    "after": "Chiama per informazioni"
+  },
+  {
+    "file": "src/components/ui/services-hero.tsx",
+    "before": "Diagnosi e interventi senza improvvisazioni.",
+    "after": "Un controllo per capire cosa serve."
+  },
+  {
+    "file": "src/components/ui/services-hero.tsx",
+    "before": "Manutenzione programmata, tempi chiari.",
+    "after": "Controlli in base a chilometri e scadenze."
+  },
+  {
+    "file": "src/components/ui/services-hero.tsx",
+    "before": "Componenti adatti al modello, verificati in sede.",
+    "after": "Verifichiamo compatibilità e disponibilità."
+  },
+  {
+    "file": "src/components/ui/services-hero.tsx",
+    "before": "Soluzioni costruite su modello e durata.",
+    "after": "Chiedi soluzioni e condizioni disponibili."
+  },
+  {
+    "file": "src/components/ui/services-hero.tsx",
+    "before": "Valutazione diretta e passaggio pulito.",
+    "after": "Valutiamo il tuo mezzo per una permuta."
+  },
+  {
+    "file": "src/components/ui/services-hero.tsx",
+    "before": "Scelta di mezzo, postura e accessori.",
+    "after": "Confrontiamo i mezzi per i tuoi percorsi."
+  },
+  {
+    "file": "src/components/ui/services-hero.tsx",
+    "before": "Assistenza per scooter KYMCO e Voge: tagliandi, diagnosi, montaggio accessori e consulenza.",
+    "after": "Tagliandi, diagnosi e accessori per il tuo scooter KYMCO o Voge. Raccontaci cosa ti serve: ti aiutiamo a capire da dove partire."
+  },
+  {
+    "file": "src/components/ui/services-hero.tsx",
+    "before": "Prenota un intervento",
+    "after": "Chiama l’officina"
+  },
+  {
+    "file": "src/components/ui/services-hero.tsx",
+    "before": "Parla con Grossi Moto",
+    "after": "Scrivi all’officina"
+  },
+  {
+    "file": "src/app/servizi/page.tsx",
+    "before": "Chiama direttamente Grossi Moto per fissare un appuntamento in officina o per una consulenza personalizzata.",
+    "after": "Hai un tagliando da fare o un problema da capire? Chiamaci con modello e chilometraggio, oppure descrivici la tua esigenza nel modulo."
+  },
+  {
+    "file": "src/app/servizi/page.tsx",
+    "before": "Parla con Grossi Moto",
+    "after": "Scrivi all’officina"
+  },
+  {
+    "file": "src/app/contatti/page.tsx",
+    "before": "Siamo a Roma, in Via Festo Porzio 22. Grossi Moto è rivenditore ufficiale KYMCO e propone anche modelli Voge. Puoi chiedere orientamento, verificare disponibilità e organizzare l’assistenza nello stesso posto.",
+    "after": "Cerchi il mezzo giusto, vuoi conoscerne prezzo e disponibilità o hai bisogno dell’officina? Chiamaci o scrivici. Ci trovi a Roma, in Via Festo Porzio 22."
+  },
+  {
+    "file": "src/app/contatti/page.tsx",
+    "before": "Modelli, servizi e accessori",
+    "after": "Descrivi il mezzo o il lavoro che ti serve"
+  },
+  {
+    "file": "src/app/contatti/page.tsx",
+    "before": "Indica il modello, l’uso che ne fai o il lavoro da richiedere: partiamo da quello che ti serve.",
+    "after": "Non hai ancora scelto un modello? Raccontaci i tuoi percorsi. Per l’officina, indica il mezzo e cosa hai notato."
+  },
+  {
+    "file": "src/components/contact/ContactForm.tsx",
+    "before": "Modello, uso o lavoro da richiedere…",
+    "after": "Es. cerco uno scooter per andare al lavoro, oppure vorrei un tagliando per il mio modello…"
+  },
+  {
+    "file": "src/components/contact/ContactForm.tsx",
+    "before": "Richiesta inviata. Grazie, ti ricontatteremo usando i dati indicati.",
+    "after": "La tua richiesta è stata inviata. Ti ricontatteremo ai recapiti che hai indicato."
+  },
+  {
+    "file": "src/components/contact/ContactForm.tsx",
+    "before": "Non è stato possibile inviare la richiesta. I dati sono ancora presenti: riprova o scrivi a info@grossimoto.it.",
+    "after": "Invio non riuscito. Il messaggio è ancora qui: puoi riprovare o chiamarci al +39 328 918 5029."
+  },
+  {
+    "file": "src/data/catalog-scooters.ts",
+    "before": "Ruote alte e postura ordinata, con ABS già indicato nel nome del modello.",
+    "after": "Ruote alte e ABS, per chi cerca uno scooter 125 per gli spostamenti quotidiani."
+  },
+  {
+    "file": "src/data/catalog-scooters.ts",
+    "before": "Un 50cc dal taglio dinamico per chi cerca una presenza meno neutra.",
+    "after": "Un 50cc dallo stile sportivo per i primi spostamenti in città."
+  },
+  {
+    "file": "src/data/catalog-scooters.ts",
+    "before": "Un 125 dal taglio tecnico per chi cerca più presenza senza passare ai 300cc.",
+    "after": "Un 125 dallo stile deciso per chi si muove ogni giorno nel traffico."
+  }
+]

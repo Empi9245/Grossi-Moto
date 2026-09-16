@@ -23,7 +23,7 @@ const SERVICE_ITEMS = [
     code: "01",
     title: "Officina per scooter",
     shortTitle: "Officina",
-    description: "Diagnosi e interventi senza improvvisazioni.",
+    description: "Un controllo per capire cosa serve.",
     href: "#service-01",
     icon: Wrench,
   },
@@ -31,7 +31,7 @@ const SERVICE_ITEMS = [
     code: "02",
     title: "Tagliandi",
     shortTitle: "Tagliandi",
-    description: "Manutenzione programmata, tempi chiari.",
+    description: "Controlli in base a chilometri e scadenze.",
     href: "#service-02",
     icon: Tag,
   },
@@ -39,7 +39,7 @@ const SERVICE_ITEMS = [
     code: "03",
     title: "Ricambi e accessori",
     shortTitle: "Ricambi",
-    description: "Componenti adatti al modello, verificati in sede.",
+    description: "Verifichiamo compatibilità e disponibilità.",
     href: "#service-03",
     icon: Box,
   },
@@ -47,7 +47,7 @@ const SERVICE_ITEMS = [
     code: "04",
     title: "Finanziamenti",
     shortTitle: "Finanziamenti",
-    description: "Soluzioni costruite su modello e durata.",
+    description: "Chiedi soluzioni e condizioni disponibili.",
     href: "#service-04",
     icon: CreditCard,
   },
@@ -55,7 +55,7 @@ const SERVICE_ITEMS = [
     code: "05",
     title: "Permute",
     shortTitle: "Permute",
-    description: "Valutazione diretta e passaggio pulito.",
+    description: "Valutiamo il tuo mezzo per una permuta.",
     href: "#service-05",
     icon: RefreshCcw,
   },
@@ -63,7 +63,7 @@ const SERVICE_ITEMS = [
     code: "06",
     title: "Consulenza",
     shortTitle: "Consulenza",
-    description: "Scelta di mezzo, postura e accessori.",
+    description: "Confrontiamo i mezzi per i tuoi percorsi.",
     href: "#service-06",
     icon: MessageCircle,
   },
@@ -403,8 +403,7 @@ export function ServicesHero() {
         <div className="flex flex-col gap-8 pb-2 sm:pb-4 lg:flex-row lg:items-end lg:justify-between lg:gap-12">
           <div data-hero-desc className="max-w-[600px]">
             <p className="max-w-[30rem] text-base font-medium leading-7 text-[#F4F0E8]/78 sm:text-lg sm:leading-8">
-              Assistenza per scooter KYMCO e Voge: tagliandi, diagnosi,
-              montaggio accessori e consulenza.
+              Tagliandi, diagnosi e accessori per il tuo scooter KYMCO o Voge. Raccontaci cosa ti serve: ti aiutiamo a capire da dove partire.
             </p>
           </div>
 
@@ -416,7 +415,7 @@ export function ServicesHero() {
               href="tel:+393289185029"
               className="font-tech group inline-flex min-h-12 items-center justify-center gap-3 rounded-full bg-[#F4F0E8] px-7 py-3 text-[0.72rem] font-bold uppercase tracking-[0.12em] text-[#1B0E0D] shadow-[0_20px_58px_rgba(0,0,0,0.28)] transition-[background,color,box-shadow,transform] duration-[320ms] ease-[cubic-bezier(0.165,0.84,0.44,1)] hover:bg-[#E7E3DC] hover:shadow-[0_24px_70px_rgba(0,0,0,0.34)] active:translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F4F0E8]/70 focus-visible:ring-offset-4 focus-visible:ring-offset-[#050504]"
             >
-              Prenota un intervento
+              Chiama l’officina
               <ArrowUpRight
                 aria-hidden="true"
                 className="h-4 w-4 transition-transform duration-[320ms] ease-[cubic-bezier(0.165,0.84,0.44,1)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
@@ -427,7 +426,7 @@ export function ServicesHero() {
               href="/contatti"
               className="font-tech group inline-flex min-h-12 items-center justify-center gap-3 rounded-full bg-[#F4F0E8]/7 px-7 py-3 text-[0.72rem] font-bold uppercase tracking-[0.12em] text-[#F4F0E8] shadow-[inset_0_0_0_1px_rgba(244,240,232,0.22)] backdrop-blur-md transition-[background,color,box-shadow,transform] duration-[320ms] ease-[cubic-bezier(0.165,0.84,0.44,1)] hover:bg-[#F4F0E8]/14 active:translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F4F0E8]/70 focus-visible:ring-offset-4 focus-visible:ring-offset-[#050504]"
             >
-              Parla con Grossi Moto
+              Scrivi all’officina
               <PhoneCall
                 aria-hidden="true"
                 className="h-4 w-4"

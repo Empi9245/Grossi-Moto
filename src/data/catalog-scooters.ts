@@ -514,7 +514,7 @@ export const catalogScooters: CatalogScooter[] = [
     displacement: "125cc",
     filterCategory: "125cc",
     family: "Urban tecnico",
-    positioning: "Un 125 dal taglio tecnico per chi cerca più presenza senza passare ai 300cc.",
+    positioning: "Un 125 dallo stile deciso per chi si muove ogni giorno nel traffico.",
     idealUse: "Citta intensa",
     image:
       `${kymcoProductWorkbenchBase}/10-dink-x-125_no_bg.png`,
@@ -598,7 +598,7 @@ export const catalogScooters: CatalogScooter[] = [
     displacement: "125cc",
     filterCategory: "125cc",
     family: "Ruote alte",
-    positioning: "Ruote alte e postura ordinata, con ABS già indicato nel nome del modello.",
+    positioning: "Ruote alte e ABS, per chi cerca uno scooter 125 per gli spostamenti quotidiani.",
     idealUse: "Città e pavé",
     image:
       `${kymcoProductWorkbenchBase}/14-people-s-125-abs_no_bg.png`,
@@ -640,7 +640,7 @@ export const catalogScooters: CatalogScooter[] = [
     displacement: "50cc",
     filterCategory: "50cc",
     family: "50cc",
-    positioning: "Un 50cc dal taglio dinamico per chi cerca una presenza meno neutra.",
+    positioning: "Un 50cc dallo stile sportivo per i primi spostamenti in città.",
     idealUse: "Primi tragitti dinamici",
     image:
       `${kymcoProductWorkbenchBase}/16-super-8-50-r_no_bg.png`,

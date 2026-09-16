@@ -127,8 +127,7 @@ export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
                 })}
                 className="mt-5 w-full max-w-[22rem] [overflow-wrap:break-word] text-sm leading-[2] text-[oklch(84%_0.012_78)] sm:max-w-[44rem] sm:text-base sm:leading-[1.75] md:text-lg md:leading-[1.56]"
               >
-                KYMCO e Voge, consulenza in showroom, accessori e assistenza in
-                officina. Via Festo Porzio 22.
+                Confronta KYMCO e Voge con chi ti segue anche in officina. Ti aspettiamo a Roma, in Via Festo Porzio 22.
               </motion.p>
 
               <motion.div
@@ -159,7 +158,7 @@ export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
                   {...subtleHover(shouldReduceMotion)}
                   className="font-ui inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[oklch(11%_0.012_40/0.78)] px-4 py-3 text-sm leading-normal font-medium sm:px-6 text-[oklch(94%_0.01_80)] shadow-[inset_0_0_0_1px_oklch(94%_0.01_80/0.16)] transition-colors duration-200 hover:bg-[oklch(15%_0.012_40/0.84)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(84%_0.04_72)] focus-visible:ring-offset-4 focus-visible:ring-offset-[oklch(14%_0.012_40)] sm:text-base"
                 >
-                  Parla con un consulente
+                  Chiamaci per scegliere
                   <CalendarCheck
                     aria-hidden="true"
                     className="h-4 w-4"

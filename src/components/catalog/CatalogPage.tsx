@@ -101,15 +101,13 @@ export function CatalogPage({ initialFocusId }: { initialFocusId?: string }) {
           <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(34rem,0.92fr)] lg:items-end">
             <div>
               <p className="font-ui text-[0.68rem] font-bold uppercase tracking-[0.18em] text-[oklch(30%_0.014_56/0.62)]">
-                Gamma scooter
+                Moto e scooter
               </p>
               <h1 className="font-display mt-3 max-w-[10ch] text-[clamp(2.85rem,11vw,6.8rem)] font-bold leading-[0.88] tracking-normal text-[oklch(15%_0.014_50)] sm:max-w-[12ch]">
                 Tutta la gamma
               </h1>
               <p className="mt-5 max-w-[39rem] text-sm leading-6 text-[oklch(30%_0.014_56/0.66)] sm:text-base">
-                Confronta modelli KYMCO e Voge per cilindrata, categoria e uso.
-                Apri una scheda per vedere i dati essenziali e chiedere una
-                consulenza.
+                Esplora KYMCO e Voge e apri le schede per confrontare i modelli. Per prezzo, disponibilità e consigli sulla scelta, chiamaci.
               </p>
             </div>
 
@@ -172,7 +170,7 @@ export function CatalogPage({ initialFocusId }: { initialFocusId?: string }) {
         />
 
         <section
-          aria-label="Gamma scooter Grossimoto"
+          aria-label="Moto e scooter Grossimoto"
           className="px-5 pb-8 pt-6 sm:px-7 sm:pb-10 lg:px-10"
         >
           <CatalogGrid

@@ -1,5 +1,13 @@
 # Project Memory
 
+## Accessori Home — prompt 03 implementato 2026-09-16
+
+- Sostituita la sezione numerata con `AccessoriesSection.tsx`, rail client `AccessoryRail.tsx` e dataset `src/data/accessories.ts`. Export e ordine Home conservati; nessuna nuova route/catalogo. Quattro WebP del manifest, alt prudenti, nota «Immagini illustrative», CTA `tel:+393289185029`.
+- Rail nativo con snap iniziale: scheda 86% mobile, 44% tablet, 38% desktop, gap 16px. Coda interna tramite pseudo-elemento, senza falsa scheda: anche l'ultima si allinea all'inizio. Categoria attiva più vicina al bordo iniziale, con banda di 2px contro oscillazioni; sincronizzazione su scroll e ResizeObserver. Categorie con aria-current, contatore, frecce da 48px che mantengono focus anche agli estremi.
+- Tastiera e reduced motion usano scroll istantaneo; la preferenza viene riletta a ogni comando e il listener interrompe smooth in corso. Nessun drag custom, intercettazione wheel, autoplay o animazione sulle foto. Protezione click dopo movimento >10px/pointercancel. Immagini lazy con dimensioni e ratio 4:5 riservati; testo senza altezza fissa; solo freccia link traslata 3px/160ms in hover.
+- QA locale in-app a 375, 820, 1440px: foto caricate, nessun overflow globale, due schede più anticipo tablet; ultimo allineamento entro 0,3px. Altezza sezione mobile circa 1239px nel browser Windows con scrollbar. Verificati categorie, frecce, Enter/Tab, focus sui link, contatore, resize e scroll nativo orizzontale/verticale; frecce con scrollY invariato. Nessuna chiamata telefonica eseguita.
+- Build production e lint dei tre file riusciti. Lint generale bloccato da tre errori require negli script preesistenti `qa-screenshots/prompt02-qa.cjs` e `prompt02-text-only.cjs`, lasciati intatti. QA parziale: browser senza emulazione touch/reduced-motion; swipe fisico, click dopo swipe, cambio live preferenza e zoom elevato non certificati. Shortcut zoom non ha modificato il viewport. Conservare questi controlli per QA integrata; nessun deploy o prompt successivo eseguito.
+
 ## Asset mobile/tablet — prompt 01 completato 2026-09-15
 
 - Creato `docs/prompts/mobile-tablet/ASSET-MANIFEST.md`: sette utilizzi pronti per Accessori e Officina, URL, soggetti osservati, provenienza, dimensioni, crop, object-position e alt prudenti. Voce 01 di `STATO.md` completata; nessun altro prompt avviato.
@@ -8,10 +16,16 @@
 - Master generati, prompt esatti, report con SHA-256 e tavole di verifica conservati in `docs/prompts/mobile-tablet/asset-sources/`, fuori da `public`. Tutti i sette WebP visti a 300 px; alternative 4:3 approvate solo per bauletto e bloccadisco. Peso complessivo 351 632 byte (343,4 KiB), decodifica e ratio verificati con Sharp già disponibile.
 - Passaggio solo asset/documentazione: nessuna UI o codice modificato, nessun browser, lint/build o deploy eseguito.
 
+## Prompt mobile/tablet compattati 2026-09-16
+
+- Su richiesta dell'utente, il pacchetto in `docs/prompts/mobile-tablet/` e stato ridotto da 12 a 7 prompt operativi: 01 asset, 02 hero tablet, 03 accessori, 04 officina, 05 responsive+servizi, 06 showroom+catalogo+contatti, 07 QA finale.
+- L'utente ha indicato che i primi tre prompt sono gia stati eseguiti; `STATO.md` li marca come completati/da riverificare nel QA finale anche se i dettagli tecnici di 02 e 03 non sono stati registrati in questa chat.
+- I vecchi prompt 05-12 separati sono stati rimossi dall'indice operativo e sostituiti con `05-RESPONSIVE-E-SERVIZI.md`, `06-SHOWROOM-CATALOGO-CONTATTI.md` e `07-VERIFICA-FINALE.md`.
+
 ## Pacchetto prompt mobile/tablet 2026-09-15
 
-- Preparati 12 prompt di implementazione separati in `docs/prompts/mobile-tablet/`, con indice `README.md`, contesto comune `CONTESTO.md` e registro `STATO.md`.
-- Il pacchetto copre asset, fix hero tablet, Accessori e Officina Home, policy input/navigazione, lifecycle hero Servizi, selettore Servizi, processo, showroom, catalogo, contatti e QA integrata.
+- Preparati prompt di implementazione separati in `docs/prompts/mobile-tablet/`, con indice `README.md`, contesto comune `CONTESTO.md` e registro `STATO.md`.
+- Il pacchetto copre asset, fix hero tablet, Accessori e Officina Home, policy input/navigazione, lifecycle hero Servizi, selettore Servizi, processo, showroom, catalogo, contatti e QA integrata; dal 2026-09-16 alcune fasi sono raggruppate per ridurre il numero di prompt.
 - Questa fase ha prodotto soltanto documentazione e prompt: nessun redesign eseguito o deploy. Lo stato di ciascuna futura implementazione va registrato in `STATO.md`.
 
 ## Audit live mobile e tablet 2026-09-15
@@ -456,3 +470,12 @@ Implementata.
 - Le card flottanti della Home sono state riposizionate sopra la tab bar sui viewport compatti e il link mappa resta una affordance desktop per non sovrapporsi al chrome mobile.
 - QA browser in-app: `/`, `/scooters`, `/servizi`, `/contatti` a 320, 390, 768 e 820px; 16/16 senza overflow orizzontale. Verificato anche il passaggio touch Home -> Gamma e target da 48px.
 - Sessione browser pulita sulla Home senza warning/errori console; `C:\Program Files\nodejs\npm.cmd run lint` e `C:\Program Files\nodejs\npm.cmd run build` completati senza errori.
+
+## Ritocchi mirati fiducia e processo — 2026-09-16
+
+- Perimetro confermato dall’utente: **Hero + Come funziona**. La precedente revisione estesa è stata annullata dall’utente. Preservare composizione, sezioni, scroll, showcase, catalogo e animazioni esistenti; non riprendere l’accorpamento delle sezioni.
+- `BottomLeftCard.tsx`: stessa card e stesso posizionamento, sostituito `27 modelli` con valutazione Google **4,9/5 e 230 recensioni**, verificata il 16 settembre 2026 sulla scheda https://share.google/vSyE7QS9KoLI6wZOa. La card intera apre la fonte in una nuova scheda. Dati statici: ricontrollarli prima di futuri aggiornamenti, non dichiararli sincronizzati automaticamente o recensioni verificate.
+- `ServiceProcess.tsx`, montato soltanto al posto dei quattro paragrafi di “Come funziona” in `/servizi`: quattro fasi selezionabili, fotografie illustrative già presenti nel progetto, spiegazioni originali preservate, CTA telefono contestuale. Nessun autoplay, libreria o immagine aggiunta.
+- Applicata Apple Design a feedback immediato, comandi da almeno 48px, navigazione tastiera delle tab (frecce, Home/End), contrasto e transizione fotografica breve senza spostamenti, disattivata con reduced motion. Il resto della pagina Servizi resta invariato.
+- Build production e TypeScript passati; ESLint dei tre file interessati passato. `npm run lint` completo resta bloccato da tre errori preesistenti `no-require-imports` in `qa-screenshots/prompt02-qa.cjs` e `prompt02-text-only.cjs`. Nessuna modifica a quei file o alla configurazione ESLint.
+- Nessun test visuale automatico eseguito in questa correzione. Le modifiche Accessori e al pacchetto prompt trovate nel checkout appartengono ad altro lavoro e sono state preservate.

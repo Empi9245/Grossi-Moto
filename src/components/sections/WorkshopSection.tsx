@@ -25,18 +25,16 @@ export function WorkshopSection() {
             Officina in sede
           </p>
           <h2 className="font-display mt-5 max-w-[12ch] text-[clamp(4rem,10vw,10rem)] font-[900] uppercase leading-[0.8]">
-            Dopo l&apos;acquisto resta il banco.
+            Il tuo scooter, seguito nel tempo.
           </h2>
           <p className="mt-8 max-w-[44rem] text-[clamp(1.45rem,2.4vw,2.9rem)] font-semibold leading-[1] text-[oklch(86%_0.012_74)]">
-            L&rsquo;officina Grossi Moto segue il tuo scooter anche dopo
-            l&rsquo;acquisto: tagliandi, manutenzione, diagnosi e montaggio
-            accessori in sede a Roma.
+            Un tagliando da fare, un rumore da capire, un accessorio da montare. Raccontaci cosa serve al tuo scooter: partiamo da lì.
           </p>
           <a
             href="tel:+393289185029"
             className="font-ui mt-8 inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[oklch(91%_0.014_76)] px-6 py-3 text-sm font-bold uppercase tracking-[0.08em] text-[oklch(13%_0.014_42)] transition-[opacity,transform] duration-200 hover:opacity-88 active:translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(72%_0.06_32)] focus-visible:ring-offset-4 focus-visible:ring-offset-[oklch(14%_0.014_42)]"
           >
-            Prenota un controllo
+            Chiama l’officina
             <ArrowUpRight aria-hidden="true" className="h-4 w-4" strokeWidth={1.8} />
           </a>
         </div>
@@ -53,8 +51,7 @@ export function WorkshopSection() {
                 Prima consegna e controlli
               </h3>
               <p className="mt-4 text-sm leading-6 text-[oklch(82%_0.012_74)]">
-                Preparazione, verifica e spiegazione pratica prima di portare lo
-                scooter su strada.
+                Prima di partire, controlliamo il mezzo e ti spieghiamo come usarlo.
               </p>
             </div>
           </article>
@@ -70,8 +67,7 @@ export function WorkshopSection() {
                 Manutenzione e diagnosi
               </h3>
               <p className="mt-4 text-sm leading-6 text-[oklch(82%_0.012_74)]">
-                Interventi ordinari e controlli tecnici per mantenere affidabile
-                lo scooter nel tempo.
+                Dal tagliando al controllo di un problema: valutiamo il lavoro in base al mezzo e al suo utilizzo.
               </p>
             </div>
           </article>

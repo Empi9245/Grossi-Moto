@@ -87,8 +87,7 @@ function ExperienceCopy() {
           La scelta continua dopo la consegna.
         </h2>
         <p className="max-w-[34rem] text-base leading-7 text-[oklch(93%_0.01_78/0.78)] sm:text-lg">
-          Dalla scelta dello scooter alla manutenzione, Grossi Moto ti segue
-          con consulenza diretta, assistenza e accessori adatti al tuo uso.
+          Scegli il mezzo con noi e ritrovi lo stesso punto di riferimento per tagliandi, assistenza e accessori. Tutto in Via Festo Porzio 22.
         </p>
       </div>
     </div>

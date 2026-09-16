@@ -10,24 +10,24 @@ import { useMediaQuery } from "@/hooks/useMediaQuery";
 const services = [
   {
     title: "Officina per scooter",
-    statement: "Diagnosi e interventi senza improvvisazioni.",
+    statement: "Capire il problema è il primo passo.",
     description:
-      "Controllo del mezzo, attrezzatura adatta e un quadro chiaro prima di ogni lavoro.",
+      "Descrivici cosa hai notato. Controlliamo il mezzo per individuare le necessità e definire il lavoro.",
     features: [
       "Diagnosi strumentale",
-      "Lavoro documentato",
-      "Presa in carico chiara",
+      "Spiegazione degli interventi",
+      "Controllo del veicolo",
     ],
     image: "/grossimoto/servizi/officina-autorizzata.png",
     alt: "Officina scooter Grossi Moto a Roma",
   },
   {
     title: "Tagliandi",
-    statement: "La manutenzione segue il veicolo, non il calendario.",
+    statement: "Il tagliando adatto al tuo scooter.",
     description:
-      "Definiamo controlli, materiali e tempistiche in base a modello, chilometri e uso reale a Roma.",
+      "Modello, chilometri e tempo trascorso dall’ultimo tagliando ci aiutano a valutare i controlli necessari.",
     features: [
-      "Piano su chilometraggio",
+      "Chilometri e scadenze",
       "Materiali adatti al modello",
       "Lavori concordati",
     ],
@@ -36,12 +36,12 @@ const services = [
   },
   {
     title: "Ricambi e accessori",
-    statement: "Componenti giusti, montati nel modo giusto.",
+    statement: "Compatibili con il mezzo e con il tuo uso.",
     description:
-      "Ricambi e accessori compatibili, ordinati o disponibili in sede con tracciabilità del lavoro.",
+      "Ci dici il modello e cosa ti serve. Verifichiamo compatibilità, disponibilità e possibilità di montaggio in officina.",
     features: [
       "Componenti per KYMCO e Voge",
-      "Compatibilità verificata",
+      "Verifica della compatibilità",
       "Montaggio in officina",
     ],
     image: "/grossimoto/servizi/ricambi-originali.png",
@@ -49,39 +49,39 @@ const services = [
   },
   {
     title: "Finanziamenti",
-    statement: "Il mezzo si sceglie prima della rata.",
+    statement: "Valuta anche come acquistarlo.",
     description:
-      "Valutiamo insieme anticipo, durata e modello, senza partire dalla rata.",
+      "Chiedici quali soluzioni di finanziamento sono disponibili per il modello che hai scelto e quali condizioni prevedono.",
     features: [
-      "Proposte su misura",
-      "Anticipo modulabile",
-      "Scelta prima della rata",
+      "Soluzioni da verificare in sede",
+      "Informazioni su anticipo e durata",
+      "Condizioni da valutare",
     ],
     image: "/grossimoto/servizi/finanziamenti.png",
     alt: "Finanziamento scooter a Roma, Grossi Moto",
   },
   {
     title: "Permute",
-    statement: "Il tuo usato entra nella trattativa con trasparenza.",
+    statement: "Vuoi cambiare scooter? Partiamo dal tuo.",
     description:
-      "Valutazione diretta, lettura dello stato del mezzo e passaggio verso il nuovo senza tempi morti.",
+      "Portaci le informazioni sul tuo mezzo. Ne valutiamo lo stato per capire insieme la possibilità di una permuta.",
     features: [
       "Valutazione diretta",
-      "Lettura dello stato reale",
-      "Passaggio senza tempi morti",
+      "Verifica dello stato del mezzo",
+      "Possibilità di permuta",
     ],
     image: "/grossimoto/servizi/permute.png",
     alt: "Valutazione permuta scooter usato a Roma, Grossi Moto",
   },
   {
     title: "Consulenza",
-    statement: "Scegliere bene evita modifiche dopo.",
+    statement: "La scelta parte dai tuoi percorsi.",
     description:
-      "Confrontiamo uso, postura, cilindrata e accessori prima dell'acquisto o dell'intervento.",
+      "Traffico, passeggero, tragitti più lunghi: raccontaci come ti muovi. Confrontiamo postura, cilindrata e accessori adatti al tuo uso.",
     features: [
-      "Uso quotidiano letto bene",
+      "Confronto sull’uso quotidiano",
       "Postura e cilindrata",
-      "Accessori coerenti",
+      "Accessori adatti al mezzo",
     ],
     image: "/grossimoto/servizi/consulenza.png",
     alt: "Consulenza per scegliere uno scooter a Roma, Grossi Moto",
@@ -348,7 +348,7 @@ export function StickyScrollShowcase() {
                       href="tel:+393289185029"
                       className="font-tech group mt-8 hidden min-h-12 items-center justify-center gap-3 rounded-full bg-[#1B0E0D] px-6 py-3 text-[0.7rem] font-bold uppercase tracking-[0.13em] text-[#F4F0E8] transition-[background,color,transform] duration-[320ms] ease-[cubic-bezier(0.165,0.84,0.44,1)] hover:bg-[#F4F0E8] hover:text-[#1B0E0D] active:translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1B0E0D]/38 focus-visible:ring-offset-4 focus-visible:ring-offset-[#E7E3DC] lg:inline-flex"
                     >
-                      Prenota un intervento
+                      Chiama per informazioni
                       <PhoneCall
                         aria-hidden="true"
                         className="h-4 w-4"
