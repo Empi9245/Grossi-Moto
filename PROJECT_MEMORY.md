@@ -529,3 +529,9 @@ Implementata.
 - `ZoomParallax`: sezione desktop 600svh; zoom conservato a 86svh effettivi (0–0,172 del progresso su 500svh). Credits tra 0,20 e 0,84, prospettiva 1400px e inclinazione 8 gradi; ultima frase ferma per gli ultimi 80svh di scroll. Nessuna dissolvenza finale o autoplay, movimento reversibile con lo scroll.
 - CTA telefono e modulo in flusso normale subito dopo il segmento sticky, sempre accessibili da tastiera senza link invisibili nei layer animati. Mobile e reduced motion ricevono tutti e tre i messaggi in sequenza statica e le stesse CTA.
 - Preservati sette scatti, angoli arrotondati, chiusura hero e showroom sequenziale. Nessuna dipendenza aggiunta; animazione tramite transform e opacity. Lint e build superati; QA visuale non eseguita perché non richiesta. Modifiche non pubblicate da questo task.
+
+## Introduzione al collage — 2026-09-16
+
+- Aggiunte parole introduttive negli spazi del collage desktop: “Grossi Moto · Roma / La tua prossima strada.” in alto a sinistra e “Parte da qui. / Dalla scelta del mezzo, a ogni nuovo viaggio.” in basso a destra.
+- Tipografia scura sul fondo esistente; layer senza interazioni. Testo visibile a zoom minimo, dissolvenza e lieve salita legate al progresso iniziale, conclusa prima del finale cinematografico. Nessuna modifica alle foto, allo showroom o alla sequenza finale. Fallback mobile/reduced motion preservato.
+- Lint e build verificati; nessuna QA visuale automatica richiesta.

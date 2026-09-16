@@ -159,6 +159,9 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
   // Preserve the original 86svh zoom distance; reserve the rest for the credits.
   const zoomProgress = useTransform(scrollYProgress, [0, 0.172], [0, 1]);
 
+  const introOpacity = useTransform(zoomProgress, [0, 0.12, 0.48], [1, 1, 0]);
+  const introY = useTransform(zoomProgress, [0, 0.48], [0, -24]);
+
   const scale4 = useTransform(zoomProgress, [0, 1], [1, 4.08]);
   const scale5 = useTransform(zoomProgress, [0, 1], [1, 5]);
   const scale6 = useTransform(zoomProgress, [0, 1], [1, 6]);
@@ -236,6 +239,22 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
           style={{ opacity: copyScrimOpacity }}
           className="pointer-events-none absolute inset-0 z-20 bg-[linear-gradient(105deg,oklch(8%_0.012_42/0.84),oklch(8%_0.012_42/0.58)_56%,oklch(8%_0.012_42/0.42))] will-change-opacity"
         />
+
+        <motion.div
+          style={{ opacity: introOpacity, y: introY }}
+          className="pointer-events-none absolute inset-0 z-30 text-[oklch(18%_0.014_56)]"
+        >
+          <div className="absolute left-[4vw] top-[3svh] max-w-[26vw]">
+            <p className="font-ui mb-3 text-[0.65rem] font-bold uppercase tracking-[0.2em]">Grossi Moto · Roma</p>
+            <p className="font-display text-[clamp(2rem,3.1vw,4rem)] font-bold leading-[0.95] tracking-[-0.035em]">
+              La tua prossima strada.
+            </p>
+          </div>
+          <div className="absolute bottom-[5svh] right-[4vw] max-w-[25vw] text-right">
+            <p className="font-display text-[clamp(2rem,3.6vw,4.5rem)] font-bold leading-[0.95] tracking-[-0.035em]">Parte da qui.</p>
+            <p className="font-ui mt-4 text-xs tracking-wide">Dalla scelta del mezzo, a ogni nuovo viaggio.</p>
+          </div>
+        </motion.div>
 
         <CinematicCredits progress={scrollYProgress} />
       </div>
