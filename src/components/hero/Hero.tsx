@@ -61,14 +61,14 @@ export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
       onTouchCancelCapture={() => {
         touchY.current = null;
       }}
-      className="min-h-[100svh] w-full bg-[var(--page-background)] p-2 data-[contained=true]:max-h-[100svh] data-[contained=true]:overflow-y-auto sm:p-3 lg:p-4 2xl:p-5"
+      className="h-[100svh] w-full bg-[var(--page-background)] p-2 data-[contained=true]:overflow-y-auto sm:p-3 lg:p-4 2xl:p-5"
     >
       <motion.section
         {...cardMotionProps}
         aria-hidden={cardAriaHidden}
         data-hero-panel={cardMotion ? "true" : undefined}
         style={cardMotionStyle}
-        className="relative mx-auto flex min-h-[calc(100svh-1rem)] w-full max-w-[1920px] overflow-hidden rounded-[var(--hero-card-radius)] bg-[oklch(14%_0.012_40)] [--hero-card-radius:1.35rem] sm:min-h-[calc(100svh-1.5rem)] sm:[--hero-card-radius:1.75rem] lg:min-h-[calc(100svh-2rem)] lg:[--hero-card-radius:2.5rem] 2xl:min-h-[calc(100svh-2.5rem)] 2xl:[--hero-card-radius:3rem]"
+        className="relative mx-auto flex h-[calc(100svh-1rem)] w-full max-w-[1920px] overflow-hidden rounded-[var(--hero-card-radius)] bg-[oklch(14%_0.012_40)] [--hero-card-radius:1.35rem] sm:h-[calc(100svh-1.5rem)] sm:[--hero-card-radius:1.75rem] lg:h-[calc(100svh-2rem)] lg:[--hero-card-radius:2.5rem] 2xl:h-[calc(100svh-2.5rem)] 2xl:[--hero-card-radius:3rem]"
       >
         <div className="relative flex w-full min-w-0 flex-col">
           <video
