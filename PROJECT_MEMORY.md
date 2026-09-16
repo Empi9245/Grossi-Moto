@@ -515,3 +515,17 @@ Implementata.
 - Annullato il fallback introdotto per la doppia scrollbar: l’altezza della hero non deve disabilitare la chiusura animata e lo showroom sequenziale, elementi fondamentali del sito confermati dall’utente.
 - Rimossi `heroOverflows`, callback e ResizeObserver. `HeroRevealStage` torna a scegliere la sequenza animata con la condizione originale desktop/reduced motion; handler wheel/touch, chiusura e riapertura e `ScooterShowcase` interattivo preservati.
 - Il wrapper Hero resta senza scroll interno. Video distribuibile e correzioni SEO/copy preservati. Nessuna QA visuale automatica eseguita.
+
+## Showroom e collage fotografico — 2026-09-16
+
+- Verificate le sei immagini showroom: file PNG validi e non trasparenti integralmente. La prima immagine e relativo endpoint Next Image sul sito pubblico rispondono 200. Nessuna sostituzione dei modelli o delle fotografie.
+- Resa esplicita la geometria del track animato: contenitore immagini desktop e singole slide da 100svh, track da 6 × 100svh; eliminata la catena di altezze percentuali. Preservati avanzamento uno alla volta, controlli, easing e chiusura hero. Verificato matematicamente l’allineamento dei sei offset; visibilità effettiva in browser non verificata perché QA visuale non richiesta.
+- Collage “Dallo showroom all’officina”: riattivate tutte le sette fotografie già presenti (il codice ne limitava la resa a tre). Angoli arrotondati da 1,25rem e clipping sul contenitore di ogni foto, mantenendo zoom e posizioni esistenti.
+- Lint, build e diff check passati; validità dei tredici asset controllata con il decoder immagini. Nessun deploy eseguito.
+
+## Finale zoom cinematografico — 2026-09-16
+
+- Su richiesta esplicita, sostituito il breve testo finale del collage con tre grandi titoli che salgono davanti alla fotografia: “Le tue strade. La tua scelta.”, “Un riferimento. Anche dopo.”, “Parliamone. Di persona.” Descrizioni basate su consulenza, officina e indirizzo già documentati.
+- `ZoomParallax`: sezione desktop 600svh; zoom conservato a 86svh effettivi (0–0,172 del progresso su 500svh). Credits tra 0,20 e 0,84, prospettiva 1400px e inclinazione 8 gradi; ultima frase ferma per gli ultimi 80svh di scroll. Nessuna dissolvenza finale o autoplay, movimento reversibile con lo scroll.
+- CTA telefono e modulo in flusso normale subito dopo il segmento sticky, sempre accessibili da tastiera senza link invisibili nei layer animati. Mobile e reduced motion ricevono tutti e tre i messaggi in sequenza statica e le stesse CTA.
+- Preservati sette scatti, angoli arrotondati, chiusura hero e showroom sequenziale. Nessuna dipendenza aggiunta; animazione tramite transform e opacity. Lint e build superati; QA visuale non eseguita perché non richiesta. Modifiche non pubblicate da questo task.

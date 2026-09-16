@@ -2,11 +2,13 @@
 
 import {
   motion,
+  type MotionValue,
   useReducedMotion,
   useScroll,
   useTransform,
 } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
 import { useRef } from "react";
 
 import { useMediaQuery } from "@/hooks/useMediaQuery";
@@ -76,20 +78,70 @@ function StaticParallaxFallback({ images }: { images: ParallaxImage[] }) {
   );
 }
 
+const story = [
+  {
+    title: "Le tue strade. La tua scelta.",
+    detail: "Partiamo dai tuoi tragitti. Confrontiamo insieme posizione di guida, spazio e modelli KYMCO e Voge.",
+  },
+  {
+    title: "Un riferimento. Anche dopo.",
+    detail: "La consegna è un inizio. Per tagliandi, assistenza e accessori, ritrovi Grossi Moto e la sua officina.",
+  },
+  {
+    title: "Parliamone. Di persona.",
+    detail: "Un modello in mente o ancora qualche dubbio? Ti aspettiamo in Via Festo Porzio 22, a Roma.",
+  },
+];
+
 function ExperienceCopy() {
   return (
-    <div className="max-w-[92rem] drop-shadow-[0_3px_20px_rgba(0,0,0,0.65)]">
-      <p className="font-ui text-[0.68rem] font-bold uppercase tracking-[0.18em] text-[oklch(86%_0.07_74)]">
-        DALLO SHOWROOM ALL&rsquo;OFFICINA
-      </p>
-      <div className="mt-4 grid max-w-[72rem] gap-5 lg:grid-cols-[minmax(0,0.9fr)_minmax(22rem,0.55fr)] lg:items-end">
-        <h2 className="font-display max-w-[12ch] text-[clamp(3.25rem,8vw,7rem)] font-bold leading-[0.9] tracking-normal text-[oklch(96%_0.01_78)]">
-          La scelta continua dopo la consegna.
-        </h2>
-        <p className="max-w-[34rem] text-base leading-7 text-[oklch(93%_0.01_78/0.78)] sm:text-lg">
-          Scegli il mezzo con noi e ritrovi lo stesso punto di riferimento per tagliandi, assistenza e accessori. Tutto in Via Festo Porzio 22.
-        </p>
+    <div className="max-w-3xl space-y-12 py-12 drop-shadow-[0_3px_20px_rgba(0,0,0,0.65)]">
+      <p className="font-ui text-xs font-bold uppercase tracking-[0.18em]">Dallo showroom all’officina</p>
+      {story.map(({ title, detail }, index) => (
+        <div key={title}>
+          {index === 0 ? (
+            <h2 className="font-display text-[clamp(3rem,8vw,5rem)] font-bold leading-[0.95]">{title}</h2>
+          ) : (
+            <h3 className="font-display text-[clamp(2.5rem,7vw,4rem)] font-bold leading-[0.95]">{title}</h3>
+          )}
+          <p className="mt-5 max-w-xl text-base leading-7 text-white/85">{detail}</p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function ExperienceContact() {
+  return (
+    <div className="relative bg-[oklch(16%_0.014_52)] px-5 py-12 text-center text-white sm:py-16">
+      <p className="font-ui text-sm">Il prossimo passo? Raccontaci cosa cerchi.</p>
+      <div className="mt-6 flex flex-wrap justify-center gap-4">
+        <a href="tel:+393289185029" className="font-ui inline-flex min-h-12 items-center justify-center rounded-full bg-[#ece8e1] px-7 py-3 text-sm font-bold text-[#1b0e0d] transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">Chiama Grossi Moto</a>
+        <Link href="/contatti#richiesta" className="font-ui inline-flex min-h-12 items-center justify-center rounded-full border border-white/50 px-7 py-3 text-sm font-bold transition-colors hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">Scrivici cosa cerchi</Link>
       </div>
+    </div>
+  );
+}
+
+function CinematicCredits({ progress }: { progress: MotionValue<number> }) {
+  const y = useTransform(progress, [0.20, 0.84], ["100svh", "-125svh"]);
+  return (
+    <div className="pointer-events-none absolute inset-0 z-30 [perspective:1400px]">
+      <motion.div style={{ y }} className="absolute inset-x-0 top-0">
+        <div className="origin-center [transform:rotateX(8deg)]">
+          {story.map(({ title, detail }, index) => (
+            <div key={title} className="flex h-[70svh] flex-col items-center justify-center px-10 text-center text-[#f4f0e8] [text-shadow:0_4px_28px_rgba(0,0,0,0.45)]">
+              {index === 0 && <p className="font-ui mb-7 text-xs font-bold uppercase tracking-[0.24em]">Dallo showroom all’officina</p>}
+              {index === 0 ? (
+                <h2 className="font-display max-w-[14ch] text-[clamp(4rem,8.5vw,10rem)] font-bold leading-[0.94] tracking-[-0.035em]">{title}</h2>
+              ) : (
+                <h3 className="font-display max-w-[14ch] text-[clamp(4rem,8.5vw,10rem)] font-bold leading-[0.94] tracking-[-0.035em]">{title}</h3>
+              )}
+              <p className="mt-7 max-w-[38rem] text-[clamp(1rem,1.5vw,1.35rem)] leading-relaxed text-white/85">{detail}</p>
+            </div>
+          ))}
+        </div>
+      </motion.div>
     </div>
   );
 }
@@ -98,35 +150,33 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
   const container = useRef<HTMLDivElement | null>(null);
   const shouldReduceMotion = useReducedMotion();
   const isDesktopViewport = useMediaQuery("(min-width: 1024px)");
-  const parallaxImages = images.slice(0, 3);
+  const parallaxImages = images.slice(0, 7);
 
   const { scrollYProgress } = useScroll({
     target: container,
     offset: ["start start", "end end"],
   });
-  // The zoom keeps its original real-world pace; the extra section length is
-  // reserved for the editorial copy once the image has settled full-screen.
-  const zoomProgress = useTransform(scrollYProgress, [0, 0.43], [0, 1]);
+  // Preserve the original 86svh zoom distance; reserve the rest for the credits.
+  const zoomProgress = useTransform(scrollYProgress, [0, 0.172], [0, 1]);
 
   const scale4 = useTransform(zoomProgress, [0, 1], [1, 4.08]);
   const scale5 = useTransform(zoomProgress, [0, 1], [1, 5]);
   const scale6 = useTransform(zoomProgress, [0, 1], [1, 6]);
   const scale8 = useTransform(zoomProgress, [0, 1], [1, 8]);
   const scale9 = useTransform(zoomProgress, [0, 1], [1, 9]);
-  const copyOpacity = useTransform(scrollYProgress, [0.48, 0.58], [0, 1]);
-  const copyY = useTransform(scrollYProgress, [0.48, 0.58], [24, 0]);
-  const copyScrimOpacity = useTransform(copyOpacity, [0, 1], [0, 0.88]);
+  const copyScrimOpacity = useTransform(scrollYProgress, [0.172, 0.25], [0, 0.9]);
 
   const scales = [scale4, scale5, scale6, scale5, scale6, scale8, scale9];
 
   if (shouldReduceMotion || !isDesktopViewport) {
-    return <StaticParallaxFallback images={parallaxImages} />;
+    return <><StaticParallaxFallback images={parallaxImages} /><ExperienceContact /></>;
   }
 
   return (
+    <>
     <div
       ref={container}
-      className="relative h-[300svh] bg-[oklch(88%_0.015_78)]"
+      className="relative h-[600svh] bg-[oklch(88%_0.015_78)]"
     >
       <div className="sticky top-0 h-[100svh] overflow-hidden">
         {parallaxImages.map(({ src, alt }, index) => {
@@ -164,7 +214,7 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
                   : ""
               }`}
             >
-              <div className="relative h-[25vh] w-[25vw] overflow-hidden bg-[oklch(18%_0.014_56)] shadow-[0_24px_70px_oklch(18%_0.014_56/0.18)]">
+              <div className="relative h-[25vh] w-[25vw] overflow-hidden rounded-[1.25rem] bg-[oklch(18%_0.014_56)] shadow-[0_24px_70px_oklch(18%_0.014_56/0.18)]">
                 <Image
                   src={src}
                   alt={alt ?? `Parallax image ${index + 1}`}
@@ -187,13 +237,10 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
           className="pointer-events-none absolute inset-0 z-20 bg-[linear-gradient(105deg,oklch(8%_0.012_42/0.84),oklch(8%_0.012_42/0.58)_56%,oklch(8%_0.012_42/0.42))] will-change-opacity"
         />
 
-        <motion.div
-          style={{ opacity: copyOpacity, y: copyY }}
-          className="pointer-events-none absolute inset-0 z-30 flex items-end px-4 pb-12 will-change-transform sm:px-6 md:px-10 md:pb-16"
-        >
-          <ExperienceCopy />
-        </motion.div>
+        <CinematicCredits progress={scrollYProgress} />
       </div>
     </div>
+    <ExperienceContact />
+    </>
   );
 }

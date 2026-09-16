@@ -378,24 +378,23 @@ function ShowcaseFrame({
       <div className="relative z-10 grid h-full grid-rows-[auto_minmax(0,0.9fr)_minmax(0,1fr)] px-4 pt-5 pb-4 sm:px-6 md:px-8 lg:grid-cols-[5.25rem_minmax(0,1fr)_minmax(29rem,35vw)] lg:grid-rows-1 lg:px-0 lg:py-0 xl:grid-cols-[5.25rem_minmax(0,1.05fr)_minmax(34rem,35vw)]">
         <ModelRail activeIndex={activeIndex} />
 
-        <div className="relative min-h-0 overflow-hidden lg:h-full">
+        <div className="relative min-h-0 overflow-hidden lg:h-[100svh]">
           {disableMotion ? (
             <ScooterSlide activeIndex={0} slideIndex={0} />
           ) : (
             <motion.div
-              className="absolute inset-0"
+              className="absolute inset-x-0 top-0"
               initial={{ y: getTrackOffset(activeIndex) }}
               animate={trackControls}
               style={{
-                height: `${showcaseScooters.length * 100}%`,
+                height: `calc(100svh * ${showcaseScooters.length})`,
                 willChange: "transform",
               }}
             >
               {showcaseScooters.map((scooter, index) => (
                 <div
                   key={scooter.id}
-                  className="flex h-1/4 items-center justify-center lg:justify-start lg:pl-[clamp(2rem,6vw,7rem)]"
-                  style={{ height: `${100 / showcaseScooters.length}%` }}
+                  className="flex h-[100svh] items-center justify-center lg:justify-start lg:pl-[clamp(2rem,6vw,7rem)]"
                 >
                   <ScooterSlide activeIndex={activeIndex} slideIndex={index} />
                 </div>
