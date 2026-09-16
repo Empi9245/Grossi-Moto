@@ -123,21 +123,21 @@ function ExperienceContact() {
   );
 }
 
-function CinematicCredits({ progress }: { progress: MotionValue<number> }) {
-  const y = useTransform(progress, [0.20, 0.84], ["100svh", "-125svh"]);
+function CinematicCredits({ progress, compact }: { progress: MotionValue<number>; compact: boolean }) {
+  const y = useTransform(progress, [compact ? 0.22 : 0.20, 0.84], ["100svh", compact ? "-132svh" : "-125svh"]);
   return (
     <div className="pointer-events-none absolute inset-0 z-30 [perspective:1400px]">
       <motion.div style={{ y }} className="absolute inset-x-0 top-0">
-        <div className="origin-center [transform:rotateX(8deg)]">
+        <div className="origin-center [transform:rotateX(3deg)] lg:[transform:rotateX(8deg)]">
           {story.map(({ title, detail }, index) => (
-            <div key={title} className="flex h-[70svh] flex-col items-center justify-center px-10 text-center text-[#f4f0e8] [text-shadow:0_4px_28px_rgba(0,0,0,0.45)]">
-              {index === 0 && <p className="font-ui mb-7 text-xs font-bold uppercase tracking-[0.24em]">Dallo showroom all’officina</p>}
+            <div key={title} className="flex h-[70svh] flex-col items-center justify-center px-5 text-center sm:px-8 lg:px-10 text-[#f4f0e8] [text-shadow:0_4px_28px_rgba(0,0,0,0.45)]">
+              {index === 0 && <p className="font-ui mb-4 text-[0.6rem] sm:text-xs lg:mb-7 font-bold uppercase tracking-[0.24em]">Dallo showroom all’officina</p>}
               {index === 0 ? (
-                <h2 className="font-display max-w-[14ch] text-[clamp(4rem,8.5vw,10rem)] font-bold leading-[0.94] tracking-[-0.035em]">{title}</h2>
+                <h2 className="font-display max-w-[14ch] text-[clamp(2rem,min(11vw,9svh),4.75rem)] lg:text-[clamp(4rem,8.5vw,10rem)] font-bold leading-[0.94] tracking-[-0.035em]">{title}</h2>
               ) : (
-                <h3 className="font-display max-w-[14ch] text-[clamp(4rem,8.5vw,10rem)] font-bold leading-[0.94] tracking-[-0.035em]">{title}</h3>
+                <h3 className="font-display max-w-[14ch] text-[clamp(2rem,min(11vw,9svh),4.75rem)] lg:text-[clamp(4rem,8.5vw,10rem)] font-bold leading-[0.94] tracking-[-0.035em]">{title}</h3>
               )}
-              <p className="mt-7 max-w-[38rem] text-[clamp(1rem,1.5vw,1.35rem)] leading-relaxed text-white/85">{detail}</p>
+              <p className="mt-5 max-w-[38rem] lg:mt-7 text-[clamp(1rem,1.5vw,1.35rem)] leading-relaxed text-white/85">{detail}</p>
             </div>
           ))}
         </div>
@@ -150,28 +150,30 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
   const container = useRef<HTMLDivElement | null>(null);
   const shouldReduceMotion = useReducedMotion();
   const isDesktopViewport = useMediaQuery("(min-width: 1024px)");
-  const parallaxImages = images.slice(0, 7);
+  const parallaxImages = images.slice(0, isDesktopViewport ? 7 : 1);
+  const zoomEnd = isDesktopViewport ? 0.172 : 0.205;
 
   const { scrollYProgress } = useScroll({
     target: container,
     offset: ["start start", "end end"],
   });
   // Preserve the original 86svh zoom distance; reserve the rest for the credits.
-  const zoomProgress = useTransform(scrollYProgress, [0, 0.172], [0, 1]);
+  const zoomProgress = useTransform(scrollYProgress, [0, zoomEnd], [0, 1]);
 
   const introOpacity = useTransform(zoomProgress, [0, 0.12, 0.48], [1, 1, 0]);
   const introY = useTransform(zoomProgress, [0, 0.48], [0, -24]);
 
+  const mobileScale = useTransform(zoomProgress, [0, 1], [1, 2.4]);
   const scale4 = useTransform(zoomProgress, [0, 1], [1, 4.08]);
   const scale5 = useTransform(zoomProgress, [0, 1], [1, 5]);
   const scale6 = useTransform(zoomProgress, [0, 1], [1, 6]);
   const scale8 = useTransform(zoomProgress, [0, 1], [1, 8]);
   const scale9 = useTransform(zoomProgress, [0, 1], [1, 9]);
-  const copyScrimOpacity = useTransform(scrollYProgress, [0.172, 0.25], [0, 0.9]);
+  const copyScrimOpacity = useTransform(scrollYProgress, [zoomEnd, isDesktopViewport ? 0.25 : 0.28], [0, 0.9]);
 
   const scales = [scale4, scale5, scale6, scale5, scale6, scale8, scale9];
 
-  if (shouldReduceMotion || !isDesktopViewport) {
+  if (shouldReduceMotion) {
     return <><StaticParallaxFallback images={parallaxImages} /><ExperienceContact /></>;
   }
 
@@ -179,11 +181,11 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
     <>
     <div
       ref={container}
-      className="relative h-[600svh] bg-[oklch(88%_0.015_78)]"
+      className="relative h-[520svh] lg:h-[600svh] bg-[oklch(88%_0.015_78)]"
     >
       <div className="sticky top-0 h-[100svh] overflow-hidden">
         {parallaxImages.map(({ src, alt }, index) => {
-          const scale = scales[index % scales.length];
+          const scale = isDesktopViewport ? scales[index % scales.length] : mobileScale;
 
           return (
             <motion.div
@@ -217,7 +219,7 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
                   : ""
               }`}
             >
-              <div className="relative h-[25vh] w-[25vw] overflow-hidden rounded-[1.25rem] bg-[oklch(18%_0.014_56)] shadow-[0_24px_70px_oklch(18%_0.014_56/0.18)]">
+              <div className="relative h-[44svh] w-[76vw] overflow-hidden lg:h-[25vh] lg:w-[25vw] rounded-[1.25rem] bg-[oklch(18%_0.014_56)] shadow-[0_24px_70px_oklch(18%_0.014_56/0.18)]">
                 <Image
                   src={src}
                   alt={alt ?? `Parallax image ${index + 1}`}
@@ -244,19 +246,19 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
           style={{ opacity: introOpacity, y: introY }}
           className="pointer-events-none absolute inset-0 z-30 text-[oklch(18%_0.014_56)]"
         >
-          <div className="absolute left-[4vw] top-[3svh] max-w-[26vw]">
+          <div className="absolute left-[6vw] top-[4svh] max-w-[85vw] lg:left-[4vw] lg:top-[3svh] lg:max-w-[26vw]">
             <p className="font-ui mb-3 text-[0.65rem] font-bold uppercase tracking-[0.2em]">Grossi Moto · Roma</p>
-            <p className="font-display text-[clamp(2rem,3.1vw,4rem)] font-bold leading-[0.95] tracking-[-0.035em]">
+            <p className="font-display text-[clamp(1.75rem,7vw,3rem)] lg:text-[clamp(2rem,3.1vw,4rem)] font-bold leading-[0.95] tracking-[-0.035em]">
               La tua prossima strada.
             </p>
           </div>
-          <div className="absolute bottom-[5svh] right-[4vw] max-w-[25vw] text-right">
-            <p className="font-display text-[clamp(2rem,3.6vw,4.5rem)] font-bold leading-[0.95] tracking-[-0.035em]">Parte da qui.</p>
+          <div className="absolute bottom-[calc(6.5rem+env(safe-area-inset-bottom))] right-[6vw] max-w-[85vw] text-right lg:bottom-[5svh] lg:right-[4vw] lg:max-w-[25vw]">
+            <p className="font-display text-[clamp(1.75rem,7vw,3rem)] lg:text-[clamp(2rem,3.6vw,4.5rem)] font-bold leading-[0.95] tracking-[-0.035em]">Parte da qui.</p>
             <p className="font-ui mt-4 text-xs tracking-wide">Dalla scelta del mezzo, a ogni nuovo viaggio.</p>
           </div>
         </motion.div>
 
-        <CinematicCredits progress={scrollYProgress} />
+        <CinematicCredits progress={scrollYProgress} compact={!isDesktopViewport} />
       </div>
     </div>
     <ExperienceContact />

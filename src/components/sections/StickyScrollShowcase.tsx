@@ -6,6 +6,7 @@ import Image from "next/image";
 import { Check, PhoneCall } from "lucide-react";
 
 import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { ServiceSwipe } from "./ServiceSwipe";
 
 const services = [
   {
@@ -157,7 +158,7 @@ export function StickyScrollShowcase() {
         <p className="font-tech text-[0.64rem] font-semibold uppercase tracking-[0.18em] text-[#1B0E0D]/54 sm:text-xs">
           I nostri servizi
         </p>
-        <h2 className="font-display mt-5 max-w-[14ch] text-[clamp(4.15rem,13vw,13.5rem)] font-bold uppercase leading-[0.82] tracking-[-0.05em]">
+        <h2 className="font-display mt-5 max-w-[14ch] text-[clamp(2.8rem,8vw,5rem)] font-bold uppercase leading-[0.9] tracking-[-0.05em] lg:text-[clamp(4.15rem,13vw,13.5rem)] lg:leading-[0.82]">
           Cosa
           <br />
           possiamo
@@ -166,7 +167,8 @@ export function StickyScrollShowcase() {
         </h2>
       </div>
 
-      <div className="grid lg:grid-cols-[minmax(30rem,41vw)_6.5rem_minmax(0,1fr)] lg:items-start">
+      <ServiceSwipe services={services} />
+      <div className="hidden lg:grid lg:grid-cols-[minmax(30rem,41vw)_6.5rem_minmax(0,1fr)] lg:items-start">
         <div className="relative hidden min-h-full lg:block">
           <div className="sticky top-0 flex h-[100svh] items-center px-5 py-8 xl:px-10">
             {/* FIX P1: overflow-hidden aggiunto → rounded-[2rem] clipa correttamente l'immagine.

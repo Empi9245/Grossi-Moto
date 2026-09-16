@@ -2,72 +2,13 @@
 
 import { useRef } from "react";
 import Image from "next/image";
-import {
-  ArrowUpRight,
-  Box,
-  CreditCard,
-  MessageCircle,
-  PhoneCall,
-  RefreshCcw,
-  Tag,
-  Wrench,
-} from "lucide-react";
+import { ArrowUpRight, PhoneCall } from "lucide-react";
+import { ServiceOverview } from "@/components/sections/ServiceOverview";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
-
-const SERVICE_ITEMS = [
-  {
-    code: "01",
-    title: "Officina per scooter",
-    shortTitle: "Officina",
-    description: "Un controllo per capire cosa serve.",
-    href: "#service-01",
-    icon: Wrench,
-  },
-  {
-    code: "02",
-    title: "Tagliandi",
-    shortTitle: "Tagliandi",
-    description: "Controlli in base a chilometri e scadenze.",
-    href: "#service-02",
-    icon: Tag,
-  },
-  {
-    code: "03",
-    title: "Ricambi e accessori",
-    shortTitle: "Ricambi",
-    description: "Verifichiamo compatibilità e disponibilità.",
-    href: "#service-03",
-    icon: Box,
-  },
-  {
-    code: "04",
-    title: "Finanziamenti",
-    shortTitle: "Finanziamenti",
-    description: "Chiedi soluzioni e condizioni disponibili.",
-    href: "#service-04",
-    icon: CreditCard,
-  },
-  {
-    code: "05",
-    title: "Permute",
-    shortTitle: "Permute",
-    description: "Valutiamo il tuo mezzo per una permuta.",
-    href: "#service-05",
-    icon: RefreshCcw,
-  },
-  {
-    code: "06",
-    title: "Consulenza",
-    shortTitle: "Consulenza",
-    description: "Confrontiamo i mezzi per i tuoi percorsi.",
-    href: "#service-06",
-    icon: MessageCircle,
-  },
-] as const;
 
 const HERO_IMAGE = {
   src: "/grossimoto/servizi-hero/agility-s-125-consulenza.jpg",
@@ -110,8 +51,8 @@ export function ServicesHero() {
       const boardLines = container.querySelectorAll<HTMLElement>(
         "[data-service-statement-line]",
       );
-      const serviceCards =
-        container.querySelectorAll<HTMLElement>("[data-service-card]");
+      const serviceOverview =
+        container.querySelectorAll<HTMLElement>("[data-service-overview]");
 
       if (
         !intro ||
@@ -124,12 +65,10 @@ export function ServicesHero() {
         !board ||
         !boardStatement ||
         boardLines.length === 0 ||
-        serviceCards.length === 0
+        serviceOverview.length === 0
       ) {
         return;
       }
-
-      const cleanups: Array<() => void> = [];
 
       if (reducedMotion || compactViewport) {
         return;
@@ -293,7 +232,7 @@ export function ServicesHero() {
           0.64,
         )
         .fromTo(
-          serviceCards,
+          serviceOverview,
           {
             opacity: 0,
             y: 18,
@@ -308,36 +247,7 @@ export function ServicesHero() {
           0.66,
         );
 
-      serviceCards.forEach((card) => {
-        const handlePointerMove = (event: PointerEvent) => {
-          const rect = card.getBoundingClientRect();
-          const localX = event.clientX - rect.left;
-          const localY = event.clientY - rect.top;
-          const offsetX = (localX / rect.width - 0.5) * 10;
-          const offsetY = (localY / rect.height - 0.5) * 10;
 
-          card.style.setProperty("--pointer-x", `${localX}px`);
-          card.style.setProperty("--pointer-y", `${localY}px`);
-          card.style.transform = `translate3d(${offsetX}px, ${offsetY}px, 0) scale(1.018)`;
-        };
-
-        const handlePointerLeave = () => {
-          card.style.transform = "";
-          card.style.setProperty("--pointer-x", "50%");
-          card.style.setProperty("--pointer-y", "50%");
-        };
-
-        card.addEventListener("pointermove", handlePointerMove);
-        card.addEventListener("pointerleave", handlePointerLeave);
-        cleanups.push(() => {
-          card.removeEventListener("pointermove", handlePointerMove);
-          card.removeEventListener("pointerleave", handlePointerLeave);
-        });
-      });
-
-      return () => {
-        cleanups.forEach((cleanup) => cleanup());
-      };
     },
     { scope: containerRef },
   );
@@ -476,55 +386,7 @@ export function ServicesHero() {
             </p>
           </div>
 
-          <nav
-            aria-label="Vai al servizio"
-            className="grid w-full grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3"
-          >
-            {SERVICE_ITEMS.map((service) => {
-              const Icon = service.icon;
-
-              return (
-                <a
-                  key={service.code}
-                  data-service-card
-                  href={service.href}
-                  aria-label={`Vai a ${service.title}`}
-                  className="liquid-glass group min-h-[9.25rem] rounded-[1.65rem] p-5 text-[#F4F0E8] transition-[filter,transform] duration-[420ms] ease-[cubic-bezier(0.165,0.84,0.44,1)] [--pointer-x:50%] [--pointer-y:50%] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F4F0E8]/70 focus-visible:ring-offset-4 focus-visible:ring-offset-[#050504] sm:min-h-[10.25rem]"
-                >
-                  <span
-                    aria-hidden="true"
-                    className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-[420ms] ease-[cubic-bezier(0.165,0.84,0.44,1)] group-hover:opacity-100"
-                    style={{
-                      background:
-                        "radial-gradient(220px circle at var(--pointer-x) var(--pointer-y), rgba(244,240,232,0.2), transparent 42%), linear-gradient(135deg, rgba(255,255,255,0.12), transparent 34%)",
-                    }}
-                  />
-                  <span
-                    aria-hidden="true"
-                    className="absolute right-5 top-5 h-9 w-9 rounded-full bg-[#050504]/26 text-[#F4F0E8]/86 shadow-[inset_0_0_0_1px_rgba(244,240,232,0.18)] transition-[color,background,transform] duration-[320ms] ease-[cubic-bezier(0.165,0.84,0.44,1)] group-hover:bg-[#F4F0E8] group-hover:text-[#1B0E0D]"
-                  >
-                    <Icon className="m-2 h-5 w-5" strokeWidth={1.65} />
-                  </span>
-
-                  <span className="font-tech relative z-10 block text-xs font-semibold uppercase tracking-[0.18em] text-[#F4F0E8]/56">
-                    {service.code}
-                  </span>
-                  <span className="font-ui relative z-10 mt-8 block max-w-[9rem] text-[1.35rem] font-bold uppercase leading-[0.92] tracking-[-0.03em] sm:text-[1.45rem]">
-                    {service.shortTitle}
-                  </span>
-                  <span className="relative z-10 mt-3 block max-w-[13rem] text-xs font-medium leading-5 text-[#F4F0E8]/62">
-                    {service.description}
-                  </span>
-                  <span
-                    aria-hidden="true"
-                    className="absolute bottom-5 right-5 inline-flex h-9 w-9 items-center justify-center rounded-full bg-[#050504]/22 shadow-[inset_0_0_0_1px_rgba(244,240,232,0.18)] transition-[background,color,transform] duration-[320ms] ease-[cubic-bezier(0.165,0.84,0.44,1)] group-hover:translate-x-0.5 group-hover:bg-[#F4F0E8] group-hover:text-[#1B0E0D]"
-                  >
-                    <ArrowUpRight className="h-4 w-4" strokeWidth={1.9} />
-                  </span>
-                </a>
-              );
-            })}
-          </nav>
+          <ServiceOverview />
         </div>
       </div>
     </section>

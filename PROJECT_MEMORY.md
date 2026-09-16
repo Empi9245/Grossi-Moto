@@ -1,5 +1,12 @@
 # Project Memory
 
+## Servizi — swipe verticale mobile/tablet 2026-09-16
+
+- `StickyScrollShowcase` usa ora `ServiceSwipe` sotto 1024px: sei servizi in un pannello verticale con scroll nativo, snap-start e snap-always. Foto e testo salgono insieme; titolo introduttivo ridimensionato. Desktop conserva il layout precedente.
+- Pannello alto min(760px,78svh), minimo 420px; schede con min-height anziché altezza bloccata per consentire lettura di contenuti lunghi. Scroll chaining nativo agli estremi, nessun listener touch/wheel che blocca la pagina. `data-lenis-prevent` isola lo scroll interno da Lenis.
+- Contatore sincronizzato con scroll/resize, frecce da 48px e tastiera (frecce, PageUp/PageDown, Home/End). Comandi tastiera istantanei; reduced motion elimina snap e smooth, con ascolto dei cambi di preferenza. CTA esterna al pannello e nota immagini illustrative.
+- Lint, build produzione e diff check completati. Swipe su dispositivo fisico e QA visuale della nuova sequenza non eseguiti; nessun deploy.
+
 ## Accessori Home — prompt 03 implementato 2026-09-16
 
 - Sostituita la sezione numerata con `AccessoriesSection.tsx`, rail client `AccessoryRail.tsx` e dataset `src/data/accessories.ts`. Export e ordine Home conservati; nessuna nuova route/catalogo. Quattro WebP del manifest, alt prudenti, nota «Immagini illustrative», CTA `tel:+393289185029`.
@@ -535,3 +542,17 @@ Implementata.
 - Aggiunte parole introduttive negli spazi del collage desktop: “Grossi Moto · Roma / La tua prossima strada.” in alto a sinistra e “Parte da qui. / Dalla scelta del mezzo, a ogni nuovo viaggio.” in basso a destra.
 - Tipografia scura sul fondo esistente; layer senza interazioni. Testo visibile a zoom minimo, dissolvenza e lieve salita legate al progresso iniziale, conclusa prima del finale cinematografico. Nessuna modifica alle foto, allo showroom o alla sequenza finale. Fallback mobile/reduced motion preservato.
 - Lint e build verificati; nessuna QA visuale automatica richiesta.
+
+## Zoom e credits anche su mobile — 2026-09-16
+
+- Rimossa la condizione che sostituiva l’intera sezione con una foto statica sotto 1024px. Solo `prefers-reduced-motion` mantiene il fallback statico completo.
+- Mobile/tablet: una foto centrale da 76vw × 44svh si ingrandisce a 2,4× con lo scroll, coprendo la viewport. Durata complessiva 520svh, prima fase circa 86svh come desktop; il collage desktop a sette foto resta invariato.
+- Credits attivi su mobile con testo fluido legato a larghezza e altezza dello schermo, padding ridotto, prospettiva da 3 gradi e arresto finale più alto per lasciare spazio alla navigazione inferiore. Introduzione riposizionata con safe-area; CTA in flusso normale preservate.
+- Lint e build passati. Verifica solo tecnica, nessuna QA visuale automatica o deploy. Le modifiche contemporanee a StickyScrollShowcase appartengono ad altro lavoro e sono state preservate.
+
+## Elenco interattivo servizi desktop — 2026-09-16
+
+- Sostituite le sei card della seconda fase hero Servizi con `ServiceOverview`: sei righe separate da bordi sottili, Officina inizialmente aperta, voce attiva arancione, un dettaglio per volta con foto, descrizione e link all’approfondimento `#service-01`–`#service-06`.
+- Scritta “Tutto in sede.” e sua descrizione a sinistra preservate testualmente e nello stile. Conservata timeline di ingresso della seconda fase; rimosso il vecchio inseguimento del puntatore sulle card. Nessuna modifica al comportamento mobile o allo showcase sottostante.
+- Pulsanti nativi con `aria-expanded`, `aria-controls` e pannelli etichettati; Tab/Invio/Spazio standard, frecce/Home/End per spostare il focus. Dettagli inattivi nascosti; dissolvenza di 180ms disattivata con reduced motion. Foto prese dagli asset servizi esistenti.
+- Lint e build passati. Verificati i sei asset, i target delle ancore e la conservazione del blocco sinistro. Nessuna verifica visuale automatica richiesta, nessun deploy eseguito. Modifiche concorrenti ad altri componenti preservate.
