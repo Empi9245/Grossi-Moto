@@ -9,7 +9,6 @@ import { BottomRightCorner } from "./BottomRightCorner";
 import { HeroBadge } from "./HeroBadge";
 import { Navbar } from "./Navbar";
 import { revealMotion, subtleHover } from "./motion";
-import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 type HeroProps = {
   cardAriaHidden?: boolean;
@@ -18,7 +17,6 @@ type HeroProps = {
 
 export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
   const shouldReduceMotion = useReducedMotion();
-  const isDesktopViewport = useMediaQuery("(min-width: 1024px)");
   const { style: cardMotionStyle, ...cardMotionProps } = cardMotion ?? {};
   const touchY = useRef<number | null>(null);
 
@@ -70,15 +68,15 @@ export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
         style={cardMotionStyle}
         className="relative mx-auto flex h-[calc(100svh-1rem)] w-full max-w-[1920px] overflow-hidden rounded-[var(--hero-card-radius)] bg-[oklch(14%_0.012_40)] [--hero-card-radius:1.35rem] sm:h-[calc(100svh-1.5rem)] sm:[--hero-card-radius:1.75rem] lg:h-[calc(100svh-2rem)] lg:[--hero-card-radius:2.5rem] 2xl:h-[calc(100svh-2.5rem)] 2xl:[--hero-card-radius:3rem]"
       >
-        <div className="relative flex w-full min-w-0 flex-col">
+        <div className="relative flex h-full w-full min-w-0 flex-col">
           <video
             className="absolute inset-0 z-0 h-full w-full scale-[1.04] object-cover object-[58%_center] lg:object-center"
-            autoPlay={isDesktopViewport && !shouldReduceMotion}
+            autoPlay={!shouldReduceMotion}
             muted
             loop
             playsInline
             poster="/grossimoto/home-scroll/01-people-s-125-abs-lago.jpg"
-            preload={isDesktopViewport ? "metadata" : "none"}
+            preload="metadata"
             aria-hidden="true"
           >
             <source src="/video%20hero/videoplayback.mp4" type="video/mp4" />
