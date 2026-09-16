@@ -509,3 +509,9 @@ Implementata.
 - Creata copia distribuibile `public/hero-video.mp4` con FFmpeg già installato: H.264, yuv420p, 1280x720, 25 fps, faststart, senza audio, durata 116,52 secondi. File ridotto da 76.270.334 a 15.718.037 byte; originale preservato.
 - Aggiornato il source nella hero e aggiunta eccezione mirata `!/public/hero-video.mp4` in `.gitignore`. Il nuovo file deve essere incluso nel prossimo commit/deploy. Restano rispettati reduced motion e fallback per errori/autoplay bloccato.
 - FFprobe conferma formato e durata; lint e build passati. Nessun deploy eseguito in questa correzione.
+
+## Ripristino animazione hero e showroom — 2026-09-16
+
+- Annullato il fallback introdotto per la doppia scrollbar: l’altezza della hero non deve disabilitare la chiusura animata e lo showroom sequenziale, elementi fondamentali del sito confermati dall’utente.
+- Rimossi `heroOverflows`, callback e ResizeObserver. `HeroRevealStage` torna a scegliere la sequenza animata con la condizione originale desktop/reduced motion; handler wheel/touch, chiusura e riapertura e `ScooterShowcase` interattivo preservati.
+- Il wrapper Hero resta senza scroll interno. Video distribuibile e correzioni SEO/copy preservati. Nessuna QA visuale automatica eseguita.

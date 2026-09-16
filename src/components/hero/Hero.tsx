@@ -15,13 +15,11 @@ import { revealMotion, subtleHover } from "./motion";
 type HeroProps = {
   cardAriaHidden?: boolean;
   cardMotion?: MotionProps;
-  onOverflowChange?: (overflows: boolean) => void;
 };
 
-export function Hero({ cardAriaHidden, cardMotion, onOverflowChange }: HeroProps = {}) {
+export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
   const shouldReduceMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
   const { style: cardMotionStyle, ...cardMotionProps } = cardMotion ?? {};
-  const viewportRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [videoPlaying, setVideoPlaying] = useState(false);
 
@@ -53,25 +51,8 @@ export function Hero({ cardAriaHidden, cardMotion, onOverflowChange }: HeroProps
     };
   }, [shouldReduceMotion]);
 
-  useEffect(() => {
-    const viewport = viewportRef.current;
-    if (!viewport || !onOverflowChange) return;
-
-    // Use layout height, unaffected by the reveal transform or clip-path.
-    const measure = () => onOverflowChange(viewport.offsetHeight > window.innerHeight + 1);
-    const observer = new ResizeObserver(measure);
-    observer.observe(viewport);
-    window.addEventListener("resize", measure);
-    measure();
-    return () => {
-      observer.disconnect();
-      window.removeEventListener("resize", measure);
-    };
-  }, [onOverflowChange]);
-
   return (
     <div
-      ref={viewportRef}
       data-qa="hero-viewport"
       className="min-h-[100svh] w-full bg-[var(--page-background)] p-2 sm:p-3 lg:p-4 2xl:p-5"
     >
