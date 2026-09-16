@@ -145,3 +145,10 @@ Per validazione finale, preferire sempre la sequenza production:
 & 'C:\Program Files\nodejs\npm.cmd' run build
 & 'C:\Program Files\nodejs\node.exe' 'node_modules\next\dist\bin\next' start --hostname 127.0.0.1 --port 3000
 ```
+
+## Configurazione SEO e contatti (2026-09-16)
+
+- `NEXT_PUBLIC_SITE_URL`: URL assoluto del dominio pubblico, letto in build. Default: https://grossi-moto.vercel.app (dominio fornito dal cliente). Aggiornare prima di un cambio dominio e ricostruire. Canonical, sitemap, robots e Open Graph condividono `src/lib/seo.ts`.
+- `NEXT_PUBLIC_FORMSPREE_ENDPOINT`: endpoint pubblico Formspree. In assenza viene mantenuto https://formspree.io/f/grossimoto. Confermare la configurazione nell’account Formspree e verificare la ricezione con il titolare prima di considerare validato il canale; non inviare messaggi di prova senza autorizzazione.
+- Verificare anche l’informativa privacy definitiva: i dati legali mancanti sono ancora esplicitati nella pagina esistente.
+- Per controlli HTTP usare una porta libera e non riutilizzare `.next` mentre un altro task sta ricostruendo: riavviare il server di test dopo la build conclusa se i manifest vengono sostituiti.

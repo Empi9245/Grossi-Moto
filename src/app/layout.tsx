@@ -4,29 +4,28 @@ import { MobileAppNav } from "@/components/layout/MobileAppNav";
 import { PageTransitionProvider } from "@/components/transitions/PageTransitionProvider";
 
 import "./globals.css";
+import { siteUrl } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: {
-    default: "Grossimoto | Scooter e officina a Roma",
-    template: "%s | Grossimoto",
+    default: "Grossi Moto | Scooter e officina a Roma",
+    template: "%s | Grossi Moto",
   },
   description:
     "Scooter, consulenza, accessori e officina a Roma. Grossi Moto ti aiuta a scegliere e seguire il tuo mezzo in Via Festo Porzio 22.",
-  metadataBase: process.env.NEXT_PUBLIC_SITE_URL
-    ? new URL(process.env.NEXT_PUBLIC_SITE_URL)
-    : undefined,
+  metadataBase: new URL(siteUrl),
   openGraph: {
     type: "website",
     locale: "it_IT",
-    siteName: "Grossimoto",
-    title: "Grossimoto | Scooter e officina a Roma",
+    siteName: "Grossi Moto",
+    title: "Grossi Moto | Scooter e officina a Roma",
     description:
       "Scooter, consulenza, accessori e officina a Roma. Grossi Moto ti aiuta a scegliere e seguire il tuo mezzo.",
-    url: process.env.NEXT_PUBLIC_SITE_URL || undefined,
+    url: siteUrl,
   },
   twitter: {
     card: "summary",
-    title: "Grossimoto | Scooter e officina a Roma",
+    title: "Grossi Moto | Scooter e officina a Roma",
     description:
       "Scooter, consulenza, accessori e officina a Roma.",
   },

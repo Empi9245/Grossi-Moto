@@ -423,7 +423,7 @@ export function ServicesHero() {
               />
             </a>
             <a
-              href="/contatti"
+              href="/contatti?argomento=officina#richiesta"
               className="font-tech group inline-flex min-h-12 items-center justify-center gap-3 rounded-full bg-[#F4F0E8]/7 px-7 py-3 text-[0.72rem] font-bold uppercase tracking-[0.12em] text-[#F4F0E8] shadow-[inset_0_0_0_1px_rgba(244,240,232,0.22)] backdrop-blur-md transition-[background,color,box-shadow,transform] duration-[320ms] ease-[cubic-bezier(0.165,0.84,0.44,1)] hover:bg-[#F4F0E8]/14 active:translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F4F0E8]/70 focus-visible:ring-offset-4 focus-visible:ring-offset-[#050504]"
             >
               Scrivi all’officina

@@ -67,7 +67,7 @@
   {
     "file": "src/components/catalog/CatalogProductCard.tsx",
     "before": "Richiedi consulenza per",
-    "after": "Chiama per informazioni su"
+    "after": "Chiedi disponibilità per ${scooter.name}: chiama Grossi Moto"
   },
   {
     "file": "src/components/catalog/CatalogProductCard.tsx",

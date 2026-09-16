@@ -1,16 +1,12 @@
-import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 import { ArrowLeft, ArrowUpRight, Clock, Mail, MapPin, Phone } from "lucide-react";
 
+import { catalogScooters } from "@/data/catalog-scooters";
 import { ContactForm } from "@/components/contact/ContactForm";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 
-export const metadata: Metadata = {
-  title: "Contatti, orari e dove siamo",
-  description:
-    "Contatta Grossi Moto a Roma: telefono, email, orari, showroom e officina per scooter KYMCO e Voge.",
-  alternates: { canonical: "/contatti" },
-};
+export const metadata = pageMetadata("Contatti e orari a Roma", "Chiama Grossi Moto al 328 918 5029 o invia una richiesta per scooter e officina. Indirizzo, orari e indicazioni per Via Festo Porzio 22, Roma.", "/contatti");
 
 const hours = [
   { days: "Lun – Ven", time: "08:30 – 13:00 / 14:30 – 19:00" },
@@ -24,7 +20,11 @@ const channels = [
   { icon: MapPin, label: "Dove siamo", value: "Via Festo Porzio, 22 · Roma 00174", href: "https://share.google/ppfR023TdQcVrYya3", cta: "Apri su Google Maps", note: "Showroom e officina in sede" },
 ];
 
-export default function ContattiPage() {
+export default async function ContattiPage({ searchParams }: { searchParams: Promise<{ modello?: string | string[]; argomento?: string | string[] }> }) {
+  const params = await searchParams;
+  const model = catalogScooters.find((item) => item.id === params.modello);
+  const initialSubject = model ? "Disponibilità e acquisto" : params.argomento === "officina" ? "Prenotazione officina" : "";
+  const initialMessage = model ? `Buongiorno, vorrei conoscere prezzo e disponibilità di ${model.name}.` : "";
   return (
     <>
       <main id="main-content" className="min-h-[100dvh] bg-[oklch(88%_0.015_78)] px-4 py-6 text-[oklch(17%_0.014_50)] sm:px-6 lg:px-10">
@@ -63,7 +63,7 @@ export default function ContattiPage() {
             <div className="rounded-[1.1rem] bg-[oklch(94.5%_0.011_78)] p-6 shadow-[0_0_0_1px_oklch(18%_0.014_56/0.045),0_4px_24px_oklch(18%_0.014_56/0.07)] sm:p-8">
               <p className="font-ui text-[0.65rem] font-bold uppercase tracking-[0.16em] text-[oklch(36%_0.09_28)]">Invia la tua richiesta</p>
               <p className="mt-1 text-sm text-[oklch(29%_0.014_56/0.6)]">Non hai ancora scelto un modello? Raccontaci i tuoi percorsi. Per l’officina, indica il mezzo e cosa hai notato.</p>
-              <ContactForm />
+              <ContactForm key={model?.id ?? initialSubject} initialSubject={initialSubject} initialMessage={initialMessage} />
             </div>
 
             <div className="flex flex-col gap-6">

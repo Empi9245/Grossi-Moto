@@ -1,13 +1,8 @@
-import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 
 import { CatalogPage } from "@/components/catalog/CatalogPage";
 
-export const metadata: Metadata = {
-  title: "Gamma scooter KYMCO e Voge",
-  description:
-    "Confronta la gamma Grossimoto: scooter KYMCO e Voge da 50cc a 900cc, con schede per cilindrata, categoria e uso.",
-  alternates: { canonical: "/scooters" },
-};
+export const metadata = pageMetadata("Moto e scooter KYMCO e Voge a Roma", "Confronta moto e scooter KYMCO e Voge: cilindrate, caratteristiche e uso. Grossi Moto a Roma ti aiuta a scegliere. Chiedi prezzo e disponibilità.", "/scooters");
 
 type ScootersPageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;

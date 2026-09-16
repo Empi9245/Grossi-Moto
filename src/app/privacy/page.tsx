@@ -1,13 +1,9 @@
-import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 
 import { SiteFooter } from "@/components/layout/SiteFooter";
 
-export const metadata: Metadata = {
-  title: "Privacy Policy",
-  description: "Informativa privacy del modulo contatti Grossimoto.",
-  alternates: { canonical: "/privacy" },
-};
+export const metadata = pageMetadata("Privacy Policy", "Informativa privacy del modulo contatti Grossi Moto.", "/privacy");
 
 export default function PrivacyPage() {
   return (

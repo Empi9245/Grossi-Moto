@@ -1,9 +1,9 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useRef, useState } from "react";
 import Link from "next/link";
 
-const endpoint = "https://formspree.io/f/grossimoto";
+const endpoint = process.env.NEXT_PUBLIC_FORMSPREE_ENDPOINT || "https://formspree.io/f/grossimoto";
 
 type FieldName = "name" | "email" | "subject" | "message" | "privacy";
 type FieldErrors = Partial<Record<FieldName, string>>;
@@ -46,7 +46,8 @@ function getErrors(form: HTMLFormElement): FieldErrors {
   );
 }
 
-export function ContactForm() {
+export function ContactForm({ initialSubject = "", initialMessage = "" }: { initialSubject?: string; initialMessage?: string }) {
+  const submitting = useRef(false);
   const [errors, setErrors] = useState<FieldErrors>({});
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
 
@@ -57,7 +58,7 @@ export function ContactForm() {
       delete next[field];
       return next;
     });
-    if (status !== "idle") setStatus("idle");
+    if (status !== "idle" && !submitting.current) setStatus("idle");
   }
 
   function handleInvalid(field: FieldName) {
@@ -66,6 +67,7 @@ export function ContactForm() {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (submitting.current) return;
     const form = event.currentTarget;
     const nextErrors = getErrors(form);
 
@@ -75,12 +77,14 @@ export function ContactForm() {
       return;
     }
 
+    submitting.current = true;
     setStatus("sending");
     setErrors({});
 
     try {
       const response = await fetch(endpoint, {
         method: "POST",
+        signal: AbortSignal.timeout(20000),
         body: new FormData(form),
         headers: { Accept: "application/json" },
       });
@@ -91,6 +95,8 @@ export function ContactForm() {
       setStatus("success");
     } catch {
       setStatus("error");
+    } finally {
+      submitting.current = false;
     }
   }
 
@@ -100,7 +106,7 @@ export function ContactForm() {
   const describedBy = (field: FieldName) => (errors[field] ? `${field}-error` : undefined);
 
   return (
-    <form action={endpoint} method="POST" className="mt-6 grid gap-5" onSubmit={handleSubmit}>
+    <form id="richiesta" aria-busy={status === "sending"} action={endpoint} method="POST" className="mt-6 grid gap-5" onSubmit={handleSubmit}>
       <input type="hidden" name="_subject" value="Nuova richiesta dal sito Grossimoto" />
       <div className="absolute -left-[9999px] h-px w-px overflow-hidden" aria-hidden="true">
         <label htmlFor="contact-gotcha">Non compilare questo campo</label>
@@ -127,7 +133,7 @@ export function ContactForm() {
 
       <div className="flex flex-col gap-1.5">
         <label htmlFor="contact-subject" className="font-ui text-[0.65rem] font-bold uppercase tracking-[0.12em] text-[oklch(18%_0.014_56/0.72)]">Argomento</label>
-        <select id="contact-subject" name="subject" required defaultValue="" aria-invalid={Boolean(errors.subject)} aria-describedby={describedBy("subject")} className={inputClass("subject")} onChange={() => handleChange("subject")} onInvalid={() => handleInvalid("subject")}>
+        <select id="contact-subject" name="subject" required defaultValue={initialSubject} aria-invalid={Boolean(errors.subject)} aria-describedby={describedBy("subject")} className={inputClass("subject")} onChange={() => handleChange("subject")} onInvalid={() => handleInvalid("subject")}>
           <option value="" disabled>Scegli cosa ti serve…</option>
           {subjects.map((subject) => <option key={subject} value={subject}>{subject}</option>)}
         </select>
@@ -136,7 +142,7 @@ export function ContactForm() {
 
       <div className="flex flex-col gap-1.5">
         <label htmlFor="contact-message" className="font-ui text-[0.65rem] font-bold uppercase tracking-[0.12em] text-[oklch(18%_0.014_56/0.72)]">Messaggio</label>
-        <textarea id="contact-message" name="message" rows={5} required aria-invalid={Boolean(errors.message)} aria-describedby={describedBy("message")} placeholder="Es. cerco uno scooter per andare al lavoro, oppure vorrei un tagliando per il mio modello…" className={`${inputClass("message")} resize-none`} onChange={() => handleChange("message")} onInvalid={() => handleInvalid("message")} />
+        <textarea id="contact-message" name="message" defaultValue={initialMessage} rows={5} required aria-invalid={Boolean(errors.message)} aria-describedby={describedBy("message")} placeholder="Es. cerco uno scooter per andare al lavoro, oppure vorrei un tagliando per il mio modello…" className={`${inputClass("message")} resize-none`} onChange={() => handleChange("message")} onInvalid={() => handleInvalid("message")} />
         {errors.message && <p id="message-error" className="text-xs text-[oklch(42%_0.13_28)]">{errors.message}</p>}
       </div>
 
@@ -148,7 +154,7 @@ export function ContactForm() {
 
       <div aria-live="polite" aria-atomic="true" className="min-h-6 text-sm">
         {status === "success" && <p className="text-[oklch(35%_0.1_145)]">La tua richiesta è stata inviata. Ti ricontatteremo ai recapiti che hai indicato.</p>}
-        {status === "error" && <p className="text-[oklch(42%_0.13_28)]">Invio non riuscito. Il messaggio è ancora qui: puoi riprovare o chiamarci al +39 328 918 5029.</p>}
+        {status === "error" && <p className="text-[oklch(42%_0.13_28)]">Non abbiamo ricevuto conferma dell’invio. Il messaggio è ancora qui: puoi riprovare o <a href="tel:+393289185029" className="underline underline-offset-2">chiamarci al +39 328 918 5029</a>.</p>}
       </div>
 
       <button type="submit" disabled={status === "sending"} aria-busy={status === "sending"} className="font-ui mt-1 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-[oklch(16%_0.014_48)] px-6 py-3 text-sm font-bold uppercase tracking-[0.08em] text-[oklch(94%_0.01_78)] transition-[background,transform] duration-200 hover:bg-[oklch(22%_0.016_50)] active:translate-y-px disabled:cursor-wait disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(38%_0.08_28)] focus-visible:ring-offset-4 focus-visible:ring-offset-[oklch(94.5%_0.011_78)] sm:w-auto">

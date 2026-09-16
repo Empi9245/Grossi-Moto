@@ -1,5 +1,6 @@
 import type { ComponentType, CSSProperties } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import {
   ArrowRight,
   Gauge,
@@ -263,7 +264,7 @@ export function CatalogProductCard({
               <div className="mt-5 flex flex-col gap-3 sm:flex-row">
                 <a
                   href="tel:+393289185029"
-                  aria-label={`Chiama per informazioni su ${scooter.name}`}
+                  aria-label={`Chiama per disponibilità per ${scooter.name}: chiama Grossi Moto`}
                   className="font-ui inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-[oklch(18%_0.014_56)] px-5 py-3 text-[0.72rem] font-bold uppercase tracking-[0.1em] text-[oklch(94%_0.01_78)] outline-none transition-[background,transform] duration-200 hover:bg-[oklch(23%_0.016_56)] active:translate-y-px focus-visible:ring-2 focus-visible:ring-[var(--product-accent)] focus-visible:ring-offset-4 focus-visible:ring-offset-[oklch(88%_0.015_78)] sm:w-fit"
                 >
                   <PhoneCall
@@ -271,8 +272,11 @@ export function CatalogProductCard({
                     className="h-4 w-4"
                     strokeWidth={1.8}
                   />
-                  Chiedi disponibilità
+                  Chiama per disponibilità
                 </a>
+                <Link href={`/contatti?modello=${encodeURIComponent(scooter.id)}#richiesta`} className="font-ui inline-flex min-h-11 items-center justify-center rounded-full px-5 py-3 text-sm font-bold underline underline-offset-4 focus-visible:outline focus-visible:outline-2" aria-label={`Scrivi per questo modello: ${scooter.name}`}>
+                  Scrivi per questo modello
+                </Link>
               </div>
             </motion.div>
           ) : (

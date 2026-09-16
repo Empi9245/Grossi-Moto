@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { AccessoriesSection } from "@/components/sections/AccessoriesSection";
@@ -8,12 +8,7 @@ import { HeroRevealStage } from "@/components/sections/HeroRevealStage";
 import { ShowcaseCoverCta } from "@/components/sections/ShowcaseCoverCta";
 import { WorkshopSection } from "@/components/sections/WorkshopSection";
 
-export const metadata: Metadata = {
-  title: "Scooter, accessori e officina a Roma",
-  description:
-    "Scooter KYMCO e Voge a Roma, consulenza in showroom, accessori e assistenza in officina. Grossi Moto, Via Festo Porzio 22.",
-  alternates: { canonical: "/" },
-};
+export const metadata = pageMetadata("Scooter KYMCO e Voge a Roma", "Scegli il tuo scooter KYMCO o Voge da Grossi Moto a Roma. Consulenza, accessori e officina in Via Festo Porzio 22. Chiedi prezzo e disponibilità.", "/");
 
 const localBusinessJsonLd = {
   "@context": "https://schema.org",

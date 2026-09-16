@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -13,12 +13,7 @@ import { StickyScrollShowcase } from "@/components/sections/StickyScrollShowcase
 import { ServiceProcess } from "@/components/sections/ServiceProcess";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 
-export const metadata: Metadata = {
-  title: "Assistenza e servizi per scooter",
-  description:
-    "Assistenza scooter a Roma: tagliandi, officina, ricambi, accessori, finanziamenti, permute e consulenza da Grossi Moto.",
-  alternates: { canonical: "/servizi" },
-};
+export const metadata = pageMetadata("Officina scooter a Roma: tagliandi e assistenza", "Tagliandi, diagnosi, ricambi e accessori per il tuo scooter a Roma. Contatta l’officina Grossi Moto in Via Festo Porzio 22 e raccontaci cosa ti serve.", "/servizi");
 
 export default function ServiziPage() {
   return (
@@ -109,7 +104,7 @@ export default function ServiziPage() {
               />
             </a>
             <a
-              href="/contatti"
+              href="/contatti?argomento=officina#richiesta"
               className="font-ui inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#F7F4EF]/8 px-7 py-3 text-sm font-bold uppercase tracking-[0.08em] text-[#F7F4EF] shadow-[inset_0_0_0_1px_rgba(247,244,239,0.16)] transition-[background,transform] duration-200 hover:bg-[#F7F4EF]/14 active:translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F7F4EF]/60 focus-visible:ring-offset-4 focus-visible:ring-offset-[oklch(14%_0.014_42)]"
             >
               Scrivi all’officina

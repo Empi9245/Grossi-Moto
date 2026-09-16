@@ -1,8 +1,10 @@
 "use client";
 
 import { ArrowUpRight, CalendarCheck } from "lucide-react";
-import { motion, type MotionProps, useReducedMotion } from "framer-motion";
-import { useRef } from "react";
+import { motion, type MotionProps } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 import { BottomLeftCard } from "./BottomLeftCard";
 import { BottomRightCorner } from "./BottomRightCorner";
@@ -16,9 +18,39 @@ type HeroProps = {
 };
 
 export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
-  const shouldReduceMotion = useReducedMotion();
+  const shouldReduceMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
   const { style: cardMotionStyle, ...cardMotionProps } = cardMotion ?? {};
   const touchY = useRef<number | null>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [videoPlaying, setVideoPlaying] = useState(false);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (shouldReduceMotion) {
+      video.pause();
+      return;
+    }
+
+    // Set the media property before play(): mobile autoplay requires muted video.
+    let active = true;
+    video.muted = true;
+    void video
+      .play()
+      .then(() => {
+        // Cached media can start before React attaches the playing listener.
+        if (active && !video.paused) setVideoPlaying(true);
+      })
+      .catch(() => {
+        if (active) setVideoPlaying(false);
+      });
+
+    return () => {
+      active = false;
+      video.pause();
+    };
+  }, [shouldReduceMotion]);
 
   // The existing desktop stage clips to one viewport. Let enlarged content
   // scroll inside the hero before passing the gesture back to that stage.
@@ -59,18 +91,31 @@ export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
       onTouchCancelCapture={() => {
         touchY.current = null;
       }}
-      className="h-[100svh] w-full bg-[var(--page-background)] p-2 data-[contained=true]:overflow-y-auto sm:p-3 lg:p-4 2xl:p-5"
+      // Cancel the document's mobile-nav scroll padding for these desktop links;
+      // preserve native focus scrolling inside the hero when content grows.
+      className="min-h-[100svh] w-full bg-[var(--page-background)] p-2 data-[contained=true]:max-h-[100svh] data-[contained=true]:overflow-y-auto data-[contained=true]:scroll-pb-[calc(6.5rem+env(safe-area-inset-bottom))] data-[contained=true]:[&_a]:scroll-mb-[calc(-6.5rem-env(safe-area-inset-bottom))] sm:p-3 lg:p-4 2xl:p-5"
     >
       <motion.section
         {...cardMotionProps}
         aria-hidden={cardAriaHidden}
         data-hero-panel={cardMotion ? "true" : undefined}
         style={cardMotionStyle}
-        className="relative mx-auto flex h-[calc(100svh-1rem)] w-full max-w-[1920px] overflow-hidden rounded-[var(--hero-card-radius)] bg-[oklch(14%_0.012_40)] [--hero-card-radius:1.35rem] sm:h-[calc(100svh-1.5rem)] sm:[--hero-card-radius:1.75rem] lg:h-[calc(100svh-2rem)] lg:[--hero-card-radius:2.5rem] 2xl:h-[calc(100svh-2.5rem)] 2xl:[--hero-card-radius:3rem]"
+        className="relative mx-auto flex min-h-[calc(100svh-1rem)] w-full max-w-[1920px] overflow-hidden rounded-[var(--hero-card-radius)] bg-[oklch(14%_0.012_40)] [--hero-card-radius:1.35rem] sm:min-h-[calc(100svh-1.5rem)] sm:[--hero-card-radius:1.75rem] lg:min-h-[calc(100svh-2rem)] lg:[--hero-card-radius:2.5rem] 2xl:min-h-[calc(100svh-2.5rem)] 2xl:[--hero-card-radius:3rem]"
       >
-        <div className="relative flex h-full w-full min-w-0 flex-col">
+        <div className="relative flex w-full min-w-0 flex-col">
+          <div
+            aria-hidden="true"
+            data-qa="hero-video-fallback"
+            className="absolute inset-0 z-0 bg-cover bg-[position:58%_center] lg:bg-center"
+            style={{
+              backgroundImage:
+                "url('/grossimoto/home-scroll/01-people-s-125-abs-lago.jpg')",
+            }}
+          />
           <video
+            ref={videoRef}
             className="absolute inset-0 z-0 h-full w-full scale-[1.04] object-cover object-[58%_center] lg:object-center"
+            style={{ opacity: videoPlaying && !shouldReduceMotion ? 1 : 0 }}
             autoPlay={!shouldReduceMotion}
             muted
             loop
@@ -78,8 +123,15 @@ export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
             poster="/grossimoto/home-scroll/01-people-s-125-abs-lago.jpg"
             preload="metadata"
             aria-hidden="true"
+            onPlaying={() => setVideoPlaying(true)}
+            onError={() => setVideoPlaying(false)}
+            onEmptied={() => setVideoPlaying(false)}
           >
-            <source src="/video%20hero/videoplayback.mp4" type="video/mp4" />
+            <source
+              src="/video%20hero/videoplayback.mp4"
+              type="video/mp4"
+              onError={() => setVideoPlaying(false)}
+            />
           </video>
 
           <div
@@ -125,7 +177,8 @@ export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
                 })}
                 className="mt-5 w-full max-w-[22rem] [overflow-wrap:break-word] text-sm leading-[2] text-[oklch(84%_0.012_78)] sm:max-w-[44rem] sm:text-base sm:leading-[1.75] md:text-lg md:leading-[1.56]"
               >
-                Confronta KYMCO e Voge con chi ti segue anche in officina. Ti aspettiamo a Roma, in Via Festo Porzio 22.
+                Confronta KYMCO e Voge con chi ti segue anche in officina. Ti
+                aspettiamo a Roma, in Via Festo Porzio 22.
               </motion.p>
 
               <motion.div

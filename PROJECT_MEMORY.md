@@ -479,3 +479,20 @@ Implementata.
 - Applicata Apple Design a feedback immediato, comandi da almeno 48px, navigazione tastiera delle tab (frecce, Home/End), contrasto e transizione fotografica breve senza spostamenti, disattivata con reduced motion. Il resto della pagina Servizi resta invariato.
 - Build production e TypeScript passati; ESLint dei tre file interessati passato. `npm run lint` completo resta bloccato da tre errori preesistenti `no-require-imports` in `qa-screenshots/prompt02-qa.cjs` e `prompt02-text-only.cjs`. Nessuna modifica a quei file o alla configurazione ESLint.
 - Nessun test visuale automatico eseguito in questa correzione. Le modifiche Accessori e al pacchetto prompt trovate nel checkout appartengono ad altro lavoro e sono state preservate.
+
+## Revisione copy fiducia e conversione — 2026-09-16
+
+- Su richiesta successiva dell’utente, rivisti i testi di Home, Gamma, Servizi e Contatti preservando layout, motion e comportamenti. Applicate le skill Copywriting e Copy Editing.
+- Resi concreti i vantaggi della consulenza e della continuità con l’officina; CTA più esplicite rispetto a chiamata, disponibilità o modulo. Rimossi assoluti e promesse non documentate, senza aggiungere condizioni commerciali, garanzie o tempi di risposta.
+- Migliorati istruzioni del modulo, messaggi di invio/errore e stato vuoto dei filtri; il catalogo distingue assenza di risultati da indisponibilità del mezzo. L’etichetta accessibile della CTA disponibilità include testo visibile, modello e azione telefonica.
+- Registro prima/dopo in `docs/COPY_REVIEW_2026-09-16.json`. Specifiche tecniche dei mezzi e funzionamento del modulo invariati.
+- Verifica conclusiva: `npm.cmd run lint` e `npm.cmd run build` passati, inclusa compilazione TypeScript. Nessuna QA visuale automatica eseguita perché non richiesta. Nessun deploy eseguito da questa revisione; l’effetto sulle conversioni non è stato misurato.
+
+## Audit SEO e conversione — 2026-09-16
+
+- Corrette sitemap vuota e base dei canonical in assenza di configurazione: `src/lib/seo.ts` usa il dominio live fornito dall’utente `https://grossi-moto.vercel.app`, sovrascrivibile tramite `NEXT_PUBLIC_SITE_URL`. Usare il dominio definitivo quando disponibile.
+- Titoli e descrizioni delle pagine principali specifici per intento locale (Roma), marchi e officina. Open Graph e Twitter specifici per tutte le sei pagine; brand uniforme Grossi Moto. Nessuna nuova promessa commerciale o dato strutturato inventato.
+- Catalogo: CTA telefonica esplicita e link secondario al modulo con modello già compilato. Officina: argomento precompilato. Accettati solo ID presenti nel catalogo; parametri sconosciuti o ripetuti producono il modulo generico. Canonical Contatti resta privo dei parametri.
+- Modulo: protezione sincrona dai doppi invii, timeout 20 secondi, stato di invio mantenuto durante modifiche, telefono cliccabile in caso di errore. Endpoint configurabile con `NEXT_PUBLIC_FORMSPREE_ENDPOINT`, mantenendo quello preesistente come fallback.
+- Lint e build passati. Verifica HTTP locale production: 6 pagine con status 200, un H1 e canonical corretto; 5 casi del modulo (modello valido, officina, ID sconosciuto, parametro ripetuto, nessun parametro); sitemap con 6 URL e riferimento robots corretto. Nessuna QA visuale o invio reale a Formspree.
+- Limiti: accesso live fallito dall’ambiente; nessun dato Search Console/analytics/CWV sul campo disponibile. Ricezione Formspree non confermata. Informativa privacy preesistente contiene ancora dati e testo da validare con il titolare; non inventare condizioni legali. Nessun deploy effettuato.
