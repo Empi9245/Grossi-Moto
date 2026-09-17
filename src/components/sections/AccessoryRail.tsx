@@ -107,7 +107,7 @@ export function AccessoryRail() {
         role="region"
         aria-label="Accessori da sfogliare"
         tabIndex={0}
-        className="relative flex snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain pb-3 [--card-width:84%] [scrollbar-width:thin] after:block after:w-[max(0px,calc(100%-var(--card-width)-16px))] after:shrink-0 after:content-[''] focus-visible:outline-2 focus-visible:outline-offset-4 md:[--card-width:42%] lg:[--card-width:30%]"
+        className="hide-scrollbar relative flex snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain pb-1 [--card-width:84%] after:block after:w-[max(0px,calc(100%-var(--card-width)-16px))] after:shrink-0 after:content-[''] focus-visible:outline-2 focus-visible:outline-offset-4 md:[--card-width:42%] lg:[--card-width:30%]"
         onPointerDown={(event) => {
           gesture.current = {
             x: event.clientX,
@@ -135,59 +135,53 @@ export function AccessoryRail() {
           <article
             key={item.id}
             aria-labelledby={`accessory-${item.id}`}
-            className="min-w-0 w-[var(--card-width)] shrink-0 snap-start overflow-hidden rounded-2xl border border-gray-200 bg-white text-gray-900 shadow-none [overflow-wrap:anywhere]"
+            className="min-w-0 w-[var(--card-width)] shrink-0 snap-start overflow-hidden rounded-3xl border border-black/10 p-3.5 text-gray-900 shadow-none [overflow-wrap:anywhere] sm:p-4"
+            style={{
+              background: accessoryPastels[index % accessoryPastels.length],
+            }}
           >
-            <div
-              aria-hidden="true"
-              className="h-1 w-full"
-              style={{
-                background: accessoryPastels[index % accessoryPastels.length],
-              }}
-            />
-            <div className="p-3.5 sm:p-4">
-              <div className="overflow-hidden rounded-xl bg-gray-50">
-                <Image
-                  src={item.image}
-                  alt={item.alt}
-                  width={800}
-                  height={1000}
-                  sizes="(min-width: 1024px) 30vw, (min-width: 768px) 42vw, 84vw"
-                  draggable={false}
-                  className="aspect-[5/4] w-full object-cover object-center"
+            <div className="overflow-hidden rounded-2xl bg-white/30">
+              <Image
+                src={item.image}
+                alt={item.alt}
+                width={800}
+                height={1000}
+                sizes="(min-width: 1024px) 30vw, (min-width: 768px) 42vw, 84vw"
+                draggable={false}
+                className="aspect-[5/4] w-full object-cover object-center"
+              />
+            </div>
+            <div className="px-0.5 pb-0.5 pt-3.5">
+              <p className="font-ui text-[0.6rem] font-bold uppercase tracking-[0.15em] text-black/50">
+                Accessori
+              </p>
+              <h3
+                id={`accessory-${item.id}`}
+                className="font-display mt-1.5 text-[clamp(1.5rem,2.2vw,2.15rem)] font-bold leading-[0.98] text-gray-900"
+              >
+                {item.title}
+              </h3>
+              <ul className="font-ui mt-2.5 flex flex-wrap gap-x-3 gap-y-1 text-[0.8rem] font-semibold text-black/65">
+                {item.examples.map((example) => (
+                  <li key={example}>{example}</li>
+                ))}
+              </ul>
+              <p className="mt-2.5 max-w-[40ch] text-sm leading-6 text-black/62">
+                {item.description}
+              </p>
+              <a
+                href="tel:+393289185029"
+                aria-label={`Chiedi compatibilità: ${item.title}`}
+                onFocus={() => goTo(index, true)}
+                className="group font-ui mt-3 inline-flex min-h-11 max-w-full items-center gap-2.5 text-[0.8rem] font-bold text-gray-900 underline decoration-black/25 underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2"
+              >
+                Chiedi compatibilità{" "}
+                <ArrowUpRight
+                  aria-hidden="true"
+                  size={17}
+                  className="shrink-0 transition-transform duration-160 group-hover:translate-x-[3px] motion-reduce:transform-none motion-reduce:transition-none"
                 />
-              </div>
-              <div className="mt-3.5 border-t border-black/10 pt-3.5">
-                <p className="font-ui text-[0.6rem] font-bold uppercase tracking-[0.15em] text-gray-500">
-                  Accessori
-                </p>
-                <h3
-                  id={`accessory-${item.id}`}
-                  className="font-display mt-1.5 text-[clamp(1.5rem,2.2vw,2.15rem)] font-bold leading-[0.98] text-gray-900"
-                >
-                  {item.title}
-                </h3>
-                <ul className="font-ui mt-2.5 flex flex-wrap gap-x-3 gap-y-1 text-[0.8rem] font-semibold text-gray-600">
-                  {item.examples.map((example) => (
-                    <li key={example}>{example}</li>
-                  ))}
-                </ul>
-                <p className="mt-2.5 max-w-[40ch] text-sm leading-6 text-gray-600">
-                  {item.description}
-                </p>
-                <a
-                  href="tel:+393289185029"
-                  aria-label={`Chiedi compatibilità: ${item.title}`}
-                  onFocus={() => goTo(index, true)}
-                  className="group font-ui mt-3 inline-flex min-h-11 max-w-full items-center gap-2.5 text-[0.8rem] font-bold text-gray-900 underline decoration-black/25 underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2"
-                >
-                  Chiedi compatibilità{" "}
-                  <ArrowUpRight
-                    aria-hidden="true"
-                    size={17}
-                    className="shrink-0 transition-transform duration-160 group-hover:translate-x-[3px] motion-reduce:transform-none motion-reduce:transition-none"
-                  />
-                </a>
-              </div>
+              </a>
             </div>
           </article>
         ))}
