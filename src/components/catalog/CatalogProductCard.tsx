@@ -225,6 +225,13 @@ export const CatalogProductCard = memo(function CatalogProductCard({
                 <span className="font-ui truncate text-[0.58rem] font-bold uppercase tracking-[0.14em] text-[var(--product-muted)]">
                   {scooter.family}
                 </span>
+                <Link
+                  href={`/scooters/${scooter.id}`}
+                  aria-label={`Vai alla pagina di ${scooter.name}`}
+                  className="font-ui inline-flex min-h-7 items-center rounded-full px-1 text-[0.58rem] font-bold uppercase tracking-[0.1em] text-[var(--product-muted)] underline decoration-current/40 underline-offset-4 transition-colors hover:text-current focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--product-accent)]"
+                >
+                  Scheda {scooter.shortName}
+                </Link>
               </div>
               <h2
                 id={cardTitleId}
