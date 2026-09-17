@@ -1,12 +1,9 @@
 "use client";
 
 import { useMemo } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 
-import {
-  CatalogProductCard,
-  CatalogProductDetail,
-} from "@/components/catalog/CatalogProductCard";
+import { CatalogProductCard } from "@/components/catalog/CatalogProductCard";
 import type { CatalogScooter } from "@/data/catalog-scooters";
 import { getCatalogCardToneAssignments } from "@/data/scooter-color-system";
 
@@ -24,28 +21,35 @@ type CatalogGridVariantProps = Omit<CatalogGridProps, "isCompactViewport">;
 
 const desktopCatalogColumnCount = 4;
 const productEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
-const rowLayoutDuration = 0.26;
-const detailRevealDuration = 0.18;
+const cardLayoutDuration = 0.28;
 
-function getDesktopCatalogRows(scooters: CatalogScooter[]) {
-  const rows: CatalogScooter[][] = [];
-
-  for (let index = 0; index < scooters.length; index += desktopCatalogColumnCount) {
-    rows.push(scooters.slice(index, index + desktopCatalogColumnCount));
-  }
-
-  return rows;
-}
-
-function getRowLayoutDependency(
-  rowIndex: number,
-  expandedRowIndex: number,
+function getDesktopCatalogOrder(
+  scooters: CatalogScooter[],
+  expandedId: string | null,
 ) {
-  if (expandedRowIndex < 0 || rowIndex < expandedRowIndex) {
-    return "stable";
+  if (!expandedId) {
+    return scooters;
   }
 
-  return `${rowIndex === expandedRowIndex ? "detail" : "after-detail"}-${expandedRowIndex}`;
+  const expandedIndex = scooters.findIndex(
+    (scooter) => scooter.id === expandedId,
+  );
+
+  if (expandedIndex < 0) {
+    return scooters;
+  }
+
+  const expandedRowStart =
+    Math.floor(expandedIndex / desktopCatalogColumnCount) *
+    desktopCatalogColumnCount;
+  const expandedScooter = scooters[expandedIndex];
+
+  return [
+    ...scooters.slice(0, expandedRowStart),
+    expandedScooter,
+    ...scooters.slice(expandedRowStart, expandedIndex),
+    ...scooters.slice(expandedIndex + 1),
+  ];
 }
 
 function EmptyCatalogState({ shouldReduceMotion }: { shouldReduceMotion: boolean }) {
@@ -115,94 +119,52 @@ function DesktopCatalogGrid({
   onExpandScooter,
   onCollapseScooter,
 }: CatalogGridVariantProps) {
-  const desktopRows = useMemo(() => getDesktopCatalogRows(scooters), [scooters]);
   const cardToneAssignments = useMemo(
     () => getCatalogCardToneAssignments(scooters, desktopCatalogColumnCount),
     [scooters],
   );
-  const expandedIndex = expandedId
-    ? scooters.findIndex((scooter) => scooter.id === expandedId)
-    : -1;
-  const expandedScooter = expandedIndex >= 0 ? scooters[expandedIndex] : null;
-  const expandedRowIndex =
-    expandedIndex >= 0
-      ? Math.floor(expandedIndex / desktopCatalogColumnCount)
-      : -1;
+  const orderedScooters = useMemo(
+    () => getDesktopCatalogOrder(scooters, expandedId),
+    [scooters, expandedId],
+  );
 
   return (
-    <div id="catalog-list" aria-label="Modelli in gamma" className="space-y-4">
-      {desktopRows.map((row, rowIndex) => {
-        const rowExpandedScooter =
-          rowIndex === expandedRowIndex ? expandedScooter : null;
-        const rowKey = `catalog-row-${row[0]?.id ?? rowIndex}`;
+    <div
+      id="catalog-list"
+      aria-label="Modelli in gamma"
+      className="grid grid-cols-12 items-start gap-4"
+    >
+      {orderedScooters.map((scooter) => {
+        const isExpanded = expandedId === scooter.id;
 
         return (
           <motion.div
-            key={rowKey}
-            layout={shouldReduceMotion ? false : "position"}
-            layoutDependency={getRowLayoutDependency(
-              rowIndex,
-              expandedRowIndex,
-            )}
+            key={scooter.id}
+            layout={shouldReduceMotion ? false : true}
+            layoutDependency={isExpanded ? `expanded-${scooter.id}` : "stable"}
             transition={{
               layout: {
-                duration: shouldReduceMotion ? 0.01 : rowLayoutDuration,
+                duration: shouldReduceMotion ? 0.01 : cardLayoutDuration,
                 ease: productEase,
               },
             }}
-            className="grid grid-cols-12 items-start gap-4"
+            className={
+              isExpanded
+                ? "relative z-20 col-span-12 min-w-0"
+                : "relative z-0 col-span-3 min-w-0"
+            }
           >
-            {row.map((scooter) => {
-              const isSelected = expandedId === scooter.id;
-
-              return (
-                <CatalogProductCard
-                  key={scooter.id}
-                  scooter={scooter}
-                  shouldReduceMotion={shouldReduceMotion}
-                  isExpanded={false}
-                  isSelected={isSelected}
-                  transitionImageId={null}
-                  ariaControlsId={`catalog-detail-${scooter.id}`}
-                  cardToneAssignment={cardToneAssignments[scooter.id]}
-                  isPriority={scooter.id === scooters[0]?.id}
-                  onExpandScooter={onExpandScooter}
-                  onCollapseScooter={onCollapseScooter}
-                />
-              );
-            })}
-
-            <AnimatePresence initial={false} mode="popLayout">
-              {rowExpandedScooter ? (
-                <motion.div
-                  key={`catalog-detail-${rowExpandedScooter.id}`}
-                  initial={
-                    shouldReduceMotion ? false : { opacity: 0, y: 8 }
-                  }
-                  animate={
-                    shouldReduceMotion ? undefined : { opacity: 1, y: 0 }
-                  }
-                  exit={
-                    shouldReduceMotion ? undefined : { opacity: 0, y: -6 }
-                  }
-                  transition={{
-                    duration: shouldReduceMotion ? 0.01 : detailRevealDuration,
-                    ease: productEase,
-                  }}
-                  className="relative z-10 col-span-12 min-w-0"
-                >
-                  <CatalogProductDetail
-                    scooter={rowExpandedScooter}
-                    shouldReduceMotion={shouldReduceMotion}
-                    transitionImageId={transitionImageId}
-                    cardToneAssignment={
-                      cardToneAssignments[rowExpandedScooter.id]
-                    }
-                    onCollapseScooter={onCollapseScooter}
-                  />
-                </motion.div>
-              ) : null}
-            </AnimatePresence>
+            <CatalogProductCard
+              scooter={scooter}
+              shouldReduceMotion={shouldReduceMotion}
+              isExpanded={isExpanded}
+              isSelected={isExpanded}
+              transitionImageId={isExpanded ? transitionImageId : null}
+              cardToneAssignment={cardToneAssignments[scooter.id]}
+              isPriority={scooter.id === scooters[0]?.id}
+              onExpandScooter={onExpandScooter}
+              onCollapseScooter={onCollapseScooter}
+            />
           </motion.div>
         );
       })}
