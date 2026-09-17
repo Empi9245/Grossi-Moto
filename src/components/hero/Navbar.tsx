@@ -30,7 +30,7 @@ export function Navbar() {
           Grossimoto
         </span>
         <span className="text-[0.62rem] font-medium uppercase tracking-[0.18em] text-[oklch(82%_0.016_78)] sm:text-[0.68rem]">
-          Scooter a Roma
+          Moto e scooter a Roma
         </span>
       </motion.a>
 
