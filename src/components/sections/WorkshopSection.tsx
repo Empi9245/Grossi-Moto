@@ -6,7 +6,7 @@ const workshopItems = [
   "Diagnosi",
   "Controlli prima della consegna",
   "Montaggio accessori",
-  "Assistenza scooter",
+  "Assistenza moto e scooter",
 ];
 
 export function WorkshopSection() {
@@ -26,10 +26,10 @@ export function WorkshopSection() {
               Officina in sede
             </p>
             <h2 className="font-display mt-5 max-w-[12ch] text-[clamp(4rem,10vw,10rem)] font-bold uppercase leading-[0.8]">
-              Il tuo scooter, seguito nel tempo.
+              Il tuo mezzo, seguito nel tempo.
             </h2>
             <p className="mt-8 max-w-[44rem] text-[clamp(1.45rem,2.4vw,2.9rem)] font-semibold leading-[1] text-black/76">
-              Un tagliando da fare, un rumore da capire, un accessorio da montare. Raccontaci cosa serve al tuo scooter: partiamo da lì.
+              Un tagliando da fare, un rumore da capire, un accessorio da montare. Raccontaci cosa serve al tuo mezzo: partiamo da lì.
             </p>
             <a
               href="tel:+393289185029"
