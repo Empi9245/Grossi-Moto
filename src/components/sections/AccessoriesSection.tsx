@@ -15,7 +15,7 @@ export function AccessoriesSection() {
               </p>
               <h2
                 id="accessories-heading"
-                className="font-display mt-3 max-w-[19ch] text-[clamp(2.25rem,4.5vw,4.5rem)] font-black uppercase leading-[0.94] [overflow-wrap:anywhere]"
+                className="font-display mt-3 max-w-[19ch] text-[clamp(2.25rem,4.5vw,4.5rem)] font-bold uppercase leading-[0.94]"
               >
                 Accessori che fanno la differenza.
               </h2>

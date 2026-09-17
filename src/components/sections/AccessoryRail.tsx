@@ -202,7 +202,7 @@ export function AccessoryRail() {
             aria-controls="accessory-rail"
             aria-current={index === active ? "true" : undefined}
             onClick={(event) => goTo(index, event.detail === 0)}
-            className="min-h-11 max-w-full border-b-2 border-transparent text-left text-[0.82rem] font-semibold text-black/55 [overflow-wrap:anywhere] aria-current:border-black aria-current:text-black focus-visible:outline-2 focus-visible:outline-offset-4"
+            className="min-h-11 max-w-full border-b-2 border-transparent text-left text-[0.82rem] font-semibold text-black/55 aria-current:border-black aria-current:text-black focus-visible:outline-2 focus-visible:outline-offset-4"
           >
             {item.title}
           </button>
@@ -281,7 +281,7 @@ export function AccessoryRail() {
           <article
             key={item.id}
             aria-labelledby={`accessory-${item.id}`}
-            className="min-w-0 w-[var(--card-width)] shrink-0 snap-start overflow-hidden rounded-3xl border border-black/10 p-3 text-gray-900 shadow-none [overflow-wrap:anywhere] sm:p-3.5"
+            className="min-w-0 w-[var(--card-width)] shrink-0 snap-start overflow-hidden rounded-3xl border border-black/10 p-3 text-gray-900 shadow-none sm:p-3.5"
             style={{
               background: accessoryPastels[index % accessoryPastels.length],
             }}

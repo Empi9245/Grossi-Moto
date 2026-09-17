@@ -1,10 +1,26 @@
 import type { Metadata, Viewport } from "next";
+import { IBM_Plex_Mono, Instrument_Sans } from "next/font/google";
 
 import { MobileAppNav } from "@/components/layout/MobileAppNav";
 import { PageTransitionProvider } from "@/components/transitions/PageTransitionProvider";
 
 import "./globals.css";
 import { siteUrl } from "@/lib/seo";
+
+const instrumentSans = Instrument_Sans({
+  subsets: ["latin"],
+  axes: ["wdth"],
+  variable: "--font-instrument-sans",
+  display: "swap",
+});
+
+const ibmPlexMono = IBM_Plex_Mono({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  variable: "--font-ibm-plex-mono",
+  display: "swap",
+  preload: false,
+});
 
 export const metadata: Metadata = {
   title: {
@@ -43,7 +59,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="it">
+    <html
+      lang="it"
+      className={`${instrumentSans.variable} ${ibmPlexMono.variable}`}
+    >
       <body suppressHydrationWarning>
         <a href="#main-content" className="sr-only fixed left-4 top-4 z-[100] rounded-full bg-[var(--page-background)] px-4 py-3 font-ui text-sm font-bold text-[var(--ink)] shadow-lg focus:not-sr-only focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(38%_0.08_28)]">
           Vai al contenuto principale

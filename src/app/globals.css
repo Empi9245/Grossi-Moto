@@ -24,15 +24,14 @@
   --home-accessories-surface: var(--gm-neutral-soft);
   --home-workshop-surface: var(--gm-brand-subtle);
   --home-contact-surface: var(--gm-white);
-  --font-display: "Clash Grotesk", "Bahnschrift", "DIN Alternate",
-    "Aptos Display", "Arial Narrow", "Helvetica Neue", Arial, ui-sans-serif,
-    system-ui, sans-serif;
-  --font-body: "General Sans", "Aptos", "Segoe UI Variable", "Segoe UI",
-    "Helvetica Neue", Arial, ui-sans-serif, system-ui, sans-serif;
-  --font-ui: "General Sans", "Bahnschrift", "Aptos", "Segoe UI Variable",
+  --font-display: var(--font-instrument-sans), "Aptos Display", "Helvetica Neue",
+    Arial, ui-sans-serif, system-ui, sans-serif;
+  --font-body: var(--font-instrument-sans), "Aptos", "Segoe UI Variable",
+    "Segoe UI", "Helvetica Neue", Arial, ui-sans-serif, system-ui, sans-serif;
+  --font-ui: var(--font-instrument-sans), "Aptos", "Segoe UI Variable",
     "Segoe UI", Arial, ui-sans-serif, system-ui, sans-serif;
-  --font-tech: "IBM Plex Mono", "Cascadia Mono", "Roboto Mono", Consolas,
-    ui-monospace, monospace;
+  --font-tech: var(--font-ibm-plex-mono), "Cascadia Mono", "Roboto Mono",
+    Consolas, ui-monospace, monospace;
   font-family: var(--font-body);
 }
 
@@ -51,6 +50,7 @@ body {
   background: var(--page-background);
   color: var(--foreground);
   font-family: var(--font-body);
+  font-kerning: normal;
   text-rendering: geometricPrecision;
   -webkit-tap-highlight-color: transparent;
 }
@@ -63,11 +63,19 @@ body {
 .font-display {
   font-family: var(--font-display);
   font-variation-settings: "wdth" 92;
+  font-feature-settings: "ss01" 1, "ss05" 1, "ss06" 1;
+  overflow-wrap: normal !important;
+  word-break: normal;
+  hyphens: none;
 }
 
 .font-ui {
   font-family: var(--font-ui);
   font-variation-settings: "wdth" 96;
+  font-feature-settings: "ss01" 1;
+  overflow-wrap: normal !important;
+  word-break: normal;
+  hyphens: none;
 }
 
 .font-tech {
