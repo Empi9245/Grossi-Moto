@@ -22,7 +22,7 @@ type ParallaxImage = {
 };
 
 type ZoomParallaxProps = {
-  /** Array of images to be displayed in the parallax effect, max 7 images. */
+  /** Array of images to be displayed in the parallax effect, max 9 images. */
   images?: ParallaxImage[];
 };
 
@@ -54,6 +54,14 @@ const defaultImages: ParallaxImage[] = [
   {
     src: "/grossimoto/home-scroll/07-people-s-125-abs-faro.webp",
     alt: "Dettaglio frontale People S 125 ABS",
+  },
+  {
+    src: "/kymco-workbench/home-showroom-originals/03-downtown-350-gt.webp",
+    alt: "Downtown 350 GT in vista laterale",
+  },
+  {
+    src: "/kymco-workbench/home-showroom-originals/06-ak575-premium.webp",
+    alt: "AK575 Premium in vista laterale",
   },
 ];
 
@@ -153,7 +161,7 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
   const container = useRef<HTMLDivElement | null>(null);
   const shouldReduceMotion = useReducedMotion();
   const isDesktopViewport = useMediaQuery("(min-width: 1024px)");
-  const parallaxImages = images.slice(0, isDesktopViewport ? 7 : 1);
+  const parallaxImages = images.slice(0, isDesktopViewport ? 9 : 1);
   const zoomEnd = isDesktopViewport ? 0.172 : 0.205;
 
   const { scrollYProgress } = useScroll({
@@ -174,7 +182,7 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
   const scale9 = useTransform(zoomProgress, [0, 1], [1, 9]);
   const copyScrimOpacity = useTransform(scrollYProgress, [zoomEnd, isDesktopViewport ? 0.25 : 0.28], [0, 0.9]);
 
-  const scales = [scale4, scale5, scale6, scale5, scale6, scale8, scale9];
+  const scales = [scale4, scale5, scale6, scale5, scale6, scale8, scale9, scale6, scale8];
 
   if (shouldReduceMotion) {
     return <><StaticParallaxFallback images={parallaxImages} /><ExperienceContact /></>;
@@ -220,6 +228,14 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
                 index === 6
                   ? "[&>div]:!top-[22.5vh] [&>div]:!left-[25vw] [&>div]:!h-[15vh] [&>div]:!w-[15vw]"
                   : ""
+              } ${
+                index === 7
+                  ? "[&>div]:!-top-[42vh] [&>div]:!left-[40vw] [&>div]:!h-[24vh] [&>div]:!w-[28vw]"
+                  : ""
+              } ${
+                index === 8
+                  ? "[&>div]:!top-[1vh] [&>div]:!-left-[40vw] [&>div]:!h-[22vh] [&>div]:!w-[28vw]"
+                  : ""
               }`}
             >
               <motion.div style={{ scale: isDesktopViewport ? 1 : mobileScale }} className="relative h-[44svh] w-[76vw] overflow-hidden lg:h-[25vh] lg:w-[25vw] rounded-[1.25rem] bg-[oklch(18%_0.014_56)] lg:shadow-[0_24px_70px_oklch(18%_0.014_56/0.18)]">
@@ -251,12 +267,12 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
         >
           <div className="absolute left-[6vw] top-[4svh] max-w-[85vw] lg:left-[4vw] lg:top-[3svh] lg:max-w-[26vw]">
             <p className="font-ui mb-3 text-[0.65rem] font-bold uppercase tracking-[0.2em]">Grossi Moto · Roma</p>
-            <p className="font-display text-[clamp(1.75rem,7vw,3rem)] lg:text-[clamp(2rem,3.1vw,4rem)] font-bold leading-[0.95] tracking-[-0.035em]">
+            <p className={`${creditsFont.className} text-[clamp(1.75rem,7vw,3rem)] lg:text-[clamp(2rem,3.1vw,4rem)] leading-[0.95] tracking-[-0.02em]`}>
               La tua prossima strada.
             </p>
           </div>
           <div className="absolute bottom-[calc(6.5rem+env(safe-area-inset-bottom))] right-[6vw] max-w-[85vw] text-right lg:bottom-[5svh] lg:right-[4vw] lg:max-w-[25vw]">
-            <p className="font-display text-[clamp(1.75rem,7vw,3rem)] lg:text-[clamp(2rem,3.6vw,4.5rem)] font-bold leading-[0.95] tracking-[-0.035em]">Parte da qui.</p>
+            <p className={`${creditsFont.className} text-[clamp(1.75rem,7vw,3rem)] lg:text-[clamp(2rem,3.6vw,4.5rem)] leading-[0.95] tracking-[-0.02em]`}>Parte da qui.</p>
             <p className="font-ui mt-4 text-xs tracking-wide">Dalla scelta del mezzo, a ogni nuovo viaggio.</p>
           </div>
         </motion.div>
