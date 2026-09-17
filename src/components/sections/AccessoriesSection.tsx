@@ -59,7 +59,7 @@ export function AccessoriesSection() {
             }}
           >
             Verifichiamo insieme disponibilità, compatibilità e montaggio in
-            base al tuo scooter e all’uso che ne fai.
+            base al tuo mezzo e all’uso che ne fai.
           </motion.p>
         </div>
         <AccessoryRail />
