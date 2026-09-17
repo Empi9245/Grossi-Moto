@@ -1,14 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
-import { Check, PhoneCall } from "lucide-react";
+import { PhoneCall } from "lucide-react";
 
 import { useMediaQuery } from "@/hooks/useMediaQuery";
-import { ServiceSwipe } from "./ServiceSwipe";
+import { ServiceSwipe, type Service } from "./ServiceSwipe";
 
-const services = [
+const services: Service[] = [
   {
     title: "Officina moto e scooter",
     statement: "Capire il problema è il primo passo.",
@@ -89,266 +89,155 @@ const services = [
   },
 ];
 
-const premiumEase: [number, number, number, number] = [0.165, 0.84, 0.44, 1];
+const easeOut: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
 export function StickyScrollShowcase() {
   const contentRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const isDesktopViewport = useMediaQuery("(min-width: 1024px)");
-  const [isReduced] = useState(
-    () =>
-      typeof window !== "undefined" &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches,
-  );
+  const reduceMotion = useReducedMotion();
 
   useEffect(() => {
     const content = contentRef.current;
-    if (!content || isReduced || !isDesktopViewport) return;
+    if (!content || !isDesktopViewport) return;
 
-    let frame = 0;
+    const items = Array.from(
+      content.querySelectorAll<HTMLElement>("[data-service-index]"),
+    );
+    if (items.length === 0) return;
 
-    const updateActiveService = () => {
-      frame = 0;
-      const items =
-        content.querySelectorAll<HTMLElement>("[data-service-index]");
-      const viewportCenter = window.innerHeight / 2;
-      let closestIndex = 0;
-      let closestDist = Infinity;
+    if (!("IntersectionObserver" in window)) {
+      return;
+    }
 
-      items.forEach((item) => {
-        const rect = item.getBoundingClientRect();
-        if (rect.width === 0 || rect.height === 0) return;
+    const ratios = new Map<number, number>();
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const index = Number(
+            (entry.target as HTMLElement).getAttribute("data-service-index"),
+          );
+          if (!Number.isNaN(index)) {
+            ratios.set(index, entry.isIntersecting ? entry.intersectionRatio : 0);
+          }
+        });
 
-        const itemCenter = rect.top + rect.height / 2;
-        const dist = Math.abs(itemCenter - viewportCenter);
-        const index = Number(item.getAttribute("data-service-index"));
+        let nextIndex = activeIndex;
+        let nextRatio = -1;
 
-        if (!Number.isNaN(index) && dist < closestDist) {
-          closestDist = dist;
-          closestIndex = index;
+        ratios.forEach((ratio, index) => {
+          if (ratio > nextRatio) {
+            nextRatio = ratio;
+            nextIndex = index;
+          }
+        });
+
+        if (nextRatio > 0) {
+          setActiveIndex((current) => (current === nextIndex ? current : nextIndex));
         }
-      });
+      },
+      {
+        rootMargin: "-24% 0px -34% 0px",
+        threshold: [0.2, 0.4, 0.6, 0.8],
+      },
+    );
 
-      setActiveIndex((current) =>
-        current === closestIndex ? current : closestIndex,
-      );
-    };
+    items.forEach((item) => observer.observe(item));
+    return () => observer.disconnect();
+  }, [activeIndex, isDesktopViewport]);
 
-    const handleScroll = () => {
-      if (frame) return;
-      frame = window.requestAnimationFrame(updateActiveService);
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    window.addEventListener("resize", handleScroll);
-    updateActiveService();
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("resize", handleScroll);
-      if (frame) {
-        window.cancelAnimationFrame(frame);
-      }
-    };
-  }, [isDesktopViewport, isReduced]);
+  const currentService = services[activeIndex] ?? services[0];
 
   return (
-    <section className="relative overflow-clip rounded-t-[2rem] bg-[#E7E3DC] text-[#1B0E0D] shadow-[0_-1px_0_rgba(231,227,220,0.2)] lg:rounded-t-[2.5rem]">
-      <div className="mx-auto max-w-[96rem] px-5 pb-6 pt-16 sm:px-7 sm:pt-20 md:px-10 lg:px-14 lg:pt-24 xl:px-20">
-        <p className="font-tech text-[0.64rem] font-semibold uppercase tracking-[0.18em] text-[#1B0E0D]/54 sm:text-xs">
-          I nostri servizi
-        </p>
-        <h2 className="font-display mt-5 max-w-[14ch] text-[clamp(2.8rem,8vw,5rem)] font-bold uppercase leading-[0.9] tracking-[-0.05em] lg:text-[clamp(4.15rem,13vw,13.5rem)] lg:leading-[0.82]">
-          Cosa
-          <br />
-          possiamo
-          <br />
-          fare per te<span className="text-[#1B0E0D]">.</span>
-        </h2>
-      </div>
-
-      <ServiceSwipe services={services} />
-      <div className="hidden lg:grid lg:grid-cols-[minmax(30rem,41vw)_6.5rem_minmax(0,1fr)] lg:items-start">
-        <div className="relative hidden min-h-full lg:block">
-          <div className="sticky top-0 flex h-[100svh] items-center px-5 py-8 xl:px-10">
-            {/* FIX P1: overflow-hidden aggiunto → rounded-[2rem] clipa correttamente l'immagine.
-                Span bg-[#120D0C]/72 rimosso: oscurava la foto; il gradient overlay gestisce già il contrasto. */}
-            <figure className="liquid-glass relative h-[84svh] w-full overflow-hidden rounded-[2rem] shadow-[0_34px_90px_rgba(27,14,13,0.25)]">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={activeIndex}
-                  className="absolute inset-0"
-                  initial={
-                    isReduced || !isDesktopViewport
-                      ? {}
-                      : { opacity: 0, scale: 1.065, filter: "blur(7px)" }
-                  }
-                  animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-                  exit={
-                    isReduced || !isDesktopViewport
-                      ? {}
-                      : { opacity: 0, scale: 0.985, filter: "blur(5px)" }
-                  }
-                  transition={{ duration: 0.5, ease: premiumEase }}
-                >
-                  <Image
-                    src={services[activeIndex].image}
-                    alt={services[activeIndex].alt}
-                    fill
-                    sizes="41vw"
-                    className="object-cover brightness-[0.78] contrast-[1.16] saturate-[0.72]"
-                    priority={activeIndex === 0}
-                  />
-                </motion.div>
-              </AnimatePresence>
-
-              <div
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(18,13,12,0)_34%,rgba(18,13,12,0.86)_100%),radial-gradient(circle_at_74%_22%,rgba(244,240,232,0.22),transparent_0_28%,transparent_46%)]"
-              />
-
-            </figure>
-          </div>
+    <section
+      aria-labelledby="services-showcase-heading"
+      className="bg-white px-5 py-16 text-[#0A0A0A] sm:px-7 sm:py-20 md:px-10 lg:px-14 lg:py-28 xl:px-20"
+    >
+      <div className="mx-auto max-w-[92rem]">
+        <div className="grid gap-7 border-t border-black/16 pt-6 lg:grid-cols-[minmax(0,1.3fr)_minmax(24rem,0.7fr)] lg:items-end lg:gap-12">
+          <h2
+            id="services-showcase-heading"
+            className="font-display max-w-[11ch] text-[clamp(3.2rem,10vw,8.5rem)] font-bold uppercase leading-[0.84] tracking-[-0.04em]"
+          >
+            Cosa possiamo fare per te.
+          </h2>
+          <p className="max-w-[34rem] text-base leading-7 text-black/64 sm:text-lg sm:leading-8">
+            Dalla manutenzione alla scelta del mezzo: un unico punto di riferimento per capire cosa serve e come procedere.
+          </p>
         </div>
 
-        <aside className="sticky top-0 hidden h-[100svh] items-center justify-center lg:flex">
-          <nav aria-label="Avanzamento servizi" className="relative py-2">
-            <span
-              aria-hidden="true"
-              className="absolute left-1/2 top-2 h-[calc(100%-1rem)] w-px -translate-x-1/2 bg-[#1B0E0D]/14"
-            />
-            <ol className="relative z-10 flex flex-col items-center gap-7">
+        <div className="mt-12 sm:mt-16 lg:mt-20">
+          <ServiceSwipe services={services} />
+
+          <div className="hidden lg:grid lg:grid-cols-[minmax(28rem,0.94fr)_minmax(0,1.06fr)] lg:gap-14 xl:gap-20">
+            <div className="relative min-h-full">
+              <div className="sticky top-24 flex h-[calc(100svh-7rem)] items-center">
+                <figure className="relative h-[74svh] min-h-[34rem] max-h-[52rem] w-full overflow-hidden rounded-[40px] bg-black/[0.035] xl:rounded-[48px]">
+                  <AnimatePresence initial={false} mode="sync">
+                    <motion.div
+                      key={currentService.image}
+                      className="absolute inset-0"
+                      initial={
+                        reduceMotion ? false : { opacity: 0, scale: 1.015 }
+                      }
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{
+                        duration: reduceMotion ? 0 : 0.22,
+                        ease: easeOut,
+                      }}
+                    >
+                      <Image
+                        src={currentService.image}
+                        alt={currentService.alt}
+                        fill
+                        sizes="(min-width: 1280px) 44vw, 47vw"
+                        className="object-cover"
+                        priority={activeIndex === 0}
+                      />
+                    </motion.div>
+                  </AnimatePresence>
+                </figure>
+              </div>
+            </div>
+
+            <div ref={contentRef}>
               {services.map((service, index) => {
                 const isActive = index === activeIndex;
-                const serviceNumber = String(index + 1).padStart(2, "0");
 
                 return (
-                  <li key={service.title}>
-                    <a
-                      href={`#service-${serviceNumber}`}
-                      aria-current={isActive ? "step" : undefined}
-                      className={[
-                        "liquid-glass group font-tech relative flex h-12 min-w-12 items-center justify-center rounded-full text-[0.72rem] font-semibold uppercase tracking-[0.12em] transition-[color,transform] duration-[320ms] ease-[cubic-bezier(0.165,0.84,0.44,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1B0E0D]/38 focus-visible:ring-offset-4 focus-visible:ring-offset-[#E7E3DC]",
-                        isActive
-                          ? "text-[#F4F0E8]"
-                          : "text-[#1B0E0D]/58 hover:text-[#1B0E0D]",
-                      ].join(" ")}
-                    >
-                      <span
-                        aria-hidden="true"
-                        className={[
-                          "absolute inset-0 rounded-[inherit] transition-[background,opacity] duration-[320ms] ease-[cubic-bezier(0.165,0.84,0.44,1)]",
-                          isActive
-                            ? "bg-[#1B0E0D] opacity-95"
-                            : "bg-[#E7E3DC]/46 opacity-100 group-hover:bg-[#F4F0E8]",
-                        ].join(" ")}
-                      />
-                      <span className="relative z-10">{serviceNumber}</span>
-                    </a>
-                  </li>
-                );
-              })}
-            </ol>
-          </nav>
-        </aside>
-
-        <div ref={contentRef} className="pb-24">
-          {services.map((service, index) => {
-            const isActive = index === activeIndex;
-            const serviceNumber = String(index + 1).padStart(2, "0");
-
-            return (
-              <article
-                key={service.title}
-                id={`service-${serviceNumber}`}
-                data-service-index={index}
-                className="relative grid max-w-full scroll-mt-8 overflow-x-clip border-t border-[#1B0E0D]/10 px-5 pb-20 pt-12 first:border-none first:pt-8 sm:px-7 sm:pb-28 sm:pt-20 md:px-10 lg:min-h-[108svh] lg:grid-rows-[auto_minmax(0,1fr)_auto] lg:px-8 lg:py-[9svh] xl:px-16"
-              >
-                {/* FIX P2: relative + overflow-hidden sul wrapper → il border-radius clipa l'immagine.
-                    Span assoluto rimosso (si posizionava sull'<article>, non sul wrapper).
-                    rounded-[2rem] sull'<Image>. Gradient div in coda sostituisce lo span per l'overlay. */}
-                <div className="liquid-glass relative mb-7 overflow-hidden rounded-[1.5rem] shadow-[0_24px_60px_rgba(27,14,13,0.18)] lg:hidden sm:mb-8 sm:rounded-[2rem]">
-                  <Image
-                    src={service.image}
-                    alt={service.alt}
-                    width={900}
-                    height={680}
-                    sizes="100vw"
-                    className="h-[min(34svh,18rem)] min-h-[15rem] w-full rounded-[1.5rem] object-cover brightness-[0.82] contrast-[1.12] saturate-[0.74] sm:h-[38svh] sm:min-h-[17rem] sm:rounded-[2rem]"
-                  />
-                  <div
-                    aria-hidden="true"
-                    className="pointer-events-none absolute inset-0 rounded-[1.5rem] bg-[linear-gradient(180deg,transparent_45%,rgba(18,13,12,0.75)_100%)] sm:rounded-[2rem]"
-                  />
-                </div>
-
-                <span
-                  aria-hidden="true"
-                  className="font-display pointer-events-none absolute right-5 top-[7svh] hidden text-[clamp(12rem,19vw,25rem)] font-bold leading-none tracking-[-0.06em] text-[#1B0E0D]/[0.055] lg:block"
-                >
-                  {serviceNumber}
-                </span>
-
-                <div className="relative z-10 flex items-center justify-between gap-8">
-                  <span className="liquid-glass font-tech relative inline-flex min-h-10 min-w-10 items-center justify-center rounded-full text-xs font-semibold uppercase tracking-[0.12em] text-[#1B0E0D]/62">
-                    <span
-                      aria-hidden="true"
-                      className="absolute inset-0 rounded-[inherit] bg-[#E7E3DC]/38"
-                    />
-                    <span className="relative z-10">{serviceNumber}</span>
-                  </span>
-                  <span className="h-px flex-1 bg-[#1B0E0D]/14" />
-                  <span className="font-tech max-w-[13rem] text-right text-[0.64rem] font-semibold uppercase leading-5 tracking-[0.18em] text-[#1B0E0D]/46">
-                    Servizi Grossimoto
-                  </span>
-                </div>
-
-                <motion.div
-                  className="relative z-10 grid h-full w-full min-w-0 content-center"
-                  animate={
-                    isReduced || !isDesktopViewport
-                      ? {}
-                      : {
-                          opacity: isActive ? 1 : 0.34,
-                          y: isActive ? 0 : 22,
-                        }
-                  }
-                  transition={{ duration: 0.46, ease: premiumEase }}
-                >
-                  {/* FIX P3: clamp mobile 3.2rem/14vw -> 2.6rem/11vw; Finanziamenti resta
-                      su una riga nei viewport desktop ampi, senza forzare overflow su laptop stretti. */}
-                  <h3
+                  <article
+                    key={service.title}
+                    data-service-index={index}
                     className={[
-                      "font-display max-w-full whitespace-normal text-[clamp(2.6rem,11vw,6.2rem)] font-bold uppercase leading-[0.82] tracking-[-0.05em] [overflow-wrap:anywhere] lg:whitespace-normal lg:text-[clamp(4.2rem,5.8vw,6.8rem)] xl:text-[clamp(4.6rem,5.2vw,7.4rem)]",
-                      service.title === "Finanziamenti"
-                        ? "xl:max-w-none xl:whitespace-nowrap"
-                        : "lg:max-w-[11ch]",
+                      "relative flex min-h-[70svh] flex-col justify-center border-l pl-8 transition-[border-width,border-color,opacity,transform] duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] xl:pl-12",
+                      isActive
+                        ? "border-l-2 border-[#C72A09] opacity-100"
+                        : "border-black/12 opacity-46",
                     ].join(" ")}
                   >
-                    {service.title}
-                    <span className="text-[#1B0E0D]">.</span>
-                  </h3>
-                </motion.div>
-
-                <motion.div
-                  className="relative z-10 grid min-w-0 gap-8 2xl:grid-cols-[minmax(0,0.9fr)_minmax(21rem,0.68fr)] 2xl:items-end"
-                  animate={
-                    isReduced || !isDesktopViewport
-                      ? {}
-                      : {
-                          opacity: isActive ? 1 : 0.42,
-                          y: isActive ? 0 : 18,
-                        }
-                  }
-                  transition={{ duration: 0.46, ease: premiumEase }}
-                >
-                  <div className="min-w-0">
-                    <p className="max-w-[18ch] text-[clamp(1.55rem,6.5vw,2.9rem)] font-semibold uppercase leading-[0.96] tracking-[-0.03em] text-[#1B0E0D] [overflow-wrap:break-word] lg:text-[clamp(2.05rem,2.75vw,3.4rem)] 2xl:text-[clamp(2.3rem,3vw,4.2rem)]">
+                    <h3 className="font-display max-w-[12ch] text-[clamp(3.7rem,5.7vw,7.2rem)] font-bold uppercase leading-[0.84] tracking-[-0.04em]">
+                      {service.title}
+                    </h3>
+                    <p className="mt-7 max-w-[22ch] text-[clamp(1.65rem,2.6vw,3rem)] font-semibold leading-[0.98] text-black/84">
                       {service.statement}
                     </p>
+                    <p className="mt-6 max-w-[38rem] text-base leading-7 text-black/64 xl:text-lg xl:leading-8">
+                      {service.description}
+                    </p>
+                    <ul className="font-ui mt-8 grid max-w-[38rem] gap-0 border-y border-black/14 text-[0.76rem] font-bold uppercase tracking-[0.05em] text-black/66">
+                      {service.features.map((feature) => (
+                        <li
+                          key={feature}
+                          className="border-b border-black/10 py-3 last:border-b-0"
+                        >
+                          {feature}
+                        </li>
+                      ))}
+                    </ul>
                     <a
                       href="tel:+393289185029"
-                      className="font-tech group mt-8 hidden min-h-12 items-center justify-center gap-3 rounded-full bg-[#1B0E0D] px-6 py-3 text-[0.7rem] font-bold uppercase tracking-[0.13em] text-[#F4F0E8] transition-[background,color,transform] duration-[320ms] ease-[cubic-bezier(0.165,0.84,0.44,1)] hover:bg-[#F4F0E8] hover:text-[#1B0E0D] active:translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1B0E0D]/38 focus-visible:ring-offset-4 focus-visible:ring-offset-[#E7E3DC] lg:inline-flex"
+                      className="font-ui mt-8 inline-flex min-h-12 w-fit items-center gap-2 rounded-full bg-[#0A0A0A] px-6 py-3 text-sm font-bold uppercase tracking-[0.08em] text-white transition-[opacity,transform] duration-150 hover:opacity-84 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/35 focus-visible:ring-offset-4 focus-visible:ring-offset-white motion-reduce:transform-none motion-reduce:transition-none"
                     >
                       Chiama per informazioni
                       <PhoneCall
@@ -357,49 +246,13 @@ export function StickyScrollShowcase() {
                         strokeWidth={1.8}
                       />
                     </a>
-                  </div>
-
-                  <div className="liquid-glass max-w-[34rem] rounded-[1.65rem] p-5 shadow-[0_20px_54px_rgba(27,14,13,0.08)] 2xl:max-w-none">
-                    <span
-                      aria-hidden="true"
-                      className="absolute inset-0 rounded-[inherit] bg-[#ECE8E1]/58"
-                    />
-                    <div className="relative z-10">
-                      <p className="max-w-[34rem] text-base font-medium leading-7 text-[#1B0E0D]/70 xl:text-lg xl:leading-8">
-                        {service.description}
-                      </p>
-                      <ul className="mt-7 grid gap-3">
-                        {service.features.map((feature) => (
-                          <li
-                            key={feature}
-                            className="flex items-start gap-3 text-sm font-normal uppercase leading-5 tracking-[-0.01em] text-[#1B0E0D]/78"
-                          >
-                            <span className="liquid-glass inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[#1B0E0D]/62">
-                              <span
-                                aria-hidden="true"
-                                className="absolute inset-0 rounded-[inherit] bg-[#E7E3DC]/44"
-                              />
-                              <Check
-                                aria-hidden="true"
-                                className="relative z-10 h-3.5 w-3.5"
-                                strokeWidth={2}
-                              />
-                            </span>
-                            <span className="min-w-0 [overflow-wrap:break-word]">
-                              {feature}
-                            </span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                </motion.div>
-              </article>
-            );
-          })}
+                  </article>
+                );
+              })}
+            </div>
+          </div>
         </div>
       </div>
-
     </section>
   );
 }
