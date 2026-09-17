@@ -78,25 +78,20 @@ export default function ServiziPage() {
       <ServicesHero />
       <StickyScrollShowcase />
 
-      <section className="bg-white px-2 py-10 sm:px-4 sm:py-14 lg:px-5 lg:py-20">
-        <div className="overflow-hidden rounded-[32px] bg-[#0A0A0A] px-5 py-16 text-white sm:rounded-[40px] sm:px-7 sm:py-20 md:px-10 lg:rounded-[56px] lg:px-14 lg:py-28 xl:px-16">
-          <div className="mx-auto max-w-[92rem]">
-            <div className="mb-12 grid gap-6 border-t border-white/18 pt-6 lg:mb-16 lg:grid-cols-[minmax(0,1.25fr)_minmax(22rem,0.75fr)] lg:items-end lg:gap-12">
-              <div>
-                <p className="font-ui text-[0.68rem] font-bold uppercase tracking-[0.18em] text-[#C72A09]">
-                  Come funziona
-                </p>
-                <h2 className="font-display mt-4 max-w-[11ch] text-[clamp(3.1rem,9vw,7.5rem)] font-bold uppercase leading-[0.84] tracking-[-0.04em]">
-                  Dal contatto alla riconsegna.
-                </h2>
-              </div>
-              <p className="max-w-[32rem] text-base leading-7 text-white/62 sm:text-lg sm:leading-8">
-                Quattro passaggi per capire il problema, concordare il lavoro e sapere cosa è stato fatto sul tuo mezzo.
-              </p>
-            </div>
-
-            <ServiceProcess />
+      <section className="overflow-hidden rounded-[32px] bg-[#0A0A0A] px-5 py-20 text-white sm:rounded-[40px] sm:px-7 sm:py-28 md:px-10 lg:rounded-[56px] lg:px-14 lg:py-32 xl:px-20">
+        <div className="mx-auto max-w-[80rem]">
+          <div className="mb-14 max-w-[42rem] sm:mb-20">
+            <p className="font-ui text-[0.65rem] font-bold uppercase tracking-[0.22em] text-[#C72A09] sm:text-xs">
+              Come funziona
+            </p>
+            <h2 className="font-display mt-4 text-[clamp(2.4rem,6vw,5rem)] font-bold leading-[0.9] tracking-tight text-white">
+              Dal contatto
+              <br />
+              alla riconsegna.
+            </h2>
           </div>
+
+          <ServiceProcess />
         </div>
       </section>
 
