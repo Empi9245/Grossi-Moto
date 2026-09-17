@@ -10,7 +10,7 @@ const services = [
   { id: "02", title: "Tagliandi", headline: "Ogni mezzo ha le sue scadenze.", description: "Modello, chilometri e ultimo tagliando: da qui valutiamo i controlli necessari.", image: "tagliandi", alt: "Manutenzione e tagliando scooter", cta: "Scopri i tagliandi" },
   { id: "03", title: "Ricambi", headline: "Il pezzo giusto per il tuo mezzo.", description: "Verifichiamo compatibilità, disponibilità e possibilità di montaggio in officina.", image: "ricambi-originali", alt: "Ricambi e accessori per scooter", cta: "Scopri ricambi e accessori" },
   { id: "04", title: "Finanziamenti", headline: "Valuta anche come acquistarlo.", description: "Chiedici le soluzioni disponibili per il modello scelto e le relative condizioni.", image: "finanziamenti", alt: "Informazioni per l’acquisto di uno scooter", cta: "Scopri i finanziamenti" },
-  { id: "05", title: "Permute", headline: "Il prossimo scooter parte dal tuo.", description: "Valutiamo lo stato del tuo mezzo per capire insieme la possibilità di una permuta.", image: "permute", alt: "Valutazione di uno scooter per la permuta", cta: "Scopri le permute" },
+  { id: "05", title: "Permute", headline: "La prossima scelta parte dal tuo mezzo.", description: "Valutiamo lo stato del tuo mezzo per capire insieme la possibilità di una permuta.", image: "permute", alt: "Valutazione di uno scooter per la permuta", cta: "Scopri le permute" },
   { id: "06", title: "Consulenza", headline: "Prima il percorso. Poi il modello.", description: "Città, passeggero, tragitti lunghi: confrontiamo i mezzi in base a come ti muovi.", image: "consulenza", alt: "Consulenza nella scelta dello scooter", cta: "Scopri la consulenza" },
 ];
 
