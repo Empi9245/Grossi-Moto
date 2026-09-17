@@ -34,8 +34,6 @@ type CatalogProductCardProps = {
   cardToneAssignment?: ProductCardToneAssignment;
   isPriority?: boolean;
   ariaControlsId?: string;
-  animateLayout?: boolean;
-  layoutDependency?: string;
   onExpandScooter: (scooterId: string) => void;
   onCollapseScooter: () => void;
 };
@@ -65,7 +63,6 @@ const specIcons: Record<CatalogSpecIcon, IconComponent> = {
 };
 
 const productEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
-const productLayoutDuration = 0.26;
 const expandedContentDuration = 0.18;
 
 function getProductStyle(
@@ -145,8 +142,6 @@ export const CatalogProductCard = memo(function CatalogProductCard({
   cardToneAssignment,
   isPriority = false,
   ariaControlsId,
-  animateLayout = false,
-  layoutDependency,
   onExpandScooter,
   onCollapseScooter,
 }: CatalogProductCardProps) {
@@ -175,19 +170,9 @@ export const CatalogProductCard = memo(function CatalogProductCard({
         animate: { opacity: 1, y: 0 },
         transition: { duration: expandedContentDuration, ease: productEase },
       };
-  const cardLayout =
-    shouldReduceMotion || !animateLayout ? false : ("position" as const);
 
   return (
-    <motion.div
-      layout={cardLayout}
-      layoutDependency={layoutDependency}
-      transition={{
-        layout: {
-          duration: shouldReduceMotion ? 0.01 : productLayoutDuration,
-          ease: productEase,
-        },
-      }}
+    <div
       className={clsx(
         "relative",
         isExpanded
@@ -354,7 +339,7 @@ export const CatalogProductCard = memo(function CatalogProductCard({
           )}
         </div>
       </article>
-    </motion.div>
+    </div>
   );
 });
 
