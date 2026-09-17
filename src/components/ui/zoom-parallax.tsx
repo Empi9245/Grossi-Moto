@@ -360,18 +360,23 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
   });
   // Preserve the original 86svh zoom distance; reserve the rest for the credits.
   const zoomProgress = useTransform(scrollYProgress, [0, zoomEnd], [0, 1]);
+  const introExitEnd = isDesktopViewport ? 0.28 : 0.15;
 
   const introLeftX = useTransform(
     zoomProgress,
-    [0, 0.15],
-    ["0vw", isDesktopViewport ? "-60vw" : "-70vw"],
+    [0, introExitEnd],
+    ["0vw", isDesktopViewport ? "-140%" : "-70vw"],
   );
   const introRightX = useTransform(
     zoomProgress,
-    [0, 0.15],
-    ["0vw", isDesktopViewport ? "60vw" : "70vw"],
+    [0, introExitEnd],
+    ["0vw", isDesktopViewport ? "140%" : "70vw"],
   );
-  const introOpacity = useTransform(zoomProgress, [0.15, 0.37], [1, 0]);
+  const introOpacity = useTransform(
+    zoomProgress,
+    isDesktopViewport ? [0.14, 0.34] : [0.15, 0.37],
+    [1, 0],
+  );
 
   const mobileScale = useTransform(zoomProgress, [0, 1], [1, 2.4]);
   const scale4 = useTransform(zoomProgress, [0, 1], [1, 4.08]);
