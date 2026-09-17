@@ -28,7 +28,7 @@ type ZoomParallaxProps = {
 
 const defaultImages: ParallaxImage[] = [
   {
-    src: "/grossimoto/home-scroll/01-people-s-125-abs-lago.webp",
+    src: "/grossimoto/home-scroll/zoom-main-scooter.webp",
     alt: "People S 125 ABS in un contesto aperto",
   },
   {
@@ -71,7 +71,7 @@ function StaticParallaxFallback({ images }: { images: ParallaxImage[] }) {
       <Image
         src={
           images[0]?.src ??
-          "/grossimoto/home-scroll/01-people-s-125-abs-lago.webp"
+          "/grossimoto/home-scroll/zoom-main-scooter.webp"
         }
         alt={images[0]?.alt ?? "Scooter in viaggio"}
         fill
@@ -135,13 +135,13 @@ function ExperienceContact() {
 }
 
 function CinematicCredits({ progress, compact }: { progress: MotionValue<number>; compact: boolean }) {
-  const y = useTransform(progress, [compact ? 0.22 : 0.20, 0.84], ["100svh", compact ? "-132svh" : "-125svh"]);
+  const y = useTransform(progress, [compact ? 0.30 : 0.20, compact ? 0.86 : 0.84], ["100svh", compact ? "-70svh" : "-125svh"]);
   return (
     <div className="pointer-events-none absolute inset-0 z-30 lg:[perspective:1400px]">
       <motion.div style={{ y }} className="absolute inset-x-0 top-0">
         <div className="origin-center lg:[transform:rotateX(8deg)]">
           {story.map(({ title, detail }, index) => (
-            <div key={title} className="flex h-[70svh] flex-col items-center justify-center px-5 text-center sm:px-8 lg:px-10 text-[#f4f0e8] lg:[text-shadow:0_4px_28px_rgba(0,0,0,0.45)]">
+            <div key={title} className="flex h-[48svh] flex-col items-center justify-center px-5 text-center sm:px-8 lg:h-[70svh] lg:px-10 text-[#f4f0e8] lg:[text-shadow:0_4px_28px_rgba(0,0,0,0.45)]">
               {index === 0 && <p className="font-ui mb-4 text-[0.6rem] sm:text-xs lg:mb-7 font-bold uppercase tracking-[0.24em]">Dallo showroom all’officina</p>}
               {index === 0 ? (
                 <h2 className={`${creditsFont.className} max-w-[15ch] text-[clamp(2.25rem,min(12vw,10svh),5.25rem)] lg:text-[clamp(4.5rem,9.2vw,11rem)] uppercase leading-[1.02] tracking-[-0.015em]`}>{title}</h2>
@@ -162,7 +162,7 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
   const shouldReduceMotion = useReducedMotion();
   const isDesktopViewport = useMediaQuery("(min-width: 1024px)");
   const parallaxImages = images.slice(0, isDesktopViewport ? 9 : 1);
-  const zoomEnd = isDesktopViewport ? 0.172 : 0.205;
+  const zoomEnd = isDesktopViewport ? 0.172 : 0.287;
 
   const { scrollYProgress } = useScroll({
     target: container,
@@ -180,7 +180,7 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
   const scale6 = useTransform(zoomProgress, [0, 1], [1, 6]);
   const scale8 = useTransform(zoomProgress, [0, 1], [1, 8]);
   const scale9 = useTransform(zoomProgress, [0, 1], [1, 9]);
-  const copyScrimOpacity = useTransform(scrollYProgress, [zoomEnd, isDesktopViewport ? 0.25 : 0.28], [0, 0.9]);
+  const copyScrimOpacity = useTransform(scrollYProgress, [zoomEnd, isDesktopViewport ? 0.25 : 0.39], [0, 0.9]);
 
   const scales = [scale4, scale5, scale6, scale5, scale6, scale8, scale9, scale6, scale8];
 
@@ -192,7 +192,7 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
     <>
     <div
       ref={container}
-      className="relative h-[520svh] lg:h-[600svh] bg-[var(--home-experience-surface)]"
+      className="relative h-[400svh] lg:h-[600svh] bg-[var(--home-experience-surface)]"
     >
       <div className="sticky top-0 h-[100svh] overflow-hidden">
         {parallaxImages.map(({ src, alt }, index) => {
@@ -244,7 +244,7 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
                   alt={alt ?? `Parallax image ${index + 1}`}
                   fill
                   sizes={index === 0 ? "100vw" : "50vw"}
-                  className="h-full w-full object-cover"
+                  className={`h-full w-full object-cover ${index === 0 ? "object-right" : ""}`}
                 />
                 <div
                   aria-hidden="true"
