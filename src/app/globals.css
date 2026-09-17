@@ -11,20 +11,18 @@
   --gm-ink: #151515;
   --gm-black: #0b0b0b;
   --gm-charcoal: #1b1b1b;
-  --gm-gray-soft: #f1f2f2;
+  --gm-neutral-soft: oklch(97.2% 0.004 230);
+  --gm-gray-soft: var(--gm-neutral-soft);
   --gm-rule: rgb(21 21 21 / 0.1);
-  --pastel-mist: oklch(96.5% 0.008 250);
-  --pastel-blue: oklch(93% 0.024 235);
-  --pastel-sage: oklch(93% 0.022 155);
-  --pastel-pearl: oklch(96.5% 0.009 170);
-  --pastel-peach: oklch(93% 0.026 50);
-  --pastel-seafoam: oklch(95% 0.016 190);
-  --home-showroom-surface: var(--pastel-mist);
-  --home-cover-surface: var(--pastel-blue);
-  --home-experience-surface: var(--pastel-sage);
-  --home-accessories-surface: var(--pastel-pearl);
-  --home-workshop-surface: var(--pastel-peach);
-  --home-contact-surface: var(--pastel-seafoam);
+  --gm-brand: oklch(80% 0.055 230);
+  --gm-brand-soft: oklch(93.2% 0.027 230);
+  --gm-brand-subtle: oklch(96.8% 0.013 230);
+  --home-showroom-surface: var(--gm-neutral-soft);
+  --home-cover-surface: var(--gm-brand-soft);
+  --home-experience-surface: var(--gm-white);
+  --home-accessories-surface: var(--gm-white);
+  --home-workshop-surface: var(--gm-brand-subtle);
+  --home-contact-surface: var(--gm-brand-soft);
   --font-display: "Clash Grotesk", "Bahnschrift", "DIN Alternate",
     "Aptos Display", "Arial Narrow", "Helvetica Neue", Arial, ui-sans-serif,
     system-ui, sans-serif;
@@ -57,8 +55,8 @@ body {
 }
 
 ::selection {
-  background: oklch(62% 0.08 32 / 0.38);
-  color: oklch(97% 0.008 80);
+  background: var(--gm-brand);
+  color: var(--gm-black);
 }
 
 .font-display {
