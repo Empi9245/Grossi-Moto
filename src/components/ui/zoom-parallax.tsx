@@ -116,11 +116,11 @@ function ExperienceCopy() {
 
 function ExperienceContact() {
   return (
-    <div className="relative bg-[oklch(16%_0.014_52)] px-5 py-12 text-center text-white sm:py-16">
+    <div className="relative bg-[var(--home-experience-surface)] px-5 py-12 text-center text-[var(--gm-ink)] sm:py-16">
       <p className="font-ui text-sm">Il prossimo passo? Raccontaci cosa cerchi.</p>
       <div className="mt-6 flex flex-wrap justify-center gap-4">
-        <a href="tel:+393289185029" className="font-ui inline-flex min-h-12 items-center justify-center rounded-full bg-[#ece8e1] px-7 py-3 text-sm font-bold text-[#1b0e0d] transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">Chiama Grossi Moto</a>
-        <Link href="/contatti#richiesta" className="font-ui inline-flex min-h-12 items-center justify-center rounded-full border border-white/50 px-7 py-3 text-sm font-bold transition-colors hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">Scrivici cosa cerchi</Link>
+        <a href="tel:+393289185029" className="font-ui inline-flex min-h-12 items-center justify-center rounded-full bg-[var(--gm-black)] px-7 py-3 text-sm font-bold text-white transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black">Chiama Grossi Moto</a>
+        <Link href="/contatti#richiesta" className="font-ui inline-flex min-h-12 items-center justify-center rounded-full border border-black/25 px-7 py-3 text-sm font-bold text-black transition-colors hover:bg-black/5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black">Scrivici cosa cerchi</Link>
       </div>
     </div>
   );
@@ -184,7 +184,7 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
     <>
     <div
       ref={container}
-      className="relative h-[520svh] lg:h-[600svh] bg-[oklch(88%_0.015_78)]"
+      className="relative h-[520svh] lg:h-[600svh] bg-[var(--home-experience-surface)]"
     >
       <div className="sticky top-0 h-[100svh] overflow-hidden">
         {parallaxImages.map(({ src, alt }, index) => {

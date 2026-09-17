@@ -7,6 +7,24 @@
   --muted: oklch(78% 0.015 75);
   --panel: #ece8e1;
   --ink: #1b0e0d;
+  --gm-white: #ffffff;
+  --gm-ink: #151515;
+  --gm-black: #0b0b0b;
+  --gm-charcoal: #1b1b1b;
+  --gm-gray-soft: #f1f2f2;
+  --gm-rule: rgb(21 21 21 / 0.1);
+  --pastel-mist: oklch(96.5% 0.008 250);
+  --pastel-blue: oklch(93% 0.024 235);
+  --pastel-sage: oklch(93% 0.022 155);
+  --pastel-pearl: oklch(96.5% 0.009 170);
+  --pastel-peach: oklch(93% 0.026 50);
+  --pastel-seafoam: oklch(95% 0.016 190);
+  --home-showroom-surface: var(--pastel-mist);
+  --home-cover-surface: var(--pastel-blue);
+  --home-experience-surface: var(--pastel-sage);
+  --home-accessories-surface: var(--pastel-pearl);
+  --home-workshop-surface: var(--pastel-peach);
+  --home-contact-surface: var(--pastel-seafoam);
   --font-display: "Clash Grotesk", "Bahnschrift", "DIN Alternate",
     "Aptos Display", "Arial Narrow", "Helvetica Neue", Arial, ui-sans-serif,
     system-ui, sans-serif;
@@ -80,6 +98,10 @@ body {
 
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
+}
+
+[data-showcase-mode="static"] {
+  background: var(--home-showroom-surface);
 }
 
 [data-showcase-mode="static"] article[data-source-asset],

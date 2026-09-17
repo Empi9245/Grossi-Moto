@@ -4,7 +4,7 @@ export function AccessoriesSection() {
   return (
     <section
       aria-labelledby="accessories-heading"
-      className="bg-white px-4 py-16 text-[#111] sm:px-6 sm:py-20 lg:px-10 lg:py-24"
+      className="bg-[var(--home-accessories-surface)] px-4 py-16 text-[var(--gm-ink)] sm:px-6 sm:py-20 lg:px-10 lg:py-24"
     >
       <div className="mx-auto min-w-0 max-w-[92rem]">
         <div className="grid gap-6 border-t border-black/15 pt-6 lg:grid-cols-[1.5fr_1fr] lg:items-end lg:gap-16">
