@@ -82,6 +82,17 @@ body {
   display: none;
 }
 
+[data-showcase-mode="static"] article[data-source-asset],
+#accessory-rail > article {
+  border: 1px solid rgb(0 0 0 / 0.1);
+  box-shadow: none;
+}
+
+[data-showcase-mode="static"]
+  article[data-source-asset="public/kymco-workbench/home-showroom-originals/01-people-s-125-abs.webp"] {
+  background: #e8eef7 !important;
+}
+
 @media (max-width: 1023px) {
   .liquid-glass,
   .mobile-app-nav,
