@@ -10,7 +10,7 @@ import { ServiceSwipe } from "./ServiceSwipe";
 
 const services = [
   {
-    title: "Officina per scooter",
+    title: "Officina moto e scooter",
     statement: "Capire il problema è il primo passo.",
     description:
       "Descrivici cosa hai notato. Controlliamo il mezzo per individuare le necessità e definire il lavoro.",
@@ -24,7 +24,7 @@ const services = [
   },
   {
     title: "Tagliandi",
-    statement: "Il tagliando adatto al tuo scooter.",
+    statement: "Il tagliando adatto al tuo mezzo.",
     description:
       "Modello, chilometri e tempo trascorso dall’ultimo tagliando ci aiutano a valutare i controlli necessari.",
     features: [
@@ -63,7 +63,7 @@ const services = [
   },
   {
     title: "Permute",
-    statement: "Vuoi cambiare scooter? Partiamo dal tuo.",
+    statement: "Vuoi cambiare mezzo? Partiamo dal tuo.",
     description:
       "Portaci le informazioni sul tuo mezzo. Ne valutiamo lo stato per capire insieme la possibilità di una permuta.",
     features: [
