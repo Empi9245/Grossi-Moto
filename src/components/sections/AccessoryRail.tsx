@@ -16,7 +16,14 @@ export function AccessoryRail() {
   const railRef = useRef<HTMLDivElement>(null);
   const activeRef = useRef(0);
   const [active, setActive] = useState(0);
-  const gesture = useRef({ x: 0, y: 0, moved: false });
+  const gesture = useRef({
+    x: 0,
+    y: 0,
+    moved: false,
+    dragging: false,
+    scrollLeft: 0,
+    pointerId: null as number | null,
+  });
 
   useEffect(() => {
     const rail = railRef.current;
@@ -107,25 +114,55 @@ export function AccessoryRail() {
         role="region"
         aria-label="Accessori da sfogliare"
         tabIndex={0}
-        className="hide-scrollbar relative flex snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain pb-1 [--card-width:84%] after:block after:w-[max(0px,calc(100%-var(--card-width)-16px))] after:shrink-0 after:content-[''] focus-visible:outline-2 focus-visible:outline-offset-4 md:[--card-width:42%] lg:[--card-width:30%]"
+        className="hide-scrollbar relative flex cursor-grab snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain pb-1 active:cursor-grabbing [--card-width:84%] after:block after:w-[max(0px,calc(100%-var(--card-width)-16px))] after:shrink-0 after:content-[''] focus-visible:outline-2 focus-visible:outline-offset-4 md:[--card-width:42%] lg:[--card-width:30%]"
         onPointerDown={(event) => {
+          const isMouseDrag = event.pointerType === "mouse" && event.button === 0;
           gesture.current = {
             x: event.clientX,
             y: event.clientY,
             moved: false,
+            dragging: isMouseDrag,
+            scrollLeft: event.currentTarget.scrollLeft,
+            pointerId: isMouseDrag ? event.pointerId : null,
           };
+
+          if (isMouseDrag) {
+            event.currentTarget.setPointerCapture(event.pointerId);
+          }
         }}
         onPointerMove={(event) => {
-          if (
-            Math.hypot(
-              event.clientX - gesture.current.x,
-              event.clientY - gesture.current.y,
-            ) > 10
-          )
+          const deltaX = event.clientX - gesture.current.x;
+          const deltaY = event.clientY - gesture.current.y;
+
+          if (Math.hypot(deltaX, deltaY) > 10) {
             gesture.current.moved = true;
+          }
+
+          if (event.pointerType === "mouse" && gesture.current.dragging) {
+            if (Math.abs(deltaX) > 2) event.preventDefault();
+            event.currentTarget.scrollLeft = gesture.current.scrollLeft - deltaX;
+          }
         }}
-        onPointerCancel={() => {
+        onPointerUp={(event) => {
+          if (
+            gesture.current.pointerId === event.pointerId &&
+            event.currentTarget.hasPointerCapture(event.pointerId)
+          ) {
+            event.currentTarget.releasePointerCapture(event.pointerId);
+          }
+          gesture.current.dragging = false;
+          gesture.current.pointerId = null;
+        }}
+        onPointerCancel={(event) => {
           gesture.current.moved = true;
+          gesture.current.dragging = false;
+          if (
+            gesture.current.pointerId === event.pointerId &&
+            event.currentTarget.hasPointerCapture(event.pointerId)
+          ) {
+            event.currentTarget.releasePointerCapture(event.pointerId);
+          }
+          gesture.current.pointerId = null;
         }}
         onClickCapture={(event) => {
           if (event.detail > 0 && gesture.current.moved) event.preventDefault();
