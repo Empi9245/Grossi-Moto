@@ -178,10 +178,9 @@ export const CatalogProductCard = memo(function CatalogProductCard({
     });
   };
 
-  const handleDesktopCardClick = (event: React.MouseEvent<HTMLElement>) => {
+  const handleCardClick = (event: React.MouseEvent<HTMLElement>) => {
     if (
       isExpanded ||
-      !window.matchMedia("(min-width: 1024px)").matches ||
       (event.target as HTMLElement).closest("button, a")
     ) {
       return;
@@ -205,12 +204,12 @@ export const CatalogProductCard = memo(function CatalogProductCard({
     >
       <article
         aria-labelledby={cardTitleId}
-        onClick={handleDesktopCardClick}
+        onClick={handleCardClick}
         className={clsx(
           "group relative overflow-hidden rounded-[1.35rem] p-4 shadow-[0_0_0_1px_oklch(18%_0.014_56/0.052),0_18px_46px_oklch(18%_0.014_56/0.09)] sm:p-5",
           isExpanded
             ? "h-full min-h-0 sm:min-h-[32rem]"
-            : "min-h-[17.75rem] sm:min-h-[19.5rem] lg:cursor-pointer",
+            : "min-h-[17.75rem] cursor-pointer sm:min-h-[19.5rem]",
           !isExpanded &&
             "transition-[box-shadow,transform] duration-200 hover:shadow-[0_0_0_1px_oklch(18%_0.014_56/0.075),0_22px_56px_oklch(18%_0.014_56/0.12)]",
           isSelected &&
