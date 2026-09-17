@@ -128,8 +128,8 @@ export function ServiceProcess() {
           {index === active ? (
             <motion.div
               key={current.title}
-              initial={reduceMotion ? false : { opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={reduceMotion ? false : { opacity: 0 }}
+              animate={{ opacity: 1 }}
               transition={{
                 duration: reduceMotion ? 0 : 0.2,
                 ease: easeOut,
@@ -164,7 +164,7 @@ export function ServiceProcess() {
                 </p>
                 <a
                   href="tel:+393289185029"
-                  className="font-ui group mt-8 inline-flex min-h-12 items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-bold uppercase tracking-[0.08em] text-[#0A0A0A] transition-[opacity,transform] duration-150 hover:opacity-88 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-4 focus-visible:ring-offset-[#0A0A0A] motion-reduce:transform-none motion-reduce:transition-none"
+                  className="font-ui group mt-8 inline-flex min-h-12 items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-bold uppercase tracking-[0.08em] text-[#0A0A0A] transition-[opacity,transform] duration-150 hover:opacity-[0.88] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-4 focus-visible:ring-offset-[#0A0A0A] motion-reduce:transform-none motion-reduce:transition-none"
                 >
                   Parla del tuo mezzo
                   <ArrowUpRight
