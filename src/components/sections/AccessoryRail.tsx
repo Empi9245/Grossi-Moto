@@ -186,7 +186,7 @@ export function AccessoryRail() {
   };
 
   const controlClass =
-    "inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-black/20 text-black focus-visible:outline-2 focus-visible:outline-offset-4 aria-disabled:opacity-35";
+    "inline-flex h-11 w-11 items-center justify-center rounded-full border border-black/12 bg-white text-black transition-[background-color,border-color,color,transform] duration-200 hover:border-black hover:bg-black hover:text-white active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-4 aria-disabled:pointer-events-none aria-disabled:border-black/8 aria-disabled:bg-white/50 aria-disabled:text-black/25";
 
   return (
     <div className="mt-6 min-w-0 lg:mt-7">
@@ -332,8 +332,11 @@ export function AccessoryRail() {
           </article>
         ))}
       </div>
-      <div className="mt-3 flex flex-wrap items-center justify-between gap-4 text-black/60">
-        <p className="font-ui text-xs">Immagini illustrative</p>
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-4 border-t border-black/10 pt-4">
+        <div className="font-ui flex items-center gap-2.5 text-[0.62rem] font-bold uppercase tracking-[0.16em] text-black/42">
+          <span aria-hidden="true" className="h-px w-5 bg-black/18" />
+          <p>Immagini illustrative</p>
+        </div>
         <div className="flex items-center gap-2.5">
           <button
             type="button"
@@ -345,7 +348,7 @@ export function AccessoryRail() {
               if (active > 0) goTo(active - 1, event.detail === 0);
             }}
           >
-            <ArrowLeft aria-hidden="true" size={19} />
+            <ArrowLeft aria-hidden="true" size={17} strokeWidth={1.7} />
           </button>
           <button
             type="button"
@@ -358,7 +361,7 @@ export function AccessoryRail() {
                 goTo(active + 1, event.detail === 0);
             }}
           >
-            <ArrowRight aria-hidden="true" size={19} />
+            <ArrowRight aria-hidden="true" size={17} strokeWidth={1.7} />
           </button>
         </div>
       </div>
