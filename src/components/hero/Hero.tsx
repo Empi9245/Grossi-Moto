@@ -127,7 +127,7 @@ export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
                 })}
                 className="font-display mt-4 w-full max-w-[20rem] [overflow-wrap:break-word] text-[clamp(2.85rem,12vw,4.35rem)] leading-[0.98] font-normal tracking-normal text-[oklch(95%_0.01_80)] sm:mt-5 sm:max-w-[38rem] md:max-w-[54rem] md:text-[clamp(4.5rem,7.8vw,6.5rem)] lg:max-w-[72rem] lg:text-[clamp(5.25rem,6.6vw,7.5rem)]"
               >
-                Trova lo scooter giusto per Roma
+                Trova il mezzo giusto per Roma
               </motion.h1>
 
               <motion.p
@@ -168,6 +168,12 @@ export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
 
                 <motion.a
                   href="tel:+393289185029"
+                  {...revealMotion(shouldReduceMotion, {
+                    delay: 0.28,
+                    duration: 0.58,
+                    scale: 0.99,
+                    y: 14,
+                  })}
                   {...subtleHover(shouldReduceMotion)}
                   className="font-ui inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[oklch(11%_0.012_40/0.78)] px-4 py-3 text-sm leading-normal font-medium sm:px-6 text-[oklch(94%_0.01_80)] shadow-[inset_0_0_0_1px_oklch(94%_0.01_80/0.16)] transition-colors duration-200 hover:bg-[oklch(15%_0.012_40/0.84)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(84%_0.04_72)] focus-visible:ring-offset-4 focus-visible:ring-offset-[oklch(14%_0.012_40)] sm:text-base"
                 >
