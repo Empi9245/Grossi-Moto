@@ -16,9 +16,8 @@ import {
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
-const stackOffset = 12;
-const stackScaleStep = 0.022;
-const stackBrightnessStep = 0.035;
+const stackOffset = 18;
+const stackScaleStep = 0.024;
 const maxVisibleDepth = 5;
 
 function stackDepth(index: number) {
@@ -27,10 +26,6 @@ function stackDepth(index: number) {
 
 function stackScale(depth: number) {
   return 1 - depth * stackScaleStep;
-}
-
-function stackBrightness(depth: number) {
-  return 1 - depth * stackBrightnessStep;
 }
 
 function specLine(scooter: ShowcaseScooter) {
@@ -157,10 +152,9 @@ export function StackedShowroomCards() {
         const depth = stackDepth(index);
 
         gsap.set(card, {
-          y: -depth * stackOffset,
+          y: depth * stackOffset,
           scale: stackScale(depth),
           opacity: 1,
-          filter: `brightness(${stackBrightness(depth)})`,
           transformOrigin: "center top",
           zIndex: totalCards - index,
         });
@@ -176,12 +170,12 @@ export function StackedShowroomCards() {
           trigger: container,
           start: "top top",
           end: "bottom bottom",
-          scrub: 0.34,
+          scrub: 0.55,
           invalidateOnRefresh: true,
           snap: {
             snapTo: (value) => gsap.utils.snap(snapPoints, value),
-            duration: { min: 0.12, max: 0.28 },
-            delay: 0.04,
+            duration: { min: 0.16, max: 0.32 },
+            delay: 0.05,
             ease: "power1.inOut",
           },
           onUpdate: (self) => {
@@ -205,11 +199,10 @@ export function StackedShowroomCards() {
           cards[index],
           {
             y: 0,
-            yPercent: -118,
-            scale: 0.95,
-            autoAlpha: 0,
-            ease: "none",
-            duration: 0.78,
+            yPercent: -122,
+            scale: 0.97,
+            ease: "power1.inOut",
+            duration: 0.84,
           },
           position,
         );
@@ -220,17 +213,16 @@ export function StackedShowroomCards() {
           timeline.to(
             cards[follower],
             {
-              y: -depth * stackOffset,
+              y: depth * stackOffset,
               scale: stackScale(depth),
-              filter: `brightness(${stackBrightness(depth)})`,
-              ease: "none",
-              duration: 0.78,
+              ease: "power1.inOut",
+              duration: 0.84,
             },
             position,
           );
         }
 
-        timeline.to({}, { duration: 0.22 }, position + 0.78);
+        timeline.to({}, { duration: 0.16 }, position + 0.84);
       }
 
       timeline.to({}, { duration: 1 }, totalCards - 1);
@@ -279,7 +271,7 @@ export function StackedShowroomCards() {
               data-showroom-stack-card
               aria-hidden={index !== activeIndex}
               inert={index !== activeIndex ? true : undefined}
-              className="absolute inset-0 will-change-[transform,opacity,filter]"
+              className="absolute inset-0 will-change-transform"
               style={{ zIndex: totalCards - index }}
             >
               <ShowroomCard
