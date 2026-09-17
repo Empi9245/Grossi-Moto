@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { SwipeUpCardStack } from "@/components/ui/image-stack";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { ArrowDown, ArrowUp } from "lucide-react";
 
 type Service = {
@@ -14,7 +16,7 @@ type Service = {
 };
 
 /** Native vertical paging keeps touch momentum and releases scroll at either end. */
-export function ServiceSwipe({ services }: { services: Service[] }) {
+function TabletServiceSwipe({ services }: { services: Service[] }) {
   const rail = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
 
@@ -84,7 +86,7 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
         {services.map((service, index) => (
           <article key={service.title} className="flex min-h-full snap-start snap-always flex-col bg-[#DAD4CB]">
             <div className="relative h-[clamp(160px,26svh,280px)] shrink-0 overflow-hidden">
-              <Image src={service.image} alt={service.alt} fill sizes="(max-width: 767px) 100vw, 90vw" className="object-cover" />
+              <Image draggable={false} src={service.image} alt={service.alt} fill sizes="(max-width: 767px) 100vw, 90vw" className="object-cover" />
               <span className="absolute bottom-3 left-4 bg-[#E7E3DC] px-3 py-1 text-xs font-semibold tabular-nums">{String(index + 1).padStart(2, "0")} — {service.title}</span>
             </div>
             <div className="flex flex-1 flex-col gap-4 p-5 sm:p-7">
@@ -110,4 +112,34 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
       </div>
     </div>
   );
+}
+
+export function ServiceSwipe({ services }: { services: Service[] }) {
+  const smartphone = useMediaQuery("(max-width: 767px)");
+  if (!smartphone) return <TabletServiceSwipe services={services} />;
+  return <div className="px-5 pb-12">
+    <SwipeUpCardStack
+      cards={services.map((service, index) => ({ ...service, id: service.title, src: service.image, number: index + 1 }))}
+      direction="left"
+      label="I nostri servizi"
+      className="h-[min(760px,78svh)] min-h-[420px]"
+      renderCard={service => (
+          <article className="flex h-full flex-col overflow-y-auto rounded-2xl bg-[#DAD4CB]">
+            <div className="relative h-[clamp(160px,26svh,280px)] shrink-0 overflow-hidden">
+              <Image draggable={false} src={service.image} alt={service.alt} fill sizes="(max-width: 767px) 100vw, 90vw" className="object-cover" />
+              <span className="absolute bottom-3 left-4 bg-[#E7E3DC] px-3 py-1 text-xs font-semibold tabular-nums">{String(service.number).padStart(2, "0")} — {service.title}</span>
+            </div>
+            <div className="flex flex-1 flex-col gap-4 p-5 sm:p-7">
+              <h3 className="font-display max-w-[25ch] text-[clamp(1.65rem,4.8vw,2.6rem)] font-bold leading-[1.05] tracking-tight">{service.statement}</h3>
+              <p className="max-w-[60ch] text-sm leading-6 sm:text-base">{service.description}</p>
+              <ul className="mt-auto flex flex-wrap gap-x-4 gap-y-2 border-t border-[#1B0E0D]/20 pt-4 text-xs leading-5">
+                {service.features.map((feature) => <li key={feature}>{feature}</li>)}
+              </ul>
+              <span className="text-[10px] text-[#1B0E0D]/65">Immagini illustrative</span>
+            </div>
+          </article>
+      )}
+    />
+    <a href="tel:+393289185029" className="mt-4 inline-flex min-h-12 items-center text-sm font-semibold underline underline-offset-4">Parliamone insieme</a>
+  </div>;
 }

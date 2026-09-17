@@ -61,7 +61,7 @@ export function ServiceOverview() {
                   className="grid min-h-[11.5rem] grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] items-start gap-5 pb-5 pt-1"
                 >
                   <div className="relative h-[clamp(8rem,18svh,11rem)] overflow-hidden rounded-xl bg-[#F4F0E8]/5">
-                    <Image src={`/grossimoto/servizi/${service.image}.png`} alt={service.alt} fill sizes="(min-width: 1024px) 24vw, 45vw" className="object-cover" />
+                    <Image src={`/grossimoto/servizi/${service.image}.webp`} alt={service.alt} fill sizes="(min-width: 1024px) 24vw, 45vw" className="object-cover" />
                   </div>
                   <div className="min-w-0">
                     <p className="font-display text-[clamp(1.1rem,1.4vw,1.5rem)] font-semibold leading-tight">{service.headline}</p>

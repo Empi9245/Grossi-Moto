@@ -556,3 +556,10 @@ Implementata.
 - Scritta “Tutto in sede.” e sua descrizione a sinistra preservate testualmente e nello stile. Conservata timeline di ingresso della seconda fase; rimosso il vecchio inseguimento del puntatore sulle card. Nessuna modifica al comportamento mobile o allo showcase sottostante.
 - Pulsanti nativi con `aria-expanded`, `aria-controls` e pannelli etichettati; Tab/Invio/Spazio standard, frecce/Home/End per spostare il focus. Dettagli inattivi nascosti; dissolvenza di 180ms disattivata con reduced motion. Foto prese dagli asset servizi esistenti.
 - Lint e build passati. Verificati i sei asset, i target delle ancore e la conservazione del blocco sinistro. Nessuna verifica visuale automatica richiesta, nessun deploy eseguito. Modifiche concorrenti ad altri componenti preservate.
+
+## Swipe smartphone e ottimizzazione media — 2026-09-17
+
+- Introdotto `SwipeUpCardStack` generico in `src/components/ui/image-stack.tsx`, con render personalizzato per preservare colori/forme. Home sotto 768px: swipe verticale verso l’alto; Servizi sotto 768px: swipe orizzontale a sinistra. Tablet e desktop conservano i rispettivi layout. Massimo tre livelli, solo top draggable, loop, Annulla, tastiera, reduced motion, nessun blocco globale dello scroll.
+- 36 immagini operative convertite in WebP e collegate ai componenti: 27,1 → 3,4 MB complessivi (-87%), originali conservati. Video desktop 15,7 → 10,8 MB; variante mobile 5,8 MB con source media e faststart, senza tagliare la sequenza.
+- Zoom mobile alleggerito animando la superficie della foto anziché l’intera viewport; rimosse grandi ombre e prospettiva 3D mobile. Titoli credits più grandi e Anton locale WOFF2 con licenza OFL, 18,6 KB.
+- Test unitari della logica swipe (4 casi) passati; asset WebP decodificati. Dettagli API, metriche, limiti e comandi in `docs/MOBILE_SWIPE_MEDIA_2026-09-17.md`. Nessuna QA visuale/touch automatica o deploy.

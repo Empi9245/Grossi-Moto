@@ -20,7 +20,7 @@ const steps = [
     description:
       "Chiamaci o passa in sede per fissare un appuntamento in officina o per una consulenza.",
     detail: "Raccontaci il modello, come lo usi e cosa vorresti risolvere.",
-    image: "/grossimoto/servizi/consulenza.png",
+    image: "/grossimoto/servizi/consulenza.webp",
     alt: "Immagine illustrativa di una consulenza accanto a uno scooter.",
   },
   {

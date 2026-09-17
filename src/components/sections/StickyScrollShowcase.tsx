@@ -19,7 +19,7 @@ const services = [
       "Spiegazione degli interventi",
       "Controllo del veicolo",
     ],
-    image: "/grossimoto/servizi/officina-autorizzata.png",
+    image: "/grossimoto/servizi/officina-autorizzata.webp",
     alt: "Officina scooter Grossi Moto a Roma",
   },
   {
@@ -32,7 +32,7 @@ const services = [
       "Materiali adatti al modello",
       "Lavori concordati",
     ],
-    image: "/grossimoto/servizi/tagliandi.png",
+    image: "/grossimoto/servizi/tagliandi.webp",
     alt: "Tagliando scooter a Roma, Grossi Moto",
   },
   {
@@ -45,7 +45,7 @@ const services = [
       "Verifica della compatibilità",
       "Montaggio in officina",
     ],
-    image: "/grossimoto/servizi/ricambi-originali.png",
+    image: "/grossimoto/servizi/ricambi-originali.webp",
     alt: "Ricambi e accessori scooter a Roma, Grossi Moto",
   },
   {
@@ -58,7 +58,7 @@ const services = [
       "Informazioni su anticipo e durata",
       "Condizioni da valutare",
     ],
-    image: "/grossimoto/servizi/finanziamenti.png",
+    image: "/grossimoto/servizi/finanziamenti.webp",
     alt: "Finanziamento scooter a Roma, Grossi Moto",
   },
   {
@@ -71,7 +71,7 @@ const services = [
       "Verifica dello stato del mezzo",
       "Possibilità di permuta",
     ],
-    image: "/grossimoto/servizi/permute.png",
+    image: "/grossimoto/servizi/permute.webp",
     alt: "Valutazione permuta scooter usato a Roma, Grossi Moto",
   },
   {
@@ -84,7 +84,7 @@ const services = [
       "Postura e cilindrata",
       "Accessori adatti al mezzo",
     ],
-    image: "/grossimoto/servizi/consulenza.png",
+    image: "/grossimoto/servizi/consulenza.webp",
     alt: "Consulenza per scegliere uno scooter a Roma, Grossi Moto",
   },
 ];

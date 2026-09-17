@@ -29,3 +29,5 @@ qa-screenshots/
 
 # Hero video required by the public site
 !/public/hero-video.mp4
+
+!/public/hero-video-mobile.mp4

@@ -70,7 +70,7 @@ export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
             className="absolute inset-0 z-0 bg-cover bg-[position:58%_center] lg:bg-center"
             style={{
               backgroundImage:
-                "url('/grossimoto/home-scroll/01-people-s-125-abs-lago.jpg')",
+                "url('/grossimoto/home-scroll/01-people-s-125-abs-lago.webp')",
             }}
           />
           <video
@@ -81,13 +81,14 @@ export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
             muted
             loop
             playsInline
-            poster="/grossimoto/home-scroll/01-people-s-125-abs-lago.jpg"
+            poster="/grossimoto/home-scroll/01-people-s-125-abs-lago.webp"
             preload="metadata"
             aria-hidden="true"
             onPlaying={() => setVideoPlaying(true)}
             onError={() => setVideoPlaying(false)}
             onEmptied={() => setVideoPlaying(false)}
           >
+            <source src="/hero-video-mobile.mp4" media="(max-width: 767px)" type="video/mp4" />
             <source
               src="/hero-video.mp4"
               type="video/mp4"

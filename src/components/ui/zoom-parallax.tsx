@@ -8,6 +8,9 @@ import {
   useTransform,
 } from "framer-motion";
 import Image from "next/image";
+import localFont from "next/font/local";
+
+const creditsFont = localFont({ src: "../../../public/fonts/anton-latin.woff2", display: "swap", preload: false });
 import Link from "next/link";
 import { useRef } from "react";
 
@@ -25,31 +28,31 @@ type ZoomParallaxProps = {
 
 const defaultImages: ParallaxImage[] = [
   {
-    src: "/grossimoto/home-scroll/01-people-s-125-abs-lago.jpg",
+    src: "/grossimoto/home-scroll/01-people-s-125-abs-lago.webp",
     alt: "People S 125 ABS in un contesto aperto",
   },
   {
-    src: "/grossimoto/home-scroll/02-dtx-360-strada.jpg",
+    src: "/grossimoto/home-scroll/02-dtx-360-strada.webp",
     alt: "DTX 360 350 in movimento su strada",
   },
   {
-    src: "/grossimoto/home-scroll/03-agility-125-esterno.jpg",
+    src: "/grossimoto/home-scroll/03-agility-125-esterno.webp",
     alt: "Agility 125 R16 in esterno urbano",
   },
   {
-    src: "/grossimoto/home-scroll/04-people-s-125-abs-dettaglio.jpg",
+    src: "/grossimoto/home-scroll/04-people-s-125-abs-dettaglio.webp",
     alt: "Dettaglio People S 125 ABS",
   },
   {
-    src: "/grossimoto/home-scroll/05-dtx-360-dettaglio.jpg",
+    src: "/grossimoto/home-scroll/05-dtx-360-dettaglio.webp",
     alt: "Dettaglio DTX 360 350",
   },
   {
-    src: "/grossimoto/home-scroll/06-agility-125-urbano.jpg",
+    src: "/grossimoto/home-scroll/06-agility-125-urbano.webp",
     alt: "Agility 125 R16 in scenario cittadino",
   },
   {
-    src: "/grossimoto/home-scroll/07-people-s-125-abs-faro.jpg",
+    src: "/grossimoto/home-scroll/07-people-s-125-abs-faro.webp",
     alt: "Dettaglio frontale People S 125 ABS",
   },
 ];
@@ -60,7 +63,7 @@ function StaticParallaxFallback({ images }: { images: ParallaxImage[] }) {
       <Image
         src={
           images[0]?.src ??
-          "/grossimoto/home-scroll/01-people-s-125-abs-lago.jpg"
+          "/grossimoto/home-scroll/01-people-s-125-abs-lago.webp"
         }
         alt={images[0]?.alt ?? "Scooter in viaggio"}
         fill
@@ -126,16 +129,16 @@ function ExperienceContact() {
 function CinematicCredits({ progress, compact }: { progress: MotionValue<number>; compact: boolean }) {
   const y = useTransform(progress, [compact ? 0.22 : 0.20, 0.84], ["100svh", compact ? "-132svh" : "-125svh"]);
   return (
-    <div className="pointer-events-none absolute inset-0 z-30 [perspective:1400px]">
+    <div className="pointer-events-none absolute inset-0 z-30 lg:[perspective:1400px]">
       <motion.div style={{ y }} className="absolute inset-x-0 top-0">
-        <div className="origin-center [transform:rotateX(3deg)] lg:[transform:rotateX(8deg)]">
+        <div className="origin-center lg:[transform:rotateX(8deg)]">
           {story.map(({ title, detail }, index) => (
-            <div key={title} className="flex h-[70svh] flex-col items-center justify-center px-5 text-center sm:px-8 lg:px-10 text-[#f4f0e8] [text-shadow:0_4px_28px_rgba(0,0,0,0.45)]">
+            <div key={title} className="flex h-[70svh] flex-col items-center justify-center px-5 text-center sm:px-8 lg:px-10 text-[#f4f0e8] lg:[text-shadow:0_4px_28px_rgba(0,0,0,0.45)]">
               {index === 0 && <p className="font-ui mb-4 text-[0.6rem] sm:text-xs lg:mb-7 font-bold uppercase tracking-[0.24em]">Dallo showroom all’officina</p>}
               {index === 0 ? (
-                <h2 className="font-display max-w-[14ch] text-[clamp(2rem,min(11vw,9svh),4.75rem)] lg:text-[clamp(4rem,8.5vw,10rem)] font-bold leading-[0.94] tracking-[-0.035em]">{title}</h2>
+                <h2 className={`${creditsFont.className} max-w-[15ch] text-[clamp(2.25rem,min(12vw,10svh),5.25rem)] lg:text-[clamp(4.5rem,9.2vw,11rem)] uppercase leading-[1.02] tracking-[-0.015em]`}>{title}</h2>
               ) : (
-                <h3 className="font-display max-w-[14ch] text-[clamp(2rem,min(11vw,9svh),4.75rem)] lg:text-[clamp(4rem,8.5vw,10rem)] font-bold leading-[0.94] tracking-[-0.035em]">{title}</h3>
+                <h3 className={`${creditsFont.className} max-w-[15ch] text-[clamp(2.25rem,min(12vw,10svh),5.25rem)] lg:text-[clamp(4.5rem,9.2vw,11rem)] uppercase leading-[1.02] tracking-[-0.015em]`}>{title}</h3>
               )}
               <p className="mt-5 max-w-[38rem] lg:mt-7 text-[clamp(1rem,1.5vw,1.35rem)] leading-relaxed text-white/85">{detail}</p>
             </div>
@@ -190,7 +193,7 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
           return (
             <motion.div
               key={src}
-              style={{ scale }}
+              style={{ scale: isDesktopViewport ? scale : 1 }}
               className={`absolute top-0 flex h-full w-full items-center justify-center ${
                 index === 0 ? "z-20" : "z-10"
               } ${
@@ -219,7 +222,7 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
                   : ""
               }`}
             >
-              <div className="relative h-[44svh] w-[76vw] overflow-hidden lg:h-[25vh] lg:w-[25vw] rounded-[1.25rem] bg-[oklch(18%_0.014_56)] shadow-[0_24px_70px_oklch(18%_0.014_56/0.18)]">
+              <motion.div style={{ scale: isDesktopViewport ? 1 : mobileScale }} className="relative h-[44svh] w-[76vw] overflow-hidden lg:h-[25vh] lg:w-[25vw] rounded-[1.25rem] bg-[oklch(18%_0.014_56)] lg:shadow-[0_24px_70px_oklch(18%_0.014_56/0.18)]">
                 <Image
                   src={src}
                   alt={alt ?? `Parallax image ${index + 1}`}
@@ -231,7 +234,7 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
                   aria-hidden="true"
                   className="absolute inset-0 bg-[linear-gradient(180deg,oklch(10%_0.014_42/0.02),oklch(10%_0.014_42/0.18))]"
                 />
-              </div>
+              </motion.div>
             </motion.div>
           );
         })}
