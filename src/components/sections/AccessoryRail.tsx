@@ -137,9 +137,15 @@ export function AccessoryRail() {
 
     stopInertia();
     let velocity = Math.max(-2.2, Math.min(2.2, initialVelocity));
-    let previousTime = performance.now();
+    let previousTime: number | null = null;
 
     const glide = (time: number) => {
+      if (previousTime === null) {
+        previousTime = time;
+        inertiaFrameRef.current = requestAnimationFrame(glide);
+        return;
+      }
+
       const deltaTime = Math.min(32, time - previousTime);
       previousTime = time;
 
@@ -217,7 +223,7 @@ export function AccessoryRail() {
         className="hide-scrollbar relative left-1/2 flex w-dvw -translate-x-1/2 cursor-grab snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain pb-1 active:cursor-grabbing [--card-width:76%] after:block after:w-[max(0px,calc(100%-var(--card-width)-16px))] after:shrink-0 after:content-[''] focus-visible:outline-2 focus-visible:outline-offset-4 md:[--card-width:36%] lg:[--card-width:24%]"
         onPointerDown={(event) => {
           const isMouseDrag = event.pointerType === "mouse" && event.button === 0;
-          const now = performance.now();
+          const now = event.timeStamp;
 
           if (isMouseDrag) stopInertia();
 
@@ -249,7 +255,7 @@ export function AccessoryRail() {
 
           if (event.pointerType === "mouse" && gesture.current.dragging) {
             event.preventDefault();
-            const now = performance.now();
+            const now = event.timeStamp;
             const deltaTime = Math.max(1, now - gesture.current.lastTime);
             const frameDeltaX = event.clientX - gesture.current.lastX;
             const instantVelocity = -frameDeltaX / deltaTime;
