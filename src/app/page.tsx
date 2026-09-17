@@ -1,4 +1,4 @@
-import { pageMetadata } from "@/lib/seo";
+import { pageMetadata, siteUrl } from "@/lib/seo";
 
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { AccessoriesSection } from "@/components/sections/AccessoriesSection";
@@ -8,16 +8,23 @@ import { HeroRevealStage } from "@/components/sections/HeroRevealStage";
 import { ShowcaseCoverCta } from "@/components/sections/ShowcaseCoverCta";
 import { WorkshopSection } from "@/components/sections/WorkshopSection";
 
-export const metadata = pageMetadata("Scooter KYMCO e Voge a Roma", "Scegli il tuo scooter KYMCO o Voge da Grossi Moto a Roma. Consulenza, accessori e officina in Via Festo Porzio 22. Chiedi prezzo e disponibilità.", "/");
+export const metadata = pageMetadata(
+  "Scooter KYMCO e Voge a Roma",
+  "Scegli il tuo scooter KYMCO o Voge da Grossi Moto a Roma. Consulenza, accessori e officina in Via Festo Porzio 22. Chiedi prezzo e disponibilità.",
+  "/",
+);
 
 const localBusinessJsonLd = {
   "@context": "https://schema.org",
-  "@type": ["LocalBusiness", "MotorcycleDealer", "AutoRepair"],
+  "@id": `${siteUrl}/#grossi-moto`,
+  "@type": ["LocalBusiness", "MotorcycleDealer", "MotorcycleRepair"],
   name: "Grossi Moto di Angelo Grossi",
   alternateName: "Grossimoto",
   description:
     "Punto vendita e officina scooter a Roma con gamma KYMCO e Voge, consulenza, accessori e assistenza.",
+  url: siteUrl,
   telephone: "+393289185029",
+  email: "info@grossimoto.it",
   address: {
     "@type": "PostalAddress",
     streetAddress: "Via Festo Porzio, 22",
