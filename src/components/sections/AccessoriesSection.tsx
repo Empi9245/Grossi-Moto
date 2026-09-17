@@ -4,7 +4,7 @@ export function AccessoriesSection() {
   return (
     <section
       aria-labelledby="accessories-heading"
-      className="bg-white px-4 py-12 text-[var(--gm-ink)] sm:px-6 sm:py-14 lg:px-10 lg:py-16"
+      className="bg-[#F7F6F2] bg-[url('/grossimoto/accessori/accessories-editorial-bg.webp')] bg-cover bg-center bg-no-repeat px-4 py-12 text-[var(--gm-ink)] sm:px-6 sm:py-14 lg:px-10 lg:py-16"
     >
       <div className="mx-auto min-w-0 max-w-[92rem]">
         <div className="grid gap-5 border-t border-black/15 pt-5 lg:grid-cols-[1.5fr_1fr] lg:items-end lg:gap-12">
