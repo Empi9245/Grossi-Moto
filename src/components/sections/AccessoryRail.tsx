@@ -82,7 +82,6 @@ export function AccessoryRail() {
           {accessories.map((item, index) => {
             const isActive = index === active;
             const triggerId = `accessory-mobile-trigger-${item.id}`;
-            const panelId = `accessory-mobile-panel-${item.id}`;
 
             return (
               <div
@@ -93,7 +92,7 @@ export function AccessoryRail() {
                   id={triggerId}
                   type="button"
                   aria-expanded={isActive}
-                  aria-controls={panelId}
+                  aria-controls="accessory-mobile-panel"
                   onClick={(event) => activate(index, event.detail === 0)}
                   className="group flex min-h-[76px] w-full items-center gap-4 py-4 text-left focus-visible:outline-2 focus-visible:outline-offset-4"
                 >
@@ -114,49 +113,51 @@ export function AccessoryRail() {
                     )}
                   </span>
                 </button>
-
-                <AnimatePresence initial={false}>
-                  {isActive ? (
-                    <motion.div
-                      key={panelId}
-                      id={panelId}
-                      role="region"
-                      aria-labelledby={triggerId}
-                      initial={
-                        motionDisabled ? false : { height: 0, opacity: 0 }
-                      }
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={stateTransition}
-                      className="overflow-hidden"
-                    >
-                      <div className="pb-6 pl-12 sm:pb-7">
-                        <div className="relative overflow-hidden rounded-[24px] border border-black/10 bg-white/35">
-                          <span
-                            aria-hidden="true"
-                            className="absolute inset-x-0 top-0 z-10 h-1"
-                            style={{ backgroundColor: activePastel }}
-                          />
-                          <Image
-                            src={item.image}
-                            alt={item.alt}
-                            width={800}
-                            height={1000}
-                            sizes="(min-width: 768px) 84vw, calc(100vw - 64px)"
-                            draggable={false}
-                            className="aspect-[5/4] w-full object-cover object-center"
-                          />
-                        </div>
-                        <div className="pt-4">
-                          <AccessoryDetails item={item} />
-                        </div>
-                      </div>
-                    </motion.div>
-                  ) : null}
-                </AnimatePresence>
               </div>
             );
           })}
+        </div>
+
+        <div
+          id="accessory-mobile-panel"
+          role="region"
+          aria-labelledby={`accessory-mobile-trigger-${activeItem.id}`}
+          className="pt-5"
+        >
+          <div className="relative aspect-[5/4] overflow-hidden rounded-[24px] border border-black/10 bg-white/35">
+            <AnimatePresence initial={false}>
+              <motion.div
+                key={activeItem.id}
+                initial={
+                  motionDisabled
+                    ? false
+                    : { opacity: 0, transform: "scale(0.99)" }
+                }
+                animate={{ opacity: 1, transform: "scale(1)" }}
+                exit={{ opacity: 0, transform: "scale(1.005)" }}
+                transition={stateTransition}
+                className="absolute inset-0"
+              >
+                <Image
+                  src={activeItem.image}
+                  alt={activeItem.alt}
+                  width={800}
+                  height={1000}
+                  sizes="(min-width: 768px) 100vw, calc(100vw - 32px)"
+                  draggable={false}
+                  className="h-full w-full object-cover object-center"
+                />
+              </motion.div>
+            </AnimatePresence>
+            <span
+              aria-hidden="true"
+              className="absolute inset-x-0 top-0 z-10 h-1"
+              style={{ backgroundColor: activePastel }}
+            />
+          </div>
+          <div className="min-h-[9.5rem] pt-4 sm:min-h-[9rem]">
+            <AccessoryDetails item={activeItem} />
+          </div>
         </div>
       </div>
 
