@@ -29,7 +29,7 @@ const steps = [
     heading: "Prima capire. Poi intervenire.",
     description:
       "Controllo del veicolo e individuazione delle necessità prima di definire il lavoro.",
-    detail: "Un quadro chiaro delle esigenze del tuo scooter.",
+    detail: "Un quadro chiaro delle esigenze del tuo mezzo.",
     image: "/grossimoto/servizi/diagnosi-dettaglio.webp",
     alt: "Dettaglio illustrativo di uno strumento diagnostico usato su uno scooter.",
   },
@@ -167,7 +167,7 @@ export function ServiceProcess() {
             href="tel:+393289185029"
             className="font-ui mt-6 inline-flex min-h-12 w-fit items-center gap-2 rounded-full bg-[#F7F4EF] px-5 py-3 text-sm font-semibold text-[#111111] transition-colors hover:bg-[#E7E3DC] active:bg-[#D5CFC6] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#F7F4EF]"
           >
-            Parla del tuo scooter{" "}
+            Parla del tuo mezzo{" "}
             <ArrowUpRight aria-hidden="true" className="h-4 w-4" />
           </a>
         </div>
