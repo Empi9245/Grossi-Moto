@@ -1,13 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
-import {
-  type PointerEvent as ReactPointerEvent,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { ArrowUpRight, Minus, Plus } from "lucide-react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { useRef, useState } from "react";
+
 import { accessories } from "@/data/accessories";
 
 const accessoryPastels = [
@@ -17,359 +14,242 @@ const accessoryPastels = [
   "#F6EEDC",
 ] as const;
 
+const stateEase = [0.23, 1, 0.32, 1] as const;
+
+type Accessory = (typeof accessories)[number];
+
+function AccessoryDetails({ item }: { item: Accessory }) {
+  return (
+    <div>
+      <ul className="font-ui flex flex-wrap gap-x-3 gap-y-1 text-[0.72rem] font-semibold text-black/60 sm:text-[0.76rem]">
+        {item.examples.map((example) => (
+          <li key={example}>{example}</li>
+        ))}
+      </ul>
+      <p className="mt-2.5 max-w-[42ch] text-[0.88rem] leading-6 text-black/64 sm:text-[0.94rem]">
+        {item.description}
+      </p>
+      <a
+        href="tel:+393289185029"
+        aria-label={`Chiedi compatibilità: ${item.title}`}
+        className="group font-ui mt-3 inline-flex min-h-11 max-w-full items-center gap-2.5 text-[0.76rem] font-bold text-gray-900 underline decoration-black/25 underline-offset-4 transition-[text-decoration-color] duration-150 hover:decoration-black focus-visible:outline-2 focus-visible:outline-offset-2"
+      >
+        Chiedi compatibilità
+        <ArrowUpRight
+          aria-hidden="true"
+          size={16}
+          className="shrink-0 transition-transform duration-150 ease-out group-hover:translate-x-[3px] motion-reduce:transform-none motion-reduce:transition-none"
+        />
+      </a>
+    </div>
+  );
+}
+
 export function AccessoryRail() {
-  const railRef = useRef<HTMLDivElement>(null);
-  const inertiaFrameRef = useRef<number | null>(null);
-  const activeRef = useRef(0);
+  const reduceMotion = useReducedMotion();
+  const keyboardInteractionRef = useRef(false);
   const [active, setActive] = useState(0);
-  const gesture = useRef({
-    x: 0,
-    y: 0,
-    lastX: 0,
-    lastTime: 0,
-    velocity: 0,
-    moved: false,
-    dragging: false,
-    scrollLeft: 0,
-    pointerId: null as number | null,
-  });
-
-  const stopInertia = () => {
-    if (inertiaFrameRef.current !== null) {
-      cancelAnimationFrame(inertiaFrameRef.current);
-      inertiaFrameRef.current = null;
-    }
+  const activeItem = accessories[active];
+  const activePastel = accessoryPastels[active % accessoryPastels.length];
+  const motionDisabled = Boolean(reduceMotion || keyboardInteractionRef.current);
+  const stateTransition = {
+    duration: motionDisabled ? 0 : 0.2,
+    ease: stateEase,
   };
 
-  useEffect(() => {
-    const rail = railRef.current;
-    if (!rail) return;
-    let frame = 0;
-    const sync = () => {
-      const cards = Array.from(rail.querySelectorAll<HTMLElement>("article"));
-      const start = rail.getBoundingClientRect().left;
-      const distances = cards.map((card) =>
-        Math.abs(card.getBoundingClientRect().left - start),
-      );
-      const nearest = distances.indexOf(Math.min(...distances));
-      if (
-        nearest !== activeRef.current &&
-        distances[nearest] + 2 < distances[activeRef.current]
-      ) {
-        activeRef.current = nearest;
-        setActive(nearest);
-      }
-    };
-    const schedule = () => {
-      cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(sync);
-    };
-    const observer = new ResizeObserver(schedule);
-    observer.observe(rail);
-    rail.querySelectorAll("article").forEach((card) => observer.observe(card));
-    rail.addEventListener("scroll", schedule, { passive: true });
-    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const stopSmooth = () => {
-      if (motion.matches) {
-        stopInertia();
-        rail.style.scrollSnapType = "";
-        rail.scrollTo({ left: rail.scrollLeft, behavior: "instant" });
-      }
-    };
-    motion.addEventListener("change", stopSmooth);
-    schedule();
-    return () => {
-      cancelAnimationFrame(frame);
-      stopInertia();
-      observer.disconnect();
-      rail.removeEventListener("scroll", schedule);
-      motion.removeEventListener("change", stopSmooth);
-    };
-  }, []);
-
-  const goTo = (index: number, keyboard = false) => {
-    const rail = railRef.current;
-    const card = rail?.querySelectorAll("article")[index];
-    if (!rail || !card) return;
-    stopInertia();
-    rail.style.scrollSnapType = "";
-    const left =
-      rail.scrollLeft +
-      card.getBoundingClientRect().left -
-      rail.getBoundingClientRect().left;
-    rail.scrollTo({
-      left,
-      behavior:
-        keyboard ||
-        window.matchMedia("(prefers-reduced-motion: reduce)").matches
-          ? "instant"
-          : "smooth",
-    });
+  const activate = (index: number, keyboard: boolean) => {
+    keyboardInteractionRef.current = keyboard;
+    setActive(index);
   };
-
-  const snapToNearest = () => {
-    const rail = railRef.current;
-    if (!rail) return;
-    const cards = Array.from(rail.querySelectorAll<HTMLElement>("article"));
-    if (!cards.length) return;
-    const start = rail.getBoundingClientRect().left;
-    const distances = cards.map((card) =>
-      Math.abs(card.getBoundingClientRect().left - start),
-    );
-    const nearest = distances.indexOf(Math.min(...distances));
-    activeRef.current = nearest;
-    setActive(nearest);
-    goTo(nearest);
-  };
-
-  const startMouseInertia = (initialVelocity: number) => {
-    const rail = railRef.current;
-    if (!rail) return;
-
-    if (
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
-      Math.abs(initialVelocity) < 0.04
-    ) {
-      rail.style.scrollSnapType = "";
-      requestAnimationFrame(snapToNearest);
-      return;
-    }
-
-    stopInertia();
-    let velocity = Math.max(-2.2, Math.min(2.2, initialVelocity));
-    let previousTime: number | null = null;
-
-    const glide = (time: number) => {
-      if (previousTime === null) {
-        previousTime = time;
-        inertiaFrameRef.current = requestAnimationFrame(glide);
-        return;
-      }
-
-      const deltaTime = Math.min(32, time - previousTime);
-      previousTime = time;
-
-      const previousScrollLeft = rail.scrollLeft;
-      rail.scrollLeft += velocity * deltaTime;
-      velocity *= Math.pow(0.91, deltaTime / 16.67);
-
-      const reachedEdge = Math.abs(rail.scrollLeft - previousScrollLeft) < 0.1;
-      if (Math.abs(velocity) < 0.035 || reachedEdge) {
-        inertiaFrameRef.current = null;
-        rail.style.scrollSnapType = "";
-        requestAnimationFrame(snapToNearest);
-        return;
-      }
-
-      inertiaFrameRef.current = requestAnimationFrame(glide);
-    };
-
-    inertiaFrameRef.current = requestAnimationFrame(glide);
-  };
-
-  const finishMouseDrag = (event: ReactPointerEvent<HTMLDivElement>) => {
-    if (gesture.current.pointerId !== event.pointerId) return;
-
-    const pointerId = gesture.current.pointerId;
-    const shouldGlide = gesture.current.moved;
-    const velocity = gesture.current.velocity;
-
-    gesture.current.dragging = false;
-    gesture.current.pointerId = null;
-
-    if (
-      pointerId !== null &&
-      event.currentTarget.hasPointerCapture(pointerId)
-    ) {
-      event.currentTarget.releasePointerCapture(pointerId);
-    }
-
-    if (shouldGlide) {
-      startMouseInertia(velocity);
-    } else {
-      event.currentTarget.style.scrollSnapType = "";
-    }
-  };
-
-  const controlClass =
-    "inline-flex h-11 w-11 items-center justify-center rounded-full border border-black/12 bg-white text-black transition-[background-color,border-color,color,transform] duration-200 hover:border-black hover:bg-black hover:text-white active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-4 aria-disabled:pointer-events-none aria-disabled:border-black/8 aria-disabled:bg-white/50 aria-disabled:text-black/25";
 
   return (
-    <div className="mt-6 min-w-0 lg:mt-7">
-      <div
-        role="group"
-        aria-label="Categorie accessori"
-        className="font-ui mb-4 flex flex-wrap gap-x-4 gap-y-0"
-      >
-        {accessories.map((item, index) => (
-          <button
-            key={item.id}
-            type="button"
-            aria-controls="accessory-rail"
-            aria-current={index === active ? "true" : undefined}
-            onClick={(event) => goTo(index, event.detail === 0)}
-            className="min-h-11 max-w-full border-b-2 border-transparent text-left text-[0.82rem] font-semibold text-black/55 aria-current:border-black aria-current:text-black focus-visible:outline-2 focus-visible:outline-offset-4"
-          >
-            {item.title}
-          </button>
-        ))}
+    <div className="mt-7 min-w-0 lg:mt-9">
+      <div className="lg:hidden">
+        <div className="border-y border-black/12">
+          {accessories.map((item, index) => {
+            const isActive = index === active;
+            const triggerId = `accessory-mobile-trigger-${item.id}`;
+            const panelId = `accessory-mobile-panel-${item.id}`;
+
+            return (
+              <div
+                key={item.id}
+                className="border-b border-black/10 last:border-b-0"
+              >
+                <button
+                  id={triggerId}
+                  type="button"
+                  aria-expanded={isActive}
+                  aria-controls={panelId}
+                  onClick={(event) => activate(index, event.detail === 0)}
+                  className="group flex min-h-[76px] w-full items-center gap-4 py-4 text-left focus-visible:outline-2 focus-visible:outline-offset-4"
+                >
+                  <span className="font-ui w-8 shrink-0 text-[0.64rem] font-bold tracking-[0.16em] text-black/38">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <span className="font-display min-w-0 flex-1 text-[clamp(1.35rem,5.5vw,1.85rem)] font-bold leading-[0.96] text-gray-900">
+                    {item.title}
+                  </span>
+                  <span
+                    aria-hidden="true"
+                    className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-black/12 bg-white/55 text-black transition-[background-color,border-color,transform] duration-150 ease-out group-active:scale-[0.96]"
+                  >
+                    {isActive ? (
+                      <Minus size={17} strokeWidth={1.7} />
+                    ) : (
+                      <Plus size={17} strokeWidth={1.7} />
+                    )}
+                  </span>
+                </button>
+
+                <AnimatePresence initial={false}>
+                  {isActive ? (
+                    <motion.div
+                      key={panelId}
+                      id={panelId}
+                      role="region"
+                      aria-labelledby={triggerId}
+                      initial={
+                        motionDisabled ? false : { height: 0, opacity: 0 }
+                      }
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={stateTransition}
+                      className="overflow-hidden"
+                    >
+                      <div className="pb-6 pl-12 sm:pb-7">
+                        <div className="relative overflow-hidden rounded-[24px] border border-black/10 bg-white/35">
+                          <span
+                            aria-hidden="true"
+                            className="absolute inset-x-0 top-0 z-10 h-1"
+                            style={{ backgroundColor: activePastel }}
+                          />
+                          <Image
+                            src={item.image}
+                            alt={item.alt}
+                            width={800}
+                            height={1000}
+                            sizes="(min-width: 768px) 84vw, calc(100vw - 64px)"
+                            draggable={false}
+                            className="aspect-[5/4] w-full object-cover object-center"
+                          />
+                        </div>
+                        <div className="pt-4">
+                          <AccessoryDetails item={item} />
+                        </div>
+                      </div>
+                    </motion.div>
+                  ) : null}
+                </AnimatePresence>
+              </div>
+            );
+          })}
+        </div>
       </div>
-      <div
-        ref={railRef}
-        id="accessory-rail"
-        role="region"
-        aria-label="Accessori da sfogliare"
-        tabIndex={0}
-        className="hide-scrollbar relative left-1/2 flex w-dvw -translate-x-1/2 cursor-grab snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain pb-1 active:cursor-grabbing [--card-width:76%] after:block after:w-[max(0px,calc(100%-var(--card-width)-16px))] after:shrink-0 after:content-[''] focus-visible:outline-2 focus-visible:outline-offset-4 md:[--card-width:36%] lg:[--card-width:24%]"
-        onPointerDown={(event) => {
-          const isMouseDrag = event.pointerType === "mouse" && event.button === 0;
-          const now = event.timeStamp;
 
-          if (isMouseDrag) stopInertia();
+      <div className="hidden lg:grid lg:grid-cols-[minmax(19rem,0.72fr)_minmax(0,1.28fr)] lg:items-start lg:gap-12 xl:grid-cols-[minmax(22rem,0.68fr)_minmax(0,1.32fr)] xl:gap-16">
+        <div className="border-y border-black/12">
+          {accessories.map((item, index) => {
+            const isActive = index === active;
+            const triggerId = `accessory-desktop-trigger-${item.id}`;
+            const panelId = `accessory-desktop-panel-${item.id}`;
 
-          gesture.current = {
-            x: event.clientX,
-            y: event.clientY,
-            lastX: event.clientX,
-            lastTime: now,
-            velocity: 0,
-            moved: false,
-            dragging: isMouseDrag,
-            scrollLeft: event.currentTarget.scrollLeft,
-            pointerId: isMouseDrag ? event.pointerId : null,
-          };
+            return (
+              <div
+                key={item.id}
+                className="border-b border-black/10 last:border-b-0"
+              >
+                <button
+                  id={triggerId}
+                  type="button"
+                  aria-expanded={isActive}
+                  aria-controls={panelId}
+                  onClick={(event) => activate(index, event.detail === 0)}
+                  className="group flex min-h-[82px] w-full items-center gap-5 py-5 text-left focus-visible:outline-2 focus-visible:outline-offset-4"
+                >
+                  <span className="font-ui w-9 shrink-0 text-[0.64rem] font-bold tracking-[0.18em] text-black/36 transition-colors duration-150 group-hover:text-black/65">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <span className="font-display min-w-0 flex-1 text-[clamp(1.55rem,2.25vw,2.35rem)] font-bold leading-[0.94] text-gray-900">
+                    {item.title}
+                  </span>
+                  <span
+                    aria-hidden="true"
+                    className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-black/12 bg-white/50 text-black transition-[background-color,border-color,transform] duration-150 ease-out group-hover:border-black/25 group-hover:bg-white/80 group-active:scale-[0.96]"
+                  >
+                    {isActive ? (
+                      <Minus size={17} strokeWidth={1.7} />
+                    ) : (
+                      <Plus size={17} strokeWidth={1.7} />
+                    )}
+                  </span>
+                </button>
 
-          if (isMouseDrag) {
-            event.preventDefault();
-            event.currentTarget.style.scrollSnapType = "none";
-            event.currentTarget.setPointerCapture(event.pointerId);
-          }
-        }}
-        onPointerMove={(event) => {
-          const deltaX = event.clientX - gesture.current.x;
-          const deltaY = event.clientY - gesture.current.y;
+                <AnimatePresence initial={false}>
+                  {isActive ? (
+                    <motion.div
+                      key={panelId}
+                      id={panelId}
+                      role="region"
+                      aria-labelledby={triggerId}
+                      initial={
+                        motionDisabled ? false : { height: 0, opacity: 0 }
+                      }
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={stateTransition}
+                      className="overflow-hidden"
+                    >
+                      <div className="pb-6 pl-14 pr-4">
+                        <AccessoryDetails item={item} />
+                      </div>
+                    </motion.div>
+                  ) : null}
+                </AnimatePresence>
+              </div>
+            );
+          })}
+        </div>
 
-          if (Math.hypot(deltaX, deltaY) > 10) {
-            gesture.current.moved = true;
-          }
-
-          if (event.pointerType === "mouse" && gesture.current.dragging) {
-            event.preventDefault();
-            const now = event.timeStamp;
-            const deltaTime = Math.max(1, now - gesture.current.lastTime);
-            const frameDeltaX = event.clientX - gesture.current.lastX;
-            const instantVelocity = -frameDeltaX / deltaTime;
-
-            gesture.current.velocity =
-              gesture.current.velocity * 0.55 + instantVelocity * 0.45;
-            gesture.current.lastX = event.clientX;
-            gesture.current.lastTime = now;
-            event.currentTarget.scrollLeft = gesture.current.scrollLeft - deltaX;
-          }
-        }}
-        onPointerUp={finishMouseDrag}
-        onPointerCancel={(event) => {
-          gesture.current.moved = true;
-          finishMouseDrag(event);
-        }}
-        onLostPointerCapture={(event) => {
-          if (gesture.current.pointerId === event.pointerId) {
-            event.currentTarget.style.scrollSnapType = "";
-            gesture.current.dragging = false;
-            gesture.current.pointerId = null;
-          }
-        }}
-        onClickCapture={(event) => {
-          if (event.detail > 0 && gesture.current.moved) event.preventDefault();
-        }}
-      >
-        {accessories.map((item, index) => (
-          <article
-            key={item.id}
-            aria-labelledby={`accessory-${item.id}`}
-            className="min-w-0 w-[var(--card-width)] shrink-0 snap-start overflow-hidden rounded-3xl border border-black/10 p-3 text-gray-900 shadow-none sm:p-3.5"
-            style={{
-              background: accessoryPastels[index % accessoryPastels.length],
-            }}
-          >
-            <div className="overflow-hidden rounded-2xl bg-white/30">
+        <div
+          className="relative aspect-[5/4] overflow-hidden rounded-[32px] border border-black/10 bg-white/35 transition-colors duration-200 xl:aspect-[4/3]"
+          style={{ backgroundColor: activePastel }}
+        >
+          <AnimatePresence initial={false}>
+            <motion.div
+              key={activeItem.id}
+              initial={
+                motionDisabled
+                  ? false
+                  : { opacity: 0, transform: "scale(0.99)" }
+              }
+              animate={{ opacity: 1, transform: "scale(1)" }}
+              exit={{ opacity: 0, transform: "scale(1.005)" }}
+              transition={stateTransition}
+              className="absolute inset-0"
+            >
               <Image
-                src={item.image}
-                alt={item.alt}
+                src={activeItem.image}
+                alt={activeItem.alt}
                 width={800}
                 height={1000}
-                sizes="(min-width: 1024px) 24vw, (min-width: 768px) 36vw, 76vw"
+                sizes="(min-width: 1280px) 55vw, (min-width: 1024px) 52vw, 100vw"
                 draggable={false}
-                className="aspect-[5/4] w-full object-cover object-center"
+                className="h-full w-full object-cover object-center"
               />
-            </div>
-            <div className="px-0.5 pb-0.5 pt-3">
-              <p className="font-ui text-[0.58rem] font-bold uppercase tracking-[0.15em] text-black/50">
-                Accessori
-              </p>
-              <h3
-                id={`accessory-${item.id}`}
-                className="font-display mt-1.5 text-[clamp(1.4rem,2vw,1.9rem)] font-bold leading-[0.98] text-gray-900"
-              >
-                {item.title}
-              </h3>
-              <ul className="font-ui mt-2 flex flex-wrap gap-x-3 gap-y-1 text-[0.75rem] font-semibold text-black/65">
-                {item.examples.map((example) => (
-                  <li key={example}>{example}</li>
-                ))}
-              </ul>
-              <p className="mt-2 max-w-[40ch] text-[0.82rem] leading-5 text-black/62">
-                {item.description}
-              </p>
-              <a
-                href="tel:+393289185029"
-                aria-label={`Chiedi compatibilità: ${item.title}`}
-                onFocus={() => goTo(index, true)}
-                className="group font-ui mt-2.5 inline-flex min-h-11 max-w-full items-center gap-2.5 text-[0.76rem] font-bold text-gray-900 underline decoration-black/25 underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2"
-              >
-                Chiedi compatibilità{" "}
-                <ArrowUpRight
-                  aria-hidden="true"
-                  size={16}
-                  className="shrink-0 transition-transform duration-160 group-hover:translate-x-[3px] motion-reduce:transform-none motion-reduce:transition-none"
-                />
-              </a>
-            </div>
-          </article>
-        ))}
+            </motion.div>
+          </AnimatePresence>
+          <span
+            aria-hidden="true"
+            className="absolute inset-x-0 top-0 z-10 h-1.5"
+            style={{ backgroundColor: activePastel }}
+          />
+        </div>
       </div>
-      <div className="mt-4 flex flex-wrap items-center justify-between gap-4 border-t border-black/10 pt-4">
-        <div className="font-ui flex items-center gap-2.5 text-[0.62rem] font-bold uppercase tracking-[0.16em] text-black/42">
-          <span aria-hidden="true" className="h-px w-5 bg-black/18" />
-          <p>Immagini illustrative</p>
-        </div>
-        <div className="flex items-center gap-2.5">
-          <button
-            type="button"
-            aria-label="Accessorio precedente"
-            aria-controls="accessory-rail"
-            aria-disabled={active === 0}
-            className={controlClass}
-            onClick={(event) => {
-              if (active > 0) goTo(active - 1, event.detail === 0);
-            }}
-          >
-            <ArrowLeft aria-hidden="true" size={17} strokeWidth={1.7} />
-          </button>
-          <button
-            type="button"
-            aria-label="Accessorio successivo"
-            aria-controls="accessory-rail"
-            aria-disabled={active === accessories.length - 1}
-            className={controlClass}
-            onClick={(event) => {
-              if (active < accessories.length - 1)
-                goTo(active + 1, event.detail === 0);
-            }}
-          >
-            <ArrowRight aria-hidden="true" size={17} strokeWidth={1.7} />
-          </button>
-        </div>
+
+      <div className="font-ui mt-5 flex items-center gap-2.5 border-t border-black/10 pt-4 text-[0.62rem] font-bold uppercase tracking-[0.16em] text-black/42 lg:mt-6">
+        <span aria-hidden="true" className="h-px w-5 bg-black/18" />
+        <p>Immagini illustrative</p>
       </div>
     </div>
   );
