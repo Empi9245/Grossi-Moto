@@ -300,8 +300,17 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
   // Preserve the original 86svh zoom distance; reserve the rest for the credits.
   const zoomProgress = useTransform(scrollYProgress, [0, zoomEnd], [0, 1]);
 
-  const introOpacity = useTransform(zoomProgress, [0, 0.12, 0.48], [1, 1, 0]);
-  const introY = useTransform(zoomProgress, [0, 0.48], [0, -24]);
+  const introLeftX = useTransform(
+    zoomProgress,
+    [0, 0.15],
+    ["0vw", isDesktopViewport ? "-60vw" : "-70vw"],
+  );
+  const introRightX = useTransform(
+    zoomProgress,
+    [0, 0.15],
+    ["0vw", isDesktopViewport ? "60vw" : "70vw"],
+  );
+  const introOpacity = useTransform(zoomProgress, [0.15, 0.37], [1, 0]);
 
   const mobileScale = useTransform(zoomProgress, [0, 1], [1, 2.4]);
   const scale4 = useTransform(zoomProgress, [0, 1], [1, 4.08]);
@@ -390,21 +399,24 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
           className="pointer-events-none absolute inset-0 z-20 bg-[linear-gradient(105deg,oklch(8%_0.012_42/0.84),oklch(8%_0.012_42/0.58)_56%,oklch(8%_0.012_42/0.42))] will-change-opacity"
         />
 
-        <motion.div
-          style={{ opacity: introOpacity, y: introY }}
-          className="pointer-events-none absolute inset-0 z-30 text-[oklch(18%_0.014_56)]"
-        >
-          <div className="absolute left-[6vw] top-[4svh] max-w-[85vw] lg:left-[4vw] lg:top-[3svh] lg:max-w-[26vw]">
+        <div className="pointer-events-none absolute inset-0 z-30 text-[oklch(18%_0.014_56)]">
+          <motion.div
+            style={{ x: introLeftX, opacity: introOpacity }}
+            className="absolute left-[6vw] top-[4svh] max-w-[85vw] will-change-transform lg:left-[4vw] lg:top-[3svh] lg:max-w-[26vw]"
+          >
             <p className="font-ui mb-3 text-[0.65rem] font-bold uppercase tracking-[0.2em]">Grossi Moto · Roma</p>
             <p className={`${creditsFont.className} text-[clamp(1.75rem,7vw,3rem)] lg:text-[clamp(2rem,3.1vw,4rem)] leading-[0.95] tracking-[-0.02em]`}>
               La tua prossima strada.
             </p>
-          </div>
-          <div className="absolute bottom-[calc(6.5rem+env(safe-area-inset-bottom))] right-[6vw] max-w-[85vw] text-right lg:bottom-[5svh] lg:right-[4vw] lg:max-w-[25vw]">
+          </motion.div>
+          <motion.div
+            style={{ x: introRightX, opacity: introOpacity }}
+            className="absolute bottom-[calc(6.5rem+env(safe-area-inset-bottom))] right-[6vw] max-w-[85vw] text-right will-change-transform lg:bottom-[5svh] lg:right-[4vw] lg:max-w-[25vw]"
+          >
             <p className={`${creditsFont.className} text-[clamp(1.75rem,7vw,3rem)] lg:text-[clamp(2rem,3.6vw,4.5rem)] leading-[0.95] tracking-[-0.02em]`}>Parte da qui.</p>
             <p className="font-ui mt-4 text-xs tracking-wide">Dalla scelta del mezzo, a ogni nuovo viaggio.</p>
-          </div>
-        </motion.div>
+          </motion.div>
+        </div>
 
         <CinematicCredits progress={scrollYProgress} compact={!isDesktopViewport} />
       </div>
