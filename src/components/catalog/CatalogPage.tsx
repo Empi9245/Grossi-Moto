@@ -79,7 +79,7 @@ export function CatalogPage({ initialFocusId }: { initialFocusId?: string }) {
     [activeFilter],
   );
 
-  const handleFilterChange = useCallback((nextFilter: CatalogFilter) => {
+  const handleFilterChange = (nextFilter: CatalogFilter) => {
     const nextVisibleScooters = filterScooters(nextFilter);
 
     setActiveFilter(nextFilter);
@@ -89,7 +89,7 @@ export function CatalogPage({ initialFocusId }: { initialFocusId?: string }) {
         ? currentExpandedId
         : null,
     );
-  }, []);
+  };
 
   const handleCollapseScooter = useCallback(() => {
     setExpandedId(null);
@@ -97,104 +97,71 @@ export function CatalogPage({ initialFocusId }: { initialFocusId?: string }) {
 
   return (
     <>
-      <main
-        id="main-content"
-        className="min-h-[100dvh] bg-white p-2.5 text-[#171717] sm:p-4 lg:p-5"
-      >
-        <div className="mx-auto max-w-[122rem] overflow-clip rounded-[1.55rem] bg-white shadow-[0_0_0_1px_rgba(0,0,0,0.05),0_28px_70px_rgba(0,0,0,0.08)]">
-          <CatalogNavbar />
+    <main id="main-content" className="min-h-[100dvh] bg-white p-2.5 text-[#171717] sm:p-4 lg:p-5">
+      <div className="mx-auto max-w-[122rem] overflow-clip rounded-[1.55rem] bg-white shadow-[0_0_0_1px_rgba(0,0,0,0.05),0_28px_70px_rgba(0,0,0,0.08)]">
+        <CatalogNavbar />
 
-          <section className="px-5 pt-8 sm:px-7 sm:pt-10 lg:px-10 lg:pt-12">
-            <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(34rem,0.92fr)] lg:items-end">
-              <div>
-                <p className="font-ui text-[0.68rem] font-bold uppercase tracking-[0.18em] text-black/55">
-                  Moto e scooter
-                </p>
-                <h1 className="font-display mt-3 max-w-[10ch] text-[clamp(2.85rem,11vw,6.8rem)] font-bold leading-[0.88] tracking-normal text-black sm:max-w-[12ch]">
-                  Tutta la gamma
-                </h1>
-                <p className="mt-5 max-w-[39rem] text-sm leading-6 text-black/65 sm:text-base">
-                  Esplora KYMCO e Voge e apri le schede per confrontare i
-                  modelli. Per prezzo, disponibilità e consigli sulla scelta,
-                  chiamaci.
-                </p>
+        <section className="px-5 pt-8 sm:px-7 sm:pt-10 lg:px-10 lg:pt-12">
+          <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(34rem,0.92fr)] lg:items-end">
+            <div>
+              <p className="font-ui text-[0.68rem] font-bold uppercase tracking-[0.18em] text-black/55">
+                Moto e scooter
+              </p>
+              <h1 className="font-display mt-3 max-w-[10ch] text-[clamp(2.85rem,11vw,6.8rem)] font-bold leading-[0.88] tracking-normal text-black sm:max-w-[12ch]">
+                Tutta la gamma
+              </h1>
+              <p className="mt-5 max-w-[39rem] text-sm leading-6 text-black/65 sm:text-base">
+                Esplora KYMCO e Voge e apri le schede per confrontare i modelli. Per prezzo, disponibilità e consigli sulla scelta, chiamaci.
+              </p>
+            </div>
+
+            <dl className="grid grid-cols-3 gap-2 sm:gap-3 lg:justify-self-end">
+              <div className="flex min-w-0 flex-col items-start gap-2 rounded-[0.95rem] bg-[#F3F3F3] p-3 sm:flex-row sm:items-center sm:gap-3 sm:rounded-none sm:bg-transparent sm:p-0 sm:pl-5 sm:border-l sm:border-black/10">
+                <BadgeCheck aria-hidden="true" className="h-5 w-5 shrink-0 text-black/55 sm:h-6 sm:w-6" strokeWidth={1.6} />
+                <div className="min-w-0">
+                  <dt className="font-ui truncate text-[0.54rem] font-bold uppercase tracking-[0.12em] text-black/50 sm:text-[0.62rem] sm:tracking-[0.16em]">Modelli</dt>
+                  <dd className="font-display -mt-0.5 text-2xl font-bold leading-none text-black sm:text-3xl">{catalogScooters.length}</dd>
+                </div>
               </div>
 
-              <dl className="grid grid-cols-3 gap-2 sm:gap-3 lg:justify-self-end">
-                <div className="flex min-w-0 flex-col items-start gap-2 rounded-[0.95rem] bg-[#F3F3F3] p-3 sm:flex-row sm:items-center sm:gap-3 sm:rounded-none sm:border-l sm:border-black/10 sm:bg-transparent sm:p-0 sm:pl-5">
-                  <BadgeCheck
-                    aria-hidden="true"
-                    className="h-5 w-5 shrink-0 text-black/55 sm:h-6 sm:w-6"
-                    strokeWidth={1.6}
-                  />
-                  <div className="min-w-0">
-                    <dt className="font-ui truncate text-[0.54rem] font-bold uppercase tracking-[0.12em] text-black/50 sm:text-[0.62rem] sm:tracking-[0.16em]">
-                      Modelli
-                    </dt>
-                    <dd className="font-display -mt-0.5 text-2xl font-bold leading-none text-black sm:text-3xl">
-                      {catalogScooters.length}
-                    </dd>
-                  </div>
+              <div className="flex min-w-0 flex-col items-start gap-2 rounded-[0.95rem] bg-[#F3F3F3] p-3 sm:flex-row sm:items-center sm:gap-3 sm:rounded-none sm:bg-transparent sm:p-0 sm:pl-5 sm:border-l sm:border-black/10">
+                <Layers2 aria-hidden="true" className="h-5 w-5 shrink-0 text-black/55 sm:h-6 sm:w-6" strokeWidth={1.6} />
+                <div className="min-w-0">
+                  <dt className="font-ui truncate text-[0.54rem] font-bold uppercase tracking-[0.12em] text-black/50 sm:text-[0.62rem] sm:tracking-[0.16em]">Marchi</dt>
+                  <dd className="font-display -mt-0.5 text-2xl font-bold leading-none text-black sm:text-3xl">{catalogBrandCount}</dd>
                 </div>
+              </div>
 
-                <div className="flex min-w-0 flex-col items-start gap-2 rounded-[0.95rem] bg-[#F3F3F3] p-3 sm:flex-row sm:items-center sm:gap-3 sm:rounded-none sm:border-l sm:border-black/10 sm:bg-transparent sm:p-0 sm:pl-5">
-                  <Layers2
-                    aria-hidden="true"
-                    className="h-5 w-5 shrink-0 text-black/55 sm:h-6 sm:w-6"
-                    strokeWidth={1.6}
-                  />
-                  <div className="min-w-0">
-                    <dt className="font-ui truncate text-[0.54rem] font-bold uppercase tracking-[0.12em] text-black/50 sm:text-[0.62rem] sm:tracking-[0.16em]">
-                      Marchi
-                    </dt>
-                    <dd className="font-display -mt-0.5 text-2xl font-bold leading-none text-black sm:text-3xl">
-                      {catalogBrandCount}
-                    </dd>
-                  </div>
+              <div className="flex min-w-0 flex-col items-start gap-2 rounded-[0.95rem] bg-[#F3F3F3] p-3 sm:flex-row sm:items-center sm:gap-3 sm:rounded-none sm:bg-transparent sm:p-0 sm:pl-5 sm:border-l sm:border-black/10">
+                <Gauge aria-hidden="true" className="h-5 w-5 shrink-0 text-black/55 sm:h-6 sm:w-6" strokeWidth={1.6} />
+                <div className="min-w-0">
+                  <dt className="font-ui truncate text-[0.54rem] font-bold uppercase tracking-[0.12em] text-black/50 sm:text-[0.62rem] sm:tracking-[0.16em]">Cilindrata</dt>
+                  <dd className="font-display -mt-0.5 whitespace-nowrap text-[1.05rem] font-bold leading-none text-black sm:text-3xl">
+                    <span className="sm:hidden">50–900cc</span>
+                    <span className="hidden sm:inline">50cc - 900cc</span>
+                  </dd>
                 </div>
+              </div>
+            </dl>
+          </div>
+        </section>
 
-                <div className="flex min-w-0 flex-col items-start gap-2 rounded-[0.95rem] bg-[#F3F3F3] p-3 sm:flex-row sm:items-center sm:gap-3 sm:rounded-none sm:border-l sm:border-black/10 sm:bg-transparent sm:p-0 sm:pl-5">
-                  <Gauge
-                    aria-hidden="true"
-                    className="h-5 w-5 shrink-0 text-black/55 sm:h-6 sm:w-6"
-                    strokeWidth={1.6}
-                  />
-                  <div className="min-w-0">
-                    <dt className="font-ui truncate text-[0.54rem] font-bold uppercase tracking-[0.12em] text-black/50 sm:text-[0.62rem] sm:tracking-[0.16em]">
-                      Cilindrata
-                    </dt>
-                    <dd className="font-display -mt-0.5 whitespace-nowrap text-[1.05rem] font-bold leading-none text-black sm:text-3xl">
-                      <span className="sm:hidden">50–900cc</span>
-                      <span className="hidden sm:inline">50cc - 900cc</span>
-                    </dd>
-                  </div>
-                </div>
-              </dl>
-            </div>
-          </section>
+        <CatalogFilterBar activeFilter={activeFilter} onFilterChange={handleFilterChange} />
 
-          <CatalogFilterBar
-            activeFilter={activeFilter}
-            onFilterChange={handleFilterChange}
+        <section aria-label="Moto e scooter Grossimoto" className="px-5 pb-8 pt-6 sm:px-7 sm:pb-10 lg:px-10">
+          <CatalogGrid
+            scooters={visibleScooters}
+            expandedId={expandedId}
+            isCompactViewport={isCompactViewport}
+            shouldReduceMotion={shouldReduceMotion || isCompactViewport}
+            transitionImageId={transitionImageId}
+            onExpandScooter={setExpandedId}
+            onCollapseScooter={handleCollapseScooter}
           />
-
-          <section
-            aria-label="Moto e scooter Grossimoto"
-            className="px-5 pb-8 pt-6 sm:px-7 sm:pb-10 lg:px-10"
-          >
-            <CatalogGrid
-              scooters={visibleScooters}
-              expandedId={expandedId}
-              isCompactViewport={isCompactViewport}
-              shouldReduceMotion={shouldReduceMotion || isCompactViewport}
-              transitionImageId={transitionImageId}
-              onExpandScooter={setExpandedId}
-              onCollapseScooter={handleCollapseScooter}
-            />
-          </section>
-        </div>
-      </main>
-      <SiteFooter />
+        </section>
+      </div>
+    </main>
+    <SiteFooter />
     </>
   );
 }
