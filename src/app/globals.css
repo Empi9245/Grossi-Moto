@@ -13,16 +13,17 @@
   --gm-charcoal: #1b1b1b;
   --gm-neutral-soft: oklch(97.2% 0.004 230);
   --gm-gray-soft: var(--gm-neutral-soft);
+  --gm-green-soft: oklch(95.8% 0.018 155);
   --gm-rule: rgb(21 21 21 / 0.1);
   --gm-brand: oklch(80% 0.055 230);
   --gm-brand-soft: oklch(93.2% 0.027 230);
   --gm-brand-subtle: oklch(96.8% 0.013 230);
   --home-showroom-surface: var(--gm-neutral-soft);
-  --home-cover-surface: var(--gm-brand-soft);
-  --home-experience-surface: var(--gm-white);
-  --home-accessories-surface: var(--gm-white);
+  --home-cover-surface: var(--gm-white);
+  --home-experience-surface: var(--gm-green-soft);
+  --home-accessories-surface: var(--gm-neutral-soft);
   --home-workshop-surface: var(--gm-brand-subtle);
-  --home-contact-surface: var(--gm-brand-soft);
+  --home-contact-surface: var(--gm-white);
   --font-display: "Clash Grotesk", "Bahnschrift", "DIN Alternate",
     "Aptos Display", "Arial Narrow", "Helvetica Neue", Arial, ui-sans-serif,
     system-ui, sans-serif;
