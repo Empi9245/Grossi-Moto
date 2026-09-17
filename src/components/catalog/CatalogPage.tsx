@@ -12,17 +12,72 @@ import {
   catalogBrandCount,
   catalogScooters,
   type CatalogFilter,
+  type CatalogScooter,
+  getCatalogScooterBrand,
   getCatalogScooterById,
 } from "@/data/catalog-scooters";
 
-function filterScooters(activeFilter: CatalogFilter) {
-  if (activeFilter === "all") {
-    return catalogScooters;
+function normalizeSearchValue(value: string) {
+  return value
+    .toLocaleLowerCase("it-IT")
+    .normalize("NFD")
+    .replace(/\p{Diacritic}/gu, "")
+    .replace(/[-_/]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+const catalogSearchIndex = new Map(
+  catalogScooters.map((scooter) => [
+    scooter.id,
+    normalizeSearchValue(
+      [
+        scooter.name,
+        scooter.shortName,
+        getCatalogScooterBrand(scooter),
+        scooter.family,
+        scooter.displacement,
+        scooter.filterCategory,
+        scooter.subtitle,
+        scooter.positioning,
+        scooter.idealUse,
+        ...scooter.specs.flatMap((spec) => [spec.label, spec.value]),
+      ].join(" "),
+    ),
+  ]),
+);
+
+function getVisibleScooters(activeFilter: CatalogFilter, searchQuery: string) {
+  const normalizedQuery = normalizeSearchValue(searchQuery);
+  const queryTokens = normalizedQuery ? normalizedQuery.split(" ") : [];
+
+  return catalogScooters.filter((scooter) => {
+    if (activeFilter !== "all" && scooter.filterCategory !== activeFilter) {
+      return false;
+    }
+
+    if (queryTokens.length === 0) {
+      return true;
+    }
+
+    const searchableText = catalogSearchIndex.get(scooter.id) ?? "";
+    return queryTokens.every((token) => searchableText.includes(token));
+  });
+}
+
+function keepVisibleExpansion(
+  currentExpandedId: string | null,
+  nextVisibleScooters: CatalogScooter[],
+) {
+  if (!currentExpandedId) {
+    return null;
   }
 
-  return catalogScooters.filter(
-    (scooter) => scooter.filterCategory === activeFilter,
-  );
+  return nextVisibleScooters.some(
+    (scooter) => scooter.id === currentExpandedId,
+  )
+    ? currentExpandedId
+    : null;
 }
 
 function useCompactViewport() {
@@ -45,9 +100,13 @@ export function CatalogPage({ initialFocusId }: { initialFocusId?: string }) {
   const { activeScooterId, shouldReduceMotion, source } = usePageTransition();
   const initialExpandedId = getCatalogScooterById(initialFocusId)?.id ?? null;
   const [activeFilter, setActiveFilter] = useState<CatalogFilter>("all");
+  const [searchQuery, setSearchQuery] = useState("");
   const [expandedId, setExpandedId] = useState<string | null>(
     () => initialExpandedId,
   );
+  const [activeVisibleScooterId, setActiveVisibleScooterId] = useState<
+    string | null
+  >(initialExpandedId);
   const isCompactViewport = useCompactViewport();
   const transitionImageId =
     source === "showroom" && activeScooterId === expandedId
@@ -80,93 +139,170 @@ export function CatalogPage({ initialFocusId }: { initialFocusId?: string }) {
   }, [initialExpandedId, shouldReduceMotion]);
 
   const visibleScooters = useMemo(
-    () => filterScooters(activeFilter),
-    [activeFilter],
+    () => getVisibleScooters(activeFilter, searchQuery),
+    [activeFilter, searchQuery],
   );
 
-  const handleFilterChange = (nextFilter: CatalogFilter) => {
-    const nextVisibleScooters = filterScooters(nextFilter);
+  const effectiveActiveScooter =
+    visibleScooters.find((scooter) => scooter.id === activeVisibleScooterId) ??
+    visibleScooters[0];
+  const activePosition = effectiveActiveScooter
+    ? visibleScooters.findIndex(
+        (scooter) => scooter.id === effectiveActiveScooter.id,
+      ) + 1
+    : 0;
 
-    setActiveFilter(nextFilter);
-    setExpandedId((currentExpandedId) =>
-      currentExpandedId &&
-      nextVisibleScooters.some((scooter) => scooter.id === currentExpandedId)
-        ? currentExpandedId
-        : null,
-    );
-  };
+  const handleFilterChange = useCallback(
+    (nextFilter: CatalogFilter) => {
+      const nextVisibleScooters = getVisibleScooters(nextFilter, searchQuery);
+
+      setActiveFilter(nextFilter);
+      setExpandedId((currentExpandedId) =>
+        keepVisibleExpansion(currentExpandedId, nextVisibleScooters),
+      );
+    },
+    [searchQuery],
+  );
+
+  const handleSearchChange = useCallback(
+    (nextQuery: string) => {
+      const nextVisibleScooters = getVisibleScooters(activeFilter, nextQuery);
+
+      setSearchQuery(nextQuery);
+      setExpandedId((currentExpandedId) =>
+        keepVisibleExpansion(currentExpandedId, nextVisibleScooters),
+      );
+    },
+    [activeFilter],
+  );
 
   const handleCollapseScooter = useCallback(() => {
     setExpandedId(null);
   }, []);
 
+  const handleClearSearch = useCallback(() => {
+    handleSearchChange("");
+  }, [handleSearchChange]);
+
+  const handleResetFilter = useCallback(() => {
+    handleFilterChange("all");
+  }, [handleFilterChange]);
+
   return (
     <>
-    <main id="main-content" className="min-h-[100dvh] bg-white p-2.5 text-[#171717] sm:p-4 lg:p-5">
-      <div className="mx-auto max-w-[122rem] overflow-clip rounded-[1.55rem] bg-white shadow-[0_0_0_1px_rgba(0,0,0,0.05),0_28px_70px_rgba(0,0,0,0.08)]">
-        <CatalogNavbar />
+      <main
+        id="main-content"
+        className="min-h-[100dvh] bg-white p-2.5 text-[#171717] sm:p-4 lg:p-5"
+      >
+        <div className="mx-auto max-w-[122rem] overflow-clip rounded-[1.55rem] bg-white shadow-[0_0_0_1px_rgba(0,0,0,0.05),0_28px_70px_rgba(0,0,0,0.08)]">
+          <CatalogNavbar />
 
-        <section className="px-5 pt-8 sm:px-7 sm:pt-10 lg:px-10 lg:pt-12">
-          <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(34rem,0.92fr)] lg:items-end">
-            <div>
-              <p className="font-ui text-[0.68rem] font-bold uppercase tracking-[0.18em] text-black/55">
-                Moto e scooter
-              </p>
-              <h1 className="font-display mt-3 max-w-[10ch] text-[clamp(2.85rem,11vw,6.8rem)] font-bold leading-[0.88] tracking-normal text-black sm:max-w-[12ch]">
-                Tutta la gamma
-              </h1>
-              <p className="mt-5 max-w-[39rem] text-sm leading-6 text-black/65 sm:text-base">
-                Esplora KYMCO e Voge e apri le schede per confrontare i modelli. Per prezzo, disponibilità e consigli sulla scelta, chiamaci.
-              </p>
+          <section className="px-5 pt-8 sm:px-7 sm:pt-10 lg:px-10 lg:pt-12">
+            <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(34rem,0.92fr)] lg:items-end">
+              <div>
+                <p className="font-ui text-[0.68rem] font-bold uppercase tracking-[0.18em] text-black/55">
+                  Moto e scooter
+                </p>
+                <h1 className="font-display mt-3 max-w-[10ch] text-[clamp(2.85rem,11vw,6.8rem)] font-bold leading-[0.88] tracking-normal text-black sm:max-w-[12ch]">
+                  Tutta la gamma
+                </h1>
+                <p className="mt-5 max-w-[39rem] text-sm leading-6 text-black/65 sm:text-base">
+                  Esplora KYMCO e Voge e apri le schede per confrontare i modelli.
+                  Per prezzo, disponibilità e consigli sulla scelta, chiamaci.
+                </p>
+              </div>
+
+              <dl className="grid grid-cols-3 gap-2 sm:gap-3 lg:justify-self-end">
+                <div className="flex min-w-0 flex-col items-start gap-2 rounded-[0.95rem] bg-[#F3F3F3] p-3 sm:flex-row sm:items-center sm:gap-3 sm:rounded-none sm:border-l sm:border-black/10 sm:bg-transparent sm:p-0 sm:pl-5">
+                  <BadgeCheck
+                    aria-hidden="true"
+                    className="h-5 w-5 shrink-0 text-black/55 sm:h-6 sm:w-6"
+                    strokeWidth={1.6}
+                  />
+                  <div className="min-w-0">
+                    <dt className="font-ui truncate text-[0.54rem] font-bold uppercase tracking-[0.12em] text-black/50 sm:text-[0.62rem] sm:tracking-[0.16em]">
+                      Modelli
+                    </dt>
+                    <dd className="font-display -mt-0.5 text-2xl font-bold leading-none text-black sm:text-3xl">
+                      {catalogScooters.length}
+                    </dd>
+                  </div>
+                </div>
+
+                <div className="flex min-w-0 flex-col items-start gap-2 rounded-[0.95rem] bg-[#F3F3F3] p-3 sm:flex-row sm:items-center sm:gap-3 sm:rounded-none sm:border-l sm:border-black/10 sm:bg-transparent sm:p-0 sm:pl-5">
+                  <Layers2
+                    aria-hidden="true"
+                    className="h-5 w-5 shrink-0 text-black/55 sm:h-6 sm:w-6"
+                    strokeWidth={1.6}
+                  />
+                  <div className="min-w-0">
+                    <dt className="font-ui truncate text-[0.54rem] font-bold uppercase tracking-[0.12em] text-black/50 sm:text-[0.62rem] sm:tracking-[0.16em]">
+                      Marchi
+                    </dt>
+                    <dd className="font-display -mt-0.5 text-2xl font-bold leading-none text-black sm:text-3xl">
+                      {catalogBrandCount}
+                    </dd>
+                  </div>
+                </div>
+
+                <div className="flex min-w-0 flex-col items-start gap-2 rounded-[0.95rem] bg-[#F3F3F3] p-3 sm:flex-row sm:items-center sm:gap-3 sm:rounded-none sm:border-l sm:border-black/10 sm:bg-transparent sm:p-0 sm:pl-5">
+                  <Gauge
+                    aria-hidden="true"
+                    className="h-5 w-5 shrink-0 text-black/55 sm:h-6 sm:w-6"
+                    strokeWidth={1.6}
+                  />
+                  <div className="min-w-0">
+                    <dt className="font-ui truncate text-[0.54rem] font-bold uppercase tracking-[0.12em] text-black/50 sm:text-[0.62rem] sm:tracking-[0.16em]">
+                      Cilindrata
+                    </dt>
+                    <dd className="font-display -mt-0.5 whitespace-nowrap text-[1.05rem] font-bold leading-none text-black sm:text-3xl">
+                      <span className="sm:hidden">50–900cc</span>
+                      <span className="hidden sm:inline">50cc - 900cc</span>
+                    </dd>
+                  </div>
+                </div>
+              </dl>
             </div>
+          </section>
 
-            <dl className="grid grid-cols-3 gap-2 sm:gap-3 lg:justify-self-end">
-              <div className="flex min-w-0 flex-col items-start gap-2 rounded-[0.95rem] bg-[#F3F3F3] p-3 sm:flex-row sm:items-center sm:gap-3 sm:rounded-none sm:bg-transparent sm:p-0 sm:pl-5 sm:border-l sm:border-black/10">
-                <BadgeCheck aria-hidden="true" className="h-5 w-5 shrink-0 text-black/55 sm:h-6 sm:w-6" strokeWidth={1.6} />
-                <div className="min-w-0">
-                  <dt className="font-ui truncate text-[0.54rem] font-bold uppercase tracking-[0.12em] text-black/50 sm:text-[0.62rem] sm:tracking-[0.16em]">Modelli</dt>
-                  <dd className="font-display -mt-0.5 text-2xl font-bold leading-none text-black sm:text-3xl">{catalogScooters.length}</dd>
-                </div>
-              </div>
-
-              <div className="flex min-w-0 flex-col items-start gap-2 rounded-[0.95rem] bg-[#F3F3F3] p-3 sm:flex-row sm:items-center sm:gap-3 sm:rounded-none sm:bg-transparent sm:p-0 sm:pl-5 sm:border-l sm:border-black/10">
-                <Layers2 aria-hidden="true" className="h-5 w-5 shrink-0 text-black/55 sm:h-6 sm:w-6" strokeWidth={1.6} />
-                <div className="min-w-0">
-                  <dt className="font-ui truncate text-[0.54rem] font-bold uppercase tracking-[0.12em] text-black/50 sm:text-[0.62rem] sm:tracking-[0.16em]">Marchi</dt>
-                  <dd className="font-display -mt-0.5 text-2xl font-bold leading-none text-black sm:text-3xl">{catalogBrandCount}</dd>
-                </div>
-              </div>
-
-              <div className="flex min-w-0 flex-col items-start gap-2 rounded-[0.95rem] bg-[#F3F3F3] p-3 sm:flex-row sm:items-center sm:gap-3 sm:rounded-none sm:bg-transparent sm:p-0 sm:pl-5 sm:border-l sm:border-black/10">
-                <Gauge aria-hidden="true" className="h-5 w-5 shrink-0 text-black/55 sm:h-6 sm:w-6" strokeWidth={1.6} />
-                <div className="min-w-0">
-                  <dt className="font-ui truncate text-[0.54rem] font-bold uppercase tracking-[0.12em] text-black/50 sm:text-[0.62rem] sm:tracking-[0.16em]">Cilindrata</dt>
-                  <dd className="font-display -mt-0.5 whitespace-nowrap text-[1.05rem] font-bold leading-none text-black sm:text-3xl">
-                    <span className="sm:hidden">50–900cc</span>
-                    <span className="hidden sm:inline">50cc - 900cc</span>
-                  </dd>
-                </div>
-              </div>
-            </dl>
-          </div>
-        </section>
-
-        <CatalogFilterBar activeFilter={activeFilter} onFilterChange={handleFilterChange} />
-
-        <section aria-label="Moto e scooter Grossimoto" className="px-5 pb-8 pt-6 sm:px-7 sm:pb-10 lg:px-10">
-          <CatalogGrid
-            scooters={visibleScooters}
-            expandedId={expandedId}
-            isCompactViewport={isCompactViewport}
-            shouldReduceMotion={shouldReduceMotion}
-            transitionImageId={transitionImageId}
-            onExpandScooter={setExpandedId}
-            onCollapseScooter={handleCollapseScooter}
+          <CatalogFilterBar
+            activeFilter={activeFilter}
+            searchQuery={searchQuery}
+            resultCount={visibleScooters.length}
+            totalCount={catalogScooters.length}
+            activePosition={activePosition}
+            activeBrand={
+              effectiveActiveScooter
+                ? getCatalogScooterBrand(effectiveActiveScooter)
+                : undefined
+            }
+            onFilterChange={handleFilterChange}
+            onSearchChange={handleSearchChange}
           />
-        </section>
-      </div>
-    </main>
-    <SiteFooter />
+
+          <section
+            aria-label="Moto e scooter Grossimoto"
+            className="px-5 pb-8 pt-6 sm:px-7 sm:pb-10 lg:px-10"
+          >
+            <CatalogGrid
+              scooters={visibleScooters}
+              toneSourceScooters={catalogScooters}
+              expandedId={expandedId}
+              isCompactViewport={isCompactViewport}
+              shouldReduceMotion={shouldReduceMotion}
+              transitionImageId={transitionImageId}
+              hasSearchQuery={normalizeSearchValue(searchQuery).length > 0}
+              hasActiveFilter={activeFilter !== "all"}
+              onActiveScooterChange={setActiveVisibleScooterId}
+              onClearSearch={handleClearSearch}
+              onResetFilter={handleResetFilter}
+              onExpandScooter={setExpandedId}
+              onCollapseScooter={handleCollapseScooter}
+            />
+          </section>
+        </div>
+      </main>
+      <SiteFooter />
     </>
   );
 }
