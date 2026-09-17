@@ -60,11 +60,16 @@ export function CatalogPage({ initialFocusId }: { initialFocusId?: string }) {
     }
 
     const timeout = window.setTimeout(() => {
-      const card = document.querySelector<HTMLElement>(
-        `[data-scooter-id="${CSS.escape(initialExpandedId)}"]`,
-      );
+      const escapedId = CSS.escape(initialExpandedId);
+      const target =
+        document.querySelector<HTMLElement>(
+          `[data-scooter-detail-id="${escapedId}"]`,
+        ) ??
+        document.querySelector<HTMLElement>(
+          `[data-scooter-id="${escapedId}"]`,
+        );
 
-      card?.scrollIntoView({
+      target?.scrollIntoView({
         behavior: "auto",
         block: "start",
         inline: "nearest",
