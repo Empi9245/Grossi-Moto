@@ -1,4 +1,8 @@
-import type { ComponentType, CSSProperties } from "react";
+import {
+  memo,
+  type ComponentType,
+  type CSSProperties,
+} from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -25,11 +29,22 @@ type CatalogProductCardProps = {
   scooter: CatalogScooter;
   shouldReduceMotion: boolean;
   isExpanded: boolean;
+  isSelected?: boolean;
   transitionImageId: string | null;
   cardToneAssignment?: ProductCardToneAssignment;
   isPriority?: boolean;
-  layoutDependency: string;
+  ariaControlsId?: string;
+  animateLayout?: boolean;
+  layoutDependency?: string;
   onExpandScooter: (scooterId: string) => void;
+  onCollapseScooter: () => void;
+};
+
+type CatalogProductDetailProps = {
+  scooter: CatalogScooter;
+  shouldReduceMotion: boolean;
+  transitionImageId: string | null;
+  cardToneAssignment?: ProductCardToneAssignment;
   onCollapseScooter: () => void;
 };
 
@@ -50,39 +65,103 @@ const specIcons: Record<CatalogSpecIcon, IconComponent> = {
 };
 
 const productEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
-const productLayoutDuration = 0.32;
-const expandedContentDuration = 0.22;
+const productLayoutDuration = 0.26;
+const expandedContentDuration = 0.18;
 
-export function CatalogProductCard({
+function getProductStyle(
+  scooter: CatalogScooter,
+  cardToneAssignment?: ProductCardToneAssignment,
+): ProductCardStyle {
+  return {
+    "--product-accent": scooter.accentTone,
+    "--product-muted": scooter.mutedTone,
+    "--product-shadow": scooter.shadowTone,
+    background: cardToneAssignment?.cardSurface ?? scooter.cardSurface,
+    color: scooter.textTone,
+  };
+}
+
+function ProductSpecs({ scooter }: { scooter: CatalogScooter }) {
+  return (
+    <div className="mt-5 grid gap-2 sm:grid-cols-3">
+      {scooter.specs.slice(0, 3).map((spec) => {
+        const Icon = specIcons[spec.icon];
+
+        return (
+          <div
+            key={`${scooter.id}-${spec.label}`}
+            className="min-w-0 rounded-[0.9rem] bg-[oklch(96%_0.006_78/0.36)] px-3.5 py-3 shadow-[inset_0_0_0_1px_oklch(18%_0.014_56/0.09)]"
+          >
+            <Icon
+              aria-hidden
+              className="h-4 w-4 text-[var(--product-accent)]"
+              strokeWidth={1.7}
+            />
+            <p className="font-display mt-3 truncate text-xl font-bold leading-none text-current">
+              {spec.value}
+            </p>
+            <p className="font-ui mt-2 truncate text-[0.61rem] font-bold uppercase tracking-[0.13em] text-[var(--product-muted)]">
+              {spec.label}
+            </p>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function ProductContactActions({ scooter }: { scooter: CatalogScooter }) {
+  return (
+    <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+      <a
+        href="tel:+393289185029"
+        aria-label={`Chiama per disponibilità per ${scooter.name}: chiama Grossi Moto`}
+        className="font-ui inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-[oklch(18%_0.014_56)] px-5 py-3 text-[0.72rem] font-bold uppercase tracking-[0.1em] text-[oklch(94%_0.01_78)] outline-none transition-[background,transform] duration-200 hover:bg-[oklch(23%_0.016_56)] active:translate-y-px focus-visible:ring-2 focus-visible:ring-[var(--product-accent)] focus-visible:ring-offset-4 focus-visible:ring-offset-[oklch(88%_0.015_78)] sm:w-fit"
+      >
+        <PhoneCall
+          aria-hidden="true"
+          className="h-4 w-4"
+          strokeWidth={1.8}
+        />
+        Chiama per disponibilità
+      </a>
+      <Link
+        href={`/contatti?modello=${encodeURIComponent(scooter.id)}#richiesta`}
+        className="font-ui inline-flex min-h-11 items-center justify-center rounded-full px-5 py-3 text-sm font-bold underline underline-offset-4 focus-visible:outline focus-visible:outline-2"
+        aria-label={`Scrivi per questo modello: ${scooter.name}`}
+      >
+        Scrivi per questo modello
+      </Link>
+    </div>
+  );
+}
+
+export const CatalogProductCard = memo(function CatalogProductCard({
   scooter,
   shouldReduceMotion,
   isExpanded,
+  isSelected = isExpanded,
   transitionImageId,
   cardToneAssignment,
   isPriority = false,
+  ariaControlsId,
+  animateLayout = false,
   layoutDependency,
   onExpandScooter,
   onCollapseScooter,
 }: CatalogProductCardProps) {
-  const style: ProductCardStyle = {
-    "--product-accent": scooter.accentTone,
-    "--product-muted": scooter.mutedTone,
-    "--product-shadow": scooter.shadowTone,
-    background: isExpanded
-      ? scooter.featureSurface
-      : (cardToneAssignment?.cardSurface ?? scooter.cardSurface),
-    color: scooter.textTone,
-  };
+  const style = getProductStyle(scooter, cardToneAssignment);
   const brand = getCatalogScooterBrand(scooter);
   const cardTitleId = `catalog-card-title-${scooter.id}`;
   const expandedContentId = `catalog-card-content-${scooter.id}`;
+  const cardTriggerId = `catalog-card-trigger-${scooter.id}`;
   const sharedImageLayoutId =
     !shouldReduceMotion && isExpanded && transitionImageId === scooter.id
       ? `scooter-image-${scooter.id}`
       : undefined;
   const imageSizes = isExpanded
-    ? "(max-width: 767px) 88vw, (max-width: 1279px) 44vw, 38vw"
-    : "(max-width: 767px) 82vw, (max-width: 1279px) 42vw, 22vw";
+    ? "(max-width: 767px) 88vw, (max-width: 1023px) 44vw, 38vw"
+    : "(max-width: 767px) 82vw, (max-width: 1023px) 42vw, 22vw";
   const imageClassName = clsx(
     "relative z-10 w-full object-contain object-center",
     isExpanded
@@ -92,11 +171,12 @@ export function CatalogProductCard({
   const expandedContentMotion = shouldReduceMotion
     ? { initial: false as const }
     : {
-        initial: { opacity: 0, y: 6, filter: "blur(3px)" },
-        animate: { opacity: 1, y: 0, filter: "blur(0px)" },
+        initial: { opacity: 0, y: 6 },
+        animate: { opacity: 1, y: 0 },
         transition: { duration: expandedContentDuration, ease: productEase },
       };
-  const cardLayout = shouldReduceMotion ? false : "position";
+  const cardLayout =
+    shouldReduceMotion || !animateLayout ? false : ("position" as const);
 
   return (
     <motion.div
@@ -116,8 +196,9 @@ export function CatalogProductCard({
       )}
       data-scooter-id={scooter.id}
       data-expanded={isExpanded}
+      data-selected={isSelected}
       data-card-tone={cardToneAssignment?.toneId ?? scooter.cardToneId}
-      >
+    >
       <article
         aria-labelledby={cardTitleId}
         className={clsx(
@@ -127,6 +208,9 @@ export function CatalogProductCard({
             : "min-h-[17.75rem] sm:min-h-[19.5rem]",
           !isExpanded &&
             "transition-[box-shadow,transform] duration-200 hover:shadow-[0_0_0_1px_oklch(18%_0.014_56/0.075),0_22px_56px_oklch(18%_0.014_56/0.12)]",
+          isSelected &&
+            !isExpanded &&
+            "ring-2 ring-[var(--product-accent)] ring-offset-2 ring-offset-white",
         )}
         style={style}
       >
@@ -236,49 +320,8 @@ export function CatalogProductCard({
               <p className="max-w-[46rem] text-[0.98rem] leading-7 text-[var(--product-muted)] sm:text-base">
                 {scooter.positioning}
               </p>
-
-              <div className="mt-5 grid gap-2 sm:grid-cols-3">
-                {scooter.specs.slice(0, 3).map((spec) => {
-                  const Icon = specIcons[spec.icon];
-
-                  return (
-                    <div
-                      key={`${scooter.id}-${spec.label}`}
-                      className="min-w-0 rounded-[0.9rem] bg-[oklch(96%_0.006_78/0.36)] px-3.5 py-3 shadow-[inset_0_0_0_1px_oklch(18%_0.014_56/0.09)]"
-                    >
-                      <Icon
-                        aria-hidden
-                        className="h-4 w-4 text-[var(--product-accent)]"
-                        strokeWidth={1.7}
-                      />
-                      <p className="font-display mt-3 truncate text-xl font-bold leading-none text-current">
-                        {spec.value}
-                      </p>
-                      <p className="font-ui mt-2 truncate text-[0.61rem] font-bold uppercase tracking-[0.13em] text-[var(--product-muted)]">
-                        {spec.label}
-                      </p>
-                    </div>
-                  );
-                })}
-              </div>
-
-              <div className="mt-5 flex flex-col gap-3 sm:flex-row">
-                <a
-                  href="tel:+393289185029"
-                  aria-label={`Chiama per disponibilità per ${scooter.name}: chiama Grossi Moto`}
-                  className="font-ui inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-[oklch(18%_0.014_56)] px-5 py-3 text-[0.72rem] font-bold uppercase tracking-[0.1em] text-[oklch(94%_0.01_78)] outline-none transition-[background,transform] duration-200 hover:bg-[oklch(23%_0.016_56)] active:translate-y-px focus-visible:ring-2 focus-visible:ring-[var(--product-accent)] focus-visible:ring-offset-4 focus-visible:ring-offset-[oklch(88%_0.015_78)] sm:w-fit"
-                >
-                  <PhoneCall
-                    aria-hidden="true"
-                    className="h-4 w-4"
-                    strokeWidth={1.8}
-                  />
-                  Chiama per disponibilità
-                </a>
-                <Link href={`/contatti?modello=${encodeURIComponent(scooter.id)}#richiesta`} className="font-ui inline-flex min-h-11 items-center justify-center rounded-full px-5 py-3 text-sm font-bold underline underline-offset-4 focus-visible:outline focus-visible:outline-2" aria-label={`Scrivi per questo modello: ${scooter.name}`}>
-                  Scrivi per questo modello
-                </Link>
-              </div>
+              <ProductSpecs scooter={scooter} />
+              <ProductContactActions scooter={scooter} />
             </motion.div>
           ) : (
             <div className="flex items-end justify-between gap-4">
@@ -292,9 +335,10 @@ export function CatalogProductCard({
               </div>
 
               <button
+                id={cardTriggerId}
                 type="button"
-                aria-controls={expandedContentId}
-                aria-expanded={false}
+                aria-controls={ariaControlsId ?? expandedContentId}
+                aria-expanded={isSelected}
                 aria-label={`Apri la scheda di ${scooter.name}`}
                 onClick={() => onExpandScooter(scooter.id)}
                 className="font-ui inline-flex min-h-11 shrink-0 items-center gap-3 rounded-full px-2 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-current outline-none transition-[background,color] duration-200 hover:bg-[oklch(96%_0.006_78/0.38)] group-hover:text-[var(--product-accent)] focus-visible:ring-2 focus-visible:ring-[var(--product-accent)] focus-visible:ring-offset-2"
@@ -312,4 +356,115 @@ export function CatalogProductCard({
       </article>
     </motion.div>
   );
-}
+});
+
+export const CatalogProductDetail = memo(function CatalogProductDetail({
+  scooter,
+  shouldReduceMotion,
+  transitionImageId,
+  cardToneAssignment,
+  onCollapseScooter,
+}: CatalogProductDetailProps) {
+  const style = getProductStyle(scooter, cardToneAssignment);
+  const brand = getCatalogScooterBrand(scooter);
+  const detailTitleId = `catalog-detail-title-${scooter.id}`;
+  const detailContentId = `catalog-detail-${scooter.id}`;
+  const cardTriggerId = `catalog-card-trigger-${scooter.id}`;
+  const sharedImageLayoutId =
+    !shouldReduceMotion && transitionImageId === scooter.id
+      ? `scooter-image-${scooter.id}`
+      : undefined;
+  const imageClassName =
+    "relative z-10 h-full max-h-[28rem] w-full object-contain object-center";
+
+  const handleCollapse = () => {
+    document.getElementById(cardTriggerId)?.focus();
+    onCollapseScooter();
+  };
+
+  return (
+    <article
+      id={detailContentId}
+      aria-labelledby={detailTitleId}
+      data-scooter-detail-id={scooter.id}
+      data-card-tone={cardToneAssignment?.toneId ?? scooter.cardToneId}
+      className="relative min-h-[31rem] overflow-hidden rounded-[1.35rem] p-5 shadow-[0_0_0_1px_oklch(18%_0.014_56/0.052),0_18px_46px_oklch(18%_0.014_56/0.09)] lg:p-6"
+      style={style}
+    >
+      <div className="relative z-10 grid min-h-[28rem] grid-cols-[minmax(0,0.88fr)_minmax(0,1.12fr)] grid-rows-[auto_minmax(12rem,1fr)_auto] gap-6">
+        <div className="flex min-w-0 items-start justify-between gap-4">
+          <div className="min-w-0">
+            <div className="mb-3 flex min-w-0 flex-wrap items-center gap-2">
+              <span className="font-ui inline-flex min-h-7 items-center rounded-full bg-[oklch(96%_0.006_78/0.42)] px-2.5 text-[0.58rem] font-bold uppercase tracking-[0.14em] text-current shadow-[inset_0_0_0_1px_oklch(18%_0.014_56/0.1)]">
+                {brand}
+              </span>
+              <span className="font-ui truncate text-[0.58rem] font-bold uppercase tracking-[0.14em] text-[var(--product-muted)]">
+                {scooter.family}
+              </span>
+            </div>
+            <h2
+              id={detailTitleId}
+              className="font-display text-[clamp(2.6rem,4.4vw,4.9rem)] font-bold leading-[0.9] tracking-normal text-current"
+            >
+              {scooter.name}
+            </h2>
+            <p className="font-ui mt-2 text-[0.68rem] font-bold uppercase tracking-[0.13em] text-[var(--product-muted)]">
+              {scooter.subtitle}
+            </p>
+          </div>
+
+          <button
+            type="button"
+            aria-label={`Comprimi ${scooter.name}`}
+            onClick={handleCollapse}
+            className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-[oklch(96%_0.006_78/0.46)] text-current shadow-[inset_0_0_0_1px_oklch(18%_0.014_56/0.12)] outline-none transition-[background,transform] duration-200 hover:bg-[oklch(98%_0.004_78/0.64)] active:translate-y-px focus-visible:ring-2 focus-visible:ring-[var(--product-accent)]"
+          >
+            <Minimize2
+              aria-hidden="true"
+              className="h-4 w-4"
+              strokeWidth={1.8}
+            />
+          </button>
+        </div>
+
+        <div className="relative col-start-2 row-span-2 row-start-1 flex min-h-0 items-center justify-center">
+          <div
+            aria-hidden="true"
+            className="absolute bottom-[8%] left-1/2 h-[10%] w-[80%] -translate-x-1/2 rounded-[50%] bg-[var(--product-shadow)] blur-[13px]"
+          />
+          {sharedImageLayoutId ? (
+            <motion.img
+              layoutId={sharedImageLayoutId}
+              src={scooter.image}
+              alt={scooter.imageAlt}
+              width={780}
+              height={585}
+              draggable={false}
+              decoding="async"
+              className={imageClassName}
+              transition={{ type: "spring", duration: 0.42, bounce: 0 }}
+            />
+          ) : (
+            <Image
+              src={scooter.image}
+              alt={scooter.imageAlt}
+              width={780}
+              height={585}
+              sizes="(min-width: 1024px) 44vw, 88vw"
+              draggable={false}
+              className={imageClassName}
+            />
+          )}
+        </div>
+
+        <div className="col-span-2 row-start-3 min-w-0">
+          <p className="max-w-[52rem] text-base leading-7 text-[var(--product-muted)]">
+            {scooter.positioning}
+          </p>
+          <ProductSpecs scooter={scooter} />
+          <ProductContactActions scooter={scooter} />
+        </div>
+      </div>
+    </article>
+  );
+});
