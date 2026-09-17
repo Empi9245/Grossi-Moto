@@ -20,6 +20,8 @@ type CatalogGridProps = {
   onCollapseScooter: () => void;
 };
 
+type CatalogGridVariantProps = Omit<CatalogGridProps, "isCompactViewport">;
+
 const desktopCatalogColumnCount = 4;
 const compactExpandedSlotSpan = 2;
 const productEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
@@ -154,12 +156,8 @@ function getRowLayoutDependency(
   expandedRowIndex: number,
   expandedId: string | null,
 ) {
-  if (expandedRowIndex < 0 || !expandedId) {
-    return "closed";
-  }
-
-  if (rowIndex < expandedRowIndex) {
-    return "before-detail";
+  if (expandedRowIndex < 0 || !expandedId || rowIndex < expandedRowIndex) {
+    return "stable";
   }
 
   return `${rowIndex === expandedRowIndex ? "detail" : "after-detail"}-${expandedRowIndex}-${expandedId}`;
@@ -183,24 +181,16 @@ function EmptyCatalogState({ shouldReduceMotion }: { shouldReduceMotion: boolean
   );
 }
 
-export function CatalogGrid({
+function CompactCatalogGrid({
   scooters,
   expandedId,
-  isCompactViewport,
   shouldReduceMotion,
   transitionImageId,
   onExpandScooter,
   onCollapseScooter,
-}: CatalogGridProps) {
+}: CatalogGridVariantProps) {
   const compactColumnCount = useCompactCatalogColumnCount();
-  const toneColumnCount = isCompactViewport
-    ? compactColumnCount
-    : desktopCatalogColumnCount;
-  const cardToneAssignments = useMemo(
-    () => getCatalogCardToneAssignments(scooters, toneColumnCount),
-    [scooters, toneColumnCount],
-  );
-  const compactOrderedScooters = useMemo(
+  const orderedScooters = useMemo(
     () =>
       getCompactCatalogGridOrder(
         scooters,
@@ -209,54 +199,60 @@ export function CatalogGrid({
       ),
     [compactColumnCount, expandedId, scooters],
   );
-  const desktopRows = useMemo(() => getDesktopCatalogRows(scooters), [scooters]);
-  const expandedScooter = useMemo(
-    () => scooters.find((scooter) => scooter.id === expandedId) ?? null,
-    [expandedId, scooters],
+  const cardToneAssignments = useMemo(
+    () => getCatalogCardToneAssignments(scooters, compactColumnCount),
+    [compactColumnCount, scooters],
   );
-  const expandedRowIndex = expandedScooter
-    ? Math.floor(
-        scooters.findIndex((scooter) => scooter.id === expandedScooter.id) /
-          desktopCatalogColumnCount,
-      )
+
+  return (
+    <div
+      id="catalog-list"
+      aria-label="Modelli in gamma"
+      className="grid grid-cols-1 content-start items-start gap-4 [grid-auto-flow:row] md:grid-cols-2 md:[grid-auto-rows:minmax(19.5rem,auto)]"
+    >
+      {orderedScooters.map((scooter) => {
+        const isExpanded = expandedId === scooter.id;
+
+        return (
+          <CatalogProductCard
+            key={scooter.id}
+            scooter={scooter}
+            shouldReduceMotion={shouldReduceMotion}
+            isExpanded={isExpanded}
+            isSelected={isExpanded}
+            transitionImageId={transitionImageId}
+            cardToneAssignment={cardToneAssignments[scooter.id]}
+            isPriority={scooter.id === orderedScooters[0]?.id}
+            onExpandScooter={onExpandScooter}
+            onCollapseScooter={onCollapseScooter}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
+function DesktopCatalogGrid({
+  scooters,
+  expandedId,
+  shouldReduceMotion,
+  transitionImageId,
+  onExpandScooter,
+  onCollapseScooter,
+}: CatalogGridVariantProps) {
+  const desktopRows = useMemo(() => getDesktopCatalogRows(scooters), [scooters]);
+  const cardToneAssignments = useMemo(
+    () => getCatalogCardToneAssignments(scooters, desktopCatalogColumnCount),
+    [scooters],
+  );
+  const expandedIndex = expandedId
+    ? scooters.findIndex((scooter) => scooter.id === expandedId)
     : -1;
-
-  if (scooters.length === 0) {
-    return (
-      <div id="catalog-list" aria-label="Modelli in gamma">
-        <EmptyCatalogState shouldReduceMotion={shouldReduceMotion} />
-      </div>
-    );
-  }
-
-  if (isCompactViewport) {
-    return (
-      <div
-        id="catalog-list"
-        aria-label="Modelli in gamma"
-        className="grid grid-cols-1 content-start items-start gap-4 [grid-auto-flow:row] md:grid-cols-2 md:[grid-auto-rows:minmax(19.5rem,auto)]"
-      >
-        {compactOrderedScooters.map((scooter) => {
-          const isExpanded = expandedId === scooter.id;
-
-          return (
-            <CatalogProductCard
-              key={scooter.id}
-              scooter={scooter}
-              shouldReduceMotion={shouldReduceMotion}
-              isExpanded={isExpanded}
-              isSelected={isExpanded}
-              transitionImageId={transitionImageId}
-              cardToneAssignment={cardToneAssignments[scooter.id]}
-              isPriority={scooter.id === compactOrderedScooters[0]?.id}
-              onExpandScooter={onExpandScooter}
-              onCollapseScooter={onCollapseScooter}
-            />
-          );
-        })}
-      </div>
-    );
-  }
+  const expandedScooter = expandedIndex >= 0 ? scooters[expandedIndex] : null;
+  const expandedRowIndex =
+    expandedIndex >= 0
+      ? Math.floor(expandedIndex / desktopCatalogColumnCount)
+      : -1;
 
   return (
     <div id="catalog-list" aria-label="Modelli in gamma" className="space-y-4">
@@ -337,5 +333,38 @@ export function CatalogGrid({
         );
       })}
     </div>
+  );
+}
+
+export function CatalogGrid({
+  scooters,
+  expandedId,
+  isCompactViewport,
+  shouldReduceMotion,
+  transitionImageId,
+  onExpandScooter,
+  onCollapseScooter,
+}: CatalogGridProps) {
+  if (scooters.length === 0) {
+    return (
+      <div id="catalog-list" aria-label="Modelli in gamma">
+        <EmptyCatalogState shouldReduceMotion={shouldReduceMotion} />
+      </div>
+    );
+  }
+
+  const variantProps: CatalogGridVariantProps = {
+    scooters,
+    expandedId,
+    shouldReduceMotion,
+    transitionImageId,
+    onExpandScooter,
+    onCollapseScooter,
+  };
+
+  return isCompactViewport ? (
+    <CompactCatalogGrid {...variantProps} />
+  ) : (
+    <DesktopCatalogGrid {...variantProps} />
   );
 }
