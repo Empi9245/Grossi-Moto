@@ -38,7 +38,7 @@ export function ServicesHero() {
           className="absolute inset-0 z-[1] bg-[linear-gradient(90deg,rgba(10,10,10,0.98)_0%,rgba(10,10,10,0.88)_38%,rgba(10,10,10,0.28)_70%,rgba(10,10,10,0.18)_100%),linear-gradient(180deg,rgba(10,10,10,0.16)_0%,rgba(10,10,10,0.1)_55%,rgba(10,10,10,0.74)_100%)] lg:bg-[linear-gradient(90deg,rgba(10,10,10,0.98)_0%,rgba(10,10,10,0.9)_34%,rgba(10,10,10,0.24)_66%,rgba(10,10,10,0.12)_100%),linear-gradient(180deg,rgba(10,10,10,0.08)_0%,rgba(10,10,10,0.08)_60%,rgba(10,10,10,0.62)_100%)]"
         />
 
-        <div className="relative z-10 flex min-h-[calc(100svh-6rem)] flex-col justify-between px-5 pb-7 pt-8 sm:px-7 sm:pb-9 sm:pt-10 md:px-10 lg:min-h-[calc(100svh-7rem)] lg:px-14 lg:pb-12 lg:pt-14 xl:px-16">
+        <div className="relative z-10 flex min-h-[calc(100svh-6rem)] flex-col justify-between px-5 pb-[calc(7rem+env(safe-area-inset-bottom))] pt-8 sm:px-7 sm:pb-[calc(7.5rem+env(safe-area-inset-bottom))] sm:pt-10 md:px-10 lg:min-h-[calc(100svh-7rem)] lg:px-14 lg:pb-12 lg:pt-14 xl:px-16">
           <motion.p
             className="font-ui text-[0.68rem] font-bold uppercase tracking-[0.18em] text-white/64 sm:text-xs"
             initial={reduceMotion ? false : { opacity: 0, y: 10 }}
@@ -84,7 +84,7 @@ export function ServicesHero() {
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
               <a
                 href="tel:+393289185029"
-                className="font-ui group inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-bold uppercase tracking-[0.08em] text-[#0A0A0A] transition-[opacity,transform] duration-150 hover:opacity-88 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-4 focus-visible:ring-offset-[#0A0A0A] motion-reduce:transform-none motion-reduce:transition-none"
+                className="font-ui group inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-bold uppercase tracking-[0.08em] text-[#0A0A0A] transition-[opacity,transform] duration-150 hover:opacity-[0.88] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-4 focus-visible:ring-offset-[#0A0A0A] motion-reduce:transform-none motion-reduce:transition-none"
               >
                 Chiama l’officina
                 <PhoneCall aria-hidden="true" className="h-4 w-4" strokeWidth={1.8} />
