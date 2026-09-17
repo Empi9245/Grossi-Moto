@@ -35,7 +35,6 @@ type AnimatedCreditCharacterProps = {
   progress: MotionValue<number>;
   range: [number, number];
   intensity: number;
-  variant: CreditAnimationVariant;
 };
 
 const defaultImages: ParallaxImage[] = [
@@ -146,44 +145,69 @@ function ExperienceContact() {
   );
 }
 
-function AnimatedCreditCharacter({
+function CreditCharacterV1({
   char,
   index,
   centerIndex,
   progress,
   range,
   intensity,
-  variant,
 }: AnimatedCreditCharacterProps) {
   const distanceFromCenter = index - centerIndex;
-  const absoluteDistance = Math.abs(distanceFromCenter);
-  const xMultiplier = variant === 3 ? 1.8 : 1;
-  const yStart =
-    variant === 2
-      ? absoluteDistance * intensity
-      : variant === 3
-        ? -absoluteDistance * intensity * 0.4
-        : 0;
-  const scaleStart = variant === 1 ? 1 : 0.75;
-
-  const x = useTransform(progress, range, [distanceFromCenter * intensity * xMultiplier, 0]);
-  const y = useTransform(progress, range, [yStart, 0]);
-  const rotateX = useTransform(
-    progress,
-    range,
-    [variant === 1 ? distanceFromCenter * intensity : 0, 0],
-  );
-  const rotate = useTransform(
-    progress,
-    range,
-    [variant === 3 ? distanceFromCenter * intensity : 0, 0],
-  );
-  const scale = useTransform(progress, range, [scaleStart, 1]);
+  const x = useTransform(progress, range, [distanceFromCenter * intensity, 0]);
+  const rotateX = useTransform(progress, range, [distanceFromCenter * intensity, 0]);
 
   return (
     <motion.span
       className="inline-block will-change-transform"
-      style={{ x, y, rotateX, rotate, scale, transformOrigin: "center" }}
+      style={{ x, rotateX, transformOrigin: "center" }}
+    >
+      {char}
+    </motion.span>
+  );
+}
+
+function CreditCharacterV2({
+  char,
+  index,
+  centerIndex,
+  progress,
+  range,
+  intensity,
+}: AnimatedCreditCharacterProps) {
+  const distanceFromCenter = index - centerIndex;
+  const x = useTransform(progress, range, [distanceFromCenter * intensity, 0]);
+  const y = useTransform(progress, range, [Math.abs(distanceFromCenter) * intensity, 0]);
+  const scale = useTransform(progress, range, [0.75, 1]);
+
+  return (
+    <motion.span
+      className="inline-block will-change-transform"
+      style={{ x, y, scale, transformOrigin: "center" }}
+    >
+      {char}
+    </motion.span>
+  );
+}
+
+function CreditCharacterV3({
+  char,
+  index,
+  centerIndex,
+  progress,
+  range,
+  intensity,
+}: AnimatedCreditCharacterProps) {
+  const distanceFromCenter = index - centerIndex;
+  const x = useTransform(progress, range, [distanceFromCenter * intensity * 1.8, 0]);
+  const rotate = useTransform(progress, range, [distanceFromCenter * intensity, 0]);
+  const y = useTransform(progress, range, [-Math.abs(distanceFromCenter) * intensity * 0.4, 0]);
+  const scale = useTransform(progress, range, [0.75, 1]);
+
+  return (
+    <motion.span
+      className="inline-block will-change-transform"
+      style={{ x, rotate, y, scale, transformOrigin: "center" }}
     >
       {char}
     </motion.span>
@@ -205,6 +229,8 @@ function AnimatedCreditText({
 }) {
   const words = text.split(" ");
   const centerIndex = Math.floor(text.length / 2);
+  const CharacterComponent =
+    variant === 1 ? CreditCharacterV1 : variant === 2 ? CreditCharacterV2 : CreditCharacterV3;
 
   return (
     <span aria-hidden="true">
@@ -217,7 +243,7 @@ function AnimatedCreditText({
           <span key={`${word}-${wordIndex}`}>
             <span className="inline-block whitespace-nowrap">
               {word.split("").map((char, charIndex) => (
-                <AnimatedCreditCharacter
+                <CharacterComponent
                   key={`${char}-${charIndex}`}
                   char={char}
                   index={wordStartIndex + charIndex}
@@ -225,7 +251,6 @@ function AnimatedCreditText({
                   progress={progress}
                   range={range}
                   intensity={intensity}
-                  variant={variant}
                 />
               ))}
             </span>
@@ -254,9 +279,9 @@ function CinematicCredits({ progress, compact }: { progress: MotionValue<number>
           {story.map(({ title, detail }, index) => {
             const revealRange = getCreditRevealRange(index, compact);
             const variant = (index + 1) as CreditAnimationVariant;
-            const titleIntensity = compact ? 22 : 50;
-            const detailIntensity = compact ? 8 : 18;
-            const eyebrowIntensity = compact ? 10 : 24;
+            const titleIntensity = compact ? 30 : 50;
+            const detailIntensity = compact ? 10 : 18;
+            const eyebrowIntensity = compact ? 12 : 24;
 
             return (
               <div key={title} className="flex h-[48svh] flex-col items-center justify-center px-5 text-center sm:px-8 lg:h-[70svh] lg:px-10 text-[#f4f0e8] lg:[text-shadow:0_4px_28px_rgba(0,0,0,0.45)]">
@@ -270,7 +295,7 @@ function CinematicCredits({ progress, compact }: { progress: MotionValue<number>
                       progress={progress}
                       range={revealRange}
                       intensity={eyebrowIntensity}
-                      variant={variant}
+                      variant={1}
                     />
                   </p>
                 )}
@@ -284,7 +309,7 @@ function CinematicCredits({ progress, compact }: { progress: MotionValue<number>
                       progress={progress}
                       range={revealRange}
                       intensity={titleIntensity}
-                      variant={variant}
+                      variant={1}
                     />
                   </h2>
                 ) : (
