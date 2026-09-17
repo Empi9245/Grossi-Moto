@@ -12,7 +12,7 @@ const workshopItems = [
 export function WorkshopSection() {
   return (
     <section className="relative bg-white text-[var(--gm-ink)]">
-      <div className="relative overflow-hidden rounded-t-[32px] bg-[var(--home-workshop-surface)] px-4 py-20 sm:rounded-t-[40px] sm:px-6 sm:py-24 lg:rounded-t-[56px] lg:px-10 lg:py-32">
+      <div className="relative overflow-hidden rounded-[32px] bg-[var(--home-workshop-surface)] px-4 py-20 sm:rounded-[40px] sm:px-6 sm:py-24 lg:rounded-[56px] lg:px-10 lg:py-32">
         <div
           aria-hidden="true"
           className="font-display pointer-events-none absolute -bottom-[0.18em] left-0 hidden text-[clamp(8rem,19vw,24rem)] font-bold uppercase leading-none text-black/[0.035] lg:block"

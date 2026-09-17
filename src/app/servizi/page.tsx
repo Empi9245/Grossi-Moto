@@ -55,7 +55,7 @@ export default function ServiziPage() {
       </section>
 
       {/* ── Process Section ───────────────────────────────────── */}
-      <section className="bg-[#111111] px-5 py-20 text-[#F7F4EF] sm:px-7 sm:py-28 md:px-10 lg:px-14 lg:py-32 xl:px-20">
+      <section className="overflow-hidden rounded-[32px] bg-[#111111] px-5 py-20 text-[#F7F4EF] sm:rounded-[40px] sm:px-7 sm:py-28 md:px-10 lg:rounded-[56px] lg:px-14 lg:py-32 xl:px-20">
         <div className="mx-auto max-w-[80rem]">
           <div className="mb-14 max-w-[42rem] sm:mb-20">
             <p className="font-ui text-[0.65rem] font-bold uppercase tracking-[0.22em] opacity-50 sm:text-xs">
@@ -73,7 +73,7 @@ export default function ServiziPage() {
       </section>
 
       {/* ── CTA Section ───────────────────────────────────────── */}
-      <section className="bg-[oklch(14%_0.014_42)] px-5 py-20 text-[#F7F4EF] sm:px-7 sm:py-28 md:px-10 lg:px-14 lg:py-32 xl:px-20">
+      <section className="overflow-hidden rounded-[32px] bg-[oklch(14%_0.014_42)] px-5 py-20 text-[#F7F4EF] sm:rounded-[40px] sm:px-7 sm:py-28 md:px-10 lg:rounded-[56px] lg:px-14 lg:py-32 xl:px-20">
         <div className="mx-auto flex max-w-[80rem] flex-col items-start gap-10 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-[38rem]">
             <Cog

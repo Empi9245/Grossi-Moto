@@ -3,7 +3,7 @@ import { ArrowUpRight, PhoneCall } from "lucide-react";
 
 export function ShowcaseCoverCta() {
   return (
-    <section className="relative z-30 overflow-hidden bg-[var(--home-cover-surface)] px-4 py-20 text-[var(--gm-ink)] sm:px-6 lg:px-10 lg:py-28">
+    <section className="relative z-30 overflow-hidden rounded-[32px] bg-[var(--home-cover-surface)] px-4 py-20 text-[var(--gm-ink)] sm:rounded-[40px] sm:px-6 lg:rounded-[56px] lg:px-10 lg:py-28">
       <div aria-hidden="true" className="absolute inset-x-0 top-0 h-px bg-black/10" />
 
       <div className="relative mx-auto grid max-w-[92rem] gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(24rem,0.55fr)] lg:items-end">
