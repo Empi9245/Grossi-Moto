@@ -17,9 +17,9 @@ const fieldErrorMessage: Record<FieldName, string> = {
 };
 
 const subjects = [
-  "Scelta di uno scooter",
-  "Informazioni scooter KYMCO",
-  "Informazioni scooter Voge",
+  "Scelta di moto o scooter",
+  "Informazioni KYMCO",
+  "Informazioni Voge",
   "Disponibilità e acquisto",
   "Prenotazione officina",
   "Accessori e abbigliamento",
@@ -142,7 +142,7 @@ export function ContactForm({ initialSubject = "", initialMessage = "" }: { init
 
       <div className="flex flex-col gap-1.5">
         <label htmlFor="contact-message" className="font-ui text-[0.65rem] font-bold uppercase tracking-[0.12em] text-[oklch(18%_0.014_56/0.72)]">Messaggio</label>
-        <textarea id="contact-message" name="message" defaultValue={initialMessage} rows={5} required aria-invalid={Boolean(errors.message)} aria-describedby={describedBy("message")} placeholder="Es. cerco uno scooter per andare al lavoro, oppure vorrei un tagliando per il mio modello…" className={`${inputClass("message")} resize-none`} onChange={() => handleChange("message")} onInvalid={() => handleInvalid("message")} />
+        <textarea id="contact-message" name="message" defaultValue={initialMessage} rows={5} required aria-invalid={Boolean(errors.message)} aria-describedby={describedBy("message")} placeholder="Es. cerco un mezzo per andare al lavoro, oppure vorrei un tagliando per il mio modello…" className={`${inputClass("message")} resize-none`} onChange={() => handleChange("message")} onInvalid={() => handleInvalid("message")} />
         {errors.message && <p id="message-error" className="text-xs text-[oklch(42%_0.13_28)]">{errors.message}</p>}
       </div>
 
