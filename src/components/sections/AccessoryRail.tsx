@@ -2,7 +2,12 @@
 
 import Image from "next/image";
 import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import {
+  type PointerEvent as ReactPointerEvent,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { accessories } from "@/data/accessories";
 
 const accessoryPastels = [
@@ -14,16 +19,27 @@ const accessoryPastels = [
 
 export function AccessoryRail() {
   const railRef = useRef<HTMLDivElement>(null);
+  const inertiaFrameRef = useRef<number | null>(null);
   const activeRef = useRef(0);
   const [active, setActive] = useState(0);
   const gesture = useRef({
     x: 0,
     y: 0,
+    lastX: 0,
+    lastTime: 0,
+    velocity: 0,
     moved: false,
     dragging: false,
     scrollLeft: 0,
     pointerId: null as number | null,
   });
+
+  const stopInertia = () => {
+    if (inertiaFrameRef.current !== null) {
+      cancelAnimationFrame(inertiaFrameRef.current);
+      inertiaFrameRef.current = null;
+    }
+  };
 
   useEffect(() => {
     const rail = railRef.current;
@@ -54,13 +70,17 @@ export function AccessoryRail() {
     rail.addEventListener("scroll", schedule, { passive: true });
     const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
     const stopSmooth = () => {
-      if (motion.matches)
+      if (motion.matches) {
+        stopInertia();
+        rail.style.scrollSnapType = "";
         rail.scrollTo({ left: rail.scrollLeft, behavior: "instant" });
+      }
     };
     motion.addEventListener("change", stopSmooth);
     schedule();
     return () => {
       cancelAnimationFrame(frame);
+      stopInertia();
       observer.disconnect();
       rail.removeEventListener("scroll", schedule);
       motion.removeEventListener("change", stopSmooth);
@@ -71,6 +91,8 @@ export function AccessoryRail() {
     const rail = railRef.current;
     const card = rail?.querySelectorAll("article")[index];
     if (!rail || !card) return;
+    stopInertia();
+    rail.style.scrollSnapType = "";
     const left =
       rail.scrollLeft +
       card.getBoundingClientRect().left -
@@ -100,19 +122,66 @@ export function AccessoryRail() {
     goTo(nearest);
   };
 
-  const finishMouseDrag = (event: React.PointerEvent<HTMLDivElement>) => {
-    if (gesture.current.pointerId !== event.pointerId) return;
+  const startMouseInertia = (initialVelocity: number) => {
+    const rail = railRef.current;
+    if (!rail) return;
 
-    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
-      event.currentTarget.releasePointerCapture(event.pointerId);
+    if (
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+      Math.abs(initialVelocity) < 0.04
+    ) {
+      rail.style.scrollSnapType = "";
+      requestAnimationFrame(snapToNearest);
+      return;
     }
 
-    event.currentTarget.style.scrollSnapType = "";
+    stopInertia();
+    let velocity = Math.max(-2.2, Math.min(2.2, initialVelocity));
+    let previousTime = performance.now();
+
+    const glide = (time: number) => {
+      const deltaTime = Math.min(32, time - previousTime);
+      previousTime = time;
+
+      const previousScrollLeft = rail.scrollLeft;
+      rail.scrollLeft += velocity * deltaTime;
+      velocity *= Math.pow(0.91, deltaTime / 16.67);
+
+      const reachedEdge = Math.abs(rail.scrollLeft - previousScrollLeft) < 0.1;
+      if (Math.abs(velocity) < 0.035 || reachedEdge) {
+        inertiaFrameRef.current = null;
+        rail.style.scrollSnapType = "";
+        requestAnimationFrame(snapToNearest);
+        return;
+      }
+
+      inertiaFrameRef.current = requestAnimationFrame(glide);
+    };
+
+    inertiaFrameRef.current = requestAnimationFrame(glide);
+  };
+
+  const finishMouseDrag = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if (gesture.current.pointerId !== event.pointerId) return;
+
+    const pointerId = gesture.current.pointerId;
+    const shouldGlide = gesture.current.moved;
+    const velocity = gesture.current.velocity;
+
     gesture.current.dragging = false;
     gesture.current.pointerId = null;
 
-    if (gesture.current.moved) {
-      requestAnimationFrame(snapToNearest);
+    if (
+      pointerId !== null &&
+      event.currentTarget.hasPointerCapture(pointerId)
+    ) {
+      event.currentTarget.releasePointerCapture(pointerId);
+    }
+
+    if (shouldGlide) {
+      startMouseInertia(velocity);
+    } else {
+      event.currentTarget.style.scrollSnapType = "";
     }
   };
 
@@ -145,12 +214,19 @@ export function AccessoryRail() {
         role="region"
         aria-label="Accessori da sfogliare"
         tabIndex={0}
-        className="hide-scrollbar relative left-1/2 flex w-dvw -translate-x-1/2 cursor-grab snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain pb-1 active:cursor-grabbing [--card-width:80%] after:block after:w-[max(0px,calc(100%-var(--card-width)-16px))] after:shrink-0 after:content-[''] focus-visible:outline-2 focus-visible:outline-offset-4 md:[--card-width:40%] lg:[--card-width:28%]"
+        className="hide-scrollbar relative left-1/2 flex w-dvw -translate-x-1/2 cursor-grab snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain pb-1 active:cursor-grabbing [--card-width:76%] after:block after:w-[max(0px,calc(100%-var(--card-width)-16px))] after:shrink-0 after:content-[''] focus-visible:outline-2 focus-visible:outline-offset-4 md:[--card-width:36%] lg:[--card-width:24%]"
         onPointerDown={(event) => {
           const isMouseDrag = event.pointerType === "mouse" && event.button === 0;
+          const now = performance.now();
+
+          if (isMouseDrag) stopInertia();
+
           gesture.current = {
             x: event.clientX,
             y: event.clientY,
+            lastX: event.clientX,
+            lastTime: now,
+            velocity: 0,
             moved: false,
             dragging: isMouseDrag,
             scrollLeft: event.currentTarget.scrollLeft,
@@ -173,6 +249,15 @@ export function AccessoryRail() {
 
           if (event.pointerType === "mouse" && gesture.current.dragging) {
             event.preventDefault();
+            const now = performance.now();
+            const deltaTime = Math.max(1, now - gesture.current.lastTime);
+            const frameDeltaX = event.clientX - gesture.current.lastX;
+            const instantVelocity = -frameDeltaX / deltaTime;
+
+            gesture.current.velocity =
+              gesture.current.velocity * 0.55 + instantVelocity * 0.45;
+            gesture.current.lastX = event.clientX;
+            gesture.current.lastTime = now;
             event.currentTarget.scrollLeft = gesture.current.scrollLeft - deltaX;
           }
         }}
@@ -196,7 +281,7 @@ export function AccessoryRail() {
           <article
             key={item.id}
             aria-labelledby={`accessory-${item.id}`}
-            className="min-w-0 w-[var(--card-width)] shrink-0 snap-start overflow-hidden rounded-3xl border border-black/10 p-3.5 text-gray-900 shadow-none [overflow-wrap:anywhere] sm:p-4"
+            className="min-w-0 w-[var(--card-width)] shrink-0 snap-start overflow-hidden rounded-3xl border border-black/10 p-3 text-gray-900 shadow-none [overflow-wrap:anywhere] sm:p-3.5"
             style={{
               background: accessoryPastels[index % accessoryPastels.length],
             }}
@@ -207,39 +292,39 @@ export function AccessoryRail() {
                 alt={item.alt}
                 width={800}
                 height={1000}
-                sizes="(min-width: 1024px) 28vw, (min-width: 768px) 40vw, 80vw"
+                sizes="(min-width: 1024px) 24vw, (min-width: 768px) 36vw, 76vw"
                 draggable={false}
                 className="aspect-[5/4] w-full object-cover object-center"
               />
             </div>
-            <div className="px-0.5 pb-0.5 pt-3.5">
-              <p className="font-ui text-[0.6rem] font-bold uppercase tracking-[0.15em] text-black/50">
+            <div className="px-0.5 pb-0.5 pt-3">
+              <p className="font-ui text-[0.58rem] font-bold uppercase tracking-[0.15em] text-black/50">
                 Accessori
               </p>
               <h3
                 id={`accessory-${item.id}`}
-                className="font-display mt-1.5 text-[clamp(1.5rem,2.2vw,2.15rem)] font-bold leading-[0.98] text-gray-900"
+                className="font-display mt-1.5 text-[clamp(1.4rem,2vw,1.9rem)] font-bold leading-[0.98] text-gray-900"
               >
                 {item.title}
               </h3>
-              <ul className="font-ui mt-2.5 flex flex-wrap gap-x-3 gap-y-1 text-[0.8rem] font-semibold text-black/65">
+              <ul className="font-ui mt-2 flex flex-wrap gap-x-3 gap-y-1 text-[0.75rem] font-semibold text-black/65">
                 {item.examples.map((example) => (
                   <li key={example}>{example}</li>
                 ))}
               </ul>
-              <p className="mt-2.5 max-w-[40ch] text-sm leading-6 text-black/62">
+              <p className="mt-2 max-w-[40ch] text-[0.82rem] leading-5 text-black/62">
                 {item.description}
               </p>
               <a
                 href="tel:+393289185029"
                 aria-label={`Chiedi compatibilità: ${item.title}`}
                 onFocus={() => goTo(index, true)}
-                className="group font-ui mt-3 inline-flex min-h-11 max-w-full items-center gap-2.5 text-[0.8rem] font-bold text-gray-900 underline decoration-black/25 underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2"
+                className="group font-ui mt-2.5 inline-flex min-h-11 max-w-full items-center gap-2.5 text-[0.76rem] font-bold text-gray-900 underline decoration-black/25 underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2"
               >
                 Chiedi compatibilità{" "}
                 <ArrowUpRight
                   aria-hidden="true"
-                  size={17}
+                  size={16}
                   className="shrink-0 transition-transform duration-160 group-hover:translate-x-[3px] motion-reduce:transform-none motion-reduce:transition-none"
                 />
               </a>
