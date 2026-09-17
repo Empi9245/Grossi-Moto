@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import Image from "next/image";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { animate, motion, useDragControls, useMotionValue, useReducedMotion, useSpring, useTransform, type MotionValue, type PanInfo } from "framer-motion";
 
 import { advanceOrder, shouldAdvanceSwipe } from "@/lib/swipe-stack";
@@ -36,6 +37,7 @@ function Deck<T extends SwipeCard>({ cards, swipeThreshold = 100, velocityThresh
   const position = useMotionValue(0);
   const reduced = useReducedMotion();
   const hint = useId();
+  const isShowroom = label === "Scooter in showroom";
   useEffect(() => { mounted.current = true; return () => { mounted.current = false; animation.current?.stop(); }; }, []);
   useEffect(() => {
     if (restoreFocus.current) {
@@ -73,9 +75,12 @@ function Deck<T extends SwipeCard>({ cards, swipeThreshold = 100, velocityThresh
     const card = cards.find(c => c.id === previous[0]); if (card) onChange?.(card);
   }
   if (!active) return <p className="py-6 text-sm">Nessuna scheda disponibile.</p>;
+  const activePosition = cards.findIndex(c => c.id === active.id) + 1;
+  const activeNumber = String(activePosition).padStart(2, "0");
+  const totalNumber = String(cards.length).padStart(2, "0");
   return (
     <div className="w-full min-w-0 overflow-x-clip pb-[env(safe-area-inset-bottom)]">
-      <p id={hint} className="mb-4 text-xs">{direction === "up" ? "Scorri la prima scheda verso l’alto. Scorri la pagina dai bordi." : "Scorri la prima scheda verso sinistra."}</p>
+      <p id={hint} className={isShowroom ? "font-ui mb-4 text-[0.64rem] font-semibold uppercase tracking-[0.14em] text-black/45" : "mb-4 text-xs"}>{isShowroom ? "Scorri verso l’alto per esplorare la gamma." : direction === "up" ? "Scorri la prima scheda verso l’alto. Scorri la pagina dai bordi." : "Scorri la prima scheda verso sinistra."}</p>
       <div ref={region} role="group" aria-label={label} aria-describedby={hint} aria-busy={busy} className={`relative isolate w-full min-w-0 ${className}`}>
         {order.slice(0, 3).map((id, index) => {
           const card = cards.find(c => c.id === id)!;
@@ -84,10 +89,24 @@ function Deck<T extends SwipeCard>({ cards, swipeThreshold = 100, velocityThresh
           </DeckLayer>;
         })}
       </div>
-      <div className="mt-7 flex flex-wrap items-center justify-between gap-3">
-        <p role="status" aria-live="polite" aria-atomic="true" className="text-xs">{cards.findIndex(c => c.id === active.id) + 1} / {cards.length} · {active.title}</p>
-        {showControls && <div className="flex gap-2"><button type="button" disabled={!history.length || busy} onClick={undo} className="min-h-11 rounded-full border border-current px-4 text-sm disabled:opacity-35 focus-visible:outline-2 focus-visible:outline-offset-4">Annulla</button><button type="button" disabled={!canAdvance || busy} onClick={() => void next()} className="min-h-11 rounded-full border border-current px-4 text-sm disabled:opacity-35 focus-visible:outline-2 focus-visible:outline-offset-4">Successiva</button></div>}
-      </div>
+      {isShowroom ? (
+        <div className="mt-6 flex items-end justify-between gap-4 border-t border-black/10 pt-4">
+          <div role="status" aria-live="polite" aria-atomic="true" className="min-w-0">
+            <p className="font-ui flex items-center gap-2 text-[0.62rem] font-bold uppercase tracking-[0.16em] text-black/42">
+              <span className="font-numeric text-black/75">{activeNumber}</span>
+              <span aria-hidden="true" className="h-px w-5 bg-black/18" />
+              <span className="font-numeric">{totalNumber}</span>
+            </p>
+            {active.title ? <p className="font-display mt-1.5 truncate text-lg font-bold leading-none text-black/88">{active.title}</p> : null}
+          </div>
+          {showControls && <div className="flex shrink-0 gap-2.5"><button type="button" aria-label="Modello precedente" title="Modello precedente" disabled={!history.length || busy} onClick={undo} className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-black/12 bg-white text-black transition-[background-color,border-color,color,transform] duration-200 hover:border-black hover:bg-black hover:text-white active:scale-[0.97] disabled:pointer-events-none disabled:border-black/8 disabled:bg-white/50 disabled:text-black/25 focus-visible:outline-2 focus-visible:outline-offset-4"><ArrowLeft aria-hidden="true" size={17} strokeWidth={1.7} /></button><button type="button" aria-label="Modello successivo" title="Modello successivo" disabled={!canAdvance || busy} onClick={() => void next()} className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-black/12 bg-white text-black transition-[background-color,border-color,color,transform] duration-200 hover:border-black hover:bg-black hover:text-white active:scale-[0.97] disabled:pointer-events-none disabled:border-black/8 disabled:bg-white/50 disabled:text-black/25 focus-visible:outline-2 focus-visible:outline-offset-4"><ArrowRight aria-hidden="true" size={17} strokeWidth={1.7} /></button></div>}
+        </div>
+      ) : (
+        <div className="mt-7 flex flex-wrap items-center justify-between gap-3">
+          <p role="status" aria-live="polite" aria-atomic="true" className="text-xs">{activePosition} / {cards.length} · {active.title}</p>
+          {showControls && <div className="flex gap-2"><button type="button" disabled={!history.length || busy} onClick={undo} className="min-h-11 rounded-full border border-current px-4 text-sm disabled:opacity-35 focus-visible:outline-2 focus-visible:outline-offset-4">Annulla</button><button type="button" disabled={!canAdvance || busy} onClick={() => void next()} className="min-h-11 rounded-full border border-current px-4 text-sm disabled:opacity-35 focus-visible:outline-2 focus-visible:outline-offset-4">Successiva</button></div>}
+        </div>
+      )}
     </div>
   );
 }
