@@ -106,7 +106,7 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
         role="region"
         aria-label="Servizi Grossi Moto da sfogliare"
         tabIndex={0}
-        className="hide-scrollbar flex snap-x snap-mandatory gap-5 overflow-x-auto overscroll-x-contain pb-1 [--service-width:90%] after:block after:w-[max(0px,calc(100%-var(--service-width)-20px))] after:shrink-0 after:content-[''] focus-visible:outline-2 focus-visible:outline-offset-4 md:[--service-width:58%]"
+        className="hide-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain pb-1 [--service-width:84%] after:block after:w-[max(0px,calc(100%-var(--service-width)-16px))] after:shrink-0 after:content-[''] focus-visible:outline-2 focus-visible:outline-offset-4 md:[--service-width:46%]"
         onKeyDown={(event) => {
           if (event.key === "ArrowLeft") {
             event.preventDefault();
@@ -127,21 +127,21 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
           <article
             key={service.title}
             data-service-card
-            className="w-[var(--service-width)] shrink-0 snap-start rounded-[30px] border border-black/10 bg-white p-2 shadow-sm sm:rounded-[34px] sm:p-2.5"
+            className="w-[var(--service-width)] shrink-0 snap-start"
           >
-            <div className="relative aspect-[4/5] overflow-hidden rounded-[24px] bg-black/[0.035] sm:rounded-[28px]">
+            <div className="relative aspect-[4/3] overflow-hidden rounded-[24px] bg-black/[0.035] sm:rounded-[28px]">
               <Image
                 src={service.image}
                 alt={service.alt}
                 fill
                 draggable={false}
-                sizes="(max-width: 767px) 90vw, (max-width: 1023px) 58vw, 1px"
+                sizes="(max-width: 767px) 84vw, (max-width: 1023px) 46vw, 1px"
                 className="object-cover"
               />
             </div>
 
-            <div className="px-3 pb-4 pt-5 sm:px-4 sm:pb-5">
-              <h3 className="font-display max-w-[14ch] text-[clamp(2.15rem,7.5vw,3.2rem)] font-bold uppercase leading-[0.88] tracking-[-0.035em] text-[#0A0A0A]">
+            <div className="pt-5">
+              <h3 className="font-display max-w-[14ch] text-[clamp(2rem,7vw,3rem)] font-bold uppercase leading-[0.9] tracking-[-0.035em] text-[#0A0A0A]">
                 {service.title}
               </h3>
               <p className="mt-4 max-w-[24ch] text-[clamp(1.2rem,4.5vw,1.7rem)] font-semibold leading-[1.05] text-black/82">
