@@ -109,9 +109,10 @@ export function CatalogProductCard({
         },
       }}
       className={clsx(
+        "relative",
         isExpanded
-          ? "self-stretch md:col-span-2 md:row-span-2 lg:col-span-6"
-          : "self-start md:col-span-1 md:row-span-1 lg:col-span-3",
+          ? "z-10 self-stretch md:col-span-2 md:row-span-2 lg:col-span-6"
+          : "z-0 self-start md:col-span-1 md:row-span-1 lg:col-span-3",
       )}
       data-scooter-id={scooter.id}
       data-expanded={isExpanded}
