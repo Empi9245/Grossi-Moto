@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { ArrowUpRight, PhoneCall } from "lucide-react";
+import Link from "next/link";
+import { Globe2, MapPin, PhoneCall } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 
 const HERO_IMAGE = {
@@ -14,96 +15,155 @@ const easeOut = [0.22, 1, 0.36, 1] as const;
 export function ServicesHero() {
   const reduceMotion = useReducedMotion();
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: reduceMotion ? 0 : 0.15,
+        delayChildren: reduceMotion ? 0 : 0.2,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { y: reduceMotion ? 0 : 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        duration: reduceMotion ? 0 : 0.5,
+        ease: easeOut,
+      },
+    },
+  };
+
   return (
-    <section className="bg-white px-2 pb-10 sm:px-4 sm:pb-14 lg:px-5 lg:pb-20">
-      <div className="relative isolate min-h-[calc(100svh-6rem)] overflow-hidden rounded-[32px] bg-[#0A0A0A] text-white sm:rounded-[40px] lg:min-h-[calc(100svh-7rem)] lg:rounded-[56px]">
-        <motion.div
-          className="absolute inset-0 z-0"
-          initial={reduceMotion ? false : { opacity: 0.82, scale: 1.035 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: reduceMotion ? 0 : 0.72, ease: easeOut }}
-        >
-          <Image
-            src={HERO_IMAGE.src}
-            alt={HERO_IMAGE.alt}
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover object-[63%_center] lg:object-center"
-          />
-        </motion.div>
+    <motion.section
+      className="relative flex min-h-[calc(100svh-5.6rem)] w-full flex-col overflow-hidden bg-white text-[#0A0A0A] md:flex-row"
+      initial={reduceMotion ? false : "hidden"}
+      animate="visible"
+      variants={containerVariants}
+    >
+      <div className="flex w-full flex-col justify-between p-8 sm:p-10 md:w-1/2 md:p-12 lg:w-3/5 lg:p-16 xl:p-20">
+        <div>
+          <motion.header className="mb-12 lg:mb-16" variants={itemVariants}>
+            <div className="flex items-center">
+              <div>
+                <p className="font-ui text-lg font-bold leading-none text-[#0A0A0A] sm:text-xl">
+                  Grossimoto
+                </p>
+                <p className="font-ui mt-1 text-[0.62rem] font-bold uppercase tracking-[0.17em] text-black/46">
+                  Moto e scooter a Roma
+                </p>
+              </div>
+            </div>
+          </motion.header>
 
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 z-[1] bg-[linear-gradient(90deg,rgba(10,10,10,0.98)_0%,rgba(10,10,10,0.88)_38%,rgba(10,10,10,0.28)_70%,rgba(10,10,10,0.18)_100%),linear-gradient(180deg,rgba(10,10,10,0.16)_0%,rgba(10,10,10,0.1)_55%,rgba(10,10,10,0.74)_100%)] lg:bg-[linear-gradient(90deg,rgba(10,10,10,0.98)_0%,rgba(10,10,10,0.9)_34%,rgba(10,10,10,0.24)_66%,rgba(10,10,10,0.12)_100%),linear-gradient(180deg,rgba(10,10,10,0.08)_0%,rgba(10,10,10,0.08)_60%,rgba(10,10,10,0.62)_100%)]"
-        />
+          <motion.main variants={containerVariants}>
+            <motion.p
+              className="font-ui mb-5 text-[0.68rem] font-bold uppercase tracking-[0.18em] text-black/48 sm:text-xs"
+              variants={itemVariants}
+            >
+              Assistenza moto e scooter
+            </motion.p>
 
-        <div className="relative z-10 flex min-h-[calc(100svh-6rem)] flex-col justify-between px-5 pb-[calc(7rem+env(safe-area-inset-bottom))] pt-8 sm:px-7 sm:pb-[calc(7.5rem+env(safe-area-inset-bottom))] sm:pt-10 md:px-10 lg:min-h-[calc(100svh-7rem)] lg:px-14 lg:pb-12 lg:pt-14 xl:px-16">
-          <motion.p
-            className="font-ui text-[0.68rem] font-bold uppercase tracking-[0.18em] text-white/64 sm:text-xs"
-            initial={reduceMotion ? false : { opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: reduceMotion ? 0 : 0.46, ease: easeOut }}
-          >
-            Assistenza moto e scooter
-          </motion.p>
-
-          <motion.div
-            className="my-auto py-12 sm:py-16 lg:py-20"
-            initial={reduceMotion ? false : { opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{
-              duration: reduceMotion ? 0 : 0.68,
-              delay: reduceMotion ? 0 : 0.08,
-              ease: easeOut,
-            }}
-          >
-            <h1 className="font-display max-w-[10ch] text-[clamp(3.4rem,15vw,6rem)] font-bold uppercase leading-[0.82] tracking-[-0.045em] sm:text-[clamp(5rem,12vw,8rem)] lg:text-[clamp(7rem,10vw,12.5rem)]">
+            <motion.h1
+              className="font-display max-w-[11ch] text-[clamp(3.3rem,11vw,6.5rem)] font-bold uppercase leading-[0.86] tracking-[-0.045em] text-[#0A0A0A] md:text-[clamp(4.4rem,7vw,7.5rem)] lg:text-[clamp(5.2rem,6vw,8.5rem)]"
+              variants={itemVariants}
+            >
               Assistenza.
               <br />
               <span className="text-[#C72A09]">Officina.</span>
               <br />
               Esperienza.
-            </h1>
-          </motion.div>
+            </motion.h1>
 
-          <motion.div
-            className="grid gap-7 border-t border-white/22 pt-6 lg:grid-cols-[minmax(0,34rem)_auto] lg:items-end lg:justify-between lg:gap-12 lg:pt-8"
-            initial={reduceMotion ? false : { opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{
-              duration: reduceMotion ? 0 : 0.54,
-              delay: reduceMotion ? 0 : 0.18,
-              ease: easeOut,
-            }}
-          >
-            <p className="max-w-[34rem] text-base font-medium leading-7 text-white/76 sm:text-lg sm:leading-8">
+            <motion.div
+              className="my-7 h-1 w-20 bg-[#C72A09] sm:my-8"
+              variants={itemVariants}
+            />
+
+            <motion.p
+              className="mb-8 max-w-[34rem] text-base font-medium leading-7 text-black/58 sm:text-lg sm:leading-8"
+              variants={itemVariants}
+            >
               Tagliandi, diagnosi e accessori per moto e scooter KYMCO e Voge. Raccontaci cosa ti serve: ti aiutiamo a capire da dove partire.
-            </p>
+            </motion.p>
 
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-              <a
-                href="tel:+393289185029"
-                className="font-ui group inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-bold uppercase tracking-[0.08em] text-[#0A0A0A] transition-[opacity,transform] duration-150 hover:opacity-[0.88] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-4 focus-visible:ring-offset-[#0A0A0A] motion-reduce:transform-none motion-reduce:transition-none"
-              >
-                Chiama l’officina
-                <PhoneCall aria-hidden="true" className="h-4 w-4" strokeWidth={1.8} />
-              </a>
-              <a
+            <motion.div variants={itemVariants}>
+              <Link
                 href="/contatti?argomento=officina#richiesta"
-                className="font-ui group inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-white/32 bg-black/16 px-6 py-3 text-sm font-bold uppercase tracking-[0.08em] text-white transition-[background-color,transform] duration-150 hover:bg-white/10 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-4 focus-visible:ring-offset-[#0A0A0A] motion-reduce:transform-none motion-reduce:transition-none"
+                className="font-ui inline-flex min-h-11 items-center text-sm font-bold uppercase tracking-[0.14em] text-[#C72A09] transition-opacity duration-150 hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C72A09]/45 focus-visible:ring-offset-4 focus-visible:ring-offset-white motion-reduce:transition-none sm:text-base"
               >
                 Scrivi all’officina
-                <ArrowUpRight
-                  aria-hidden="true"
-                  className="h-4 w-4 transition-transform duration-150 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transform-none motion-reduce:transition-none"
-                  strokeWidth={1.8}
-                />
-              </a>
-            </div>
-          </motion.div>
+              </Link>
+            </motion.div>
+          </motion.main>
         </div>
+
+        <motion.footer className="mt-14 w-full lg:mt-20" variants={itemVariants}>
+          <div className="grid grid-cols-1 gap-5 border-t border-black/12 pt-6 text-xs font-medium text-black/58 sm:grid-cols-3 sm:gap-6">
+            <div className="flex min-w-0 items-center">
+              <Globe2
+                aria-hidden="true"
+                className="mr-2 h-5 w-5 shrink-0 text-[#C72A09]"
+                strokeWidth={1.8}
+              />
+              <span className="truncate">grossi-moto.vercel.app</span>
+            </div>
+
+            <a
+              href="tel:+393289185029"
+              className="flex min-w-0 items-center rounded-sm transition-colors duration-150 hover:text-[#0A0A0A] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C72A09]/45 focus-visible:ring-offset-4 focus-visible:ring-offset-white motion-reduce:transition-none"
+            >
+              <PhoneCall
+                aria-hidden="true"
+                className="mr-2 h-5 w-5 shrink-0 text-[#C72A09]"
+                strokeWidth={1.8}
+              />
+              <span>+39 328 918 5029</span>
+            </a>
+
+            <div className="flex min-w-0 items-center">
+              <MapPin
+                aria-hidden="true"
+                className="mr-2 h-5 w-5 shrink-0 text-[#C72A09]"
+                strokeWidth={1.8}
+              />
+              <span>Via Festo Porzio, 22, Roma</span>
+            </div>
+          </div>
+        </motion.footer>
       </div>
-    </section>
+
+      <motion.div
+        className="relative min-h-[340px] w-full overflow-hidden md:min-h-full md:w-1/2 lg:w-2/5"
+        initial={
+          reduceMotion
+            ? false
+            : {
+                clipPath:
+                  "polygon(100% 0, 100% 0, 100% 100%, 100% 100%)",
+              }
+        }
+        animate={{
+          clipPath: "polygon(25% 0, 100% 0, 100% 100%, 0% 100%)",
+        }}
+        transition={{
+          duration: reduceMotion ? 0 : 1.2,
+          ease: easeOut,
+        }}
+      >
+        <Image
+          src={HERO_IMAGE.src}
+          alt={HERO_IMAGE.alt}
+          fill
+          priority
+          sizes="(min-width: 1024px) 40vw, (min-width: 768px) 50vw, 100vw"
+          className="object-cover object-center"
+        />
+      </motion.div>
+    </motion.section>
   );
 }
