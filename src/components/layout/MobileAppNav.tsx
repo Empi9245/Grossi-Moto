@@ -4,6 +4,8 @@ import { Bike, Home, Phone, Wrench } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 
+import { useScrollDirection } from "@/hooks/useScrollDirection";
+
 const appNavItems = [
   { label: "Home", href: "/", icon: Home },
   { label: "Gamma", href: "/scooters", icon: Bike },
@@ -17,11 +19,15 @@ function isActivePath(pathname: string, href: string) {
 
 export function MobileAppNav() {
   const pathname = usePathname();
+  const isVisible = useScrollDirection();
 
   return (
     <nav
       aria-label="Navigazione principale mobile"
-      className="mobile-app-nav fixed inset-x-3 bottom-[calc(0.75rem+env(safe-area-inset-bottom))] z-[70] grid grid-cols-4 gap-1 rounded-[1.45rem] bg-[oklch(12%_0.014_42/0.94)] p-1.5 text-[oklch(92%_0.012_78)] shadow-[0_16px_42px_rgba(17,11,9,0.28)] ring-1 ring-[oklch(96%_0.008_80/0.12)] backdrop-blur-xl lg:hidden"
+      inert={!isVisible}
+      className={`mobile-app-nav fixed inset-x-3 bottom-[calc(0.75rem+env(safe-area-inset-bottom))] z-[70] grid origin-center grid-cols-4 gap-1 rounded-[1.45rem] bg-[oklch(12%_0.014_42/0.94)] p-1.5 text-[oklch(92%_0.012_78)] shadow-[0_16px_42px_rgba(17,11,9,0.28)] ring-1 ring-[oklch(96%_0.008_80/0.12)] backdrop-blur-xl transition-transform duration-[400ms] ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform motion-reduce:transition-none lg:hidden ${
+        isVisible ? "scale-x-100" : "pointer-events-none scale-x-0"
+      }`}
     >
       {appNavItems.map(({ label, href, icon: Icon }) => {
         const isActive = isActivePath(pathname, href);
