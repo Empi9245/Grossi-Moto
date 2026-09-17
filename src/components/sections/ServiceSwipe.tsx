@@ -152,10 +152,7 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
               </p>
               <ul className="font-ui mt-5 grid gap-2 border-t border-black/12 pt-4 text-[0.74rem] font-semibold uppercase tracking-[0.04em] text-black/66">
                 {service.features.map((feature) => (
-                  <li
-                    key={feature}
-                    className="border-b border-black/8 pb-2 last:border-b-0"
-                  >
+                  <li key={feature} className="border-b border-black/8 pb-2 last:border-b-0">
                     {feature}
                   </li>
                 ))}
@@ -175,10 +172,7 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
         </a>
 
         <div className="flex items-center gap-2.5">
-          <span
-            className="mr-1 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-black/46"
-            aria-live="polite"
-          >
+          <span className="mr-1 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-black/46" aria-live="polite">
             {active + 1} / {services.length}
           </span>
           <button
