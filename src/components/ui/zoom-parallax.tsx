@@ -28,8 +28,8 @@ type ZoomParallaxProps = {
 
 const defaultImages: ParallaxImage[] = [
   {
-    src: "/grossimoto/home-scroll/zoom-main-scooter-v2.webp",
-    alt: "People S 125 ABS in un contesto aperto",
+    src: "/kymco-all/sections/agility-125-r16-power-up-kymco-agility125-esterne-003-scaled-kymco-agility125-esterne-003-scaled.jpg",
+    alt: "Agility 125 R16 Power Up in esterno",
   },
   {
     src: "/grossimoto/home-scroll/02-dtx-360-strada.webp",
@@ -71,7 +71,7 @@ function StaticParallaxFallback({ images }: { images: ParallaxImage[] }) {
       <Image
         src={
           images[0]?.src ??
-          "/grossimoto/home-scroll/zoom-main-scooter-v2.webp"
+          "/kymco-all/sections/agility-125-r16-power-up-kymco-agility125-esterne-003-scaled-kymco-agility125-esterne-003-scaled.jpg"
         }
         alt={images[0]?.alt ?? "Scooter in viaggio"}
         fill
