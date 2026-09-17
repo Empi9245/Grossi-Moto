@@ -26,6 +26,15 @@ type ZoomParallaxProps = {
   images?: ParallaxImage[];
 };
 
+type AnimatedCreditCharacterProps = {
+  char: string;
+  index: number;
+  centerIndex: number;
+  progress: MotionValue<number>;
+  range: [number, number];
+  intensity: number;
+};
+
 const defaultImages: ParallaxImage[] = [
   {
     src: "/kymco-all/sections/agility-125-r16-power-up-kymco-agility125-esterne-003-scaled-kymco-agility125-esterne-003-scaled.jpg",
@@ -134,23 +143,143 @@ function ExperienceContact() {
   );
 }
 
+function AnimatedCreditCharacter({
+  char,
+  index,
+  centerIndex,
+  progress,
+  range,
+  intensity,
+}: AnimatedCreditCharacterProps) {
+  const distanceFromCenter = index - centerIndex;
+  const x = useTransform(progress, range, [distanceFromCenter * intensity, 0]);
+  const rotateX = useTransform(progress, range, [distanceFromCenter * intensity, 0]);
+
+  return (
+    <motion.span
+      className="inline-block will-change-transform"
+      style={{ x, rotateX, transformOrigin: "center" }}
+    >
+      {char}
+    </motion.span>
+  );
+}
+
+function AnimatedCreditText({
+  text,
+  progress,
+  range,
+  intensity,
+}: {
+  text: string;
+  progress: MotionValue<number>;
+  range: [number, number];
+  intensity: number;
+}) {
+  const words = text.split(" ");
+  const centerIndex = Math.floor(text.length / 2);
+
+  return (
+    <span aria-hidden="true">
+      {words.map((word, wordIndex) => {
+        const wordStartIndex = words
+          .slice(0, wordIndex)
+          .reduce((total, previousWord) => total + previousWord.length + 1, 0);
+
+        return (
+          <span key={`${word}-${wordIndex}`}>
+            <span className="inline-block whitespace-nowrap">
+              {word.split("").map((char, charIndex) => (
+                <AnimatedCreditCharacter
+                  key={`${char}-${charIndex}`}
+                  char={char}
+                  index={wordStartIndex + charIndex}
+                  centerIndex={centerIndex}
+                  progress={progress}
+                  range={range}
+                  intensity={intensity}
+                />
+              ))}
+            </span>
+            {wordIndex < words.length - 1 ? " " : null}
+          </span>
+        );
+      })}
+    </span>
+  );
+}
+
+function getCreditRevealRange(index: number, compact: boolean): [number, number] {
+  if (compact) {
+    return [0.3 + index * 0.16, 0.54 + index * 0.16];
+  }
+
+  return [0.2 + index * 0.2, 0.44 + index * 0.2];
+}
+
 function CinematicCredits({ progress, compact }: { progress: MotionValue<number>; compact: boolean }) {
   const y = useTransform(progress, [compact ? 0.30 : 0.20, compact ? 0.86 : 0.84], ["100svh", compact ? "-70svh" : "-125svh"]);
   return (
-    <div className="pointer-events-none absolute inset-0 z-30 lg:[perspective:1400px]">
+    <div className="pointer-events-none absolute inset-0 z-30 [perspective:900px] lg:[perspective:1400px]">
       <motion.div style={{ y }} className="absolute inset-x-0 top-0">
         <div className="origin-center lg:[transform:rotateX(8deg)]">
-          {story.map(({ title, detail }, index) => (
-            <div key={title} className="flex h-[48svh] flex-col items-center justify-center px-5 text-center sm:px-8 lg:h-[70svh] lg:px-10 text-[#f4f0e8] lg:[text-shadow:0_4px_28px_rgba(0,0,0,0.45)]">
-              {index === 0 && <p className="font-ui mb-4 text-[0.6rem] sm:text-xs lg:mb-7 font-bold uppercase tracking-[0.24em]">Dallo showroom all’officina</p>}
-              {index === 0 ? (
-                <h2 className={`${creditsFont.className} max-w-[15ch] text-[clamp(2.25rem,min(12vw,10svh),5.25rem)] lg:text-[clamp(4.5rem,9.2vw,11rem)] uppercase leading-[1.02] tracking-[-0.015em]`}>{title}</h2>
-              ) : (
-                <h3 className={`${creditsFont.className} max-w-[15ch] text-[clamp(2.25rem,min(12vw,10svh),5.25rem)] lg:text-[clamp(4.5rem,9.2vw,11rem)] uppercase leading-[1.02] tracking-[-0.015em]`}>{title}</h3>
-              )}
-              <p className="mt-5 max-w-[38rem] lg:mt-7 text-[clamp(1rem,1.5vw,1.35rem)] leading-relaxed text-white/85">{detail}</p>
-            </div>
-          ))}
+          {story.map(({ title, detail }, index) => {
+            const revealRange = getCreditRevealRange(index, compact);
+
+            return (
+              <div key={title} className="flex h-[48svh] flex-col items-center justify-center px-5 text-center sm:px-8 lg:h-[70svh] lg:px-10 text-[#f4f0e8] lg:[text-shadow:0_4px_28px_rgba(0,0,0,0.45)]">
+                {index === 0 && (
+                  <p
+                    aria-label="Dallo showroom all’officina"
+                    className="font-ui mb-4 text-[0.6rem] sm:text-xs lg:mb-7 font-bold uppercase tracking-[0.24em]"
+                  >
+                    <AnimatedCreditText
+                      text="Dallo showroom all’officina"
+                      progress={progress}
+                      range={revealRange}
+                      intensity={24}
+                    />
+                  </p>
+                )}
+                {index === 0 ? (
+                  <h2
+                    aria-label={title}
+                    className={`${creditsFont.className} max-w-[15ch] text-[clamp(2.25rem,min(12vw,10svh),5.25rem)] lg:text-[clamp(4.5rem,9.2vw,11rem)] uppercase leading-[1.02] tracking-[-0.015em]`}
+                  >
+                    <AnimatedCreditText
+                      text={title}
+                      progress={progress}
+                      range={revealRange}
+                      intensity={50}
+                    />
+                  </h2>
+                ) : (
+                  <h3
+                    aria-label={title}
+                    className={`${creditsFont.className} max-w-[15ch] text-[clamp(2.25rem,min(12vw,10svh),5.25rem)] lg:text-[clamp(4.5rem,9.2vw,11rem)] uppercase leading-[1.02] tracking-[-0.015em]`}
+                  >
+                    <AnimatedCreditText
+                      text={title}
+                      progress={progress}
+                      range={revealRange}
+                      intensity={50}
+                    />
+                  </h3>
+                )}
+                <p
+                  aria-label={detail}
+                  className="mt-5 max-w-[38rem] lg:mt-7 text-[clamp(1rem,1.5vw,1.35rem)] leading-relaxed text-white/85"
+                >
+                  <AnimatedCreditText
+                    text={detail}
+                    progress={progress}
+                    range={revealRange}
+                    intensity={18}
+                  />
+                </p>
+              </div>
+            );
+          })}
         </div>
       </motion.div>
     </div>
