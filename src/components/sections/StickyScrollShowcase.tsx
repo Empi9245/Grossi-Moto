@@ -104,11 +104,7 @@ export function StickyScrollShowcase() {
     const items = Array.from(
       content.querySelectorAll<HTMLElement>("[data-service-index]"),
     );
-    if (items.length === 0) return;
-
-    if (!("IntersectionObserver" in window)) {
-      return;
-    }
+    if (items.length === 0 || !("IntersectionObserver" in window)) return;
 
     const ratios = new Map<number, number>();
     const observer = new IntersectionObserver(
@@ -122,7 +118,7 @@ export function StickyScrollShowcase() {
           }
         });
 
-        let nextIndex = activeIndex;
+        let nextIndex = 0;
         let nextRatio = -1;
 
         ratios.forEach((ratio, index) => {
@@ -144,7 +140,7 @@ export function StickyScrollShowcase() {
 
     items.forEach((item) => observer.observe(item));
     return () => observer.disconnect();
-  }, [activeIndex, isDesktopViewport]);
+  }, [isDesktopViewport]);
 
   const currentService = services[activeIndex] ?? services[0];
 
@@ -210,10 +206,10 @@ export function StickyScrollShowcase() {
                     key={service.title}
                     data-service-index={index}
                     className={[
-                      "relative flex min-h-[70svh] flex-col justify-center border-l pl-8 transition-[border-width,border-color,opacity,transform] duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] xl:pl-12",
+                      "relative flex min-h-[70svh] flex-col justify-center border-l pl-8 transition-[border-width,border-color,opacity] duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] xl:pl-12",
                       isActive
                         ? "border-l-2 border-[#C72A09] opacity-100"
-                        : "border-black/12 opacity-46",
+                        : "border-black/12 opacity-[0.46]",
                     ].join(" ")}
                   >
                     <h3 className="font-display max-w-[12ch] text-[clamp(3.7rem,5.7vw,7.2rem)] font-bold uppercase leading-[0.84] tracking-[-0.04em]">
@@ -237,7 +233,7 @@ export function StickyScrollShowcase() {
                     </ul>
                     <a
                       href="tel:+393289185029"
-                      className="font-ui mt-8 inline-flex min-h-12 w-fit items-center gap-2 rounded-full bg-[#0A0A0A] px-6 py-3 text-sm font-bold uppercase tracking-[0.08em] text-white transition-[opacity,transform] duration-150 hover:opacity-84 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/35 focus-visible:ring-offset-4 focus-visible:ring-offset-white motion-reduce:transform-none motion-reduce:transition-none"
+                      className="font-ui mt-8 inline-flex min-h-12 w-fit items-center gap-2 rounded-full bg-[#0A0A0A] px-6 py-3 text-sm font-bold uppercase tracking-[0.08em] text-white transition-[opacity,transform] duration-150 hover:opacity-[0.84] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/35 focus-visible:ring-offset-4 focus-visible:ring-offset-white motion-reduce:transform-none motion-reduce:transition-none"
                     >
                       Chiama per informazioni
                       <PhoneCall
