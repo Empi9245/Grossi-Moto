@@ -26,6 +26,8 @@ type ZoomParallaxProps = {
   images?: ParallaxImage[];
 };
 
+type CreditAnimationVariant = 1 | 2 | 3;
+
 type AnimatedCreditCharacterProps = {
   char: string;
   index: number;
@@ -33,6 +35,7 @@ type AnimatedCreditCharacterProps = {
   progress: MotionValue<number>;
   range: [number, number];
   intensity: number;
+  variant: CreditAnimationVariant;
 };
 
 const defaultImages: ParallaxImage[] = [
@@ -150,15 +153,37 @@ function AnimatedCreditCharacter({
   progress,
   range,
   intensity,
+  variant,
 }: AnimatedCreditCharacterProps) {
   const distanceFromCenter = index - centerIndex;
-  const x = useTransform(progress, range, [distanceFromCenter * intensity, 0]);
-  const rotateX = useTransform(progress, range, [distanceFromCenter * intensity, 0]);
+  const absoluteDistance = Math.abs(distanceFromCenter);
+  const xMultiplier = variant === 3 ? 1.8 : 1;
+  const yStart =
+    variant === 2
+      ? absoluteDistance * intensity
+      : variant === 3
+        ? -absoluteDistance * intensity * 0.4
+        : 0;
+  const scaleStart = variant === 1 ? 1 : 0.75;
+
+  const x = useTransform(progress, range, [distanceFromCenter * intensity * xMultiplier, 0]);
+  const y = useTransform(progress, range, [yStart, 0]);
+  const rotateX = useTransform(
+    progress,
+    range,
+    [variant === 1 ? distanceFromCenter * intensity : 0, 0],
+  );
+  const rotate = useTransform(
+    progress,
+    range,
+    [variant === 3 ? distanceFromCenter * intensity : 0, 0],
+  );
+  const scale = useTransform(progress, range, [scaleStart, 1]);
 
   return (
     <motion.span
       className="inline-block will-change-transform"
-      style={{ x, rotateX, transformOrigin: "center" }}
+      style={{ x, y, rotateX, rotate, scale, transformOrigin: "center" }}
     >
       {char}
     </motion.span>
@@ -170,11 +195,13 @@ function AnimatedCreditText({
   progress,
   range,
   intensity,
+  variant,
 }: {
   text: string;
   progress: MotionValue<number>;
   range: [number, number];
   intensity: number;
+  variant: CreditAnimationVariant;
 }) {
   const words = text.split(" ");
   const centerIndex = Math.floor(text.length / 2);
@@ -198,6 +225,7 @@ function AnimatedCreditText({
                   progress={progress}
                   range={range}
                   intensity={intensity}
+                  variant={variant}
                 />
               ))}
             </span>
@@ -225,6 +253,10 @@ function CinematicCredits({ progress, compact }: { progress: MotionValue<number>
         <div className="origin-center lg:[transform:rotateX(8deg)]">
           {story.map(({ title, detail }, index) => {
             const revealRange = getCreditRevealRange(index, compact);
+            const variant = (index + 1) as CreditAnimationVariant;
+            const titleIntensity = compact ? 22 : 50;
+            const detailIntensity = compact ? 8 : 18;
+            const eyebrowIntensity = compact ? 10 : 24;
 
             return (
               <div key={title} className="flex h-[48svh] flex-col items-center justify-center px-5 text-center sm:px-8 lg:h-[70svh] lg:px-10 text-[#f4f0e8] lg:[text-shadow:0_4px_28px_rgba(0,0,0,0.45)]">
@@ -237,7 +269,8 @@ function CinematicCredits({ progress, compact }: { progress: MotionValue<number>
                       text="Dallo showroom all’officina"
                       progress={progress}
                       range={revealRange}
-                      intensity={24}
+                      intensity={eyebrowIntensity}
+                      variant={variant}
                     />
                   </p>
                 )}
@@ -250,7 +283,8 @@ function CinematicCredits({ progress, compact }: { progress: MotionValue<number>
                       text={title}
                       progress={progress}
                       range={revealRange}
-                      intensity={50}
+                      intensity={titleIntensity}
+                      variant={variant}
                     />
                   </h2>
                 ) : (
@@ -262,7 +296,8 @@ function CinematicCredits({ progress, compact }: { progress: MotionValue<number>
                       text={title}
                       progress={progress}
                       range={revealRange}
-                      intensity={50}
+                      intensity={titleIntensity}
+                      variant={variant}
                     />
                   </h3>
                 )}
@@ -274,7 +309,8 @@ function CinematicCredits({ progress, compact }: { progress: MotionValue<number>
                     text={detail}
                     progress={progress}
                     range={revealRange}
-                    intensity={18}
+                    intensity={detailIntensity}
+                    variant={variant}
                   />
                 </p>
               </div>
