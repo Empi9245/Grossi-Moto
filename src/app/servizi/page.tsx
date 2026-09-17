@@ -1,12 +1,6 @@
 import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
-import Image from "next/image";
-import {
-  ArrowLeft,
-  ArrowUpRight,
-  Cog,
-  PhoneCall,
-} from "lucide-react";
+import { ArrowUpRight, PhoneCall } from "lucide-react";
 
 import { ServicesHero } from "@/components/ui/services-hero";
 import { StickyScrollShowcase } from "@/components/sections/StickyScrollShowcase";
@@ -15,110 +9,131 @@ import { SiteFooter } from "@/components/layout/SiteFooter";
 
 export const metadata = pageMetadata("Officina scooter a Roma: tagliandi e assistenza", "Tagliandi, diagnosi, ricambi e accessori per il tuo scooter a Roma. Contatta l’officina Grossi Moto in Via Festo Porzio 22 e raccontaci cosa ti serve.", "/servizi");
 
-export default function ServiziPage() {
+const navItems = [
+  { label: "Gamma", href: "/scooters" },
+  { label: "Servizi", href: "/servizi" },
+  { label: "Contatti", href: "/contatti" },
+];
+
+function ServicesNav() {
   return (
-    <main id="main-content" className="min-h-screen [--page-background:var(--gm-warm-surface)] bg-[#111111] text-[var(--gm-on-dark)]">
-      {/* ── Nav back ──────────────────────────────────────────── */}
-      <div className="fixed left-0 top-0 z-50 w-full px-5 py-4 sm:px-7 md:px-10 lg:px-14 xl:px-20">
+    <header className="bg-white px-2 sm:px-4 lg:px-5">
+      <nav
+        aria-label="Navigazione Grossimoto"
+        className="mx-auto flex min-h-[5.6rem] max-w-[122rem] items-center justify-between gap-3 px-3 py-3 text-[#0A0A0A] sm:px-4 lg:grid lg:grid-cols-[1fr_auto_1fr] lg:px-5"
+      >
         <Link
           href="/"
-          className="font-ui inline-flex items-center gap-2 rounded-full bg-[#111111]/60 px-4 py-2 text-xs font-bold uppercase tracking-[0.1em] text-[#F7F4EF] backdrop-blur-md transition-colors duration-200 hover:bg-[#F7F4EF]/14 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F7F4EF]/60 focus-visible:ring-offset-4 focus-visible:ring-offset-[#111111] sm:text-sm"
+          aria-label="Torna alla home Grossimoto"
+          className="font-ui group flex min-w-0 flex-col rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-black/40 focus-visible:ring-offset-4 focus-visible:ring-offset-white"
         >
-          <ArrowLeft
-            aria-hidden="true"
-            className="h-3.5 w-3.5"
-            strokeWidth={2}
-          />
-          Torna alla home
+          <span className="text-base font-bold leading-none transition-opacity duration-150 group-hover:opacity-68 sm:text-lg">
+            Grossimoto
+          </span>
+          <span className="mt-1 text-[0.62rem] font-bold uppercase tracking-[0.17em] text-black/48">
+            Moto e scooter a Roma
+          </span>
         </Link>
-      </div>
 
-      {/* ── Hero ──────────────────────────────────────────────── */}
+        <div className="font-ui hidden min-h-11 items-center gap-1 rounded-full bg-[#0A0A0A] p-1 text-sm font-bold text-white/72 lg:flex">
+          {navItems.map((item) => {
+            const current = item.href === "/servizi";
+            return (
+              <Link
+                key={item.label}
+                href={item.href}
+                aria-current={current ? "page" : undefined}
+                className="rounded-full px-6 py-2.5 transition-[background-color,color] duration-150 hover:bg-white/10 hover:text-white aria-current:bg-white aria-current:text-[#0A0A0A] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 motion-reduce:transition-none"
+              >
+                {item.label}
+              </Link>
+            );
+          })}
+        </div>
+
+        <div className="flex shrink-0 justify-end lg:justify-self-end">
+          <a
+            href="tel:+393289185029"
+            className="font-ui inline-flex min-h-11 items-center gap-2 rounded-full bg-[#0A0A0A] px-3.5 py-2 text-[0.72rem] font-bold uppercase tracking-[0.1em] text-white transition-[opacity,transform] duration-150 hover:opacity-84 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/35 focus-visible:ring-offset-4 focus-visible:ring-offset-white motion-reduce:transform-none motion-reduce:transition-none sm:px-4"
+          >
+            <PhoneCall aria-hidden="true" className="h-4 w-4" strokeWidth={1.8} />
+            <span className="hidden sm:inline">Chiama ora</span>
+            <span className="sm:hidden">Chiama</span>
+          </a>
+        </div>
+      </nav>
+    </header>
+  );
+}
+
+export default function ServiziPage() {
+  return (
+    <main id="main-content" className="min-h-screen bg-white text-[#0A0A0A]">
+      <ServicesNav />
       <ServicesHero />
-
-      {/* ── Sticky Scroll Showcase ───────────────────────────── */}
       <StickyScrollShowcase />
 
-      {/* ── Showroom Image Break ──────────────────────────────── */}
-      <section className="relative h-[50svh] min-h-[320px] overflow-hidden sm:h-[60svh]">
-        <Image
-          src="/grossimoto/servizi-hero/agility-s-125-showroom.jpg"
-          alt="Scooter Agility S 125 in contesto urbano, servizi Grossimoto"
-          fill
-          sizes="100vw"
-          className="object-cover"
-        />
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 bg-[linear-gradient(180deg,var(--page-background)_0%,transparent_22%,transparent_78%,#111111_100%)]"
-        />
-      </section>
+      <section className="bg-white px-2 py-10 sm:px-4 sm:py-14 lg:px-5 lg:py-20">
+        <div className="overflow-hidden rounded-[32px] bg-[#0A0A0A] px-5 py-16 text-white sm:rounded-[40px] sm:px-7 sm:py-20 md:px-10 lg:rounded-[56px] lg:px-14 lg:py-28 xl:px-16">
+          <div className="mx-auto max-w-[92rem]">
+            <div className="mb-12 grid gap-6 border-t border-white/18 pt-6 lg:mb-16 lg:grid-cols-[minmax(0,1.25fr)_minmax(22rem,0.75fr)] lg:items-end lg:gap-12">
+              <div>
+                <p className="font-ui text-[0.68rem] font-bold uppercase tracking-[0.18em] text-[#C72A09]">
+                  Come funziona
+                </p>
+                <h2 className="font-display mt-4 max-w-[11ch] text-[clamp(3.1rem,9vw,7.5rem)] font-bold uppercase leading-[0.84] tracking-[-0.04em]">
+                  Dal contatto alla riconsegna.
+                </h2>
+              </div>
+              <p className="max-w-[32rem] text-base leading-7 text-white/62 sm:text-lg sm:leading-8">
+                Quattro passaggi per capire il problema, concordare il lavoro e sapere cosa è stato fatto sul tuo mezzo.
+              </p>
+            </div>
 
-      {/* ── Process Section ───────────────────────────────────── */}
-      <section className="overflow-hidden rounded-[32px] bg-[#111111] px-5 py-20 text-[#F7F4EF] sm:rounded-[40px] sm:px-7 sm:py-28 md:px-10 lg:rounded-[56px] lg:px-14 lg:py-32 xl:px-20">
-        <div className="mx-auto max-w-[80rem]">
-          <div className="mb-14 max-w-[42rem] sm:mb-20">
-            <p className="font-ui text-[0.65rem] font-bold uppercase tracking-[0.22em] opacity-50 sm:text-xs">
-              Come funziona
-            </p>
-            <h2 className="font-display mt-4 text-[clamp(2.4rem,6vw,5rem)] font-bold leading-[0.9] tracking-tight">
-              Dal contatto
-              <br />
-              alla riconsegna.
-            </h2>
-          </div>
-
-          <ServiceProcess />
-        </div>
-      </section>
-
-      {/* ── CTA Section ───────────────────────────────────────── */}
-      <section className="overflow-hidden rounded-[32px] bg-[oklch(14%_0.014_42)] px-5 py-20 text-[#F7F4EF] sm:rounded-[40px] sm:px-7 sm:py-28 md:px-10 lg:rounded-[56px] lg:px-14 lg:py-32 xl:px-20">
-        <div className="mx-auto flex max-w-[80rem] flex-col items-start gap-10 lg:flex-row lg:items-end lg:justify-between">
-          <div className="max-w-[38rem]">
-            <Cog
-              aria-hidden="true"
-              className="h-8 w-8 text-[oklch(75%_0.036_68)]"
-              strokeWidth={1.4}
-            />
-            <h2 className="font-display mt-6 text-[clamp(2.4rem,6vw,5rem)] font-bold leading-[0.9] tracking-tight">
-              Prenota un
-              <br />
-              intervento.
-            </h2>
-            <p className="mt-5 max-w-[32rem] text-base leading-7 text-[#F7F4EF]/60 sm:text-lg">
-              Hai un tagliando da fare o un problema da capire? Chiamaci con modello e chilometraggio, oppure descrivici la tua esigenza nel modulo.
-            </p>
-          </div>
-
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
-            <a
-              href="tel:+393289185029"
-              className="font-ui inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[oklch(91%_0.014_76)] px-7 py-3 text-sm font-bold uppercase tracking-[0.08em] text-[oklch(13%_0.014_42)] transition-[opacity,transform] duration-200 hover:opacity-88 active:translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(72%_0.06_32)] focus-visible:ring-offset-4 focus-visible:ring-offset-[oklch(14%_0.014_42)]"
-            >
-              Chiama ora
-              <PhoneCall
-                aria-hidden="true"
-                className="h-4 w-4"
-                strokeWidth={1.8}
-              />
-            </a>
-            <a
-              href="/contatti?argomento=officina#richiesta"
-              className="font-ui inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#F7F4EF]/8 px-7 py-3 text-sm font-bold uppercase tracking-[0.08em] text-[#F7F4EF] shadow-[inset_0_0_0_1px_rgba(247,244,239,0.16)] transition-[background,transform] duration-200 hover:bg-[#F7F4EF]/14 active:translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F7F4EF]/60 focus-visible:ring-offset-4 focus-visible:ring-offset-[oklch(14%_0.014_42)]"
-            >
-              Scrivi all’officina
-              <ArrowUpRight
-                aria-hidden="true"
-                className="h-4 w-4"
-                strokeWidth={1.8}
-              />
-            </a>
+            <ServiceProcess />
           </div>
         </div>
       </section>
 
-      {/* ── Footer line ───────────────────────────────────────── */}
+      <section className="bg-white px-2 pt-2 sm:px-4 sm:pt-4 lg:px-5 lg:pt-5">
+        <div className="overflow-hidden rounded-[32px] bg-[#C72A09] px-5 py-16 text-white sm:rounded-[40px] sm:px-7 sm:py-20 md:px-10 lg:rounded-[56px] lg:px-14 lg:py-28 xl:px-16">
+          <div className="mx-auto grid max-w-[92rem] gap-12 lg:grid-cols-[minmax(0,1.2fr)_minmax(24rem,0.8fr)] lg:items-end lg:gap-16">
+            <div>
+              <h2 className="font-display max-w-[10ch] text-[clamp(3.4rem,10vw,8.5rem)] font-bold uppercase leading-[0.84] tracking-[-0.04em]">
+                Prenota un intervento.
+              </h2>
+            </div>
+
+            <div className="max-w-[36rem]">
+              <p className="text-base leading-7 text-white/82 sm:text-lg sm:leading-8">
+                Hai un tagliando da fare o un problema da capire? Chiamaci con modello e chilometraggio, oppure descrivici la tua esigenza nel modulo.
+              </p>
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+                <a
+                  href="tel:+393289185029"
+                  className="font-ui inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#0A0A0A] px-6 py-3 text-sm font-bold uppercase tracking-[0.08em] text-white transition-[opacity,transform] duration-150 hover:opacity-88 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-4 focus-visible:ring-offset-[#C72A09] motion-reduce:transform-none motion-reduce:transition-none"
+                >
+                  Chiama ora
+                  <PhoneCall aria-hidden="true" className="h-4 w-4" strokeWidth={1.8} />
+                </a>
+                <Link
+                  href="/contatti?argomento=officina#richiesta"
+                  className="font-ui group inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-white/58 bg-white/[0.04] px-6 py-3 text-sm font-bold uppercase tracking-[0.08em] text-white transition-[background-color,transform] duration-150 hover:bg-white/10 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-4 focus-visible:ring-offset-[#C72A09] motion-reduce:transform-none motion-reduce:transition-none"
+                >
+                  Scrivi all’officina
+                  <ArrowUpRight
+                    aria-hidden="true"
+                    className="h-4 w-4 transition-transform duration-150 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transform-none motion-reduce:transition-none"
+                    strokeWidth={1.8}
+                  />
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div className="h-10 bg-white sm:h-14 lg:h-20" aria-hidden="true" />
       <SiteFooter />
     </main>
   );
