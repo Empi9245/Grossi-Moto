@@ -3,7 +3,7 @@
 import type { CSSProperties } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { SwipeUpCardStack } from "@/components/ui/image-stack";
+import { StackedShowroomCards } from "@/components/ui/stacked-showroom-cards";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import {
   AnimatePresence,
@@ -577,7 +577,7 @@ function ScooterSlide({
           />
         ) : (
           <Image
-                    draggable={false}
+            draggable={false}
             src={scooter.image}
             alt={`Scooter ${scooter.name} in vista laterale`}
             width={500}
@@ -649,143 +649,78 @@ function StaticShowcase() {
         </div>
 
         {smartphone ? (
-          <div className="mt-8">
-            <SwipeUpCardStack
-              cards={showcaseScooters.map(scooter => ({ ...scooter, src: scooter.image, title: scooter.name }))}
-              label="Scooter in showroom"
-              className="h-[min(70svh,560px)] min-h-[28rem]"
-              renderCard={(scooter) => (
-            <article
-              className="relative h-full w-full overflow-hidden rounded-[1.35rem] p-4 shadow-[0_0_0_1px_oklch(20%_0.014_56/0.08),0_18px_48px_oklch(20%_0.014_56/0.08)]"
-              data-source-asset={scooter.sourceAsset}
-              style={{
-                background: scooter.backgroundSurface,
-                color: scooter.textTone,
-              }}
-            >
-              <div className="relative aspect-[4/3]">
-                <div
-                  aria-hidden="true"
-                  className="absolute left-1/2 bottom-[6%] z-0 rounded-[50%] blur-[10px]"
-                  style={{
-                    width: scooter.shadowWidth,
-                    height: scooter.shadowHeight,
-                    opacity: scooter.shadowOpacity,
-                    background: `radial-gradient(ellipse at center, ${scooter.shadowTone} 0%, ${scooter.shadowTone} 42%, transparent 74%)`,
-                    transform: `translate(calc(-50% + ${scooter.shadowX}), ${scooter.shadowY})`,
-                  }}
-                />
-                <div
-                  className="relative z-10 h-full w-full"
-                  style={{
-                    transform: `translate(${scooter.imageOffsetX}, ${scooter.imageOffsetY})`,
-                  }}
-                >
-                  <Image
-                    draggable={false}
-                    src={scooter.image}
-                    alt={`Scooter ${scooter.name} in vista laterale`}
-                    width={500}
-                    height={375}
-                    sizes="(max-width: 767px) 92vw, (max-width: 1279px) 45vw, 23vw"
-                    loading="eager"
-                    className="h-full w-full object-contain"
-                  />
-                </div>
-              </div>
-              <div
-                className="mt-4 border-t pt-4"
-                style={{ borderColor: scooter.ruleTone }}
-              >
-                <p
-                  className="font-ui text-[0.66rem] font-bold uppercase tracking-[0.16em]"
-                  style={{ color: scooter.mutedTone }}
-                >
-                  {scooter.categoryLabel}
-                </p>
-                <h3 className="font-display mt-2 text-3xl font-bold leading-none">
-                  {scooter.name}
-                </h3>
-                <p
-                  className="mt-3 text-sm leading-6"
-                  style={{ color: scooter.mutedTone }}
-                >
-                  {scooter.statement}
-                </p>
-              </div>
-            </article>
-              )}
-            />
+          <div className="-mx-4 mt-8">
+            <StackedShowroomCards />
           </div>
         ) : (
           <>
-        <div className="hide-scrollbar -mx-4 mt-8 flex snap-x snap-proximity gap-4 overflow-x-auto overscroll-x-contain px-4 pb-3 md:mx-0 md:mt-10 md:grid md:grid-cols-2 md:overflow-visible md:px-0 md:pb-0 xl:grid-cols-4">
-          {showcaseScooters.map((scooter) => (
-            <article
-              key={scooter.id}
-              className="relative w-[min(82vw,20rem)] shrink-0 snap-start overflow-hidden rounded-[1.35rem] p-4 shadow-[0_0_0_1px_oklch(20%_0.014_56/0.08),0_18px_48px_oklch(20%_0.014_56/0.08)] md:w-auto"
-              data-source-asset={scooter.sourceAsset}
-              style={{
-                background: scooter.backgroundSurface,
-                color: scooter.textTone,
-              }}
-            >
-              <div className="relative aspect-[4/3]">
-                <div
-                  aria-hidden="true"
-                  className="absolute left-1/2 bottom-[6%] z-0 rounded-[50%] blur-[10px]"
+            <div className="hide-scrollbar -mx-4 mt-8 flex snap-x snap-proximity gap-4 overflow-x-auto overscroll-x-contain px-4 pb-3 md:mx-0 md:mt-10 md:grid md:grid-cols-2 md:overflow-visible md:px-0 md:pb-0 xl:grid-cols-4">
+              {showcaseScooters.map((scooter) => (
+                <article
+                  key={scooter.id}
+                  className="relative w-[min(82vw,20rem)] shrink-0 snap-start overflow-hidden rounded-[1.35rem] p-4 shadow-[0_0_0_1px_oklch(20%_0.014_56/0.08),0_18px_48px_oklch(20%_0.014_56/0.08)] md:w-auto"
+                  data-source-asset={scooter.sourceAsset}
                   style={{
-                    width: scooter.shadowWidth,
-                    height: scooter.shadowHeight,
-                    opacity: scooter.shadowOpacity,
-                    background: `radial-gradient(ellipse at center, ${scooter.shadowTone} 0%, ${scooter.shadowTone} 42%, transparent 74%)`,
-                    transform: `translate(calc(-50% + ${scooter.shadowX}), ${scooter.shadowY})`,
-                  }}
-                />
-                <div
-                  className="relative z-10 h-full w-full"
-                  style={{
-                    transform: `translate(${scooter.imageOffsetX}, ${scooter.imageOffsetY})`,
+                    background: scooter.backgroundSurface,
+                    color: scooter.textTone,
                   }}
                 >
-                  <Image
-                    draggable={false}
-                    src={scooter.image}
-                    alt={`Scooter ${scooter.name} in vista laterale`}
-                    width={500}
-                    height={375}
-                    sizes="(max-width: 767px) 92vw, (max-width: 1279px) 45vw, 23vw"
-                    className="h-full w-full object-contain"
-                  />
-                </div>
-              </div>
-              <div
-                className="mt-4 border-t pt-4"
-                style={{ borderColor: scooter.ruleTone }}
-              >
-                <p
-                  className="font-ui text-[0.66rem] font-bold uppercase tracking-[0.16em]"
-                  style={{ color: scooter.mutedTone }}
-                >
-                  {scooter.categoryLabel}
-                </p>
-                <h3 className="font-display mt-2 text-3xl font-bold leading-none">
-                  {scooter.name}
-                </h3>
-                <p
-                  className="mt-3 text-sm leading-6"
-                  style={{ color: scooter.mutedTone }}
-                >
-                  {scooter.statement}
-                </p>
-              </div>
-            </article>
-          ))}
-        </div>
+                  <div className="relative aspect-[4/3]">
+                    <div
+                      aria-hidden="true"
+                      className="absolute left-1/2 bottom-[6%] z-0 rounded-[50%] blur-[10px]"
+                      style={{
+                        width: scooter.shadowWidth,
+                        height: scooter.shadowHeight,
+                        opacity: scooter.shadowOpacity,
+                        background: `radial-gradient(ellipse at center, ${scooter.shadowTone} 0%, ${scooter.shadowTone} 42%, transparent 74%)`,
+                        transform: `translate(calc(-50% + ${scooter.shadowX}), ${scooter.shadowY})`,
+                      }}
+                    />
+                    <div
+                      className="relative z-10 h-full w-full"
+                      style={{
+                        transform: `translate(${scooter.imageOffsetX}, ${scooter.imageOffsetY})`,
+                      }}
+                    >
+                      <Image
+                        draggable={false}
+                        src={scooter.image}
+                        alt={`Scooter ${scooter.name} in vista laterale`}
+                        width={500}
+                        height={375}
+                        sizes="(max-width: 767px) 92vw, (max-width: 1279px) 45vw, 23vw"
+                        className="h-full w-full object-contain"
+                      />
+                    </div>
+                  </div>
+                  <div
+                    className="mt-4 border-t pt-4"
+                    style={{ borderColor: scooter.ruleTone }}
+                  >
+                    <p
+                      className="font-ui text-[0.66rem] font-bold uppercase tracking-[0.16em]"
+                      style={{ color: scooter.mutedTone }}
+                    >
+                      {scooter.categoryLabel}
+                    </p>
+                    <h3 className="font-display mt-2 text-3xl font-bold leading-none">
+                      {scooter.name}
+                    </h3>
+                    <p
+                      className="mt-3 text-sm leading-6"
+                      style={{ color: scooter.mutedTone }}
+                    >
+                      {scooter.statement}
+                    </p>
+                  </div>
+                </article>
+              ))}
+            </div>
 
-        <p className="font-ui mt-2 text-xs font-semibold text-[oklch(24%_0.014_56/0.56)] md:hidden">
-          Scorri per vedere i modelli in evidenza.
-        </p>
+            <p className="font-ui mt-2 text-xs font-semibold text-[oklch(24%_0.014_56/0.56)] md:hidden">
+              Scorri per vedere i modelli in evidenza.
+            </p>
           </>
         )}
 
