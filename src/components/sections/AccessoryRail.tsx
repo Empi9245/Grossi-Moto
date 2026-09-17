@@ -114,7 +114,7 @@ export function AccessoryRail() {
         role="region"
         aria-label="Accessori da sfogliare"
         tabIndex={0}
-        className="hide-scrollbar relative flex cursor-grab snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain pb-1 active:cursor-grabbing [--card-width:84%] after:block after:w-[max(0px,calc(100%-var(--card-width)-16px))] after:shrink-0 after:content-[''] focus-visible:outline-2 focus-visible:outline-offset-4 md:[--card-width:42%] lg:[--card-width:30%]"
+        className="hide-scrollbar relative left-1/2 flex w-dvw -translate-x-1/2 cursor-grab snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain pb-1 active:cursor-grabbing [--card-width:84%] after:block after:w-[max(0px,calc(100%-var(--card-width)-16px))] after:shrink-0 after:content-[''] focus-visible:outline-2 focus-visible:outline-offset-4 md:[--card-width:42%] lg:[--card-width:30%]"
         onPointerDown={(event) => {
           const isMouseDrag = event.pointerType === "mouse" && event.button === 0;
           gesture.current = {
