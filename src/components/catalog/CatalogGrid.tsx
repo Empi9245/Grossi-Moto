@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
 import {
@@ -23,123 +23,9 @@ type CatalogGridProps = {
 type CatalogGridVariantProps = Omit<CatalogGridProps, "isCompactViewport">;
 
 const desktopCatalogColumnCount = 4;
-const compactExpandedSlotSpan = 2;
 const productEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
 const rowLayoutDuration = 0.26;
 const detailRevealDuration = 0.18;
-
-function isOutsideExpandedSlot(
-  columnIndex: number,
-  targetColumnIndex: number,
-  expandedSlotSpan: number,
-) {
-  return (
-    columnIndex < targetColumnIndex ||
-    columnIndex >= targetColumnIndex + expandedSlotSpan
-  );
-}
-
-function getCompactCatalogColumnCount() {
-  if (typeof window === "undefined") {
-    return 1;
-  }
-
-  return window.matchMedia("(min-width: 768px)").matches ? 2 : 1;
-}
-
-function useCompactCatalogColumnCount() {
-  const [columnCount, setColumnCount] = useState(1);
-
-  useEffect(() => {
-    const tabletMedia = window.matchMedia("(min-width: 768px)");
-    const updateColumnCount = () =>
-      setColumnCount(getCompactCatalogColumnCount());
-
-    updateColumnCount();
-    tabletMedia.addEventListener("change", updateColumnCount);
-
-    return () => {
-      tabletMedia.removeEventListener("change", updateColumnCount);
-    };
-  }, []);
-
-  return columnCount;
-}
-
-function getCompactCatalogGridOrder(
-  scooters: CatalogScooter[],
-  expandedId: string | null,
-  columnCount: number,
-) {
-  if (!expandedId) {
-    return scooters;
-  }
-
-  const expandedIndex = scooters.findIndex(
-    (scooter) => scooter.id === expandedId,
-  );
-
-  if (expandedIndex < 0) {
-    return scooters;
-  }
-
-  const safeColumnCount = Math.max(1, columnCount);
-  const expandedSlotSpan = Math.min(
-    compactExpandedSlotSpan,
-    safeColumnCount,
-  );
-
-  if (expandedSlotSpan === 1) {
-    return scooters;
-  }
-
-  const rowStartIndex =
-    Math.floor(expandedIndex / safeColumnCount) * safeColumnCount;
-  const expandedColumnIndex = expandedIndex - rowStartIndex;
-  const lastAvailableExpandedColumn = safeColumnCount - expandedSlotSpan;
-  const targetColumnIndex = Math.min(
-    expandedColumnIndex,
-    lastAvailableExpandedColumn,
-  );
-  const expandedScooter = scooters[expandedIndex];
-  const rowScooters = scooters.slice(
-    rowStartIndex,
-    rowStartIndex + safeColumnCount,
-  );
-  const beforeExpandedSlots = rowScooters
-    .filter((scooter) => scooter.id !== expandedId)
-    .slice(0, targetColumnIndex);
-  const afterExpandedSlots = rowScooters
-    .slice(expandedIndex - rowStartIndex + 1)
-    .slice(0, safeColumnCount - targetColumnIndex - expandedSlotSpan);
-  const topRowScooterIds = new Set([
-    expandedId,
-    ...beforeExpandedSlots.map((scooter) => scooter.id),
-    ...afterExpandedSlots.map((scooter) => scooter.id),
-  ]);
-  const lowerStream = [
-    ...rowScooters.filter((scooter) => !topRowScooterIds.has(scooter.id)),
-    ...scooters.slice(rowStartIndex + safeColumnCount),
-  ];
-  const firstLowerRow = lowerStream.slice(0, safeColumnCount);
-  const outsideExpandedSlotScooters = firstLowerRow.filter((_, columnIndex) =>
-    isOutsideExpandedSlot(columnIndex, targetColumnIndex, expandedSlotSpan),
-  );
-  const underExpandedSlotScooters = firstLowerRow.filter(
-    (_, columnIndex) =>
-      !isOutsideExpandedSlot(columnIndex, targetColumnIndex, expandedSlotSpan),
-  );
-
-  return [
-    ...scooters.slice(0, rowStartIndex),
-    ...beforeExpandedSlots,
-    expandedScooter,
-    ...afterExpandedSlots,
-    ...outsideExpandedSlotScooters,
-    ...underExpandedSlotScooters,
-    ...lowerStream.slice(safeColumnCount),
-  ];
-}
 
 function getDesktopCatalogRows(scooters: CatalogScooter[]) {
   const rows: CatalogScooter[][] = [];
@@ -154,13 +40,12 @@ function getDesktopCatalogRows(scooters: CatalogScooter[]) {
 function getRowLayoutDependency(
   rowIndex: number,
   expandedRowIndex: number,
-  expandedId: string | null,
 ) {
-  if (expandedRowIndex < 0 || !expandedId || rowIndex < expandedRowIndex) {
+  if (expandedRowIndex < 0 || rowIndex < expandedRowIndex) {
     return "stable";
   }
 
-  return `${rowIndex === expandedRowIndex ? "detail" : "after-detail"}-${expandedRowIndex}-${expandedId}`;
+  return `${rowIndex === expandedRowIndex ? "detail" : "after-detail"}-${expandedRowIndex}`;
 }
 
 function EmptyCatalogState({ shouldReduceMotion }: { shouldReduceMotion: boolean }) {
@@ -189,28 +74,18 @@ function CompactCatalogGrid({
   onExpandScooter,
   onCollapseScooter,
 }: CatalogGridVariantProps) {
-  const compactColumnCount = useCompactCatalogColumnCount();
-  const orderedScooters = useMemo(
-    () =>
-      getCompactCatalogGridOrder(
-        scooters,
-        expandedId,
-        compactColumnCount,
-      ),
-    [compactColumnCount, expandedId, scooters],
-  );
   const cardToneAssignments = useMemo(
-    () => getCatalogCardToneAssignments(scooters, compactColumnCount),
-    [compactColumnCount, scooters],
+    () => getCatalogCardToneAssignments(scooters, 1),
+    [scooters],
   );
 
   return (
     <div
       id="catalog-list"
       aria-label="Modelli in gamma"
-      className="grid grid-cols-1 content-start items-start gap-4 [grid-auto-flow:row] md:grid-cols-2 md:[grid-auto-rows:minmax(19.5rem,auto)]"
+      className="grid grid-cols-1 content-start items-start gap-4"
     >
-      {orderedScooters.map((scooter) => {
+      {scooters.map((scooter) => {
         const isExpanded = expandedId === scooter.id;
 
         return (
@@ -222,7 +97,7 @@ function CompactCatalogGrid({
             isSelected={isExpanded}
             transitionImageId={transitionImageId}
             cardToneAssignment={cardToneAssignments[scooter.id]}
-            isPriority={scooter.id === orderedScooters[0]?.id}
+            isPriority={scooter.id === scooters[0]?.id}
             onExpandScooter={onExpandScooter}
             onCollapseScooter={onCollapseScooter}
           />
@@ -268,7 +143,6 @@ function DesktopCatalogGrid({
             layoutDependency={getRowLayoutDependency(
               rowIndex,
               expandedRowIndex,
-              expandedId,
             )}
             transition={{
               layout: {

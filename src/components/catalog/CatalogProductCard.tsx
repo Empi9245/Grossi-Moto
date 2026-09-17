@@ -80,24 +80,24 @@ function getProductStyle(
 
 function ProductSpecs({ scooter }: { scooter: CatalogScooter }) {
   return (
-    <div className="mt-5 grid gap-2 sm:grid-cols-3">
+    <div className="mt-4 grid grid-cols-3 gap-2 sm:mt-5">
       {scooter.specs.slice(0, 3).map((spec) => {
         const Icon = specIcons[spec.icon];
 
         return (
           <div
             key={`${scooter.id}-${spec.label}`}
-            className="min-w-0 rounded-[0.9rem] bg-[oklch(96%_0.006_78/0.36)] px-3.5 py-3 shadow-[inset_0_0_0_1px_oklch(18%_0.014_56/0.09)]"
+            className="min-w-0 rounded-[0.9rem] bg-[oklch(96%_0.006_78/0.36)] px-2.5 py-2.5 shadow-[inset_0_0_0_1px_oklch(18%_0.014_56/0.09)] sm:px-3.5 sm:py-3"
           >
             <Icon
               aria-hidden
               className="h-4 w-4 text-[var(--product-accent)]"
               strokeWidth={1.7}
             />
-            <p className="font-display mt-3 truncate text-xl font-bold leading-none text-current">
+            <p className="font-display mt-2.5 truncate text-base font-bold leading-none text-current sm:mt-3 sm:text-xl">
               {spec.value}
             </p>
-            <p className="font-ui mt-2 truncate text-[0.61rem] font-bold uppercase tracking-[0.13em] text-[var(--product-muted)]">
+            <p className="font-ui mt-1.5 truncate text-[0.54rem] font-bold uppercase tracking-[0.09em] text-[var(--product-muted)] sm:mt-2 sm:text-[0.61rem] sm:tracking-[0.13em]">
               {spec.label}
             </p>
           </div>
@@ -109,7 +109,7 @@ function ProductSpecs({ scooter }: { scooter: CatalogScooter }) {
 
 function ProductContactActions({ scooter }: { scooter: CatalogScooter }) {
   return (
-    <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+    <div className="mt-4 flex flex-col gap-3 sm:mt-5 sm:flex-row">
       <a
         href="tel:+393289185029"
         aria-label={`Chiama per disponibilità per ${scooter.name}: chiama Grossi Moto`}
@@ -160,7 +160,7 @@ export const CatalogProductCard = memo(function CatalogProductCard({
   const imageClassName = clsx(
     "relative z-10 w-full object-contain object-center",
     isExpanded
-      ? "h-[14rem] max-h-[22rem] sm:h-[16.5rem] md:h-full md:max-h-[28rem]"
+      ? "h-[12.5rem] max-h-[20rem] sm:h-[15.5rem] md:h-full md:max-h-[26rem]"
       : "h-[12.25rem] max-h-[12.25rem]",
   );
   const expandedContentMotion = shouldReduceMotion
@@ -170,6 +170,13 @@ export const CatalogProductCard = memo(function CatalogProductCard({
         animate: { opacity: 1, y: 0 },
         transition: { duration: expandedContentDuration, ease: productEase },
       };
+
+  const handleCompactCollapse = () => {
+    onCollapseScooter();
+    requestAnimationFrame(() => {
+      document.getElementById(cardTriggerId)?.focus();
+    });
+  };
 
   return (
     <div
@@ -189,7 +196,7 @@ export const CatalogProductCard = memo(function CatalogProductCard({
         className={clsx(
           "group relative overflow-hidden rounded-[1.35rem] p-4 shadow-[0_0_0_1px_oklch(18%_0.014_56/0.052),0_18px_46px_oklch(18%_0.014_56/0.09)] sm:p-5",
           isExpanded
-            ? "h-full min-h-0 sm:min-h-[35rem]"
+            ? "h-full min-h-0 sm:min-h-[32rem]"
             : "min-h-[17.75rem] sm:min-h-[19.5rem]",
           !isExpanded &&
             "transition-[box-shadow,transform] duration-200 hover:shadow-[0_0_0_1px_oklch(18%_0.014_56/0.075),0_22px_56px_oklch(18%_0.014_56/0.12)]",
@@ -203,7 +210,7 @@ export const CatalogProductCard = memo(function CatalogProductCard({
           className={clsx(
             "relative z-10 grid gap-5",
             isExpanded
-              ? "grid h-full min-h-0 gap-5 sm:min-h-[31rem] md:grid-cols-[minmax(0,0.88fr)_minmax(0,1.12fr)] md:grid-rows-[auto_minmax(12rem,1fr)_auto]"
+              ? "grid h-full min-h-0 gap-4 sm:min-h-[28rem] sm:gap-5 md:grid-cols-[minmax(0,0.88fr)_minmax(0,1.12fr)] md:grid-rows-[auto_minmax(12rem,1fr)_auto]"
               : "min-h-[15.75rem] grid-rows-[auto_minmax(10rem,1fr)_auto] sm:min-h-[17rem] sm:grid-rows-[auto_minmax(11.25rem,1fr)_auto]",
           )}
         >
@@ -222,7 +229,7 @@ export const CatalogProductCard = memo(function CatalogProductCard({
                 className={clsx(
                   "font-display font-bold tracking-normal text-current",
                   isExpanded
-                    ? "text-[clamp(2.45rem,10vw,4.2rem)] leading-[0.9] md:text-[clamp(2.4rem,4.4vw,4.7rem)]"
+                    ? "text-[clamp(2.1rem,9vw,3.7rem)] leading-[0.92] md:text-[clamp(2.4rem,4.4vw,4.7rem)]"
                     : "text-[1.55rem] leading-none",
                 )}
               >
@@ -239,7 +246,7 @@ export const CatalogProductCard = memo(function CatalogProductCard({
                 aria-label={`Comprimi ${scooter.name}`}
                 onClick={(event) => {
                   event.stopPropagation();
-                  onCollapseScooter();
+                  handleCompactCollapse();
                 }}
                 className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-[oklch(96%_0.006_78/0.46)] text-current shadow-[inset_0_0_0_1px_oklch(18%_0.014_56/0.12)] outline-none transition-[background,transform] duration-200 hover:bg-[oklch(98%_0.004_78/0.64)] active:translate-y-px focus-visible:ring-2 focus-visible:ring-[var(--product-accent)]"
               >
@@ -256,7 +263,7 @@ export const CatalogProductCard = memo(function CatalogProductCard({
             className={clsx(
               "relative flex min-h-0 items-center justify-center",
               isExpanded
-                ? "min-h-[15rem] md:col-start-2 md:row-span-2 md:row-start-1 md:min-h-0"
+                ? "min-h-[13rem] md:col-start-2 md:row-span-2 md:row-start-1 md:min-h-0"
                 : "min-h-[11.25rem]",
             )}
           >
@@ -302,7 +309,7 @@ export const CatalogProductCard = memo(function CatalogProductCard({
               id={expandedContentId}
               className="min-w-0 md:col-span-2 md:row-start-3"
             >
-              <p className="max-w-[46rem] text-[0.98rem] leading-7 text-[var(--product-muted)] sm:text-base">
+              <p className="max-w-[46rem] text-[0.95rem] leading-6 text-[var(--product-muted)] sm:text-base sm:leading-7">
                 {scooter.positioning}
               </p>
               <ProductSpecs scooter={scooter} />

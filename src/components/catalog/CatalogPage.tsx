@@ -158,7 +158,7 @@ export function CatalogPage({ initialFocusId }: { initialFocusId?: string }) {
             scooters={visibleScooters}
             expandedId={expandedId}
             isCompactViewport={isCompactViewport}
-            shouldReduceMotion={shouldReduceMotion || isCompactViewport}
+            shouldReduceMotion={shouldReduceMotion}
             transitionImageId={transitionImageId}
             onExpandScooter={setExpandedId}
             onCollapseScooter={handleCollapseScooter}
