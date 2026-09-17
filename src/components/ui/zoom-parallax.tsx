@@ -28,7 +28,7 @@ type ZoomParallaxProps = {
 
 const defaultImages: ParallaxImage[] = [
   {
-    src: "/grossimoto/home-scroll/zoom-main-scooter.webp",
+    src: "/grossimoto/home-scroll/zoom-main-scooter-v2.webp",
     alt: "People S 125 ABS in un contesto aperto",
   },
   {
@@ -71,7 +71,7 @@ function StaticParallaxFallback({ images }: { images: ParallaxImage[] }) {
       <Image
         src={
           images[0]?.src ??
-          "/grossimoto/home-scroll/zoom-main-scooter.webp"
+          "/grossimoto/home-scroll/zoom-main-scooter-v2.webp"
         }
         alt={images[0]?.alt ?? "Scooter in viaggio"}
         fill
