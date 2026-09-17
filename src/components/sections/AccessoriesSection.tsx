@@ -4,12 +4,12 @@ export function AccessoriesSection() {
   return (
     <section
       aria-labelledby="accessories-heading"
-      className="bg-[oklch(91%_0.014_78)] px-4 py-16 text-[var(--ink)] sm:px-6 sm:py-20 lg:px-10 lg:py-24"
+      className="bg-white px-4 py-16 text-[#111] sm:px-6 sm:py-20 lg:px-10 lg:py-24"
     >
       <div className="mx-auto min-w-0 max-w-[92rem]">
-        <div className="grid gap-6 border-t border-current/20 pt-6 lg:grid-cols-[1.5fr_1fr] lg:items-end lg:gap-16">
+        <div className="grid gap-6 border-t border-black/15 pt-6 lg:grid-cols-[1.5fr_1fr] lg:items-end lg:gap-16">
           <div>
-            <p className="font-ui text-xs font-bold uppercase tracking-[0.18em]">
+            <p className="font-ui text-xs font-bold uppercase tracking-[0.18em] text-black/60">
               Accessori
             </p>
             <h2
@@ -19,7 +19,7 @@ export function AccessoriesSection() {
               Accessori che fanno la differenza.
             </h2>
           </div>
-          <p className="max-w-[42ch] text-base leading-relaxed lg:pb-1 lg:text-lg">
+          <p className="max-w-[42ch] text-base leading-relaxed text-black/68 lg:pb-1 lg:text-lg">
             Verifichiamo insieme disponibilità, compatibilità e montaggio in
             base al tuo scooter e all’uso che ne fai.
           </p>
