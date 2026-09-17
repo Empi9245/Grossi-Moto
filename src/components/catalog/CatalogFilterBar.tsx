@@ -402,124 +402,115 @@ export function CatalogFilterBar({
       >
         <div
           className={clsx(
-            "mx-auto max-w-xl overflow-hidden rounded-[1.1rem] border border-black/10 bg-white p-1.5 shadow-[0_12px_30px_rgba(0,0,0,0.10)] transition-[clip-path] duration-[340ms] ease-[cubic-bezier(0.22,1,0.36,1)] will-change-[clip-path] motion-reduce:transition-none",
+            "mx-auto max-w-xl overflow-hidden rounded-[1.1rem] border border-black/10 bg-white p-1.5 shadow-[0_12px_30px_rgba(0,0,0,0.10)] transition-[clip-path] duration-[340ms] ease-[cubic-bezier(0.22,1,0.36,1)] will-change-[clip-path] [&>div]:transition-opacity [&>div]:duration-150 [&>div]:ease-out motion-reduce:transition-none motion-reduce:[&>div]:transition-none",
             compactToolbarVisible
-              ? "[clip-path:inset(0_0_0_0_round_1.1rem)]"
-              : "pointer-events-none [clip-path:inset(0_50%_0_50%_round_999px)]",
+              ? "[clip-path:inset(0_0_0_0_round_1.1rem)] [&>div]:delay-[75ms] [&>div]:opacity-100"
+              : "pointer-events-none [clip-path:inset(0_50%_0_50%_round_999px)] [&>div]:delay-0 [&>div]:opacity-0",
           )}
         >
-          <div
-            className={clsx(
-              "transition-opacity duration-150 ease-out motion-reduce:transition-none",
-              compactToolbarVisible
-                ? "delay-[75ms] opacity-100"
-                : "delay-0 opacity-0",
-            )}
-          >
-            {compactSearchOpen ? (
-              <div
-                id="compact-catalog-search"
-                className="flex min-h-12 items-center gap-1.5"
+          {compactSearchOpen ? (
+            <div
+              id="compact-catalog-search"
+              className="flex min-h-12 items-center gap-1.5"
+            >
+              <div className="relative min-w-0 flex-1">
+                <label htmlFor="catalog-search-compact" className="sr-only">
+                  Cerca nella gamma
+                </label>
+                <Search
+                  aria-hidden="true"
+                  className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-black/45"
+                  strokeWidth={1.8}
+                />
+                <input
+                  id="catalog-search-compact"
+                  type="search"
+                  value={searchQuery}
+                  onChange={(event) => onSearchChange(event.target.value)}
+                  placeholder="Cerca modello, marca o cilindrata"
+                  autoComplete="off"
+                  autoFocus
+                  className="font-ui min-h-11 w-full rounded-[0.85rem] bg-[#F3F3F3] py-2.5 pl-10 pr-10 text-sm font-medium text-black outline-none ring-1 ring-inset ring-black/10 placeholder:text-black/42 focus:bg-white focus:ring-2 focus:ring-black/20"
+                />
+                {hasSearchQuery ? (
+                  <button
+                    type="button"
+                    onClick={() => onSearchChange("")}
+                    aria-label="Cancella ricerca"
+                    className="absolute right-1 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full text-black/55 outline-none hover:bg-black/[0.06] focus-visible:ring-2 focus-visible:ring-black/35"
+                  >
+                    <X
+                      aria-hidden="true"
+                      className="h-4 w-4"
+                      strokeWidth={1.8}
+                    />
+                  </button>
+                ) : null}
+              </div>
+              <button
+                type="button"
+                onClick={() => setCompactSearchOpen(false)}
+                className="font-ui min-h-11 shrink-0 rounded-[0.85rem] px-3 text-[0.68rem] font-bold uppercase tracking-[0.08em] text-black/60 outline-none hover:bg-black/[0.05] focus-visible:ring-2 focus-visible:ring-black/35"
               >
-                <div className="relative min-w-0 flex-1">
-                  <label htmlFor="catalog-search-compact" className="sr-only">
-                    Cerca nella gamma
-                  </label>
-                  <Search
-                    aria-hidden="true"
-                    className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-black/45"
-                    strokeWidth={1.8}
-                  />
-                  <input
-                    id="catalog-search-compact"
-                    type="search"
-                    value={searchQuery}
-                    onChange={(event) => onSearchChange(event.target.value)}
-                    placeholder="Cerca modello, marca o cilindrata"
-                    autoComplete="off"
-                    autoFocus
-                    className="font-ui min-h-11 w-full rounded-[0.85rem] bg-[#F3F3F3] py-2.5 pl-10 pr-10 text-sm font-medium text-black outline-none ring-1 ring-inset ring-black/10 placeholder:text-black/42 focus:bg-white focus:ring-2 focus:ring-black/20"
-                  />
-                  {hasSearchQuery ? (
-                    <button
-                      type="button"
-                      onClick={() => onSearchChange("")}
-                      aria-label="Cancella ricerca"
-                      className="absolute right-1 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full text-black/55 outline-none hover:bg-black/[0.06] focus-visible:ring-2 focus-visible:ring-black/35"
-                    >
-                      <X
-                        aria-hidden="true"
-                        className="h-4 w-4"
-                        strokeWidth={1.8}
-                      />
-                    </button>
-                  ) : null}
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setCompactSearchOpen(false)}
-                  className="font-ui min-h-11 shrink-0 rounded-[0.85rem] px-3 text-[0.68rem] font-bold uppercase tracking-[0.08em] text-black/60 outline-none hover:bg-black/[0.05] focus-visible:ring-2 focus-visible:ring-black/35"
-                >
-                  Chiudi
-                </button>
-              </div>
-            ) : (
-              <div className="flex min-h-12 items-center gap-1">
-                <button
-                  type="button"
-                  aria-expanded={false}
-                  aria-controls="compact-catalog-search"
-                  onClick={() => setCompactSearchOpen(true)}
-                  className="font-ui inline-flex min-h-11 items-center gap-2 rounded-[0.85rem] px-3 text-[0.7rem] font-bold uppercase tracking-[0.08em] text-black outline-none transition-colors hover:bg-black/[0.05] focus-visible:ring-2 focus-visible:ring-black/35"
-                >
-                  <Search
-                    aria-hidden="true"
-                    className="h-4 w-4"
-                    strokeWidth={1.8}
-                  />
-                  Cerca
-                </button>
-                <button
-                  type="button"
-                  aria-haspopup="dialog"
-                  aria-pressed={hasActiveFilter}
-                  onClick={(event) => openFilterDialog(event.currentTarget)}
-                  className={clsx(
-                    "font-ui inline-flex min-h-11 items-center gap-2 rounded-[0.85rem] px-3 text-[0.7rem] font-bold uppercase tracking-[0.08em] outline-none transition-colors focus-visible:ring-2 focus-visible:ring-black/35",
-                    hasActiveFilter
-                      ? "bg-black text-white hover:bg-black/85"
-                      : "text-black hover:bg-black/[0.05]",
-                  )}
-                >
-                  <SlidersHorizontal
-                    aria-hidden="true"
-                    className="h-4 w-4"
-                    strokeWidth={1.8}
-                  />
-                  Filtri
-                  {activeFilterCount > 0 ? (
-                    <span className="grid h-4 min-w-4 place-items-center rounded-full bg-white px-1 text-[0.52rem] text-black">
-                      {activeFilterCount}
-                    </span>
-                  ) : null}
-                </button>
+                Chiudi
+              </button>
+            </div>
+          ) : (
+            <div className="flex min-h-12 items-center gap-1">
+              <button
+                type="button"
+                aria-expanded={false}
+                aria-controls="compact-catalog-search"
+                onClick={() => setCompactSearchOpen(true)}
+                className="font-ui inline-flex min-h-11 items-center gap-2 rounded-[0.85rem] px-3 text-[0.7rem] font-bold uppercase tracking-[0.08em] text-black outline-none transition-colors hover:bg-black/[0.05] focus-visible:ring-2 focus-visible:ring-black/35"
+              >
+                <Search
+                  aria-hidden="true"
+                  className="h-4 w-4"
+                  strokeWidth={1.8}
+                />
+                Cerca
+              </button>
+              <button
+                type="button"
+                aria-haspopup="dialog"
+                aria-pressed={hasActiveFilter}
+                onClick={(event) => openFilterDialog(event.currentTarget)}
+                className={clsx(
+                  "font-ui inline-flex min-h-11 items-center gap-2 rounded-[0.85rem] px-3 text-[0.7rem] font-bold uppercase tracking-[0.08em] outline-none transition-colors focus-visible:ring-2 focus-visible:ring-black/35",
+                  hasActiveFilter
+                    ? "bg-black text-white hover:bg-black/85"
+                    : "text-black hover:bg-black/[0.05]",
+                )}
+              >
+                <SlidersHorizontal
+                  aria-hidden="true"
+                  className="h-4 w-4"
+                  strokeWidth={1.8}
+                />
+                Filtri
+                {activeFilterCount > 0 ? (
+                  <span className="grid h-4 min-w-4 place-items-center rounded-full bg-white px-1 text-[0.52rem] text-black">
+                    {activeFilterCount}
+                  </span>
+                ) : null}
+              </button>
 
-                <div
-                  className="ml-auto min-w-0 px-2 text-right"
-                  aria-label="Posizione nel catalogo"
-                >
-                  <span className="font-ui block truncate text-[0.55rem] font-bold uppercase tracking-[0.12em] text-black/45">
-                    {activeBrand ?? "Gamma"}
-                  </span>
-                  <span className="font-ui mt-0.5 block whitespace-nowrap text-[0.72rem] font-bold text-black">
-                    {resultCount > 0 && activePosition > 0
-                      ? `${activePosition} di ${resultCount}`
-                      : resultLabel}
-                  </span>
-                </div>
+              <div
+                className="ml-auto min-w-0 px-2 text-right"
+                aria-label="Posizione nel catalogo"
+              >
+                <span className="font-ui block truncate text-[0.55rem] font-bold uppercase tracking-[0.12em] text-black/45">
+                  {activeBrand ?? "Gamma"}
+                </span>
+                <span className="font-ui mt-0.5 block whitespace-nowrap text-[0.72rem] font-bold text-black">
+                  {resultCount > 0 && activePosition > 0
+                    ? `${activePosition} di ${resultCount}`
+                    : resultLabel}
+                </span>
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
 
