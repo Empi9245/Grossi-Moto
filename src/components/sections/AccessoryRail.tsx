@@ -85,6 +85,37 @@ export function AccessoryRail() {
     });
   };
 
+  const snapToNearest = () => {
+    const rail = railRef.current;
+    if (!rail) return;
+    const cards = Array.from(rail.querySelectorAll<HTMLElement>("article"));
+    if (!cards.length) return;
+    const start = rail.getBoundingClientRect().left;
+    const distances = cards.map((card) =>
+      Math.abs(card.getBoundingClientRect().left - start),
+    );
+    const nearest = distances.indexOf(Math.min(...distances));
+    activeRef.current = nearest;
+    setActive(nearest);
+    goTo(nearest);
+  };
+
+  const finishMouseDrag = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (gesture.current.pointerId !== event.pointerId) return;
+
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+
+    event.currentTarget.style.scrollSnapType = "";
+    gesture.current.dragging = false;
+    gesture.current.pointerId = null;
+
+    if (gesture.current.moved) {
+      requestAnimationFrame(snapToNearest);
+    }
+  };
+
   const controlClass =
     "inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-black/20 text-black focus-visible:outline-2 focus-visible:outline-offset-4 aria-disabled:opacity-35";
 
@@ -114,7 +145,7 @@ export function AccessoryRail() {
         role="region"
         aria-label="Accessori da sfogliare"
         tabIndex={0}
-        className="hide-scrollbar relative left-1/2 flex w-dvw -translate-x-1/2 cursor-grab snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain pb-1 active:cursor-grabbing [--card-width:84%] after:block after:w-[max(0px,calc(100%-var(--card-width)-16px))] after:shrink-0 after:content-[''] focus-visible:outline-2 focus-visible:outline-offset-4 md:[--card-width:42%] lg:[--card-width:30%]"
+        className="hide-scrollbar relative left-1/2 flex w-dvw -translate-x-1/2 cursor-grab snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain pb-1 active:cursor-grabbing [--card-width:80%] after:block after:w-[max(0px,calc(100%-var(--card-width)-16px))] after:shrink-0 after:content-[''] focus-visible:outline-2 focus-visible:outline-offset-4 md:[--card-width:40%] lg:[--card-width:28%]"
         onPointerDown={(event) => {
           const isMouseDrag = event.pointerType === "mouse" && event.button === 0;
           gesture.current = {
@@ -127,6 +158,8 @@ export function AccessoryRail() {
           };
 
           if (isMouseDrag) {
+            event.preventDefault();
+            event.currentTarget.style.scrollSnapType = "none";
             event.currentTarget.setPointerCapture(event.pointerId);
           }
         }}
@@ -139,30 +172,21 @@ export function AccessoryRail() {
           }
 
           if (event.pointerType === "mouse" && gesture.current.dragging) {
-            if (Math.abs(deltaX) > 2) event.preventDefault();
+            event.preventDefault();
             event.currentTarget.scrollLeft = gesture.current.scrollLeft - deltaX;
           }
         }}
-        onPointerUp={(event) => {
-          if (
-            gesture.current.pointerId === event.pointerId &&
-            event.currentTarget.hasPointerCapture(event.pointerId)
-          ) {
-            event.currentTarget.releasePointerCapture(event.pointerId);
-          }
-          gesture.current.dragging = false;
-          gesture.current.pointerId = null;
-        }}
+        onPointerUp={finishMouseDrag}
         onPointerCancel={(event) => {
           gesture.current.moved = true;
-          gesture.current.dragging = false;
-          if (
-            gesture.current.pointerId === event.pointerId &&
-            event.currentTarget.hasPointerCapture(event.pointerId)
-          ) {
-            event.currentTarget.releasePointerCapture(event.pointerId);
+          finishMouseDrag(event);
+        }}
+        onLostPointerCapture={(event) => {
+          if (gesture.current.pointerId === event.pointerId) {
+            event.currentTarget.style.scrollSnapType = "";
+            gesture.current.dragging = false;
+            gesture.current.pointerId = null;
           }
-          gesture.current.pointerId = null;
         }}
         onClickCapture={(event) => {
           if (event.detail > 0 && gesture.current.moved) event.preventDefault();
@@ -183,7 +207,7 @@ export function AccessoryRail() {
                 alt={item.alt}
                 width={800}
                 height={1000}
-                sizes="(min-width: 1024px) 30vw, (min-width: 768px) 42vw, 84vw"
+                sizes="(min-width: 1024px) 28vw, (min-width: 768px) 40vw, 80vw"
                 draggable={false}
                 className="aspect-[5/4] w-full object-cover object-center"
               />
