@@ -230,11 +230,11 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
                   : ""
               } ${
                 index === 7
-                  ? "[&>div]:!-top-[42vh] [&>div]:!left-[40vw] [&>div]:!h-[24vh] [&>div]:!w-[28vw]"
+                  ? "[&>div]:!-top-[35vh] [&>div]:!left-[40vw] [&>div]:!h-[24vh] [&>div]:!w-[28vw]"
                   : ""
               } ${
                 index === 8
-                  ? "[&>div]:!top-[1vh] [&>div]:!-left-[40vw] [&>div]:!h-[22vh] [&>div]:!w-[28vw]"
+                  ? "[&>div]:!top-[1vh] [&>div]:!-left-[50vw] [&>div]:!h-[26vh] [&>div]:!w-[32vw]"
                   : ""
               }`}
             >
