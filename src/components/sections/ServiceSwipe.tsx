@@ -33,7 +33,8 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
   const railRef = useRef<HTMLDivElement>(null);
   const activeRef = useRef(0);
   const [active, setActive] = useState(0);
-  const isTabletViewport = useMediaQuery("(min-width: 768px)");\n  const isMobileViewport = !isTabletViewport;
+  const isTabletViewport = useMediaQuery("(min-width: 768px)");
+  const isMobileViewport = !isTabletViewport;
 
   useEffect(() => {
     const rail = railRef.current;
