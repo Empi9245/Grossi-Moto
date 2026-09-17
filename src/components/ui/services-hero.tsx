@@ -292,7 +292,7 @@ export function ServicesHero() {
       >
         <div data-hero-label>
           <p className="font-tech text-[0.64rem] font-semibold uppercase tracking-[0.18em] text-[#F4F0E8]/72 sm:text-xs">
-            Assistenza scooter
+            Assistenza moto e scooter
           </p>
         </div>
 
@@ -313,7 +313,7 @@ export function ServicesHero() {
         <div className="flex flex-col gap-8 pb-2 sm:pb-4 lg:flex-row lg:items-end lg:justify-between lg:gap-12">
           <div data-hero-desc className="max-w-[600px]">
             <p className="max-w-[30rem] text-base font-medium leading-7 text-[#F4F0E8]/78 sm:text-lg sm:leading-8">
-              Tagliandi, diagnosi e accessori per il tuo scooter KYMCO o Voge. Raccontaci cosa ti serve: ti aiutiamo a capire da dove partire.
+              Tagliandi, diagnosi e accessori per moto e scooter KYMCO e Voge. Raccontaci cosa ti serve: ti aiutiamo a capire da dove partire.
             </p>
           </div>
 
