@@ -1,12 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { SwipeUpCardStack } from "@/components/ui/image-stack";
-import { useMediaQuery } from "@/hooks/useMediaQuery";
-import { ArrowDown, ArrowUp } from "lucide-react";
+import { ArrowLeft, ArrowRight, PhoneCall } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
-type Service = {
+export type Service = {
   title: string;
   statement: string;
   description: string;
@@ -15,131 +13,194 @@ type Service = {
   alt: string;
 };
 
-/** Native vertical paging keeps touch momentum and releases scroll at either end. */
-function TabletServiceSwipe({ services }: { services: Service[] }) {
-  const rail = useRef<HTMLDivElement>(null);
+export function ServiceSwipe({ services }: { services: Service[] }) {
+  const railRef = useRef<HTMLDivElement>(null);
+  const activeRef = useRef(0);
   const [active, setActive] = useState(0);
 
   useEffect(() => {
-    const element = rail.current;
-    if (!element) return;
+    const rail = railRef.current;
+    if (!rail) return;
+
     let frame = 0;
-    const update = () => {
-      cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(() => {
-        const top = element.getBoundingClientRect().top;
-        let nearest = 0;
-        let distance = Infinity;
-        Array.from(element.children).forEach((child, index) => {
-          const next = Math.abs(child.getBoundingClientRect().top - top);
-          if (next < distance) { distance = next; nearest = index; }
-        });
+
+    const syncActive = () => {
+      frame = 0;
+      const cards = Array.from(
+        rail.querySelectorAll<HTMLElement>("[data-service-card]"),
+      );
+      if (cards.length === 0) return;
+
+      const railStart = rail.getBoundingClientRect().left;
+      const distances = cards.map((card) =>
+        Math.abs(card.getBoundingClientRect().left - railStart),
+      );
+      const nearest = distances.indexOf(Math.min(...distances));
+
+      if (nearest !== activeRef.current) {
+        activeRef.current = nearest;
         setActive(nearest);
-      });
+      }
     };
-    const resize = new ResizeObserver(update);
-    resize.observe(element);
-    element.addEventListener("scroll", update, { passive: true });
-    const preference = matchMedia("(prefers-reduced-motion: reduce)");
-    const stop = () => element.scrollTo({ top: element.scrollTop, behavior: "instant" });
-    preference.addEventListener("change", stop);
+
+    const scheduleSync = () => {
+      if (frame) cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(syncActive);
+    };
+
+    const observer = new ResizeObserver(scheduleSync);
+    observer.observe(rail);
+    rail
+      .querySelectorAll<HTMLElement>("[data-service-card]")
+      .forEach((card) => observer.observe(card));
+
+    rail.addEventListener("scroll", scheduleSync, { passive: true });
+
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const stopSmoothScroll = () => {
+      if (reducedMotion.matches) {
+        rail.scrollTo({ left: rail.scrollLeft, behavior: "instant" });
+      }
+    };
+
+    reducedMotion.addEventListener("change", stopSmoothScroll);
+    scheduleSync();
+
     return () => {
-      cancelAnimationFrame(frame);
-      resize.disconnect();
-      element.removeEventListener("scroll", update);
-      preference.removeEventListener("change", stop);
+      if (frame) cancelAnimationFrame(frame);
+      observer.disconnect();
+      rail.removeEventListener("scroll", scheduleSync);
+      reducedMotion.removeEventListener("change", stopSmoothScroll);
     };
   }, []);
 
-  function go(index: number, instant = false) {
-    const element = rail.current;
-    const child = element?.children[index];
-    if (!element || !child) return;
-    element.scrollTo({
-      top: element.scrollTop + child.getBoundingClientRect().top - element.getBoundingClientRect().top,
-      behavior: instant || matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+  const goTo = (index: number, keyboard = false) => {
+    const rail = railRef.current;
+    const card = rail?.querySelectorAll<HTMLElement>("[data-service-card]")[index];
+    if (!rail || !card) return;
+
+    const left =
+      rail.scrollLeft +
+      card.getBoundingClientRect().left -
+      rail.getBoundingClientRect().left;
+
+    activeRef.current = index;
+    setActive(index);
+    rail.scrollTo({
+      left,
+      behavior:
+        keyboard ||
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches
+          ? "instant"
+          : "smooth",
     });
-  }
+  };
+
+  const controlClass =
+    "inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-black/18 bg-white text-black transition-[background-color,border-color,transform] duration-150 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] hover:border-black/34 hover:bg-black/[0.04] active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-3 aria-disabled:pointer-events-none aria-disabled:opacity-30 motion-reduce:transform-none motion-reduce:transition-none";
 
   return (
-    <div className="px-5 pb-12 sm:px-7 md:px-10 lg:hidden">
-      <div className="mb-4 flex items-center justify-between gap-3">
-        <p id="service-swipe-hint" className="text-xs font-medium">Scorri verso l’alto per cambiare servizio</p>
-        <span className="shrink-0 text-sm tabular-nums" aria-live="polite" aria-atomic="true">{String(active + 1).padStart(2, "0")} / {String(services.length).padStart(2, "0")}</span>
-      </div>
+    <div className="min-w-0 lg:hidden">
       <div
-        ref={rail}
+        ref={railRef}
         role="region"
-        aria-label="I nostri servizi, sequenza verticale"
-        aria-describedby="service-swipe-hint"
+        aria-label="Servizi Grossi Moto da sfogliare"
         tabIndex={0}
-        data-lenis-prevent
-        className="h-[min(760px,78svh)] min-h-[420px] snap-y snap-mandatory overflow-y-auto rounded-2xl bg-[#DAD4CB] [scrollbar-width:thin] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1B0E0D] motion-reduce:snap-none"
+        className="hide-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain pb-1 [--service-width:84%] after:block after:w-[max(0px,calc(100%-var(--service-width)-16px))] after:shrink-0 after:content-[''] focus-visible:outline-2 focus-visible:outline-offset-4 md:[--service-width:46%]"
         onKeyDown={(event) => {
-          if (event.target !== event.currentTarget) return;
-          const index = event.key === "ArrowDown" || event.key === "PageDown" ? active + 1 : event.key === "ArrowUp" || event.key === "PageUp" ? active - 1 : event.key === "Home" ? 0 : event.key === "End" ? services.length - 1 : -1;
-          if (index < 0 || index >= services.length) return;
-          event.preventDefault();
-          go(index, true);
+          if (event.key === "ArrowLeft") {
+            event.preventDefault();
+            goTo(Math.max(0, active - 1), true);
+          } else if (event.key === "ArrowRight") {
+            event.preventDefault();
+            goTo(Math.min(services.length - 1, active + 1), true);
+          } else if (event.key === "Home") {
+            event.preventDefault();
+            goTo(0, true);
+          } else if (event.key === "End") {
+            event.preventDefault();
+            goTo(services.length - 1, true);
+          }
         }}
       >
-        {services.map((service, index) => (
-          <article key={service.title} className="flex min-h-full snap-start snap-always flex-col bg-[#DAD4CB]">
-            <div className="relative h-[clamp(160px,26svh,280px)] shrink-0 overflow-hidden">
-              <Image draggable={false} src={service.image} alt={service.alt} fill sizes="(max-width: 767px) 100vw, 90vw" className="object-cover" />
-              <span className="absolute bottom-3 left-4 bg-[#E7E3DC] px-3 py-1 text-xs font-semibold tabular-nums">{String(index + 1).padStart(2, "0")} — {service.title}</span>
+        {services.map((service) => (
+          <article
+            key={service.title}
+            data-service-card
+            className="w-[var(--service-width)] shrink-0 snap-start"
+          >
+            <div className="relative aspect-[4/3] overflow-hidden rounded-[24px] bg-black/[0.035] sm:rounded-[28px]">
+              <Image
+                src={service.image}
+                alt={service.alt}
+                fill
+                draggable={false}
+                sizes="(max-width: 767px) 84vw, (max-width: 1023px) 46vw, 1px"
+                className="object-cover"
+              />
             </div>
-            <div className="flex flex-1 flex-col gap-4 p-5 sm:p-7">
-              <h3 className="font-display max-w-[25ch] text-[clamp(1.65rem,4.8vw,2.6rem)] font-bold leading-[1.05] tracking-tight">{service.statement}</h3>
-              <p className="max-w-[60ch] text-sm leading-6 sm:text-base">{service.description}</p>
-              <ul className="mt-auto flex flex-wrap gap-x-4 gap-y-2 border-t border-[#1B0E0D]/20 pt-4 text-xs leading-5">
-                {service.features.map((feature) => <li key={feature}>{feature}</li>)}
+
+            <div className="pt-5">
+              <h3 className="font-display max-w-[14ch] text-[clamp(2rem,7vw,3rem)] font-bold uppercase leading-[0.9] tracking-[-0.035em] text-[#0A0A0A]">
+                {service.title}
+              </h3>
+              <p className="mt-4 max-w-[24ch] text-[clamp(1.2rem,4.5vw,1.7rem)] font-semibold leading-[1.05] text-black/82">
+                {service.statement}
+              </p>
+              <p className="mt-4 max-w-[44ch] text-sm leading-6 text-black/64 sm:text-base sm:leading-7">
+                {service.description}
+              </p>
+              <ul className="font-ui mt-5 grid gap-2 border-t border-black/12 pt-4 text-[0.74rem] font-semibold uppercase tracking-[0.04em] text-black/66">
+                {service.features.map((feature) => (
+                  <li key={feature} className="border-b border-black/8 pb-2 last:border-b-0">
+                    {feature}
+                  </li>
+                ))}
               </ul>
-              <span className="text-[10px] text-[#1B0E0D]/65">Immagini illustrative</span>
             </div>
           </article>
         ))}
       </div>
-      <div className="mt-4 flex items-center justify-between gap-3">
-        <a href="tel:+393289185029" className="inline-flex min-h-12 items-center text-sm font-semibold underline underline-offset-4">Parliamone insieme</a>
-        <div className="flex gap-2">
-          {([-1, 1] as const).map((direction) => (
-            <button key={direction} type="button" aria-label={direction === -1 ? "Servizio precedente" : "Servizio successivo"} aria-disabled={active + direction < 0 || active + direction >= services.length} onClick={(event) => go(active + direction, event.detail === 0)} className="flex size-12 items-center justify-center rounded-full border border-[#1B0E0D]/30 transition-colors hover:bg-[#E7E3DC] focus-visible:outline-2 focus-visible:outline-offset-2 aria-disabled:opacity-30">
-              {direction === -1 ? <ArrowUp aria-hidden="true" size={20} /> : <ArrowDown aria-hidden="true" size={20} />}
-            </button>
-          ))}
+
+      <div className="font-ui mt-7 flex flex-wrap items-center justify-between gap-4 border-t border-black/12 pt-4">
+        <a
+          href="tel:+393289185029"
+          className="inline-flex min-h-11 items-center gap-2 text-sm font-bold text-black underline decoration-black/28 underline-offset-4 transition-[text-decoration-color,transform] duration-150 hover:decoration-black active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-3 motion-reduce:transform-none motion-reduce:transition-none"
+        >
+          Parliamone insieme
+          <PhoneCall aria-hidden="true" className="h-4 w-4" strokeWidth={1.8} />
+        </a>
+
+        <div className="flex items-center gap-2.5">
+          <span className="mr-1 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-black/46" aria-live="polite">
+            {active + 1} / {services.length}
+          </span>
+          <button
+            type="button"
+            aria-label="Servizio precedente"
+            aria-disabled={active === 0}
+            className={controlClass}
+            onClick={(event) => {
+              if (active > 0) goTo(active - 1, event.detail === 0);
+            }}
+          >
+            <ArrowLeft aria-hidden="true" size={18} strokeWidth={1.8} />
+          </button>
+          <button
+            type="button"
+            aria-label="Servizio successivo"
+            aria-disabled={active === services.length - 1}
+            className={controlClass}
+            onClick={(event) => {
+              if (active < services.length - 1) {
+                goTo(active + 1, event.detail === 0);
+              }
+            }}
+          >
+            <ArrowRight aria-hidden="true" size={18} strokeWidth={1.8} />
+          </button>
         </div>
       </div>
     </div>
   );
-}
-
-export function ServiceSwipe({ services }: { services: Service[] }) {
-  const smartphone = useMediaQuery("(max-width: 767px)");
-  if (!smartphone) return <TabletServiceSwipe services={services} />;
-  return <div className="px-5 pb-12">
-    <SwipeUpCardStack
-      cards={services.map((service, index) => ({ ...service, id: service.title, src: service.image, number: index + 1 }))}
-      direction="left"
-      label="I nostri servizi"
-      className="h-[min(760px,78svh)] min-h-[420px]"
-      renderCard={service => (
-          <article className="flex h-full flex-col overflow-y-auto rounded-2xl bg-[#DAD4CB]">
-            <div className="relative h-[clamp(160px,26svh,280px)] shrink-0 overflow-hidden">
-              <Image draggable={false} src={service.image} alt={service.alt} fill sizes="(max-width: 767px) 100vw, 90vw" className="object-cover" />
-              <span className="absolute bottom-3 left-4 bg-[#E7E3DC] px-3 py-1 text-xs font-semibold tabular-nums">{String(service.number).padStart(2, "0")} — {service.title}</span>
-            </div>
-            <div className="flex flex-1 flex-col gap-4 p-5 sm:p-7">
-              <h3 className="font-display max-w-[25ch] text-[clamp(1.65rem,4.8vw,2.6rem)] font-bold leading-[1.05] tracking-tight">{service.statement}</h3>
-              <p className="max-w-[60ch] text-sm leading-6 sm:text-base">{service.description}</p>
-              <ul className="mt-auto flex flex-wrap gap-x-4 gap-y-2 border-t border-[#1B0E0D]/20 pt-4 text-xs leading-5">
-                {service.features.map((feature) => <li key={feature}>{feature}</li>)}
-              </ul>
-              <span className="text-[10px] text-[#1B0E0D]/65">Immagini illustrative</span>
-            </div>
-          </article>
-      )}
-    />
-    <a href="tel:+393289185029" className="mt-4 inline-flex min-h-12 items-center text-sm font-semibold underline underline-offset-4">Parliamone insieme</a>
-  </div>;
 }
