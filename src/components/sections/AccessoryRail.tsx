@@ -5,6 +5,13 @@ import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { accessories } from "@/data/accessories";
 
+const accessoryPastels = [
+  "#E8EEF7",
+  "#E8F1E5",
+  "#F2EAF6",
+  "#F6EEDC",
+] as const;
+
 export function AccessoryRail() {
   const railRef = useRef<HTMLDivElement>(null);
   const activeRef = useRef(0);
@@ -22,7 +29,6 @@ export function AccessoryRail() {
         Math.abs(card.getBoundingClientRect().left - start),
       );
       const nearest = distances.indexOf(Math.min(...distances));
-      // A 2px dead band prevents subpixel jitter around a shared midpoint.
       if (
         nearest !== activeRef.current &&
         distances[nearest] + 2 < distances[activeRef.current]
@@ -73,7 +79,7 @@ export function AccessoryRail() {
   };
 
   const controlClass =
-    "inline-flex min-h-12 min-w-12 items-center justify-center rounded-full border border-current/30 focus-visible:outline-2 focus-visible:outline-offset-4 aria-disabled:opacity-35";
+    "inline-flex min-h-12 min-w-12 items-center justify-center rounded-full border border-black/20 text-black focus-visible:outline-2 focus-visible:outline-offset-4 aria-disabled:opacity-35";
 
   return (
     <div className="mt-8 min-w-0 lg:mt-10">
@@ -89,7 +95,7 @@ export function AccessoryRail() {
             aria-controls="accessory-rail"
             aria-current={index === active ? "true" : undefined}
             onClick={(event) => goTo(index, event.detail === 0)}
-            className="min-h-12 max-w-full border-b-2 border-transparent text-left text-sm font-semibold [overflow-wrap:anywhere] aria-current:border-current focus-visible:outline-2 focus-visible:outline-offset-4"
+            className="min-h-12 max-w-full border-b-2 border-transparent text-left text-sm font-semibold text-black/60 [overflow-wrap:anywhere] aria-current:border-black aria-current:text-black focus-visible:outline-2 focus-visible:outline-offset-4"
           >
             {item.title}
           </button>
@@ -129,48 +135,58 @@ export function AccessoryRail() {
           <article
             key={item.id}
             aria-labelledby={`accessory-${item.id}`}
-            className="min-w-0 w-[var(--card-width)] shrink-0 snap-start [overflow-wrap:anywhere]"
+            className="min-w-0 w-[var(--card-width)] shrink-0 snap-start overflow-hidden rounded-[1.35rem] p-4 text-black shadow-[0_0_0_1px_rgba(0,0,0,0.06),0_18px_48px_rgba(0,0,0,0.06)] [overflow-wrap:anywhere]"
+            style={{
+              background: accessoryPastels[index % accessoryPastels.length],
+            }}
           >
-            <Image
-              src={item.image}
-              alt={item.alt}
-              width={800}
-              height={1000}
-              sizes="(min-width: 1552px) 560px, (min-width: 1024px) 36vw, (min-width: 768px) 42vw, 80vw"
-              draggable={false}
-              className="aspect-[4/5] w-full rounded-sm bg-[var(--panel)] object-cover object-center"
-            />
-            <h3
-              id={`accessory-${item.id}`}
-              className="font-display mt-5 text-[clamp(1.75rem,2.8vw,2.75rem)] font-black uppercase leading-none"
-            >
-              {item.title}
-            </h3>
-            <ul className="font-ui mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm font-semibold">
-              {item.examples.map((example) => (
-                <li key={example}>{example}</li>
-              ))}
-            </ul>
-            <p className="mt-3 max-w-[40ch] text-base leading-relaxed">
-              {item.description}
-            </p>
-            <a
-              href="tel:+393289185029"
-              aria-label={`Chiedi compatibilità: ${item.title}`}
-              onFocus={() => goTo(index, true)}
-              className="group font-ui mt-3 inline-flex min-h-12 max-w-full items-center gap-3 text-sm font-bold underline decoration-current/40 underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2"
-            >
-              Chiedi compatibilità{" "}
-              <ArrowUpRight
-                aria-hidden="true"
-                size={18}
-                className="shrink-0 transition-transform duration-160 group-hover:translate-x-[3px] motion-reduce:transform-none motion-reduce:transition-none"
+            <div className="overflow-hidden rounded-[1rem] bg-white/35">
+              <Image
+                src={item.image}
+                alt={item.alt}
+                width={800}
+                height={1000}
+                sizes="(min-width: 1552px) 560px, (min-width: 1024px) 36vw, (min-width: 768px) 42vw, 80vw"
+                draggable={false}
+                className="aspect-[4/5] w-full object-cover object-center"
               />
-            </a>
+            </div>
+            <div className="mt-4 border-t border-black/12 pt-4">
+              <p className="font-ui text-[0.66rem] font-bold uppercase tracking-[0.16em] text-black/55">
+                Accessori
+              </p>
+              <h3
+                id={`accessory-${item.id}`}
+                className="font-display mt-2 text-[clamp(1.85rem,3vw,2.9rem)] font-bold leading-none"
+              >
+                {item.title}
+              </h3>
+              <ul className="font-ui mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm font-semibold text-black/72">
+                {item.examples.map((example) => (
+                  <li key={example}>{example}</li>
+                ))}
+              </ul>
+              <p className="mt-3 max-w-[40ch] text-base leading-relaxed text-black/68">
+                {item.description}
+              </p>
+              <a
+                href="tel:+393289185029"
+                aria-label={`Chiedi compatibilità: ${item.title}`}
+                onFocus={() => goTo(index, true)}
+                className="group font-ui mt-4 inline-flex min-h-12 max-w-full items-center gap-3 text-sm font-bold text-black underline decoration-black/30 underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2"
+              >
+                Chiedi compatibilità{" "}
+                <ArrowUpRight
+                  aria-hidden="true"
+                  size={18}
+                  className="shrink-0 transition-transform duration-160 group-hover:translate-x-[3px] motion-reduce:transform-none motion-reduce:transition-none"
+                />
+              </a>
+            </div>
           </article>
         ))}
       </div>
-      <div className="mt-4 flex flex-wrap items-center justify-between gap-4">
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-4 text-black/60">
         <p className="font-ui text-xs">Immagini illustrative</p>
         <div className="flex items-center gap-3">
           <span
