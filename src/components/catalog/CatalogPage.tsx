@@ -3,7 +3,16 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { BadgeCheck, Gauge, Layers2 } from "lucide-react";
 
-import { CatalogFilterBar } from "@/components/catalog/CatalogFilterBar";
+import {
+  CatalogFilterBar,
+  type CatalogBrandFilter,
+  type CatalogDisplacementFilter,
+  type CatalogFilterCounts,
+  type CatalogFilterGroup,
+  type CatalogFilterState,
+  type CatalogFilterValue,
+  type CatalogVehicleFilter,
+} from "@/components/catalog/CatalogFilterBar";
 import { CatalogGrid } from "@/components/catalog/CatalogGrid";
 import { CatalogNavbar } from "@/components/catalog/CatalogNavbar";
 import { SiteFooter } from "@/components/layout/SiteFooter";
@@ -11,11 +20,16 @@ import { usePageTransition } from "@/components/transitions/PageTransitionProvid
 import {
   catalogBrandCount,
   catalogScooters,
-  type CatalogFilter,
   type CatalogScooter,
   getCatalogScooterBrand,
   getCatalogScooterById,
 } from "@/data/catalog-scooters";
+
+const defaultCatalogFilters: CatalogFilterState = {
+  vehicleType: "all",
+  brand: "all",
+  displacement: "all",
+};
 
 function normalizeSearchValue(value: string) {
   return value
@@ -27,6 +41,36 @@ function normalizeSearchValue(value: string) {
     .trim();
 }
 
+function getCatalogVehicleType(
+  scooter: CatalogScooter,
+): Exclude<CatalogVehicleFilter, "all"> {
+  return scooter.id.startsWith("voge-valico-") ? "moto" : "scooter";
+}
+
+function getCatalogDisplacementFilter(
+  scooter: CatalogScooter,
+): Exclude<CatalogDisplacementFilter, "all"> {
+  const displacement = Number.parseInt(scooter.displacement, 10);
+
+  if (displacement <= 50) {
+    return "50cc";
+  }
+
+  if (displacement <= 125) {
+    return "125cc";
+  }
+
+  if (displacement <= 250) {
+    return "150-250cc";
+  }
+
+  if (displacement <= 499) {
+    return "300-499cc";
+  }
+
+  return "500cc+";
+}
+
 const catalogSearchIndex = new Map(
   catalogScooters.map((scooter) => [
     scooter.id,
@@ -35,6 +79,7 @@ const catalogSearchIndex = new Map(
         scooter.name,
         scooter.shortName,
         getCatalogScooterBrand(scooter),
+        getCatalogVehicleType(scooter),
         scooter.family,
         scooter.displacement,
         scooter.filterCategory,
@@ -47,12 +92,43 @@ const catalogSearchIndex = new Map(
   ]),
 );
 
-function getVisibleScooters(activeFilter: CatalogFilter, searchQuery: string) {
+function matchesCatalogFilters(
+  scooter: CatalogScooter,
+  activeFilters: CatalogFilterState,
+) {
+  if (
+    activeFilters.vehicleType !== "all" &&
+    getCatalogVehicleType(scooter) !== activeFilters.vehicleType
+  ) {
+    return false;
+  }
+
+  if (
+    activeFilters.brand !== "all" &&
+    getCatalogScooterBrand(scooter) !== activeFilters.brand
+  ) {
+    return false;
+  }
+
+  if (
+    activeFilters.displacement !== "all" &&
+    getCatalogDisplacementFilter(scooter) !== activeFilters.displacement
+  ) {
+    return false;
+  }
+
+  return true;
+}
+
+function getVisibleScooters(
+  activeFilters: CatalogFilterState,
+  searchQuery: string,
+) {
   const normalizedQuery = normalizeSearchValue(searchQuery);
   const queryTokens = normalizedQuery ? normalizedQuery.split(" ") : [];
 
   return catalogScooters.filter((scooter) => {
-    if (activeFilter !== "all" && scooter.filterCategory !== activeFilter) {
+    if (!matchesCatalogFilters(scooter, activeFilters)) {
       return false;
     }
 
@@ -63,6 +139,70 @@ function getVisibleScooters(activeFilter: CatalogFilter, searchQuery: string) {
     const searchableText = catalogSearchIndex.get(scooter.id) ?? "";
     return queryTokens.every((token) => searchableText.includes(token));
   });
+}
+
+function getFilterCounts(
+  activeFilters: CatalogFilterState,
+  searchQuery: string,
+): CatalogFilterCounts {
+  const countWith = (nextFilters: CatalogFilterState) =>
+    getVisibleScooters(nextFilters, searchQuery).length;
+
+  return {
+    vehicleType: {
+      all: countWith({ ...activeFilters, vehicleType: "all" }),
+      scooter: countWith({ ...activeFilters, vehicleType: "scooter" }),
+      moto: countWith({ ...activeFilters, vehicleType: "moto" }),
+    },
+    brand: {
+      all: countWith({ ...activeFilters, brand: "all" }),
+      KYMCO: countWith({ ...activeFilters, brand: "KYMCO" }),
+      Voge: countWith({ ...activeFilters, brand: "Voge" }),
+    },
+    displacement: {
+      all: countWith({ ...activeFilters, displacement: "all" }),
+      "50cc": countWith({ ...activeFilters, displacement: "50cc" }),
+      "125cc": countWith({ ...activeFilters, displacement: "125cc" }),
+      "150-250cc": countWith({
+        ...activeFilters,
+        displacement: "150-250cc",
+      }),
+      "300-499cc": countWith({
+        ...activeFilters,
+        displacement: "300-499cc",
+      }),
+      "500cc+": countWith({ ...activeFilters, displacement: "500cc+" }),
+    },
+  };
+}
+
+function getNextCatalogFilters(
+  activeFilters: CatalogFilterState,
+  group: CatalogFilterGroup,
+  value: CatalogFilterValue,
+): CatalogFilterState {
+  if (group === "vehicleType") {
+    return {
+      ...activeFilters,
+      vehicleType: value as CatalogVehicleFilter,
+    };
+  }
+
+  if (group === "brand") {
+    return {
+      ...activeFilters,
+      brand: value as CatalogBrandFilter,
+    };
+  }
+
+  return {
+    ...activeFilters,
+    displacement: value as CatalogDisplacementFilter,
+  };
+}
+
+function hasActiveCatalogFilters(activeFilters: CatalogFilterState) {
+  return Object.values(activeFilters).some((value) => value !== "all");
 }
 
 function keepVisibleExpansion(
@@ -99,7 +239,9 @@ function useCompactViewport() {
 export function CatalogPage({ initialFocusId }: { initialFocusId?: string }) {
   const { activeScooterId, shouldReduceMotion, source } = usePageTransition();
   const initialExpandedId = getCatalogScooterById(initialFocusId)?.id ?? null;
-  const [activeFilter, setActiveFilter] = useState<CatalogFilter>("all");
+  const [activeFilters, setActiveFilters] = useState<CatalogFilterState>(
+    () => ({ ...defaultCatalogFilters }),
+  );
   const [searchQuery, setSearchQuery] = useState("");
   const [expandedId, setExpandedId] = useState<string | null>(
     () => initialExpandedId,
@@ -139,10 +281,16 @@ export function CatalogPage({ initialFocusId }: { initialFocusId?: string }) {
   }, [initialExpandedId, shouldReduceMotion]);
 
   const visibleScooters = useMemo(
-    () => getVisibleScooters(activeFilter, searchQuery),
-    [activeFilter, searchQuery],
+    () => getVisibleScooters(activeFilters, searchQuery),
+    [activeFilters, searchQuery],
   );
 
+  const filterCounts = useMemo(
+    () => getFilterCounts(activeFilters, searchQuery),
+    [activeFilters, searchQuery],
+  );
+
+  const hasActiveFilters = hasActiveCatalogFilters(activeFilters);
   const effectiveActiveScooter =
     visibleScooters.find((scooter) => scooter.id === activeVisibleScooterId) ??
     visibleScooters[0];
@@ -153,27 +301,38 @@ export function CatalogPage({ initialFocusId }: { initialFocusId?: string }) {
     : 0;
 
   const handleFilterChange = useCallback(
-    (nextFilter: CatalogFilter) => {
-      const nextVisibleScooters = getVisibleScooters(nextFilter, searchQuery);
+    (group: CatalogFilterGroup, value: CatalogFilterValue) => {
+      const nextFilters = getNextCatalogFilters(
+        activeFilters,
+        group,
+        value,
+      );
+      const nextVisibleScooters = getVisibleScooters(
+        nextFilters,
+        searchQuery,
+      );
 
-      setActiveFilter(nextFilter);
+      setActiveFilters(nextFilters);
       setExpandedId((currentExpandedId) =>
         keepVisibleExpansion(currentExpandedId, nextVisibleScooters),
       );
     },
-    [searchQuery],
+    [activeFilters, searchQuery],
   );
 
   const handleSearchChange = useCallback(
     (nextQuery: string) => {
-      const nextVisibleScooters = getVisibleScooters(activeFilter, nextQuery);
+      const nextVisibleScooters = getVisibleScooters(
+        activeFilters,
+        nextQuery,
+      );
 
       setSearchQuery(nextQuery);
       setExpandedId((currentExpandedId) =>
         keepVisibleExpansion(currentExpandedId, nextVisibleScooters),
       );
     },
-    [activeFilter],
+    [activeFilters],
   );
 
   const handleCollapseScooter = useCallback(() => {
@@ -184,9 +343,15 @@ export function CatalogPage({ initialFocusId }: { initialFocusId?: string }) {
     handleSearchChange("");
   }, [handleSearchChange]);
 
-  const handleResetFilter = useCallback(() => {
-    handleFilterChange("all");
-  }, [handleFilterChange]);
+  const handleResetFilters = useCallback(() => {
+    const nextFilters = { ...defaultCatalogFilters };
+    const nextVisibleScooters = getVisibleScooters(nextFilters, searchQuery);
+
+    setActiveFilters(nextFilters);
+    setExpandedId((currentExpandedId) =>
+      keepVisibleExpansion(currentExpandedId, nextVisibleScooters),
+    );
+  }, [searchQuery]);
 
   return (
     <>
@@ -266,7 +431,8 @@ export function CatalogPage({ initialFocusId }: { initialFocusId?: string }) {
           </section>
 
           <CatalogFilterBar
-            activeFilter={activeFilter}
+            activeFilters={activeFilters}
+            filterCounts={filterCounts}
             searchQuery={searchQuery}
             resultCount={visibleScooters.length}
             totalCount={catalogScooters.length}
@@ -277,6 +443,7 @@ export function CatalogPage({ initialFocusId }: { initialFocusId?: string }) {
                 : undefined
             }
             onFilterChange={handleFilterChange}
+            onResetFilters={handleResetFilters}
             onSearchChange={handleSearchChange}
           />
 
@@ -292,10 +459,10 @@ export function CatalogPage({ initialFocusId }: { initialFocusId?: string }) {
               shouldReduceMotion={shouldReduceMotion}
               transitionImageId={transitionImageId}
               hasSearchQuery={normalizeSearchValue(searchQuery).length > 0}
-              hasActiveFilter={activeFilter !== "all"}
+              hasActiveFilter={hasActiveFilters}
               onActiveScooterChange={setActiveVisibleScooterId}
               onClearSearch={handleClearSearch}
-              onResetFilter={handleResetFilter}
+              onResetFilter={handleResetFilters}
               onExpandScooter={setExpandedId}
               onCollapseScooter={handleCollapseScooter}
             />
