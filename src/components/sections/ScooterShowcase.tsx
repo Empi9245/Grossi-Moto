@@ -3,6 +3,7 @@
 import type { CSSProperties } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { StackedShowroomCards } from "@/components/ui/stacked-showroom-cards";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import {
@@ -724,13 +725,13 @@ function StaticShowcase() {
           </>
         )}
 
-        <a
+        <Link
           href="/scooters"
           className="font-ui mt-7 inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[oklch(18%_0.014_56)] px-5 py-3 text-sm font-bold text-[oklch(96%_0.01_78)] transition-colors hover:bg-[oklch(26%_0.014_56)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(38%_0.08_28)] focus-visible:ring-offset-4"
         >
           Apri tutta la gamma
           <ArrowUpRight aria-hidden="true" className="h-4 w-4" strokeWidth={1.8} />
-        </a>
+        </Link>
       </div>
     </section>
   );
