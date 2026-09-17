@@ -19,7 +19,7 @@ export function SiteFooter() {
             Grossi Moto di Angelo Grossi
           </p>
           <p className="mt-4 text-sm font-medium text-white/86">
-            Scooter e assistenza a Roma
+            Moto, scooter e assistenza a Roma
           </p>
           <p className="mt-2 max-w-[28rem] text-sm leading-6 text-white/62">
             Via Festo Porzio, 22, 00174 Roma RM
