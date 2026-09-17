@@ -1,23 +1,30 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 
-import { CatalogProductCard } from "@/components/catalog/CatalogProductCard";
+import {
+  CatalogProductCard,
+  CatalogProductDetail,
+} from "@/components/catalog/CatalogProductCard";
 import type { CatalogScooter } from "@/data/catalog-scooters";
 import { getCatalogCardToneAssignments } from "@/data/scooter-color-system";
 
 type CatalogGridProps = {
   scooters: CatalogScooter[];
   expandedId: string | null;
+  isCompactViewport: boolean;
   shouldReduceMotion: boolean;
   transitionImageId: string | null;
   onExpandScooter: (scooterId: string) => void;
   onCollapseScooter: () => void;
 };
 
-const defaultCatalogColumnCount = 4;
-const expandedCatalogSlotSpan = 2;
+const desktopCatalogColumnCount = 4;
+const compactExpandedSlotSpan = 2;
+const productEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
+const rowLayoutDuration = 0.26;
+const detailRevealDuration = 0.18;
 
 function isOutsideExpandedSlot(
   columnIndex: number,
@@ -30,53 +37,34 @@ function isOutsideExpandedSlot(
   );
 }
 
-function getCatalogColumnCount() {
+function getCompactCatalogColumnCount() {
   if (typeof window === "undefined") {
-    return defaultCatalogColumnCount;
+    return 1;
   }
 
-  if (window.matchMedia("(min-width: 1280px)").matches) {
-    return 4;
-  }
-
-  if (window.matchMedia("(min-width: 1024px)").matches) {
-    return 4;
-  }
-
-  if (window.matchMedia("(min-width: 768px)").matches) {
-    return 2;
-  }
-
-  return 1;
+  return window.matchMedia("(min-width: 768px)").matches ? 2 : 1;
 }
 
-function useCatalogColumnCount() {
-  const [columnCount, setColumnCount] = useState(defaultCatalogColumnCount);
+function useCompactCatalogColumnCount() {
+  const [columnCount, setColumnCount] = useState(1);
 
   useEffect(() => {
-    const mediaQueries = [
-      window.matchMedia("(min-width: 768px)"),
-      window.matchMedia("(min-width: 1024px)"),
-      window.matchMedia("(min-width: 1280px)"),
-    ];
-    const updateColumnCount = () => setColumnCount(getCatalogColumnCount());
+    const tabletMedia = window.matchMedia("(min-width: 768px)");
+    const updateColumnCount = () =>
+      setColumnCount(getCompactCatalogColumnCount());
 
     updateColumnCount();
-    mediaQueries.forEach((mediaQuery) =>
-      mediaQuery.addEventListener("change", updateColumnCount),
-    );
+    tabletMedia.addEventListener("change", updateColumnCount);
 
     return () => {
-      mediaQueries.forEach((mediaQuery) =>
-        mediaQuery.removeEventListener("change", updateColumnCount),
-      );
+      tabletMedia.removeEventListener("change", updateColumnCount);
     };
   }, []);
 
   return columnCount;
 }
 
-function getCatalogGridOrder(
+function getCompactCatalogGridOrder(
   scooters: CatalogScooter[],
   expandedId: string | null,
   columnCount: number,
@@ -94,7 +82,10 @@ function getCatalogGridOrder(
   }
 
   const safeColumnCount = Math.max(1, columnCount);
-  const expandedSlotSpan = Math.min(expandedCatalogSlotSpan, safeColumnCount);
+  const expandedSlotSpan = Math.min(
+    compactExpandedSlotSpan,
+    safeColumnCount,
+  );
 
   if (expandedSlotSpan === 1) {
     return scooters;
@@ -137,9 +128,6 @@ function getCatalogGridOrder(
       !isOutsideExpandedSlot(columnIndex, targetColumnIndex, expandedSlotSpan),
   );
 
-  // The expanded card occupies two logical compact rows. Move the cards from
-  // the first lower row that sit outside its footprint before the blocked ones,
-  // so normal grid placement fills the visible gaps without dense reordering.
   return [
     ...scooters.slice(0, rowStartIndex),
     ...beforeExpandedSlots,
@@ -151,75 +139,203 @@ function getCatalogGridOrder(
   ];
 }
 
+function getDesktopCatalogRows(scooters: CatalogScooter[]) {
+  const rows: CatalogScooter[][] = [];
+
+  for (let index = 0; index < scooters.length; index += desktopCatalogColumnCount) {
+    rows.push(scooters.slice(index, index + desktopCatalogColumnCount));
+  }
+
+  return rows;
+}
+
+function getRowLayoutDependency(
+  rowIndex: number,
+  expandedRowIndex: number,
+  expandedId: string | null,
+) {
+  if (expandedRowIndex < 0 || !expandedId) {
+    return "closed";
+  }
+
+  if (rowIndex < expandedRowIndex) {
+    return "before-detail";
+  }
+
+  return `${rowIndex === expandedRowIndex ? "detail" : "after-detail"}-${expandedRowIndex}-${expandedId}`;
+}
+
+function EmptyCatalogState({ shouldReduceMotion }: { shouldReduceMotion: boolean }) {
+  return (
+    <motion.div
+      initial={shouldReduceMotion ? false : { opacity: 0, y: 8 }}
+      animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+      className="rounded-[1.35rem] bg-[oklch(94%_0.01_78/0.58)] p-6 text-[oklch(28%_0.014_56/0.68)] shadow-[inset_0_0_0_1px_oklch(18%_0.014_56/0.08)]"
+    >
+      <p className="font-ui text-[0.7rem] font-bold uppercase tracking-[0.14em]">
+        Nessun modello in questo filtro
+      </p>
+      <p className="mt-3 max-w-[28rem] text-sm leading-6">
+        Nessun modello corrisponde a questo filtro. Seleziona Tutti per vedere la
+        gamma completa.
+      </p>
+    </motion.div>
+  );
+}
+
 export function CatalogGrid({
   scooters,
   expandedId,
+  isCompactViewport,
   shouldReduceMotion,
   transitionImageId,
   onExpandScooter,
   onCollapseScooter,
 }: CatalogGridProps) {
-  const columnCount = useCatalogColumnCount();
-  const layoutDependency = `${expandedId ?? "closed"}-${columnCount}`;
-  const orderedScooters = useMemo(
-    () => getCatalogGridOrder(scooters, expandedId, columnCount),
-    [columnCount, expandedId, scooters],
-  );
+  const compactColumnCount = useCompactCatalogColumnCount();
+  const toneColumnCount = isCompactViewport
+    ? compactColumnCount
+    : desktopCatalogColumnCount;
   const cardToneAssignments = useMemo(
-    () => getCatalogCardToneAssignments(orderedScooters, columnCount),
-    [columnCount, orderedScooters],
+    () => getCatalogCardToneAssignments(scooters, toneColumnCount),
+    [scooters, toneColumnCount],
   );
+  const compactOrderedScooters = useMemo(
+    () =>
+      getCompactCatalogGridOrder(
+        scooters,
+        expandedId,
+        compactColumnCount,
+      ),
+    [compactColumnCount, expandedId, scooters],
+  );
+  const desktopRows = useMemo(() => getDesktopCatalogRows(scooters), [scooters]);
+  const expandedScooter = useMemo(
+    () => scooters.find((scooter) => scooter.id === expandedId) ?? null,
+    [expandedId, scooters],
+  );
+  const expandedRowIndex = expandedScooter
+    ? Math.floor(
+        scooters.findIndex((scooter) => scooter.id === expandedScooter.id) /
+          desktopCatalogColumnCount,
+      )
+    : -1;
+
+  if (scooters.length === 0) {
+    return (
+      <div id="catalog-list" aria-label="Modelli in gamma">
+        <EmptyCatalogState shouldReduceMotion={shouldReduceMotion} />
+      </div>
+    );
+  }
+
+  if (isCompactViewport) {
+    return (
+      <div
+        id="catalog-list"
+        aria-label="Modelli in gamma"
+        className="grid grid-cols-1 content-start items-start gap-4 [grid-auto-flow:row] md:grid-cols-2 md:[grid-auto-rows:minmax(19.5rem,auto)]"
+      >
+        {compactOrderedScooters.map((scooter) => {
+          const isExpanded = expandedId === scooter.id;
+
+          return (
+            <CatalogProductCard
+              key={scooter.id}
+              scooter={scooter}
+              shouldReduceMotion={shouldReduceMotion}
+              isExpanded={isExpanded}
+              isSelected={isExpanded}
+              transitionImageId={transitionImageId}
+              cardToneAssignment={cardToneAssignments[scooter.id]}
+              isPriority={scooter.id === compactOrderedScooters[0]?.id}
+              onExpandScooter={onExpandScooter}
+              onCollapseScooter={onCollapseScooter}
+            />
+          );
+        })}
+      </div>
+    );
+  }
 
   return (
-    <div
-      id="catalog-list"
-      aria-label="Modelli in gamma"
-      className="grid grid-cols-1 content-start items-start gap-4 [grid-auto-flow:row] md:grid-cols-2 md:[grid-auto-rows:minmax(19.5rem,auto)] lg:grid-cols-12"
-    >
-      {orderedScooters.map((scooter) => (
-        <CatalogProductCard
-          key={scooter.id}
-          scooter={scooter}
-          shouldReduceMotion={shouldReduceMotion}
-          isExpanded={expandedId === scooter.id}
-          transitionImageId={transitionImageId}
-          cardToneAssignment={cardToneAssignments[scooter.id]}
-          isPriority={scooter.id === orderedScooters[0]?.id}
-          layoutDependency={layoutDependency}
-          onExpandScooter={onExpandScooter}
-          onCollapseScooter={onCollapseScooter}
-        />
-      ))}
+    <div id="catalog-list" aria-label="Modelli in gamma" className="space-y-4">
+      {desktopRows.map((row, rowIndex) => {
+        const rowExpandedScooter =
+          rowIndex === expandedRowIndex ? expandedScooter : null;
+        const rowKey = `catalog-row-${row[0]?.id ?? rowIndex}`;
 
-      {scooters.length === 0 ? (
-        <motion.div
-          key="empty-catalog-filter"
-          initial={
-            shouldReduceMotion
-              ? false
-              : { opacity: 0, y: 10, filter: "blur(4px)" }
-          }
-          animate={
-            shouldReduceMotion
-              ? undefined
-              : { opacity: 1, y: 0, filter: "blur(0px)" }
-          }
-          exit={
-            shouldReduceMotion
-              ? undefined
-              : { opacity: 0, y: -6, filter: "blur(3px)" }
-          }
-          className="rounded-[1.35rem] bg-[oklch(94%_0.01_78/0.58)] p-6 text-[oklch(28%_0.014_56/0.68)] shadow-[inset_0_0_0_1px_oklch(18%_0.014_56/0.08)] md:col-span-2 lg:col-span-12"
-        >
-          <p className="font-ui text-[0.7rem] font-bold uppercase tracking-[0.14em]">
-            Nessun modello in questo filtro
-          </p>
-          <p className="mt-3 max-w-[28rem] text-sm leading-6">
-            Nessun modello corrisponde a questo filtro. Seleziona Tutti per
-            vedere la gamma completa.
-          </p>
-        </motion.div>
-      ) : null}
+        return (
+          <motion.div
+            key={rowKey}
+            layout={shouldReduceMotion ? false : "position"}
+            layoutDependency={getRowLayoutDependency(
+              rowIndex,
+              expandedRowIndex,
+              expandedId,
+            )}
+            transition={{
+              layout: {
+                duration: shouldReduceMotion ? 0.01 : rowLayoutDuration,
+                ease: productEase,
+              },
+            }}
+            className="grid grid-cols-12 items-start gap-4"
+          >
+            {row.map((scooter) => {
+              const isSelected = expandedId === scooter.id;
+
+              return (
+                <CatalogProductCard
+                  key={scooter.id}
+                  scooter={scooter}
+                  shouldReduceMotion={shouldReduceMotion}
+                  isExpanded={false}
+                  isSelected={isSelected}
+                  transitionImageId={null}
+                  ariaControlsId={`catalog-detail-${scooter.id}`}
+                  cardToneAssignment={cardToneAssignments[scooter.id]}
+                  isPriority={scooter.id === scooters[0]?.id}
+                  onExpandScooter={onExpandScooter}
+                  onCollapseScooter={onCollapseScooter}
+                />
+              );
+            })}
+
+            <AnimatePresence initial={false} mode="popLayout">
+              {rowExpandedScooter ? (
+                <motion.div
+                  key={`catalog-detail-${rowExpandedScooter.id}`}
+                  initial={
+                    shouldReduceMotion ? false : { opacity: 0, y: 8 }
+                  }
+                  animate={
+                    shouldReduceMotion ? undefined : { opacity: 1, y: 0 }
+                  }
+                  exit={
+                    shouldReduceMotion ? undefined : { opacity: 0, y: -6 }
+                  }
+                  transition={{
+                    duration: shouldReduceMotion ? 0.01 : detailRevealDuration,
+                    ease: productEase,
+                  }}
+                  className="relative z-10 col-span-12 min-w-0"
+                >
+                  <CatalogProductDetail
+                    scooter={rowExpandedScooter}
+                    shouldReduceMotion={shouldReduceMotion}
+                    transitionImageId={transitionImageId}
+                    cardToneAssignment={
+                      cardToneAssignments[rowExpandedScooter.id]
+                    }
+                    onCollapseScooter={onCollapseScooter}
+                  />
+                </motion.div>
+              ) : null}
+            </AnimatePresence>
+          </motion.div>
+        );
+      })}
     </div>
   );
 }
