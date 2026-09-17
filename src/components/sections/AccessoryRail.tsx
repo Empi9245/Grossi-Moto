@@ -62,31 +62,13 @@ export function AccessoryRail() {
   useEffect(() => {
     if (reduceMotion || autoPaused) return;
 
-    const desktop = window.matchMedia("(min-width: 1024px)");
-    let intervalId: number | null = null;
+    const timeoutId = window.setTimeout(() => {
+      keyboardInteractionRef.current = false;
+      setActive((current) => (current + 1) % accessories.length);
+    }, autoAdvanceMs);
 
-    const syncAutoplay = () => {
-      if (intervalId !== null) {
-        window.clearInterval(intervalId);
-        intervalId = null;
-      }
-
-      if (!desktop.matches) return;
-
-      intervalId = window.setInterval(() => {
-        keyboardInteractionRef.current = false;
-        setActive((current) => (current + 1) % accessories.length);
-      }, autoAdvanceMs);
-    };
-
-    syncAutoplay();
-    desktop.addEventListener("change", syncAutoplay);
-
-    return () => {
-      if (intervalId !== null) window.clearInterval(intervalId);
-      desktop.removeEventListener("change", syncAutoplay);
-    };
-  }, [autoPaused, reduceMotion]);
+    return () => window.clearTimeout(timeoutId);
+  }, [active, autoPaused, reduceMotion]);
 
   const activate = (index: number, keyboard: boolean) => {
     keyboardInteractionRef.current = keyboard;
