@@ -133,6 +133,7 @@ export function StackedShowroomCards() {
   const [activeIndex, setActiveIndex] = useState(0);
   const shouldReduceMotion = useReducedMotion();
   const totalCards = showcaseScooters.length;
+  const transitionCount = Math.max(totalCards - 1, 1);
 
   useGSAP(
     () => {
@@ -161,8 +162,8 @@ export function StackedShowroomCards() {
       });
 
       const snapPoints = Array.from(
-        { length: totalCards + 1 },
-        (_, index) => index / totalCards,
+        { length: totalCards },
+        (_, index) => index / transitionCount,
       );
 
       const timeline = gsap.timeline({
@@ -170,18 +171,18 @@ export function StackedShowroomCards() {
           trigger: container,
           start: "top top",
           end: "bottom bottom",
-          scrub: 0.55,
+          scrub: 0.62,
           invalidateOnRefresh: true,
           snap: {
             snapTo: (value) => gsap.utils.snap(snapPoints, value),
-            duration: { min: 0.16, max: 0.32 },
+            duration: { min: 0.2, max: 0.38 },
             delay: 0.05,
             ease: "power1.inOut",
           },
           onUpdate: (self) => {
             const nextIndex = Math.min(
               totalCards - 1,
-              Math.max(0, Math.floor(self.progress * totalCards + 0.18)),
+              Math.max(0, Math.round(self.progress * transitionCount)),
             );
 
             if (nextIndex !== activeIndexRef.current) {
@@ -225,8 +226,6 @@ export function StackedShowroomCards() {
         timeline.to({}, { duration: 0.16 }, position + 0.84);
       }
 
-      timeline.to({}, { duration: 1 }, totalCards - 1);
-
       return () => {
         timeline.scrollTrigger?.kill();
         timeline.kill();
@@ -234,7 +233,7 @@ export function StackedShowroomCards() {
     },
     {
       scope: containerRef,
-      dependencies: [shouldReduceMotion, totalCards],
+      dependencies: [shouldReduceMotion, totalCards, transitionCount],
       revertOnUpdate: true,
     },
   );
