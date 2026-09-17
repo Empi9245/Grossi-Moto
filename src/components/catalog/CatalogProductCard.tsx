@@ -33,16 +33,7 @@ type CatalogProductCardProps = {
   transitionImageId: string | null;
   cardToneAssignment?: ProductCardToneAssignment;
   isPriority?: boolean;
-  ariaControlsId?: string;
   onExpandScooter: (scooterId: string) => void;
-  onCollapseScooter: () => void;
-};
-
-type CatalogProductDetailProps = {
-  scooter: CatalogScooter;
-  shouldReduceMotion: boolean;
-  transitionImageId: string | null;
-  cardToneAssignment?: ProductCardToneAssignment;
   onCollapseScooter: () => void;
 };
 
@@ -141,7 +132,6 @@ export const CatalogProductCard = memo(function CatalogProductCard({
   transitionImageId,
   cardToneAssignment,
   isPriority = false,
-  ariaControlsId,
   onExpandScooter,
   onCollapseScooter,
 }: CatalogProductCardProps) {
@@ -255,6 +245,8 @@ export const CatalogProductCard = memo(function CatalogProductCard({
             {isExpanded ? (
               <button
                 type="button"
+                aria-controls={expandedContentId}
+                aria-expanded={true}
                 aria-label={`Comprimi ${scooter.name}`}
                 onClick={(event) => {
                   event.stopPropagation();
@@ -341,7 +333,6 @@ export const CatalogProductCard = memo(function CatalogProductCard({
               <button
                 id={cardTriggerId}
                 type="button"
-                aria-controls={ariaControlsId ?? expandedContentId}
                 aria-expanded={isSelected}
                 aria-label={`Apri la scheda di ${scooter.name}`}
                 onClick={() => onExpandScooter(scooter.id)}
@@ -359,116 +350,5 @@ export const CatalogProductCard = memo(function CatalogProductCard({
         </div>
       </article>
     </div>
-  );
-});
-
-export const CatalogProductDetail = memo(function CatalogProductDetail({
-  scooter,
-  shouldReduceMotion,
-  transitionImageId,
-  cardToneAssignment,
-  onCollapseScooter,
-}: CatalogProductDetailProps) {
-  const style = getProductStyle(scooter, cardToneAssignment);
-  const brand = getCatalogScooterBrand(scooter);
-  const detailTitleId = `catalog-detail-title-${scooter.id}`;
-  const detailContentId = `catalog-detail-${scooter.id}`;
-  const cardTriggerId = `catalog-card-trigger-${scooter.id}`;
-  const sharedImageLayoutId =
-    !shouldReduceMotion && transitionImageId === scooter.id
-      ? `scooter-image-${scooter.id}`
-      : undefined;
-  const imageClassName =
-    "relative z-10 h-full max-h-[28rem] w-full object-contain object-center";
-
-  const handleCollapse = () => {
-    document.getElementById(cardTriggerId)?.focus();
-    onCollapseScooter();
-  };
-
-  return (
-    <article
-      id={detailContentId}
-      aria-labelledby={detailTitleId}
-      data-scooter-detail-id={scooter.id}
-      data-card-tone={cardToneAssignment?.toneId ?? scooter.cardToneId}
-      className="relative min-h-[31rem] overflow-hidden rounded-[1.35rem] p-5 shadow-[0_0_0_1px_oklch(18%_0.014_56/0.052),0_18px_46px_oklch(18%_0.014_56/0.09)] lg:p-6"
-      style={style}
-    >
-      <div className="relative z-10 grid min-h-[28rem] grid-cols-[minmax(0,0.88fr)_minmax(0,1.12fr)] grid-rows-[auto_minmax(12rem,1fr)_auto] gap-6">
-        <div className="flex min-w-0 items-start justify-between gap-4">
-          <div className="min-w-0">
-            <div className="mb-3 flex min-w-0 flex-wrap items-center gap-2">
-              <span className="font-ui inline-flex min-h-7 items-center rounded-full bg-[oklch(96%_0.006_78/0.42)] px-2.5 text-[0.58rem] font-bold uppercase tracking-[0.14em] text-current shadow-[inset_0_0_0_1px_oklch(18%_0.014_56/0.1)]">
-                {brand}
-              </span>
-              <span className="font-ui truncate text-[0.58rem] font-bold uppercase tracking-[0.14em] text-[var(--product-muted)]">
-                {scooter.family}
-              </span>
-            </div>
-            <h2
-              id={detailTitleId}
-              className="font-display text-[clamp(2.6rem,4.4vw,4.9rem)] font-bold leading-[0.9] tracking-normal text-current"
-            >
-              {scooter.name}
-            </h2>
-            <p className="font-ui mt-2 text-[0.68rem] font-bold uppercase tracking-[0.13em] text-[var(--product-muted)]">
-              {scooter.subtitle}
-            </p>
-          </div>
-
-          <button
-            type="button"
-            aria-label={`Comprimi ${scooter.name}`}
-            onClick={handleCollapse}
-            className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-[oklch(96%_0.006_78/0.46)] text-current shadow-[inset_0_0_0_1px_oklch(18%_0.014_56/0.12)] outline-none transition-[background,transform] duration-200 hover:bg-[oklch(98%_0.004_78/0.64)] active:translate-y-px focus-visible:ring-2 focus-visible:ring-[var(--product-accent)]"
-          >
-            <Minimize2
-              aria-hidden="true"
-              className="h-4 w-4"
-              strokeWidth={1.8}
-            />
-          </button>
-        </div>
-
-        <div className="relative col-start-2 row-span-2 row-start-1 flex min-h-0 items-center justify-center">
-          <div
-            aria-hidden="true"
-            className="absolute bottom-[8%] left-1/2 h-[10%] w-[80%] -translate-x-1/2 rounded-[50%] bg-[var(--product-shadow)] blur-[13px]"
-          />
-          {sharedImageLayoutId ? (
-            <motion.img
-              layoutId={sharedImageLayoutId}
-              src={scooter.image}
-              alt={scooter.imageAlt}
-              width={780}
-              height={585}
-              draggable={false}
-              decoding="async"
-              className={imageClassName}
-              transition={{ type: "spring", duration: 0.42, bounce: 0 }}
-            />
-          ) : (
-            <Image
-              src={scooter.image}
-              alt={scooter.imageAlt}
-              width={780}
-              height={585}
-              sizes="(min-width: 1024px) 44vw, 88vw"
-              draggable={false}
-              className={imageClassName}
-            />
-          )}
-        </div>
-
-        <div className="col-span-2 row-start-3 min-w-0">
-          <p className="max-w-[52rem] text-base leading-7 text-[var(--product-muted)]">
-            {scooter.positioning}
-          </p>
-          <ProductSpecs scooter={scooter} />
-          <ProductContactActions scooter={scooter} />
-        </div>
-      </div>
-    </article>
   );
 });
