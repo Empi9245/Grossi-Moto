@@ -65,8 +65,8 @@ export function ServicesHero() {
       animate="visible"
       variants={containerVariants}
     >
-      <div className="flex w-full flex-col justify-between p-8 sm:p-10 md:w-1/2 md:p-12 lg:w-3/5 lg:p-16 xl:p-20">
-        <div>
+      <div className="flex w-full flex-col justify-between md:w-1/2 md:p-12 lg:w-3/5 lg:p-16 xl:p-20">
+        <div className="px-8 pt-8 sm:px-10 sm:pt-10 md:px-0 md:pt-0">
           <motion.header className="mb-12 lg:mb-16" variants={itemVariants}>
             <div className="flex items-center">
               <div>
@@ -121,28 +121,29 @@ export function ServicesHero() {
               </Link>
             </motion.div>
           </motion.main>
-
-          <motion.div
-            ref={mobileImageRef}
-            className="relative -mx-8 mt-10 min-h-[340px] overflow-hidden sm:-mx-10 md:hidden"
-            style={{
-              clipPath: reduceMotion
-                ? imageOpenClipPath
-                : mobileImageClipPath,
-            }}
-          >
-            <Image
-              src={HERO_IMAGE.src}
-              alt={HERO_IMAGE.alt}
-              fill
-              priority
-              sizes="100vw"
-              className="object-cover object-center"
-            />
-          </motion.div>
         </div>
 
-        <motion.footer className="mt-14 w-full lg:mt-20" variants={itemVariants}>
+        <motion.div
+          ref={mobileImageRef}
+          className="relative mt-6 min-h-[340px] w-full overflow-hidden sm:mt-8 md:hidden"
+          style={{
+            clipPath: reduceMotion ? imageOpenClipPath : mobileImageClipPath,
+          }}
+        >
+          <Image
+            src={HERO_IMAGE.src}
+            alt={HERO_IMAGE.alt}
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-center"
+          />
+        </motion.div>
+
+        <motion.footer
+          className="mx-8 mt-10 mb-8 sm:mx-10 sm:mb-10 md:mx-0 md:mt-14 md:mb-0 lg:mt-20"
+          variants={itemVariants}
+        >
           <div className="grid grid-cols-1 gap-5 border-t border-black/12 pt-6 text-xs font-medium text-black/58 sm:grid-cols-3 sm:gap-6">
             <div className="flex min-w-0 items-center">
               <Globe2
