@@ -17,7 +17,7 @@ export const metadata = pageMetadata("Officina scooter a Roma: tagliandi e assis
 
 export default function ServiziPage() {
   return (
-    <main id="main-content" className="min-h-screen bg-[#111111]">
+    <main id="main-content" className="min-h-screen [--page-background:var(--gm-warm-surface)] bg-[#111111] text-[var(--gm-on-dark)]">
       {/* ── Nav back ──────────────────────────────────────────── */}
       <div className="fixed left-0 top-0 z-50 w-full px-5 py-4 sm:px-7 md:px-10 lg:px-14 xl:px-20">
         <Link

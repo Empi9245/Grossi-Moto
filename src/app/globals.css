@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
 :root {
-  --background: oklch(18% 0.012 40);
-  --page-background: #e7e3dc;
-  --foreground: #f4f0e8;
+  --background: var(--gm-white);
+  --page-background: var(--gm-white);
+  --foreground: var(--gm-ink);
   --muted: oklch(78% 0.015 75);
   --panel: #ece8e1;
   --ink: #1b0e0d;
@@ -11,6 +11,8 @@
   --gm-ink: #151515;
   --gm-black: #0b0b0b;
   --gm-charcoal: #1b1b1b;
+  --gm-on-dark: #f4f0e8;
+  --gm-warm-surface: #e7e3dc;
   --gm-neutral-soft: oklch(97.2% 0.004 230);
   --gm-gray-soft: var(--gm-neutral-soft);
   --gm-green-soft: oklch(95.8% 0.018 155);

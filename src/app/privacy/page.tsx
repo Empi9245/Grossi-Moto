@@ -8,7 +8,7 @@ export const metadata = pageMetadata("Privacy Policy", "Informativa privacy del 
 export default function PrivacyPage() {
   return (
     <>
-      <main id="main-content" className="min-h-screen bg-[var(--page-background)] px-5 py-8 text-[var(--ink)] sm:px-8 lg:px-12">
+      <main id="main-content" className="min-h-screen [--page-background:var(--gm-warm-surface)] bg-[var(--page-background)] px-5 py-8 text-[var(--ink)] sm:px-8 lg:px-12">
         <Link href="/" className="font-ui inline-flex min-h-10 items-center rounded-full text-sm font-bold uppercase tracking-[0.08em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(38%_0.08_28)]">← Torna alla Home</Link>
         <article className="mx-auto mt-16 max-w-3xl pb-24">
           <p className="font-ui text-xs font-bold uppercase tracking-[0.18em] text-[oklch(36%_0.09_28)]">Privacy</p>
