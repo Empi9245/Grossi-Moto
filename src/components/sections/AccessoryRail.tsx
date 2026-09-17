@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { ArrowUpRight, Minus, Plus } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { accessories } from "@/data/accessories";
 
@@ -15,6 +15,7 @@ const accessoryPastels = [
 ] as const;
 
 const stateEase = [0.23, 1, 0.32, 1] as const;
+const autoAdvanceMs = 5200;
 
 type Accessory = (typeof accessories)[number];
 
@@ -49,6 +50,7 @@ export function AccessoryRail() {
   const reduceMotion = useReducedMotion();
   const keyboardInteractionRef = useRef(false);
   const [active, setActive] = useState(0);
+  const [autoPaused, setAutoPaused] = useState(false);
   const activeItem = accessories[active];
   const activePastel = accessoryPastels[active % accessoryPastels.length];
   const motionDisabled = Boolean(reduceMotion || keyboardInteractionRef.current);
@@ -56,6 +58,35 @@ export function AccessoryRail() {
     duration: motionDisabled ? 0 : 0.2,
     ease: stateEase,
   };
+
+  useEffect(() => {
+    if (reduceMotion || autoPaused) return;
+
+    const desktop = window.matchMedia("(min-width: 1024px)");
+    let intervalId: number | null = null;
+
+    const syncAutoplay = () => {
+      if (intervalId !== null) {
+        window.clearInterval(intervalId);
+        intervalId = null;
+      }
+
+      if (!desktop.matches) return;
+
+      intervalId = window.setInterval(() => {
+        keyboardInteractionRef.current = false;
+        setActive((current) => (current + 1) % accessories.length);
+      }, autoAdvanceMs);
+    };
+
+    syncAutoplay();
+    desktop.addEventListener("change", syncAutoplay);
+
+    return () => {
+      if (intervalId !== null) window.clearInterval(intervalId);
+      desktop.removeEventListener("change", syncAutoplay);
+    };
+  }, [autoPaused, reduceMotion]);
 
   const activate = (index: number, keyboard: boolean) => {
     keyboardInteractionRef.current = keyboard;
@@ -147,7 +178,13 @@ export function AccessoryRail() {
         </div>
       </div>
 
-      <div className="hidden lg:grid lg:grid-cols-[minmax(19rem,0.72fr)_minmax(0,1.28fr)] lg:items-start lg:gap-12 xl:grid-cols-[minmax(22rem,0.68fr)_minmax(0,1.32fr)] xl:gap-16">
+      <div
+        className="hidden lg:grid lg:grid-cols-[minmax(19rem,0.72fr)_minmax(0,1.28fr)] lg:items-start lg:gap-12 xl:grid-cols-[minmax(22rem,0.68fr)_minmax(0,1.32fr)] xl:gap-16"
+        onMouseEnter={() => setAutoPaused(true)}
+        onMouseLeave={() => setAutoPaused(false)}
+        onFocusCapture={() => setAutoPaused(true)}
+        onBlurCapture={() => setAutoPaused(false)}
+      >
         <div className="border-y border-black/12">
           {accessories.map((item, index) => {
             const isActive = index === active;
@@ -164,6 +201,7 @@ export function AccessoryRail() {
                   type="button"
                   aria-expanded={isActive}
                   aria-controls={panelId}
+                  onMouseEnter={() => activate(index, false)}
                   onClick={(event) => activate(index, event.detail === 0)}
                   className="group flex min-h-[82px] w-full items-center gap-5 py-5 text-left focus-visible:outline-2 focus-visible:outline-offset-4"
                 >
