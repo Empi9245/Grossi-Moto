@@ -128,8 +128,8 @@ export function ServiceProcess() {
           {index === active ? (
             <motion.div
               key={current.title}
-              initial={reduceMotion ? false : { opacity: 0 }}
-              animate={{ opacity: 1 }}
+              initial={reduceMotion ? false : { opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{
                 duration: reduceMotion ? 0 : 0.2,
                 ease: easeOut,
