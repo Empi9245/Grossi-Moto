@@ -1,5 +1,15 @@
 # Project Memory
 
+## Servizi — redesign white / black / red 2026-09-17
+
+- `/servizi` è stata ricostruita come esperienza coerente con Home/Gamma: canvas bianco, Hero nera fotografica arrotondata, showcase servizi bianco, Process nero, CTA finale `#C72A09`, Footer nero. Rimossi lo stacco fotografico standalone e le superfici beige/cream/brown dalla pagina.
+- `services-hero.tsx` non usa più GSAP ScrollTrigger, pin/scrub o seconda service board. Resta una sola entrata Framer Motion con opacity/scale/translate controllati, easing `[0.22, 1, 0.36, 1]`, nessun blur/bounce e reduced motion immediato. `ServiceOverview` non è più importato dalla Hero ma il file è stato preservato perché non era autorizzata la cancellazione.
+- `StickyScrollShowcase` mantiene su desktop il concetto utile foto sticky + contenuto editoriale, ma elimina `liquid-glass`, numeri 01–06 decorativi, giant numbers, beige, shadow pesanti e blur. Lo stato attivo viene sincronizzato con `IntersectionObserver`; cambio foto a 220ms con opacity + scale 1.015→1. Palette strutturale limitata a bianco, `#0A0A0A` e `#C72A09`.
+- Sotto 1024px `ServiceSwipe` è ora un rail orizzontale nativo derivato dal pattern Accessori: 84% telefono, 46% tablet, prossimo elemento visibile, scroll snap, `ResizeObserver`, frecce, Home/End, tastiera e reduced-motion. Eliminati stack smartphone, paging verticale, scroll annidato e dipendenza della pagina Servizi da `SwipeUpCardStack`; `image-stack.tsx` resta intatto per gli altri utilizzi.
+- `ServiceProcess` conserva la sequenza semantica Contatto → Diagnosi → Intervento → Riconsegna e usa qui soltanto la numerazione 01–04. Pannello nero, stato/progresso rosso, tab keyboard-accessible, immagini/copy esistenti, transizione di stato opacity-only 200ms, nessun autoplay o segmented SaaS container.
+- Navigazione Servizi allineata alla grammatica Gamma/Home senza glassmorphism: brand a sinistra, pill desktop nera con stato Servizi esplicito, CTA telefono; su compact resta il chrome globale mobile. CTA finali e numero `+393289185029` invariati. Metadata/SEO, dati prodotto, asset, Home, Gamma, `globals.css`, dipendenze e `package.json` non modificati.
+- Diff dal commit base `2fcf58d4a86012698e87e4135d51df5623562d54`: solo `src/app/servizi/page.tsx`, `services-hero.tsx`, `StickyScrollShowcase.tsx`, `ServiceSwipe.tsx`, `ServiceProcess.tsx` più questa memoria. La CI GitHub completa è bloccata da un errore ESLint fuori scope già presente in `src/components/sections/ScooterShowcase.tsx` (`@next/next/no-html-link-for-pages` su link `/scooters/`); typecheck/build vengono quindi saltati da quel workflow. Il deploy Vercel viene usato come ulteriore verifica build; QA visuale browser/dispositivo non è disponibile in questa esecuzione e va ancora verificata alle larghezze richieste.
+
 ## Servizi — swipe verticale mobile/tablet 2026-09-16
 
 - `StickyScrollShowcase` usa ora `ServiceSwipe` sotto 1024px: sei servizi in un pannello verticale con scroll nativo, snap-start e snap-always. Foto e testo salgono insieme; titolo introduttivo ridimensionato. Desktop conserva il layout precedente.
