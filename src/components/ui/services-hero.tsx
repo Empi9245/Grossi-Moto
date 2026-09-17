@@ -125,7 +125,7 @@ export function ServicesHero() {
 
         <motion.div
           ref={mobileImageRef}
-          className="relative mt-6 min-h-[340px] w-full overflow-hidden sm:mt-8 md:hidden"
+          className="relative mt-6 min-h-[340px] w-full overflow-hidden rounded-[28px] sm:mt-8 md:hidden"
           style={{
             clipPath: reduceMotion ? imageOpenClipPath : mobileImageClipPath,
           }}
@@ -179,7 +179,7 @@ export function ServicesHero() {
       </div>
 
       <motion.div
-        className="relative hidden min-h-[340px] w-full overflow-hidden md:block md:min-h-full md:w-1/2 lg:w-2/5"
+        className="relative hidden min-h-[340px] w-full overflow-hidden md:block md:min-h-full md:w-1/2 md:rounded-[40px] lg:w-2/5"
         initial={
           reduceMotion
             ? false
