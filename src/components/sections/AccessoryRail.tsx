@@ -79,14 +79,14 @@ export function AccessoryRail() {
   };
 
   const controlClass =
-    "inline-flex min-h-12 min-w-12 items-center justify-center rounded-full border border-black/20 text-black focus-visible:outline-2 focus-visible:outline-offset-4 aria-disabled:opacity-35";
+    "inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-black/20 text-black focus-visible:outline-2 focus-visible:outline-offset-4 aria-disabled:opacity-35";
 
   return (
-    <div className="mt-8 min-w-0 lg:mt-10">
+    <div className="mt-6 min-w-0 lg:mt-7">
       <div
         role="group"
         aria-label="Categorie accessori"
-        className="font-ui mb-5 flex flex-wrap gap-x-5 gap-y-1"
+        className="font-ui mb-4 flex flex-wrap gap-x-4 gap-y-0"
       >
         {accessories.map((item, index) => (
           <button
@@ -95,7 +95,7 @@ export function AccessoryRail() {
             aria-controls="accessory-rail"
             aria-current={index === active ? "true" : undefined}
             onClick={(event) => goTo(index, event.detail === 0)}
-            className="min-h-12 max-w-full border-b-2 border-transparent text-left text-sm font-semibold text-black/60 [overflow-wrap:anywhere] aria-current:border-black aria-current:text-black focus-visible:outline-2 focus-visible:outline-offset-4"
+            className="min-h-11 max-w-full border-b-2 border-transparent text-left text-[0.82rem] font-semibold text-black/55 [overflow-wrap:anywhere] aria-current:border-black aria-current:text-black focus-visible:outline-2 focus-visible:outline-offset-4"
           >
             {item.title}
           </button>
@@ -107,7 +107,7 @@ export function AccessoryRail() {
         role="region"
         aria-label="Accessori da sfogliare"
         tabIndex={0}
-        className="relative flex snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain pb-4 [--card-width:86%] [scrollbar-width:thin] after:block after:w-[max(0px,calc(100%-var(--card-width)-16px))] after:shrink-0 after:content-[''] focus-visible:outline-2 focus-visible:outline-offset-4 md:[--card-width:44%] lg:[--card-width:38%]"
+        className="relative flex snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain pb-3 [--card-width:84%] [scrollbar-width:thin] after:block after:w-[max(0px,calc(100%-var(--card-width)-16px))] after:shrink-0 after:content-[''] focus-visible:outline-2 focus-visible:outline-offset-4 md:[--card-width:42%] lg:[--card-width:30%]"
         onPointerDown={(event) => {
           gesture.current = {
             x: event.clientX,
@@ -135,67 +135,66 @@ export function AccessoryRail() {
           <article
             key={item.id}
             aria-labelledby={`accessory-${item.id}`}
-            className="min-w-0 w-[var(--card-width)] shrink-0 snap-start overflow-hidden rounded-[1.35rem] p-4 text-black shadow-[0_0_0_1px_rgba(0,0,0,0.06),0_18px_48px_rgba(0,0,0,0.06)] [overflow-wrap:anywhere]"
-            style={{
-              background: accessoryPastels[index % accessoryPastels.length],
-            }}
+            className="min-w-0 w-[var(--card-width)] shrink-0 snap-start overflow-hidden rounded-2xl border border-gray-200 bg-white text-gray-900 shadow-none [overflow-wrap:anywhere]"
           >
-            <div className="overflow-hidden rounded-[1rem] bg-white/35">
-              <Image
-                src={item.image}
-                alt={item.alt}
-                width={800}
-                height={1000}
-                sizes="(min-width: 1552px) 560px, (min-width: 1024px) 36vw, (min-width: 768px) 42vw, 80vw"
-                draggable={false}
-                className="aspect-[4/5] w-full object-cover object-center"
-              />
-            </div>
-            <div className="mt-4 border-t border-black/12 pt-4">
-              <p className="font-ui text-[0.66rem] font-bold uppercase tracking-[0.16em] text-black/55">
-                Accessori
-              </p>
-              <h3
-                id={`accessory-${item.id}`}
-                className="font-display mt-2 text-[clamp(1.85rem,3vw,2.9rem)] font-bold leading-none"
-              >
-                {item.title}
-              </h3>
-              <ul className="font-ui mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm font-semibold text-black/72">
-                {item.examples.map((example) => (
-                  <li key={example}>{example}</li>
-                ))}
-              </ul>
-              <p className="mt-3 max-w-[40ch] text-base leading-relaxed text-black/68">
-                {item.description}
-              </p>
-              <a
-                href="tel:+393289185029"
-                aria-label={`Chiedi compatibilità: ${item.title}`}
-                onFocus={() => goTo(index, true)}
-                className="group font-ui mt-4 inline-flex min-h-12 max-w-full items-center gap-3 text-sm font-bold text-black underline decoration-black/30 underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2"
-              >
-                Chiedi compatibilità{" "}
-                <ArrowUpRight
-                  aria-hidden="true"
-                  size={18}
-                  className="shrink-0 transition-transform duration-160 group-hover:translate-x-[3px] motion-reduce:transform-none motion-reduce:transition-none"
+            <div
+              aria-hidden="true"
+              className="h-1 w-full"
+              style={{
+                background: accessoryPastels[index % accessoryPastels.length],
+              }}
+            />
+            <div className="p-3.5 sm:p-4">
+              <div className="overflow-hidden rounded-xl bg-gray-50">
+                <Image
+                  src={item.image}
+                  alt={item.alt}
+                  width={800}
+                  height={1000}
+                  sizes="(min-width: 1024px) 30vw, (min-width: 768px) 42vw, 84vw"
+                  draggable={false}
+                  className="aspect-[5/4] w-full object-cover object-center"
                 />
-              </a>
+              </div>
+              <div className="mt-3.5 border-t border-black/10 pt-3.5">
+                <p className="font-ui text-[0.6rem] font-bold uppercase tracking-[0.15em] text-gray-500">
+                  Accessori
+                </p>
+                <h3
+                  id={`accessory-${item.id}`}
+                  className="font-display mt-1.5 text-[clamp(1.5rem,2.2vw,2.15rem)] font-bold leading-[0.98] text-gray-900"
+                >
+                  {item.title}
+                </h3>
+                <ul className="font-ui mt-2.5 flex flex-wrap gap-x-3 gap-y-1 text-[0.8rem] font-semibold text-gray-600">
+                  {item.examples.map((example) => (
+                    <li key={example}>{example}</li>
+                  ))}
+                </ul>
+                <p className="mt-2.5 max-w-[40ch] text-sm leading-6 text-gray-600">
+                  {item.description}
+                </p>
+                <a
+                  href="tel:+393289185029"
+                  aria-label={`Chiedi compatibilità: ${item.title}`}
+                  onFocus={() => goTo(index, true)}
+                  className="group font-ui mt-3 inline-flex min-h-11 max-w-full items-center gap-2.5 text-[0.8rem] font-bold text-gray-900 underline decoration-black/25 underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2"
+                >
+                  Chiedi compatibilità{" "}
+                  <ArrowUpRight
+                    aria-hidden="true"
+                    size={17}
+                    className="shrink-0 transition-transform duration-160 group-hover:translate-x-[3px] motion-reduce:transform-none motion-reduce:transition-none"
+                  />
+                </a>
+              </div>
             </div>
           </article>
         ))}
       </div>
-      <div className="mt-4 flex flex-wrap items-center justify-between gap-4 text-black/60">
+      <div className="mt-3 flex flex-wrap items-center justify-between gap-4 text-black/60">
         <p className="font-ui text-xs">Immagini illustrative</p>
-        <div className="flex items-center gap-3">
-          <span
-            aria-live="polite"
-            aria-atomic="true"
-            className="font-ui mr-2 text-sm tabular-nums"
-          >
-            {active + 1} di {accessories.length}
-          </span>
+        <div className="flex items-center gap-2.5">
           <button
             type="button"
             aria-label="Accessorio precedente"
@@ -206,7 +205,7 @@ export function AccessoryRail() {
               if (active > 0) goTo(active - 1, event.detail === 0);
             }}
           >
-            <ArrowLeft aria-hidden="true" size={20} />
+            <ArrowLeft aria-hidden="true" size={19} />
           </button>
           <button
             type="button"
@@ -219,7 +218,7 @@ export function AccessoryRail() {
                 goTo(active + 1, event.detail === 0);
             }}
           >
-            <ArrowRight aria-hidden="true" size={20} />
+            <ArrowRight aria-hidden="true" size={19} />
           </button>
         </div>
       </div>
