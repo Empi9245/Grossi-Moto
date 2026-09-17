@@ -78,23 +78,33 @@ export function AccessoryRail() {
   return (
     <div className="mt-7 min-w-0 lg:mt-9">
       <div className="lg:hidden">
-        <div className="border-y border-black/12">
+        <div className="h-[47rem] overflow-hidden border-y border-black/12 [overflow-anchor:none] sm:h-[49rem] md:h-[51rem]">
           {accessories.map((item, index) => {
             const isActive = index === active;
             const triggerId = `accessory-mobile-trigger-${item.id}`;
+            const panelId = `accessory-mobile-panel-${item.id}`;
+            const itemPastel = accessoryPastels[index % accessoryPastels.length];
 
             return (
               <div
                 key={item.id}
-                className="border-b border-black/10 last:border-b-0"
+                className={`relative overflow-hidden border-b border-black/10 last:border-b-0 ${
+                  isActive
+                    ? "h-[32.75rem] sm:h-[34.75rem] md:h-[36.75rem]"
+                    : "h-[4.75rem]"
+                } ${
+                  motionDisabled
+                    ? "transition-none"
+                    : "transition-[height] duration-[280ms] ease-[cubic-bezier(0.23,1,0.32,1)]"
+                }`}
               >
                 <button
                   id={triggerId}
                   type="button"
                   aria-expanded={isActive}
-                  aria-controls="accessory-mobile-panel"
+                  aria-controls={panelId}
                   onClick={(event) => activate(index, event.detail === 0)}
-                  className="group flex min-h-[76px] w-full items-center gap-4 py-4 text-left focus-visible:outline-2 focus-visible:outline-offset-4"
+                  className="group flex h-[4.75rem] w-full items-center gap-4 py-4 text-left focus-visible:outline-2 focus-visible:outline-offset-[-2px]"
                 >
                   <span className="font-ui w-8 shrink-0 text-[0.64rem] font-bold tracking-[0.16em] text-black/38">
                     {String(index + 1).padStart(2, "0")}
@@ -113,51 +123,55 @@ export function AccessoryRail() {
                     )}
                   </span>
                 </button>
+
+                <div
+                  id={panelId}
+                  role="region"
+                  aria-labelledby={triggerId}
+                  aria-hidden={!isActive}
+                  className="absolute inset-x-0 top-[4.75rem] h-[28rem] sm:h-[30rem] md:h-[32rem]"
+                >
+                  <AnimatePresence initial={false}>
+                    {isActive ? (
+                      <motion.div
+                        key={item.id}
+                        initial={
+                          motionDisabled ? false : { opacity: 0, y: -8 }
+                        }
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 6 }}
+                        transition={{
+                          duration: motionDisabled ? 0 : 0.24,
+                          ease: stateEase,
+                        }}
+                        className="flex h-full flex-col pb-4 pt-1"
+                      >
+                        <div className="relative min-h-0 flex-1 overflow-hidden rounded-[24px] border border-black/10 bg-white/35">
+                          <Image
+                            src={item.image}
+                            alt={item.alt}
+                            width={800}
+                            height={1000}
+                            sizes="(min-width: 768px) 100vw, calc(100vw - 32px)"
+                            draggable={false}
+                            className="h-full w-full object-cover object-center"
+                          />
+                          <span
+                            aria-hidden="true"
+                            className="absolute inset-x-0 top-0 z-10 h-1"
+                            style={{ backgroundColor: itemPastel }}
+                          />
+                        </div>
+                        <div className="min-h-[10.5rem] shrink-0 pt-4">
+                          <AccessoryDetails item={item} />
+                        </div>
+                      </motion.div>
+                    ) : null}
+                  </AnimatePresence>
+                </div>
               </div>
             );
           })}
-        </div>
-
-        <div
-          id="accessory-mobile-panel"
-          role="region"
-          aria-labelledby={`accessory-mobile-trigger-${activeItem.id}`}
-          className="pt-5"
-        >
-          <div className="relative aspect-[5/4] overflow-hidden rounded-[24px] border border-black/10 bg-white/35">
-            <AnimatePresence initial={false}>
-              <motion.div
-                key={activeItem.id}
-                initial={
-                  motionDisabled
-                    ? false
-                    : { opacity: 0, transform: "scale(0.99)" }
-                }
-                animate={{ opacity: 1, transform: "scale(1)" }}
-                exit={{ opacity: 0, transform: "scale(1.005)" }}
-                transition={stateTransition}
-                className="absolute inset-0"
-              >
-                <Image
-                  src={activeItem.image}
-                  alt={activeItem.alt}
-                  width={800}
-                  height={1000}
-                  sizes="(min-width: 768px) 100vw, calc(100vw - 32px)"
-                  draggable={false}
-                  className="h-full w-full object-cover object-center"
-                />
-              </motion.div>
-            </AnimatePresence>
-            <span
-              aria-hidden="true"
-              className="absolute inset-x-0 top-0 z-10 h-1"
-              style={{ backgroundColor: activePastel }}
-            />
-          </div>
-          <div className="min-h-[9.5rem] pt-4 sm:min-h-[9rem]">
-            <AccessoryDetails item={activeItem} />
-          </div>
         </div>
       </div>
 
