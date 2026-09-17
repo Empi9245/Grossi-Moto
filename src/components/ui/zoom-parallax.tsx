@@ -56,12 +56,12 @@ const defaultImages: ParallaxImage[] = [
     alt: "Dettaglio frontale People S 125 ABS",
   },
   {
-    src: "/kymco-workbench/home-showroom-originals/03-downtown-350-gt.webp",
-    alt: "Downtown 350 GT in vista laterale",
+    src: "/kymco-all/sections/agility-125-r16-power-up-kymco-agility125-esterne-006-scaled-kymco-agility125-esterne-006-scaled.jpg",
+    alt: "Agility 125 R16 Power Up in esterno",
   },
   {
-    src: "/kymco-workbench/home-showroom-originals/06-ak575-premium.webp",
-    alt: "AK575 Premium in vista laterale",
+    src: "/kymco-all/sections/agility-125-r16-power-up-kymco-agility125-esterne-008-scaled-kymco-agility125-esterne-008-scaled.jpg",
+    alt: "Agility 125 R16 Power Up in esterno",
   },
 ];
 
@@ -230,11 +230,11 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
                   : ""
               } ${
                 index === 7
-                  ? "[&>div]:!-top-[35vh] [&>div]:!left-[40vw] [&>div]:!h-[24vh] [&>div]:!w-[28vw]"
+                  ? "[&>div]:!-top-[27vh] [&>div]:!left-[40vw] [&>div]:!h-[24vh] [&>div]:!w-[28vw]"
                   : ""
               } ${
                 index === 8
-                  ? "[&>div]:!top-[1vh] [&>div]:!-left-[50vw] [&>div]:!h-[26vh] [&>div]:!w-[32vw]"
+                  ? "[&>div]:!top-[1vh] [&>div]:!-left-[58vw] [&>div]:!h-[32vh] [&>div]:!w-[40vw]"
                   : ""
               }`}
             >
