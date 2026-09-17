@@ -1,9 +1,15 @@
 "use client";
 
+import { useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Globe2, MapPin, PhoneCall } from "lucide-react";
-import { motion, useReducedMotion } from "framer-motion";
+import {
+  motion,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+} from "framer-motion";
 
 const HERO_IMAGE = {
   src: "/grossimoto/servizi-hero/agility-s-125-consulenza.jpg",
@@ -11,9 +17,23 @@ const HERO_IMAGE = {
 };
 
 const easeOut = [0.22, 1, 0.36, 1] as const;
+const imageOpenClipPath =
+  "polygon(25% 0, 100% 0, 100% 100%, 0% 100%)";
+const imageClosedClipPath =
+  "polygon(100% 0, 100% 0, 100% 100%, 100% 100%)";
 
 export function ServicesHero() {
   const reduceMotion = useReducedMotion();
+  const mobileImageRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress: mobileImageScrollProgress } = useScroll({
+    target: mobileImageRef,
+    offset: ["start 70%", "end 20%"],
+  });
+  const mobileImageClipPath = useTransform(
+    mobileImageScrollProgress,
+    [0, 1],
+    [imageOpenClipPath, imageClosedClipPath],
+  );
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -88,7 +108,8 @@ export function ServicesHero() {
               className="mb-8 max-w-[34rem] text-base font-medium leading-7 text-black/58 sm:text-lg sm:leading-8"
               variants={itemVariants}
             >
-              Tagliandi, diagnosi e accessori per moto e scooter KYMCO e Voge. Raccontaci cosa ti serve: ti aiutiamo a capire da dove partire.
+              Tagliandi, diagnosi e accessori per moto e scooter KYMCO e Voge.
+              Raccontaci cosa ti serve: ti aiutiamo a capire da dove partire.
             </motion.p>
 
             <motion.div variants={itemVariants}>
@@ -100,6 +121,25 @@ export function ServicesHero() {
               </Link>
             </motion.div>
           </motion.main>
+
+          <motion.div
+            ref={mobileImageRef}
+            className="relative -mx-8 mt-10 min-h-[340px] overflow-hidden sm:-mx-10 md:hidden"
+            style={{
+              clipPath: reduceMotion
+                ? imageOpenClipPath
+                : mobileImageClipPath,
+            }}
+          >
+            <Image
+              src={HERO_IMAGE.src}
+              alt={HERO_IMAGE.alt}
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover object-center"
+            />
+          </motion.div>
         </div>
 
         <motion.footer className="mt-14 w-full lg:mt-20" variants={itemVariants}>
@@ -138,17 +178,16 @@ export function ServicesHero() {
       </div>
 
       <motion.div
-        className="relative min-h-[340px] w-full overflow-hidden md:min-h-full md:w-1/2 lg:w-2/5"
+        className="relative hidden min-h-[340px] w-full overflow-hidden md:block md:min-h-full md:w-1/2 lg:w-2/5"
         initial={
           reduceMotion
             ? false
             : {
-                clipPath:
-                  "polygon(100% 0, 100% 0, 100% 100%, 100% 100%)",
+                clipPath: imageClosedClipPath,
               }
         }
         animate={{
-          clipPath: "polygon(25% 0, 100% 0, 100% 100%, 0% 100%)",
+          clipPath: imageOpenClipPath,
         }}
         transition={{
           duration: reduceMotion ? 0 : 1.2,
@@ -160,7 +199,7 @@ export function ServicesHero() {
           alt={HERO_IMAGE.alt}
           fill
           priority
-          sizes="(min-width: 1024px) 40vw, (min-width: 768px) 50vw, 100vw"
+          sizes="(min-width: 1024px) 40vw, 50vw"
           className="object-cover object-center"
         />
       </motion.div>
