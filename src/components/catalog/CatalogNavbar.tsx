@@ -27,7 +27,7 @@ export function CatalogNavbar() {
             Grossimoto
           </span>
           <span className="mt-1 text-[0.62rem] font-bold uppercase tracking-[0.17em] text-[oklch(30%_0.014_56/0.62)]">
-            Scooter a Roma
+            Moto e scooter a Roma
           </span>
         </Link>
 
