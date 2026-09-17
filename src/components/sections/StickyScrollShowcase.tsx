@@ -345,6 +345,27 @@ export function StickyScrollShowcase() {
                 <p className="mt-4 max-w-[36rem] text-base leading-7 text-black/64">
                   {service.description}
                 </p>
+                <ul className="font-ui mt-6 grid max-w-[36rem] border-y border-black/14 text-[0.75rem] font-bold uppercase tracking-[0.05em] text-black/66">
+                  {service.features.map((feature) => (
+                    <li
+                      key={feature}
+                      className="border-b border-black/10 py-3 last:border-b-0"
+                    >
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+                <a
+                  href="tel:+393289185029"
+                  className="font-ui mt-7 inline-flex min-h-12 w-fit items-center gap-2 rounded-full bg-[#0A0A0A] px-6 py-3 text-sm font-bold uppercase tracking-[0.08em] text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/35 focus-visible:ring-offset-4 focus-visible:ring-offset-white"
+                >
+                  Chiama per informazioni
+                  <PhoneCall
+                    aria-hidden="true"
+                    className="h-4 w-4"
+                    strokeWidth={1.8}
+                  />
+                </a>
               </article>
             ))}
           </div>
