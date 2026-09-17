@@ -402,10 +402,10 @@ export function CatalogFilterBar({
       >
         <div
           className={clsx(
-            "mx-auto max-w-xl overflow-hidden rounded-[1.1rem] border border-black/10 bg-white p-1.5 shadow-[0_12px_30px_rgba(0,0,0,0.10)] transition-[clip-path] duration-[340ms] ease-[cubic-bezier(0.22,1,0.36,1)] will-change-[clip-path] [&>div]:transition-opacity [&>div]:duration-150 [&>div]:ease-out motion-reduce:transition-none motion-reduce:[&>div]:transition-none",
+            "mx-auto max-w-xl overflow-hidden rounded-[1.1rem] border border-black/10 bg-white p-1.5 shadow-[0_12px_30px_rgba(0,0,0,0.10)] transition-[clip-path,opacity] duration-[340ms] ease-[cubic-bezier(0.22,1,0.36,1)] will-change-[clip-path,opacity] motion-reduce:transition-none",
             compactToolbarVisible
-              ? "[clip-path:inset(0_0_0_0_round_1.1rem)] [&>div]:delay-[75ms] [&>div]:opacity-100"
-              : "pointer-events-none [clip-path:inset(0_50%_0_50%_round_999px)] [&>div]:delay-0 [&>div]:opacity-0",
+              ? "opacity-100 [clip-path:inset(0_0_0_0_round_1.1rem)]"
+              : "pointer-events-none opacity-0 [clip-path:inset(0_50%_0_50%_round_999px)]",
           )}
         >
           {compactSearchOpen ? (
