@@ -1,9 +1,25 @@
 import Link from "next/link";
 import { ArrowUpRight, PhoneCall } from "lucide-react";
 
+import { showcaseScooters } from "@/data/showcase-scooters";
+
+const finalShowcaseSurface =
+  showcaseScooters[showcaseScooters.length - 1]?.backgroundSurface ??
+  "var(--home-showroom-surface)";
+
 export function ShowcaseCoverCta() {
   return (
     <section className="relative z-30 bg-white text-[var(--gm-ink)]">
+      <div
+        aria-hidden="true"
+        className="absolute inset-x-0 top-0 h-8 bg-[var(--home-showroom-surface)] sm:h-10 lg:hidden"
+      />
+      <div
+        aria-hidden="true"
+        className="absolute inset-x-0 top-0 hidden h-14 bg-bottom bg-no-repeat lg:block lg:bg-[length:100%_100svh]"
+        style={{ backgroundImage: finalShowcaseSurface }}
+      />
+
       <div className="relative overflow-hidden rounded-[32px] bg-[var(--home-cover-surface)] px-4 py-20 sm:rounded-[40px] sm:px-6 lg:rounded-[56px] lg:px-10 lg:py-28">
         <div aria-hidden="true" className="absolute inset-x-0 top-0 h-px bg-black/10" />
 
