@@ -18,16 +18,16 @@ const HERO_IMAGE = {
 
 const easeOut = [0.22, 1, 0.36, 1] as const;
 const imageOpenClipPath =
-  "polygon(19% 0, 17.8% 0.25%, 16.8% 1.2%, 3.8% 91.5%, 1.8% 95%, 0.5% 98.2%, 0% 100%, 100% 100%, 100% 0)";
+  "polygon(19% 0, 17.8% 0.25%, 16.8% 1.2%, 6.5% 82%, 4.8% 88%, 3.4% 92.5%, 2.2% 95.3%, 1.3% 97.2%, 0.6% 98.6%, 0.2% 99.4%, 0% 100%, 100% 100%, 100% 0)";
 const imageClosedClipPath =
-  "polygon(100% 0, 100% 0.25%, 100% 1.2%, 100% 91.5%, 100% 95%, 100% 98.2%, 100% 100%, 100% 100%, 100% 0)";
+  "polygon(100% 0, 100% 0.25%, 100% 1.2%, 100% 82%, 100% 88%, 100% 92.5%, 100% 95.3%, 100% 97.2%, 100% 98.6%, 100% 99.4%, 100% 100%, 100% 100%, 100% 0)";
 
 export function ServicesHero() {
   const reduceMotion = useReducedMotion();
   const mobileImageRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress: mobileImageScrollProgress } = useScroll({
     target: mobileImageRef,
-    offset: ["start 70%", "end 20%"],
+    offset: ["start start", "end 35%"],
   });
   const mobileImageClipPath = useTransform(
     mobileImageScrollProgress,
@@ -36,8 +36,8 @@ export function ServicesHero() {
   );
   const mobileImageX = useTransform(
     mobileImageScrollProgress,
-    [0, 1],
-    ["0%", "80%"],
+    [0, 0.18, 1],
+    ["0%", "0%", "80%"],
   );
 
   const containerVariants = {
