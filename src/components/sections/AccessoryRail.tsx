@@ -13,6 +13,7 @@ import {
 import { useRef, useState, type KeyboardEvent } from "react";
 
 import { accessories } from "@/data/accessories";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 const pastelColors = [
   "oklch(91% 0.032 24)",
@@ -20,14 +21,23 @@ const pastelColors = [
   "oklch(91% 0.028 240)",
   "oklch(92% 0.03 88)",
 ] as const;
+
+const desktopPastelColors = [
+  pastelColors[2],
+  pastelColors[1],
+  pastelColors[0],
+  pastelColors[3],
+] as const;
 const accessoryIcons = [ShieldCheck, Box, Lock, Smartphone] as const;
 
 export function AccessoryRail() {
   const [active, setActive] = useState(0);
   const reduceMotion = useReducedMotion();
+  const isDesktopViewport = useMediaQuery("(min-width: 1024px)");
   const tabs = useRef<Array<HTMLButtonElement | null>>([]);
   const current = accessories[active];
-  const currentColor = pastelColors[active];
+  const activePastelColors = isDesktopViewport ? desktopPastelColors : pastelColors;
+  const currentColor = activePastelColors[active];
 
   function onKeyDown(event: KeyboardEvent<HTMLButtonElement>, index: number) {
     const next =
@@ -76,7 +86,7 @@ export function AccessoryRail() {
                 active === index ? "" : "hover:bg-white/32"
               }`}
               style={{
-                backgroundColor: active === index ? pastelColors[index] : undefined,
+                backgroundColor: active === index ? activePastelColors[index] : undefined,
               }}
             >
               <Icon aria-hidden="true" className="h-4 w-4 shrink-0" />
