@@ -96,7 +96,7 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
       let focusTween: gsap.core.Tween | null = null;
 
       const renderPosition = () => {
-        const cardWidth = cards[0]?.getBoundingClientRect().width ?? 0;
+        const cardWidth = cards[0]?.offsetWidth ?? 0;
         const lateralScale = 0.96;
         const cardGap = 2;
         const cardSpacing =
@@ -111,7 +111,7 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
 
           gsap.set(card, {
             x: stackX(slot, cardSpacing),
-            xPercent: 0,
+            xPercent: -50,
             y: 0,
             rotation: stackRotation(slot) * 0.72,
             rotationY: stackTilt(slot) * 1.45,
@@ -401,7 +401,7 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
             ref={stackContainerRef}
             className="flex h-[min(60svh,31.5rem)] min-h-[27rem] items-center justify-center"
           >
-            <div className="relative h-full w-[80%] max-w-[31rem]">
+            <div className="relative h-full w-full">
               {[0, 1, 2].flatMap((copyIndex) =>
                 services.map((service, index) => {
                   const isSemanticCard = copyIndex === 1 && index === active;
@@ -414,7 +414,7 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
                       data-service-virtual-index={virtualIndex}
                       aria-hidden={!isSemanticCard}
                       inert={!isSemanticCard ? true : undefined}
-                      className="absolute inset-0 flex h-full w-full flex-col overflow-hidden rounded-[1.5rem] border border-black/10 bg-white will-change-transform"
+                      className="absolute left-1/2 top-0 flex h-full w-[80%] max-w-[31rem] flex-col overflow-hidden rounded-[1.5rem] border border-black/10 bg-white will-change-transform"
                     >
                       <div className="relative h-[32%] shrink-0 overflow-hidden bg-black/[0.035]">
                         <Image
