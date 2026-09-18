@@ -201,7 +201,7 @@ export const showcaseScooters: ShowcaseScooter[] = [
     ],
     statement: ak575.positioning,
     watermark: "AK",
-    ...showroomSurfaceTone("paleStone"),
+    ...showroomSurfaceTone("smokedLavender"),
     shadowX: "7%",
     shadowY: "7%",
     shadowWidth: "82%",
