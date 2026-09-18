@@ -18,9 +18,9 @@ const HERO_IMAGE = {
 
 const easeOut = [0.22, 1, 0.36, 1] as const;
 const imageOpenClipPath =
-  "polygon(27% 0, 25.6% 0.25%, 24.5% 1.2%, 0.7% 96.8%, 0.2% 98.5%, 0% 100%, 100% 100%, 100% 0)";
+  "polygon(27% 0, 25.6% 0.25%, 24.5% 1.2%, 3.8% 91.5%, 1.8% 95%, 0.5% 98.2%, 0% 100%, 100% 100%, 100% 0)";
 const imageClosedClipPath =
-  "polygon(100% 0, 100% 0.25%, 100% 1.2%, 100% 96.8%, 100% 98.5%, 100% 100%, 100% 100%, 100% 0)";
+  "polygon(100% 0, 100% 0.25%, 100% 1.2%, 100% 91.5%, 100% 95%, 100% 98.2%, 100% 100%, 100% 100%, 100% 0)";
 
 export function ServicesHero() {
   const reduceMotion = useReducedMotion();
@@ -86,7 +86,7 @@ export function ServicesHero() {
               </div>
             </motion.header>
 
-            <motion.main variants={containerVariants}>
+            <motion.main className="hidden md:block" variants={containerVariants}>
               <motion.p
                 className="font-ui mb-5 text-[0.68rem] font-bold uppercase tracking-[0.18em] text-black/48 sm:text-xs"
                 variants={itemVariants}
@@ -129,23 +129,77 @@ export function ServicesHero() {
             </motion.main>
           </div>
 
-          <motion.div
+          <div
             ref={mobileImageRef}
-            className="relative mt-6 min-h-[340px] w-full overflow-hidden sm:mt-8 md:hidden"
-            style={{
-              clipPath: reduceMotion ? imageOpenClipPath : mobileImageClipPath,
-              x: reduceMotion ? "0%" : mobileImageX,
-            }}
+            className="relative mt-6 min-h-[620px] w-full overflow-hidden sm:mt-8 md:hidden"
           >
-            <Image
-              src={HERO_IMAGE.src}
-              alt={HERO_IMAGE.alt}
-              fill
-              priority
-              sizes="100vw"
-              className="object-cover object-center"
+            <motion.div
+              className="absolute inset-0 overflow-hidden"
+              style={{
+                clipPath: reduceMotion ? imageOpenClipPath : mobileImageClipPath,
+                x: reduceMotion ? "0%" : mobileImageX,
+              }}
+            >
+              <Image
+                src={HERO_IMAGE.src}
+                alt={HERO_IMAGE.alt}
+                fill
+                priority
+                sizes="100vw"
+                className="object-cover object-center"
+              />
+            </motion.div>
+
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/78 via-black/26 to-black/12"
             />
-          </motion.div>
+
+            <motion.main
+              className="absolute inset-x-0 bottom-0 z-10 px-8 pb-10 pt-28 text-white sm:px-10 sm:pb-12"
+              variants={containerVariants}
+            >
+              <motion.p
+                className="font-ui mb-4 text-[0.68rem] font-bold uppercase tracking-[0.18em] text-white/68 sm:text-xs"
+                variants={itemVariants}
+              >
+                Assistenza moto e scooter
+              </motion.p>
+
+              <motion.h1
+                className="font-display max-w-[11ch] text-[clamp(3.3rem,11vw,6.5rem)] font-bold uppercase leading-[0.86] tracking-[-0.045em] text-white"
+                variants={itemVariants}
+              >
+                Assistenza.
+                <br />
+                <span className="text-[#C72A09]">Officina.</span>
+                <br />
+                Esperienza.
+              </motion.h1>
+
+              <motion.div
+                className="my-6 h-1 w-20 bg-[#C72A09]"
+                variants={itemVariants}
+              />
+
+              <motion.p
+                className="mb-7 max-w-[34rem] text-base font-medium leading-7 text-white/78"
+                variants={itemVariants}
+              >
+                Tagliandi, diagnosi e accessori per moto e scooter KYMCO e Voge.
+                Raccontaci cosa ti serve: ti aiutiamo a capire da dove partire.
+              </motion.p>
+
+              <motion.div variants={itemVariants}>
+                <Link
+                  href="/contatti?argomento=officina#richiesta"
+                  className="font-ui inline-flex min-h-11 items-center text-sm font-bold uppercase tracking-[0.14em] text-white transition-opacity duration-150 hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-4 focus-visible:ring-offset-black/70 motion-reduce:transition-none sm:text-base"
+                >
+                  Scrivi all’officina
+                </Link>
+              </motion.div>
+            </motion.main>
+          </div>
 
           <motion.footer
             className="mx-8 mt-10 mb-8 sm:mx-10 sm:mb-10 md:mx-0 md:mt-14 md:mb-0 lg:mt-20"
