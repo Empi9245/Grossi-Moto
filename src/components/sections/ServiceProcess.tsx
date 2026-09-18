@@ -10,7 +10,7 @@ import {
   Wrench,
   KeyRound,
 } from "lucide-react";
-import { useRef, useState, type KeyboardEvent } from "react";
+import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 
 const steps = [
   {
@@ -55,11 +55,23 @@ const steps = [
   },
 ] as const;
 
+const autoAdvanceDelayMs = 6000;
+
 export function ServiceProcess() {
   const [active, setActive] = useState(0);
   const reduceMotion = useReducedMotion();
   const tabs = useRef<Array<HTMLButtonElement | null>>([]);
   const current = steps[active];
+
+  useEffect(() => {
+    if (reduceMotion) return;
+
+    const timer = window.setTimeout(() => {
+      setActive((currentActive) => (currentActive + 1) % steps.length);
+    }, autoAdvanceDelayMs);
+
+    return () => window.clearTimeout(timer);
+  }, [active, reduceMotion]);
 
   function onKeyDown(event: KeyboardEvent<HTMLButtonElement>, index: number) {
     const next =
