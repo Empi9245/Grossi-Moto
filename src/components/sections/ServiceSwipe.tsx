@@ -24,6 +24,7 @@ const stackOffset = 18;
 const stackScaleStep = 0.024;
 const stackShadeStep = 0.055;
 const maxVisibleDepth = 5;
+const mobileSwipeThreshold = 36;
 
 function stackDepth(index: number) {
   return Math.min(index, maxVisibleDepth);
@@ -40,6 +41,11 @@ function stackShade(depth: number) {
 export function ServiceSwipe({ services }: { services: Service[] }) {
   const stackContainerRef = useRef<HTMLDivElement>(null);
   const railRef = useRef<HTMLDivElement>(null);
+  const swipeStartRef = useRef<{
+    x: number;
+    y: number;
+    pointerId: number;
+  } | null>(null);
   const activeRef = useRef(0);
   const [active, setActive] = useState(0);
   const isTabletViewport = useMediaQuery("(min-width: 768px)");
@@ -343,8 +349,40 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
           role="region"
           aria-label="Servizi Grossi Moto, sequenza orizzontale"
           tabIndex={0}
-          className="hide-scrollbar relative snap-x snap-mandatory overflow-x-auto overflow-y-hidden overscroll-x-contain focus-visible:outline-2 focus-visible:outline-offset-4"
-          style={{ touchAction: "pan-x pan-y" }}
+          className="hide-scrollbar relative snap-x snap-mandatory overflow-x-hidden overscroll-x-contain focus-visible:outline-2 focus-visible:outline-offset-4"
+          style={{ touchAction: "pan-y" }}
+          onPointerDown={(event) => {
+            if (!event.isPrimary || event.pointerType === "mouse") return;
+
+            swipeStartRef.current = {
+              x: event.clientX,
+              y: event.clientY,
+              pointerId: event.pointerId,
+            };
+          }}
+          onPointerUp={(event) => {
+            const start = swipeStartRef.current;
+            swipeStartRef.current = null;
+
+            if (!start || start.pointerId !== event.pointerId) return;
+
+            const deltaX = event.clientX - start.x;
+            const deltaY = event.clientY - start.y;
+            const horizontalDistance = Math.abs(deltaX);
+            const verticalDistance = Math.abs(deltaY);
+
+            if (
+              horizontalDistance < mobileSwipeThreshold ||
+              horizontalDistance <= verticalDistance * 1.15
+            ) {
+              return;
+            }
+
+            goTo(activeRef.current + (deltaX < 0 ? 1 : -1));
+          }}
+          onPointerCancel={() => {
+            swipeStartRef.current = null;
+          }}
           onKeyDown={(event) => {
             if (event.key === "ArrowLeft") {
               event.preventDefault();
