@@ -247,7 +247,6 @@ export function ScooterShowcase({
       }
 
       const direction = wheelIntentRef.current > 0 ? 1 : -1;
-
       if (requestStep(direction)) {
         wheelGestureConsumedRef.current = true;
         wheelIntentRef.current = 0;
@@ -497,8 +496,7 @@ function ShowcaseFrame({
                     ? undefined
                     : {
                         opacity: 0,
-                        y: -6,
-                        transition: {
+                        y: -6,                        transition: {
                           duration: 0.16,
                           ease: premiumEase,
                         },
@@ -514,7 +512,7 @@ function ShowcaseFrame({
                   {activeScooter.statement}
                 </p>
 
-                <div className="mt-4 grid grid-cols-3 gap-3 lg:mt-6 lg:gap-0 lg:overflow-hidden lg:rounded-[1.75rem] lg:border lg:border-[var(--showcase-rule)] lg:bg-white/[0.14] lg:p-4">
+                <div className="mt-4 grid grid-cols-3 gap-3 lg:mt-6 lg:grid-cols-[0.9fr_0.9fr_1.2fr] lg:gap-0 lg:overflow-hidden lg:rounded-[1.75rem] lg:border lg:border-[var(--showcase-rule)] lg:bg-white/[0.14] lg:p-4">
                   {stats.map((stat, index) => (
                     <div
                       key={stat.label}
@@ -528,11 +526,18 @@ function ShowcaseFrame({
                       )}
                     >
                       <div className="flex items-start gap-1.5">
-                        <p className="font-numeric min-w-0 text-[clamp(1.35rem,5vw,2.55rem)] font-bold leading-none text-[var(--showcase-text)] lg:text-[clamp(1.7rem,2.35vw,3rem)]">
+                        <p
+                          className={clsx(
+                            "font-numeric min-w-0 text-[clamp(1.35rem,5vw,2.55rem)] font-bold leading-none text-[var(--showcase-text)]",
+                            stat.value.length > 7
+                              ? "lg:text-[clamp(1.35rem,1.7vw,2rem)]"
+                              : "lg:text-[clamp(1.7rem,2.35vw,3rem)]",
+                          )}
+                        >
                           {stat.value}
                         </p>
                         {stat.unit ? (
-                          <span className="font-ui mt-1.5 origin-left rotate-90 text-[0.55rem] font-bold uppercase tracking-[0.16em] text-[var(--showcase-muted)] lg:text-[0.62rem]">
+                          <span className="font-ui mt-1 shrink-0 text-[0.55rem] font-bold uppercase leading-none tracking-[0.16em] text-[var(--showcase-muted)] [writing-mode:vertical-rl] lg:text-[0.62rem]">
                             {stat.unit}
                           </span>
                         ) : null}
@@ -747,7 +752,6 @@ function ModelRail({ activeIndex }: { activeIndex: number }) {
     </nav>
   );
 }
-
 function StaticShowcase() {
   const smartphone = useMediaQuery("(max-width: 767px)");
   return (
