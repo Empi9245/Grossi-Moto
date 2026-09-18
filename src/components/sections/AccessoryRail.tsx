@@ -15,9 +15,9 @@ import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import { accessories } from "@/data/accessories";
 
 const pastelColors = [
-  "#BAE1FF",
+  "oklch(91% 0.028 240)",
   "oklch(91.5% 0.028 150)",
-  "#FFB3BA",
+  "oklch(91% 0.032 24)",
   "oklch(92% 0.03 88)",
 ] as const;
 
