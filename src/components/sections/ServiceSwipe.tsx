@@ -97,10 +97,6 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
 
       const renderPosition = () => {
         const cardWidth = cards[0]?.getBoundingClientRect().width ?? 0;
-        const viewportGutter = Math.max(
-          0,
-          (container.clientWidth - cardWidth) / 2,
-        );
         const lateralScale = 0.96;
         const cardGap = 2;
         const cardSpacing =
