@@ -181,6 +181,7 @@ export const CatalogProductCard = memo(function CatalogProductCard({
 
   const handleCardClick = (event: React.MouseEvent<HTMLElement>) => {
     if (
+      !isSemanticInstance ||
       isExpanded ||
       (event.target as HTMLElement).closest("button, a")
     ) {
@@ -205,14 +206,15 @@ export const CatalogProductCard = memo(function CatalogProductCard({
     >
       <article
         aria-labelledby={cardTitleId}
-        onClick={handleCardClick}
+        onClick={isSemanticInstance ? handleCardClick : undefined}
         className={clsx(
           "group relative overflow-hidden rounded-[1.35rem] p-4 shadow-[0_0_0_1px_oklch(18%_0.014_56/0.052),0_18px_46px_oklch(18%_0.014_56/0.09)] sm:p-5",
           isExpanded
             ? "h-full min-h-0 sm:min-h-[32rem]"
-            : "min-h-[17.75rem] cursor-pointer sm:min-h-[19.5rem]",
+            : "min-h-[17.75rem] sm:min-h-[19.5rem]",
           !isExpanded &&
-            "transition-[box-shadow,transform] duration-200 hover:shadow-[0_0_0_1px_oklch(18%_0.014_56/0.075),0_22px_56px_oklch(18%_0.014_56/0.12)]",
+            isSemanticInstance &&
+            "cursor-pointer transition-[box-shadow,transform] duration-200 hover:shadow-[0_0_0_1px_oklch(18%_0.014_56/0.075),0_22px_56px_oklch(18%_0.014_56/0.12)]",
           isSelected &&
             !isExpanded &&
             "ring-2 ring-[var(--product-accent)] ring-offset-2 ring-offset-white",
@@ -236,13 +238,19 @@ export const CatalogProductCard = memo(function CatalogProductCard({
                 <span className="font-ui truncate text-[0.58rem] font-bold uppercase tracking-[0.14em] text-[var(--product-muted)]">
                   {scooter.family}
                 </span>
-                <Link
-                  href={`/scooters/${scooter.id}`}
-                  aria-label={`Vai alla pagina di ${scooter.name}`}
-                  className="font-ui inline-flex min-h-7 items-center rounded-full px-1 text-[0.58rem] font-bold uppercase tracking-[0.1em] text-[var(--product-muted)] underline decoration-current/40 underline-offset-4 transition-colors hover:text-current focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--product-accent)]"
-                >
-                  Scheda {scooter.shortName}
-                </Link>
+                {isSemanticInstance ? (
+                  <Link
+                    href={`/scooters/${scooter.id}`}
+                    aria-label={`Vai alla pagina di ${scooter.name}`}
+                    className="font-ui inline-flex min-h-7 items-center rounded-full px-1 text-[0.58rem] font-bold uppercase tracking-[0.1em] text-[var(--product-muted)] underline decoration-current/40 underline-offset-4 transition-colors hover:text-current focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--product-accent)]"
+                  >
+                    Scheda {scooter.shortName}
+                  </Link>
+                ) : (
+                  <span className="font-ui inline-flex min-h-7 items-center rounded-full px-1 text-[0.58rem] font-bold uppercase tracking-[0.1em] text-[var(--product-muted)] underline decoration-current/40 underline-offset-4">
+                    Scheda {scooter.shortName}
+                  </span>
+                )}
               </div>
               <h2
                 id={cardTitleId}
@@ -302,7 +310,7 @@ export const CatalogProductCard = memo(function CatalogProductCard({
               <motion.img
                 layoutId={sharedImageLayoutId}
                 src={scooter.image}
-                alt={scooter.imageAlt}
+                alt={isSemanticInstance ? scooter.imageAlt : ""}
                 width={780}
                 height={585}
                 draggable={false}
@@ -313,7 +321,7 @@ export const CatalogProductCard = memo(function CatalogProductCard({
             ) : (
               <Image
                 src={scooter.image}
-                alt={scooter.imageAlt}
+                alt={isSemanticInstance ? scooter.imageAlt : ""}
                 width={780}
                 height={585}
                 sizes={imageSizes}
@@ -348,21 +356,32 @@ export const CatalogProductCard = memo(function CatalogProductCard({
                 </p>
               </div>
 
-              <button
-                id={cardTriggerId}
-                type="button"
-                aria-expanded={isSelected}
-                aria-label={`Apri la scheda di ${scooter.name}`}
-                onClick={() => onExpandScooter(scooter.id)}
-                className="font-ui inline-flex min-h-11 shrink-0 items-center gap-3 rounded-full px-2 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-current outline-none transition-[background,color] duration-200 hover:bg-[oklch(96%_0.006_78/0.38)] group-hover:text-[var(--product-accent)] focus-visible:ring-2 focus-visible:ring-[var(--product-accent)] focus-visible:ring-offset-2"
-              >
-                Apri la scheda
-                <ArrowRight
-                  aria-hidden="true"
-                  className="h-4 w-4"
-                  strokeWidth={1.8}
-                />
-              </button>
+              {isSemanticInstance ? (
+                <button
+                  id={cardTriggerId}
+                  type="button"
+                  aria-expanded={isSelected}
+                  aria-label={`Apri la scheda di ${scooter.name}`}
+                  onClick={() => onExpandScooter(scooter.id)}
+                  className="font-ui inline-flex min-h-11 shrink-0 items-center gap-3 rounded-full px-2 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-current outline-none transition-[background,color] duration-200 hover:bg-[oklch(96%_0.006_78/0.38)] group-hover:text-[var(--product-accent)] focus-visible:ring-2 focus-visible:ring-[var(--product-accent)] focus-visible:ring-offset-2"
+                >
+                  Apri la scheda
+                  <ArrowRight
+                    aria-hidden="true"
+                    className="h-4 w-4"
+                    strokeWidth={1.8}
+                  />
+                </button>
+              ) : (
+                <span className="font-ui inline-flex min-h-11 shrink-0 items-center gap-3 rounded-full px-2 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-current">
+                  Apri la scheda
+                  <ArrowRight
+                    aria-hidden="true"
+                    className="h-4 w-4"
+                    strokeWidth={1.8}
+                  />
+                </span>
+              )}
             </div>
           )}
         </div>
