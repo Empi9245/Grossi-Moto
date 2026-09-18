@@ -1,8 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { ArrowUpRight } from "lucide-react";
-import { motion, useReducedMotion } from "framer-motion";
+import { ArrowUpRight, X } from "lucide-react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { useState } from "react";
 
 import { ServiceSwipe, type Service } from "./ServiceSwipe";
 
@@ -91,6 +92,7 @@ const easeOut = [0.22, 1, 0.36, 1] as const;
 
 export function StickyScrollShowcase() {
   const reduceMotion = useReducedMotion();
+  const [openService, setOpenService] = useState<number | null>(null);
 
   return (
     <section
@@ -115,69 +117,142 @@ export function StickyScrollShowcase() {
           <ServiceSwipe services={services} />
 
           <div className="hidden grid-cols-3 gap-4 lg:grid xl:gap-6">
-            {services.map((service, index) => (
-              <motion.article
-                key={service.title}
-                className="group relative min-h-[390px] overflow-hidden rounded-3xl bg-[#F4F4F2] p-6"
-                initial={
-                  reduceMotion
-                    ? false
-                    : {
-                        opacity: 0,
-                        y: 20,
-                      }
-                }
-                whileInView={{
-                  opacity: 1,
-                  y: 0,
-                }}
-                viewport={{ once: true, amount: 0.18 }}
-                transition={{
-                  duration: reduceMotion ? 0 : 0.6,
-                  delay: reduceMotion ? 0 : (index % 3) * 0.1,
-                  ease: easeOut,
-                }}
-              >
-                <h3 className="font-display relative z-10 mx-auto max-w-[12ch] text-center text-[clamp(2rem,2.7vw,3.35rem)] font-bold uppercase leading-[0.9] tracking-[-0.035em] text-[#0A0A0A]">
-                  {service.title}
-                </h3>
+            {services.map((service, index) => {
+              const isOpen = openService === index;
+              const detailsId = `service-details-${index}`;
 
-                <div className="absolute inset-x-6 top-[6.5rem] flex h-[13.5rem] items-center justify-center xl:top-[7.2rem] xl:h-[14.5rem]">
-                  <div className="relative h-full w-[78%] overflow-hidden rounded-2xl bg-white/55">
-                    <Image
-                      src={service.image}
-                      alt={service.alt}
-                      fill
-                      sizes="(min-width: 1024px) 25vw, 1px"
-                      className="object-cover opacity-95 transition-[transform,opacity] duration-500 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.06] group-hover:opacity-100 motion-reduce:transform-none motion-reduce:transition-none"
-                    />
+              return (
+                <motion.article
+                  key={service.title}
+                  className="group relative min-h-[410px] overflow-hidden rounded-3xl bg-[#F4F4F2] p-6 xl:min-h-[440px] xl:p-7"
+                  initial={
+                    reduceMotion
+                      ? false
+                      : {
+                          opacity: 0,
+                          y: 20,
+                        }
+                  }
+                  whileInView={{
+                    opacity: 1,
+                    y: 0,
+                  }}
+                  viewport={{ once: true, amount: 0.18 }}
+                  transition={{
+                    duration: reduceMotion ? 0 : 0.6,
+                    delay: reduceMotion ? 0 : (index % 3) * 0.1,
+                    ease: easeOut,
+                  }}
+                >
+                  <h3 className="font-display pointer-events-none relative z-10 mx-auto max-w-[12ch] text-center text-[clamp(2rem,2.7vw,3.35rem)] font-bold uppercase leading-[0.9] tracking-[-0.035em] text-[#0A0A0A]">
+                    {service.title}
+                  </h3>
+
+                  <div className="pointer-events-none absolute inset-x-7 bottom-[4.75rem] top-[6.75rem] flex items-center justify-center xl:inset-x-8 xl:bottom-[5rem] xl:top-[7.2rem]">
+                    <div className="relative h-full w-full">
+                      <Image
+                        src={service.image}
+                        alt={service.alt}
+                        fill
+                        sizes="(min-width: 1280px) 360px, (min-width: 1024px) 30vw, 1px"
+                        className="object-contain opacity-95 transition-[transform,opacity] duration-500 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.06] group-hover:opacity-100 motion-reduce:transform-none motion-reduce:transition-none"
+                      />
+                    </div>
                   </div>
-                </div>
 
-                <div className="absolute inset-x-6 bottom-6 pr-16">
-                  <p className="text-[1.02rem] font-semibold leading-[1.12] text-black/82">
-                    {service.statement}
-                  </p>
-                  <p className="mt-2 line-clamp-2 text-sm leading-6 text-black/56">
-                    {service.description}
-                  </p>
-                </div>
+                  <button
+                    type="button"
+                    aria-expanded={isOpen}
+                    aria-controls={detailsId}
+                    aria-label={`Apri i dettagli di ${service.title}`}
+                    tabIndex={isOpen ? -1 : 0}
+                    onClick={() => setOpenService(index)}
+                    className="absolute inset-0 z-20 rounded-3xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/45 focus-visible:ring-inset"
+                  />
 
-                <div className="absolute bottom-0 right-0 z-20 h-20 w-20 rounded-tl-2xl border-l border-t border-black/5 bg-white">
-                  <a
-                    href="tel:+393289185029"
-                    aria-label={"Chiama per informazioni su " + service.title}
-                    className="absolute bottom-3 right-3 flex h-12 w-12 items-center justify-center rounded-full bg-[#0A0A0A] text-white shadow-sm transition-[background-color,transform] duration-300 group-hover:bg-[#C72A09] group-hover:scale-105 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/35 focus-visible:ring-offset-3 motion-reduce:transform-none motion-reduce:transition-none"
+                  <div
+                    aria-hidden="true"
+                    className="pointer-events-none absolute bottom-0 right-0 z-30 h-20 w-20 rounded-tl-2xl border-l border-t border-black/5 bg-white"
                   >
-                    <ArrowUpRight
-                      aria-hidden="true"
-                      className="h-5 w-5"
-                      strokeWidth={1.9}
-                    />
-                  </a>
-                </div>
-              </motion.article>
-            ))}
+                    <span className="absolute bottom-3 right-3 flex h-12 w-12 items-center justify-center rounded-full bg-[#0A0A0A] text-white shadow-sm transition-[background-color,transform] duration-300 group-hover:scale-105 group-hover:bg-[#C72A09] motion-reduce:transform-none motion-reduce:transition-none">
+                      <ArrowUpRight
+                        className="h-5 w-5"
+                        strokeWidth={1.9}
+                      />
+                    </span>
+                  </div>
+
+                  <AnimatePresence initial={false}>
+                    {isOpen ? (
+                      <motion.div
+                        id={detailsId}
+                        role="region"
+                        aria-label={`Dettagli: ${service.title}`}
+                        className="absolute inset-0 z-40 flex flex-col bg-[#F4F4F2] p-7 xl:p-8"
+                        initial={
+                          reduceMotion
+                            ? { opacity: 1 }
+                            : { opacity: 0, y: 8 }
+                        }
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={
+                          reduceMotion
+                            ? { opacity: 0 }
+                            : { opacity: 0, y: 8 }
+                        }
+                        transition={{
+                          duration: reduceMotion ? 0 : 0.24,
+                          ease: easeOut,
+                        }}
+                        onKeyDown={(event) => {
+                          if (event.key === "Escape") {
+                            event.preventDefault();
+                            setOpenService(null);
+                          }
+                        }}
+                      >
+                        <div className="pr-14">
+                          <p className="font-ui text-[0.68rem] font-bold uppercase tracking-[0.15em] text-black/46">
+                            {service.title}
+                          </p>
+                          <p className="font-display mt-5 max-w-[14ch] text-[clamp(2rem,2.4vw,3rem)] font-bold leading-[0.95] tracking-[-0.035em] text-[#0A0A0A]">
+                            {service.statement}
+                          </p>
+                          <p className="mt-5 max-w-[40ch] text-base leading-7 text-black/62">
+                            {service.description}
+                          </p>
+                        </div>
+
+                        <ul className="font-ui mt-auto grid border-t border-black/12 pt-4 text-[0.72rem] font-semibold uppercase tracking-[0.04em] text-black/66">
+                          {service.features.map((feature) => (
+                            <li
+                              key={feature}
+                              className="border-b border-black/8 py-2 last:border-b-0"
+                            >
+                              {feature}
+                            </li>
+                          ))}
+                        </ul>
+
+                        <div
+                          aria-hidden="true"
+                          className="pointer-events-none absolute bottom-0 right-0 h-20 w-20 rounded-tl-2xl border-l border-t border-black/5 bg-white"
+                        />
+
+                        <button
+                          type="button"
+                          aria-label={`Chiudi i dettagli di ${service.title}`}
+                          onClick={() => setOpenService(null)}
+                          className="absolute bottom-3 right-3 z-10 flex h-12 w-12 items-center justify-center rounded-full bg-[#0A0A0A] text-white shadow-sm transition-[background-color,transform] duration-200 hover:bg-[#C72A09] active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/40 focus-visible:ring-offset-3 focus-visible:ring-offset-white motion-reduce:transform-none motion-reduce:transition-none"
+                        >
+                          <X aria-hidden="true" className="h-5 w-5" strokeWidth={1.9} />
+                        </button>
+                      </motion.div>
+                    ) : null}
+                  </AnimatePresence>
+                </motion.article>
+              );
+            })}
           </div>
         </div>
       </div>
