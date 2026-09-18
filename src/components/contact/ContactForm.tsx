@@ -119,10 +119,10 @@ export function ContactForm({
 
   const inputClass = (hasError = false) =>
     [
-      "min-h-12 w-full rounded-2xl border bg-white px-4 py-3 text-base text-[#0A0A0A] outline-none transition-[border-color,box-shadow,background-color] duration-150 placeholder:text-black/32 sm:text-sm motion-reduce:transition-none",
+      "min-h-12 w-full rounded-2xl border border-transparent bg-black/[0.035] px-4 py-3 text-base text-[#0A0A0A] outline-none transition-[border-color,box-shadow,background-color] duration-150 placeholder:text-black/32 sm:text-sm motion-reduce:transition-none",
       hasError
-        ? "border-[#C72A09] ring-1 ring-[#C72A09]/12 focus:border-[#C72A09] focus:ring-2 focus:ring-[#C72A09]/18"
-        : "border-black/14 hover:border-black/28 focus:border-[#C72A09] focus:ring-2 focus:ring-[#C72A09]/16",
+        ? "border-[#C72A09] bg-[#C72A09]/[0.035] ring-1 ring-[#C72A09]/12 focus:border-[#C72A09] focus:ring-2 focus:ring-[#C72A09]/18"
+        : "hover:bg-black/[0.055] focus:border-[#C72A09] focus:bg-white focus:ring-2 focus:ring-[#C72A09]/16",
     ].join(" ");
 
   const describedBy = (field: FieldName) =>
@@ -159,7 +159,7 @@ export function ContactForm({
         />
       </div>
 
-      <div className="border-b border-black/10 pb-5">
+      <div className="pb-2">
         <p className="font-ui text-[0.68rem] font-bold uppercase tracking-[0.18em] text-[#C72A09]">
           La tua richiesta
         </p>
@@ -303,7 +303,7 @@ export function ContactForm({
         )}
       </div>
 
-      <div className="rounded-2xl border border-black/10 bg-black/[0.025] p-4">
+      <div className="rounded-2xl bg-black/[0.035] p-4">
         <div className="flex items-start gap-3">
           <input
             id="contact-privacy"
@@ -347,13 +347,13 @@ export function ContactForm({
         className="min-h-6 text-sm leading-6"
       >
         {status === "success" && (
-          <p className="rounded-2xl border border-black/10 bg-black/[0.025] px-4 py-3 font-medium text-[#0A0A0A]">
+          <p className="rounded-2xl bg-black/[0.035] px-4 py-3 font-medium text-[#0A0A0A]">
             La tua richiesta è stata inviata. Ti ricontatteremo ai recapiti che
             hai indicato.
           </p>
         )}
         {status === "error" && (
-          <p className="rounded-2xl border border-[#C72A09]/28 bg-[#C72A09]/[0.045] px-4 py-3 font-medium text-[#9D2208]">
+          <p className="rounded-2xl bg-[#C72A09]/[0.06] px-4 py-3 font-medium text-[#9D2208]">
             Non abbiamo ricevuto conferma dell’invio. Il messaggio è ancora qui:
             puoi riprovare o{" "}
             <a
