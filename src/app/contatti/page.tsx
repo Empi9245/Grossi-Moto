@@ -322,10 +322,10 @@ export default async function ContattiPage({
         <div className="mx-auto flex max-w-[92rem] flex-col gap-8 pt-10 lg:flex-row lg:items-end lg:justify-between lg:gap-14 lg:pt-14">
           <div>
             <p className="font-ui text-[0.68rem] font-bold uppercase tracking-[0.2em] text-[#C72A09] sm:text-xs">
-              Hai ancora un dubbio?
+              Un ultimo dubbio?
             </p>
             <h2 className="font-display mt-3 text-[clamp(3rem,7vw,6rem)] font-bold uppercase leading-[0.88] tracking-[-0.04em]">
-              Parliamone.
+              Chiedi pure.
             </h2>
           </div>
 
