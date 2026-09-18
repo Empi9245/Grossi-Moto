@@ -271,6 +271,8 @@ const steppedScrollCooldownMs = 260;
 const steppedScrollProgressTolerance = 0.015;
 const steppedScrollEntryEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
 const steppedScrollEntryDuration = 0.68;
+const steppedScrollFocusTolerancePx = 0.75;
+const steppedScrollFocusSettleFrames = 2;
 const wheelGestureResetMs = 160;
 const idleFloatEase: [number, number, number, number] = [0.45, 0, 0.55, 1];
 const idleFloatPatterns = [
@@ -511,6 +513,7 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
     let touchControlsSection = false;
     let wheelGestureConsumed = false;
     let wheelResetTimer: number | null = null;
+    let focusSettleFrame: number | null = null;
 
     const setIntroAssembly = (next: boolean) => {
       if (introAssembledRef.current === next) {
@@ -600,25 +603,75 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
 
       setIntroAssembly(true);
       isAnimating = true;
-      activeAnimation = animate(window.scrollY, state.sectionTop, {
+
+      const entryStartY = window.scrollY;
+      const animationStart = isDesktopViewport ? 0 : entryStartY;
+      const animationEnd = isDesktopViewport ? 1 : state.sectionTop;
+
+      activeAnimation = animate(animationStart, animationEnd, {
         duration: steppedScrollEntryDuration,
         ease: steppedScrollEntryEase,
         onUpdate: (latest) => {
+          const liveSectionTop =
+            window.scrollY + section.getBoundingClientRect().top;
+          const nextY = isDesktopViewport
+            ? entryStartY + (liveSectionTop - entryStartY) * latest
+            : latest;
+
           window.scrollTo({
-            top: latest,
+            top: nextY,
             left: 0,
             behavior: "auto",
           });
         },
         onComplete: () => {
+          const liveSectionTop =
+            window.scrollY + section.getBoundingClientRect().top;
+
           window.scrollTo({
-            top: state.sectionTop,
+            top: isDesktopViewport ? liveSectionTop : state.sectionTop,
             left: 0,
             behavior: "auto",
           });
-          isAnimating = false;
+
           activeAnimation = null;
-          cooldownUntil = performance.now() + steppedScrollCooldownMs;
+
+          if (!isDesktopViewport) {
+            isAnimating = false;
+            cooldownUntil = performance.now() + steppedScrollCooldownMs;
+            return;
+          }
+
+          let settleFramesRemaining = steppedScrollFocusSettleFrames;
+
+          const settleDesktopFocus = () => {
+            const correction = section.getBoundingClientRect().top;
+
+            if (Math.abs(correction) > steppedScrollFocusTolerancePx) {
+              window.scrollTo({
+                top: window.scrollY + correction,
+                left: 0,
+                behavior: "auto",
+              });
+            }
+
+            settleFramesRemaining -= 1;
+
+            if (settleFramesRemaining > 0) {
+              focusSettleFrame = window.requestAnimationFrame(
+                settleDesktopFocus,
+              );
+              return;
+            }
+
+            focusSettleFrame = null;
+            isAnimating = false;
+            cooldownUntil = performance.now() + steppedScrollCooldownMs;
+          };
+
+          focusSettleFrame = window.requestAnimationFrame(
+            settleDesktopFocus,
+          );
         },
       });
 
@@ -932,6 +985,11 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
       if (wheelResetTimer != null) {
         window.clearTimeout(wheelResetTimer);
       }
+
+      if (focusSettleFrame != null) {
+        window.cancelAnimationFrame(focusSettleFrame);
+      }
+
       window.removeEventListener("scroll", syncIntroAssembly);
       window.removeEventListener("wheel", onWheel, { capture: true });
       window.removeEventListener("touchstart", onTouchStart, {
