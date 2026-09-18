@@ -98,9 +98,9 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
 
       const renderPosition = () => {
         const cardWidth = cards[0]?.getBoundingClientRect().width ?? 0;
-        const sidePeek = gsap.utils.clamp(18, 28, container.clientWidth * 0.065);
+        const sidePeek = gsap.utils.clamp(34, 42, container.clientWidth * 0.1);
         const cardSpacing = Math.max(stackOffset, cardWidth - sidePeek);
-        const visibleLimit = 1.12;
+        const visibleLimit = 1.14;
 
         cards.forEach((card, cardIndex) => {
           const slot = virtualIndexes[cardIndex] - position.value;
@@ -112,9 +112,9 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
             x: stackX(slot, cardSpacing),
             xPercent: 0,
             y: 0,
-            rotation: stackRotation(slot) * 0.55,
-            rotationY: stackTilt(slot) * 0.55,
-            scale: 1 - Math.min(distance, 1) * 0.012,
+            rotation: stackRotation(slot) * 0.72,
+            rotationY: stackTilt(slot) * 1.45,
+            scale: 1 - Math.min(distance, 1) * 0.06,
             opacity,
             transformPerspective: 1200,
             transformOrigin: "center center",
@@ -398,9 +398,9 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
         >
           <div
             ref={stackContainerRef}
-            className="flex h-[min(78svh,42rem)] min-h-[32rem] items-center justify-center"
+            className="flex h-[min(70svh,37rem)] min-h-[29rem] items-center justify-center"
           >
-            <div className="relative h-full w-[calc(100%-2.75rem)] max-w-[30rem]">
+            <div className="relative h-full w-[calc(100%-1.75rem)] max-w-[31rem]">
               {[0, 1, 2].flatMap((copyIndex) =>
                 services.map((service, index) => {
                   const isSemanticCard = copyIndex === 1 && index === active;
@@ -421,7 +421,7 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
                           alt={isSemanticCard ? service.alt : ""}
                           fill
                           draggable={false}
-                          sizes="(max-width: 767px) calc(100vw - 2.75rem), 1px"
+                          sizes="(max-width: 767px) calc(100vw - 1.75rem), 1px"
                           className="object-cover"
                         />
                       </div>
@@ -436,11 +436,11 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
                         <p className="mt-3 max-w-[44ch] text-sm leading-6 text-black/64">
                           {service.description}
                         </p>
-                        <ul className="font-ui mt-auto grid border-t border-black/12 pt-3 text-[0.68rem] font-semibold uppercase tracking-[0.04em] text-black/66">
+                        <ul className="font-ui mt-auto grid gap-1 pt-3 text-[0.68rem] font-semibold uppercase tracking-[0.04em] text-black/66">
                           {service.features.map((feature) => (
                             <li
                               key={feature}
-                              className="border-b border-black/8 py-1.5 last:border-b-0"
+                              className="py-1"
                             >
                               {feature}
                             </li>
