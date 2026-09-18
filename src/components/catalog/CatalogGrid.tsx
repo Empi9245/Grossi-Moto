@@ -1,9 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import {
-  type CSSProperties,
   useCallback,
   useEffect,
   useMemo,
@@ -15,10 +13,7 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 
 import { CatalogProductCard } from "@/components/catalog/CatalogProductCard";
-import {
-  getCatalogScooterBrand,
-  type CatalogScooter,
-} from "@/data/catalog-scooters";
+import type { CatalogScooter } from "@/data/catalog-scooters";
 import {
   getCatalogCardToneAssignments,
   type ProductCardToneAssignment,
@@ -247,8 +242,6 @@ type CatalogChapterId =
   | "300-499cc"
   | "500cc+";
 
-type ProductStackStyle = CSSProperties & Record<string, string>;
-
 const catalogChapterDefinitions: ReadonlyArray<{
   id: CatalogChapterId;
   label: string;
@@ -283,6 +276,10 @@ function stackLayer(slot: number) {
   return Math.min(Math.abs(slot), maxVisibleDepth);
 }
 
+function stackX(slot: number, spacing: number) {
+  return slot * spacing;
+}
+
 function stackShade(layer: number) {
   return Math.min(layer * stackShadeStep, 0.28);
 }
@@ -293,19 +290,6 @@ function stackRotation(slot: number) {
 
 function stackTilt(slot: number) {
   return gsap.utils.clamp(-7, 7, -slot * stackTiltStep);
-}
-
-function getProductStackStyle(
-  scooter: CatalogScooter,
-  cardToneAssignment?: ProductCardToneAssignment,
-): ProductStackStyle {
-  return {
-    "--product-accent": scooter.accentTone,
-    "--product-muted": scooter.mutedTone,
-    "--product-shadow": scooter.shadowTone,
-    background: cardToneAssignment?.cardSurface ?? scooter.cardSurface,
-    color: scooter.textTone,
-  };
 }
 
 type ProductShowroomChapterProps = {
@@ -356,11 +340,18 @@ function ProductShowroomChapter({
   const totalCards = scooters.length;
   const looping = totalCards >= 3;
   const copyIndexes = looping ? [0, 1, 2] : [0];
+  const semanticCopyIndex = looping ? 1 : 0;
   const activeScooter = scooters[active] ?? scooters[0];
   const expandedScooter = expandedId
     ? scooters.find((scooter) => scooter.id === expandedId)
     : undefined;
+  const expandedIndex = expandedScooter
+    ? scooters.findIndex((scooter) => scooter.id === expandedScooter.id)
+    : -1;
   const scooterSignature = scooters.map((scooter) => scooter.id).join("|");
+
+  const getStackInstanceId = (copyIndex: number, index: number) =>
+    `stack-${chapterId}-${copyIndex}-${index}`;
 
   useEffect(() => {
     expandedIdRef.current = expandedId;
@@ -394,9 +385,6 @@ function ProductShowroomChapter({
       const shades = cards.map((card) =>
         card.querySelector<HTMLElement>("[data-product-depth-shade]"),
       );
-      const vehicles = cards.map((card) =>
-        card.querySelector<HTMLElement>("[data-product-stack-vehicle]"),
-      );
       const virtualIndexes = cards.map((card) =>
         Number(card.dataset.productVirtualIndex),
       );
@@ -405,7 +393,6 @@ function ProductShowroomChapter({
       if (
         cards.length !== expectedCardCount ||
         shades.some((shade) => !shade) ||
-        vehicles.some((vehicle) => !vehicle) ||
         virtualIndexes.some((index) => Number.isNaN(index))
       ) {
         return;
@@ -422,27 +409,36 @@ function ProductShowroomChapter({
         const cardWidth = cards[0]?.offsetWidth ?? 0;
         const lateralScale = 0.9;
         const cardGap = gsap.utils.clamp(
-          14,
-          30,
+          12,
+          16,
           container.clientWidth * 0.035,
         );
         const cardSpacing =
           cardWidth * ((1 + lateralScale) / 2) + cardGap;
-        const visibleLimit = looping ? 1.14 : 1.04;
+        const visibleLimit = 1.14;
+        const cardHeight = cards.reduce(
+          (maxHeight, card) => Math.max(maxHeight, card.offsetHeight),
+          0,
+        );
+
+        if (cardHeight > 0) {
+          container.style.height = `${cardHeight}px`;
+        }
 
         cards.forEach((card, cardIndex) => {
           const slot = virtualIndexes[cardIndex] - position.value;
           const layer = stackLayer(slot);
           const distance = Math.abs(slot);
+          const opacity = distance > visibleLimit ? 0 : 1;
 
           gsap.set(card, {
-            x: slot * cardSpacing,
+            x: stackX(slot, cardSpacing),
             xPercent: -50,
-            yPercent: -50,
+            y: 0,
             rotation: stackRotation(slot) * 0.72,
-            rotationY: stackTilt(slot) * 1.65,
+            rotationY: stackTilt(slot) * 1.75,
             scale: 1 - Math.min(distance, 1) * (1 - lateralScale),
-            opacity: distance > visibleLimit ? 0 : 1,
+            opacity,
             transformPerspective: 1050,
             transformOrigin: "center center",
             force3D: true,
@@ -450,13 +446,7 @@ function ProductShowroomChapter({
           });
 
           gsap.set(shades[cardIndex], {
-            opacity: distance < 1.12 ? stackShade(layer) * 1.05 : 0,
-          });
-
-          gsap.set(vehicles[cardIndex], {
-            x: gsap.utils.clamp(-7, 7, -slot * 6),
-            scale: 1 - Math.min(distance, 1) * 0.015,
-            force3D: true,
+            opacity: distance < 1.12 ? stackShade(layer) * 1.1 : 0,
           });
         });
       };
@@ -548,6 +538,7 @@ function ProductShowroomChapter({
 
       const observer = new ResizeObserver(renderPosition);
       observer.observe(container);
+      cards.forEach((card) => observer.observe(card));
 
       return () => {
         focusRef.current = () => {};
@@ -557,9 +548,6 @@ function ProductShowroomChapter({
         gsap.killTweensOf(cards);
         shades.forEach((shade) => {
           if (shade) gsap.killTweensOf(shade);
-        });
-        vehicles.forEach((vehicle) => {
-          if (vehicle) gsap.killTweensOf(vehicle);
         });
       };
     },
@@ -581,7 +569,7 @@ function ProductShowroomChapter({
   }, []);
 
   const controlClass =
-    "inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-black/15 bg-white text-black shadow-sm transition-[background-color,border-color,transform] duration-150 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] hover:border-black/30 hover:bg-black/[0.035] active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-3 aria-disabled:pointer-events-none aria-disabled:opacity-30";
+    "inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-black/18 bg-white text-black transition-[background-color,border-color,transform] duration-150 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] hover:border-black/34 hover:bg-black/[0.04] active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-3 aria-disabled:pointer-events-none aria-disabled:opacity-30 motion-reduce:transform-none motion-reduce:transition-none";
 
   return (
     <section
@@ -680,123 +668,58 @@ function ProductShowroomChapter({
       >
         <div
           ref={stackContainerRef}
-          className="relative h-[24rem] sm:h-[26rem] md:h-[27rem]"
+          className="relative min-h-[17.75rem] sm:min-h-[19.5rem]"
         >
           {copyIndexes.flatMap((copyIndex) =>
             scooters.map((scooter, index) => {
               const isSemanticCard =
-                (looping ? copyIndex === 1 : true) && index === active;
+                copyIndex === semanticCopyIndex && index === active;
               const virtualIndex = looping
                 ? copyIndex * totalCards + index
                 : index;
-              const cardToneAssignment = cardToneAssignments[scooter.id];
+              const instanceId = getStackInstanceId(copyIndex, index);
 
               return (
-                <article
+                <div
                   key={copyIndex + "-" + scooter.id}
                   data-product-stack-card
                   data-product-virtual-index={virtualIndex}
-                  data-scooter-id={isSemanticCard ? scooter.id : undefined}
                   aria-hidden={!isSemanticCard}
                   inert={!isSemanticCard ? true : undefined}
-                  onClick={(event) => {
-                    if (
-                      !isSemanticCard ||
-                      (event.target as HTMLElement).closest("button, a")
-                    ) {
-                      return;
-                    }
-
-                    onExpandScooter(scooter.id);
-                  }}
-                  className="absolute left-1/2 top-1/2 flex h-[22rem] w-[80%] max-w-[38rem] cursor-pointer flex-col overflow-hidden rounded-[1.5rem] p-4 opacity-0 shadow-[0_0_0_1px_oklch(18%_0.014_56/0.05),0_20px_52px_oklch(18%_0.014_56/0.11)] will-change-transform sm:h-[24rem] sm:w-[70%] sm:p-5 md:h-[25rem] md:w-[62%]"
-                  style={getProductStackStyle(
-                    scooter,
-                    cardToneAssignment,
-                  )}
+                  className="absolute left-1/2 top-0 w-[80%] max-w-[31rem] opacity-0 will-change-transform"
                 >
-                  <div className="relative z-10 flex min-h-0 flex-1 flex-col">
-                    <div className="min-w-0">
-                      <div className="flex min-w-0 flex-wrap items-center gap-2">
-                        <span className="font-ui inline-flex min-h-7 items-center rounded-full bg-white/35 px-2.5 text-[0.56rem] font-bold uppercase tracking-[0.13em] text-current shadow-[inset_0_0_0_1px_oklch(18%_0.014_56/0.08)]">
-                          {getCatalogScooterBrand(scooter)}
-                        </span>
-                        <span className="font-ui truncate text-[0.56rem] font-bold uppercase tracking-[0.13em] text-[var(--product-muted)]">
-                          {scooter.family}
-                        </span>
-                      </div>
-                      <h3 className="font-display mt-2 max-w-[16ch] text-[clamp(1.55rem,7vw,2.15rem)] font-bold leading-[0.94] tracking-[-0.025em] text-current">
-                        {scooter.name}
-                      </h3>
-                      <p className="font-ui mt-1.5 text-[0.6rem] font-bold uppercase tracking-[0.12em] text-[var(--product-muted)]">
-                        {scooter.subtitle}
-                      </p>
-                    </div>
-
-                    <div className="relative min-h-0 flex-1">
-                      <div
-                        aria-hidden="true"
-                        className="absolute bottom-[12%] left-1/2 h-[9%] w-[72%] -translate-x-1/2 rounded-[50%] bg-[var(--product-shadow)] blur-[11px]"
-                      />
-                      <Image
-                        data-product-stack-vehicle
-                        src={scooter.image}
-                        alt={isSemanticCard ? scooter.imageAlt : ""}
-                        width={780}
-                        height={585}
-                        sizes="(max-width: 639px) 80vw, (max-width: 767px) 70vw, (max-width: 1023px) 62vw, 1px"
-                        priority={
-                          isFirstChapter &&
-                          isSemanticCard &&
-                          index === 0
-                        }
-                        draggable={false}
-                        className="relative z-10 h-full max-h-[13.25rem] w-full object-contain object-center will-change-transform sm:max-h-[14.5rem] md:max-h-[15rem]"
-                      />
-                    </div>
-
-                    <div className="flex items-end justify-between gap-3">
-                      <div className="min-w-0">
-                        <p className="font-ui text-[0.6rem] font-bold uppercase tracking-[0.13em] text-[var(--product-muted)]">
-                          {scooter.displacement}
-                        </p>
-                        <p className="mt-1 truncate text-sm leading-5 text-[var(--product-muted)]">
-                          {scooter.idealUse}
-                        </p>
-                      </div>
-
-                      <button
-                        type="button"
-                        aria-expanded={expandedId === scooter.id}
-                        aria-label={"Apri la scheda di " + scooter.name}
-                        onClick={() => onExpandScooter(scooter.id)}
-                        className="font-ui inline-flex min-h-11 shrink-0 items-center gap-2 rounded-full bg-white/28 px-3 text-[0.62rem] font-bold uppercase tracking-[0.1em] text-current outline-none shadow-[inset_0_0_0_1px_oklch(18%_0.014_56/0.08)] transition-[background,transform] duration-150 hover:bg-white/45 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[var(--product-accent)]"
-                      >
-                        Apri
-                        <ArrowRight
-                          aria-hidden="true"
-                          className="h-4 w-4"
-                          strokeWidth={1.8}
-                        />
-                      </button>
-                    </div>
-                  </div>
-
+                  <CatalogProductCard
+                    scooter={scooter}
+                    shouldReduceMotion={false}
+                    isExpanded={false}
+                    isSelected={
+                      isSemanticCard && expandedId === scooter.id
+                    }
+                    transitionImageId={null}
+                    cardToneAssignment={cardToneAssignments[scooter.id]}
+                    isPriority={
+                      isFirstChapter && isSemanticCard && index === 0
+                    }
+                    instanceId={instanceId}
+                    isSemanticInstance={isSemanticCard}
+                    onExpandScooter={onExpandScooter}
+                    onCollapseScooter={onCollapseScooter}
+                  />
                   <div
                     data-product-depth-shade
                     aria-hidden="true"
-                    className="pointer-events-none absolute inset-0 z-30 bg-black opacity-0"
+                    className="pointer-events-none absolute inset-0 z-30 rounded-[1.35rem] bg-black opacity-0"
                   />
-                </article>
+                </div>
               );
             }),
           )}
         </div>
       </div>
 
-      <div className="font-ui mt-3 flex items-center justify-end gap-2.5 sm:mt-4">
+      <div className="font-ui mt-7 flex items-center justify-end gap-2.5 pt-4">
         <span
-          className="mr-1 text-[0.66rem] font-bold uppercase tracking-[0.12em] text-black/46"
+          className="mr-1 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-black/46"
           aria-live="polite"
         >
           {active + 1} / {totalCards}
@@ -834,7 +757,7 @@ function ProductShowroomChapter({
         ) : null}
       </div>
 
-      {expandedScooter ? (
+      {expandedScooter && expandedIndex >= 0 ? (
         <div
           data-scooter-detail-id={expandedScooter.id}
           className="mt-5 sm:mt-6"
@@ -850,6 +773,12 @@ function ProductShowroomChapter({
                 : null
             }
             cardToneAssignment={cardToneAssignments[expandedScooter.id]}
+            collapseFocusTargetId={
+              "catalog-card-trigger-" +
+              expandedScooter.id +
+              "-" +
+              getStackInstanceId(semanticCopyIndex, expandedIndex)
+            }
             onExpandScooter={onExpandScooter}
             onCollapseScooter={onCollapseScooter}
           />
