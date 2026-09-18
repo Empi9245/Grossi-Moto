@@ -98,7 +98,7 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
       const renderPosition = () => {
         const cardWidth = cards[0]?.offsetWidth ?? 0;
         const lateralScale = 0.9;
-        const cardGap = gsap.utils.clamp(8, 11, container.clientWidth * 0.025);
+        const cardGap = gsap.utils.clamp(12, 16, container.clientWidth * 0.035);
         const cardSpacing =
           cardWidth * ((1 + lateralScale) / 2) + cardGap;
         const visibleLimit = 1.14;
