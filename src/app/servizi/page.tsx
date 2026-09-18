@@ -78,13 +78,13 @@ export default function ServiziPage() {
       <ServicesHero />
       <StickyScrollShowcase />
 
-      <section className="overflow-hidden rounded-[32px] bg-[#0A0A0A] px-5 py-20 text-white sm:rounded-[40px] sm:px-7 sm:py-28 md:px-10 lg:rounded-[56px] lg:px-14 lg:py-32 xl:px-20">
+      <section className="bg-[#111111] px-5 py-20 text-[#F7F4EF] sm:px-7 sm:py-28 md:px-10 lg:px-14 lg:py-32 xl:px-20">
         <div className="mx-auto max-w-[80rem]">
           <div className="mb-14 max-w-[42rem] sm:mb-20">
-            <p className="font-ui text-[0.65rem] font-bold uppercase tracking-[0.22em] text-[#C72A09] sm:text-xs">
+            <p className="font-ui text-[0.65rem] font-bold uppercase tracking-[0.22em] opacity-50 sm:text-xs">
               Come funziona
             </p>
-            <h2 className="font-display mt-4 text-[clamp(2.4rem,6vw,5rem)] font-bold leading-[0.9] tracking-tight text-white">
+            <h2 className="font-display mt-4 text-[clamp(2.4rem,6vw,5rem)] font-bold leading-[0.9] tracking-tight">
               Dal contatto
               <br />
               alla riconsegna.
