@@ -207,128 +207,75 @@ export function ServicesHero() {
         </motion.div>
       </motion.section>
 
-      <section className="hidden bg-white px-5 pb-5 lg:block">
+      <section className="hidden bg-white px-2 pb-2 lg:block">
         <motion.div
-          className="relative mx-auto flex min-h-[calc(100svh-7rem)] max-w-[122rem] flex-col justify-between overflow-hidden rounded-[40px] bg-[#F3F3F3] px-10 py-10 text-[#0A0A0A] xl:rounded-[48px] xl:px-16 xl:py-14"
-          initial={reduceMotion ? false : { opacity: 0, y: 18 }}
+          className="relative mx-auto mt-6 max-w-7xl overflow-hidden rounded-2xl bg-[#F4F4F2] text-[#0A0A0A]"
+          initial={reduceMotion ? false : { opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: reduceMotion ? 0 : 0.6, ease: easeOut }}
         >
-          <div className="flex items-center justify-between gap-8">
-            <div>
-              <p className="font-ui text-lg font-bold leading-none">
-                Grossimoto
-              </p>
-              <p className="font-ui mt-1 text-[0.62rem] font-bold uppercase tracking-[0.17em] text-black/46">
-                Moto e scooter a Roma
-              </p>
-            </div>
-
-            <p className="font-ui text-xs font-bold uppercase tracking-[0.18em] text-black/44">
-              Assistenza moto e scooter
-            </p>
-          </div>
-
-          <div className="mx-auto flex max-w-[76rem] flex-1 flex-col items-center justify-center py-14 text-center xl:py-20">
-            <motion.p
-              className="font-ui mb-5 text-xs font-bold uppercase tracking-[0.2em] text-[#C72A09]"
-              initial={reduceMotion ? false : { opacity: 0, y: 14 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                duration: reduceMotion ? 0 : 0.5,
-                delay: reduceMotion ? 0 : 0.12,
-                ease: easeOut,
-              }}
-            >
-              Officina · manutenzione · consulenza
-            </motion.p>
-
-            <motion.h1
-              className="font-display text-[clamp(5.6rem,8vw,10rem)] font-bold uppercase leading-[0.82] tracking-[-0.05em]"
-              initial={reduceMotion ? false : { opacity: 0, y: 18 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                duration: reduceMotion ? 0 : 0.6,
-                delay: reduceMotion ? 0 : 0.18,
-                ease: easeOut,
-              }}
-            >
-              Assistenza.
-              <br />
-              <span className="text-[#C72A09]">Officina.</span>
-              <br />
-              Esperienza.
-            </motion.h1>
-
-            <motion.p
-              className="mt-8 max-w-[46rem] text-lg font-medium leading-8 text-black/58 xl:text-xl xl:leading-9"
-              initial={reduceMotion ? false : { opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                duration: reduceMotion ? 0 : 0.5,
-                delay: reduceMotion ? 0 : 0.28,
-                ease: easeOut,
-              }}
-            >
-              Tagliandi, diagnosi e accessori per moto e scooter KYMCO e Voge.
-              Raccontaci cosa ti serve: ti aiutiamo a capire da dove partire.
-            </motion.p>
-
-            <motion.div
-              className="mt-9"
-              initial={reduceMotion ? false : { opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                duration: reduceMotion ? 0 : 0.5,
-                delay: reduceMotion ? 0 : 0.36,
-                ease: easeOut,
-              }}
-            >
-              <Link
-                href="/contatti?argomento=officina#richiesta"
-                className="font-ui group inline-flex min-h-12 items-center gap-2 rounded-full bg-[#0A0A0A] px-6 py-3 text-sm font-bold uppercase tracking-[0.08em] text-white transition-[opacity,transform] duration-150 hover:opacity-[0.84] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/35 focus-visible:ring-offset-4 focus-visible:ring-offset-[#F3F3F3] motion-reduce:transform-none motion-reduce:transition-none"
-              >
-                Scrivi all’officina
-                <ArrowUpRight
-                  aria-hidden="true"
-                  className="h-4 w-4 transition-transform duration-150 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transform-none motion-reduce:transition-none"
-                  strokeWidth={1.8}
-                />
-              </Link>
-            </motion.div>
-          </div>
-
-          <div className="grid grid-cols-3 gap-8 border-t border-black/12 pt-6 text-xs font-medium text-black/58">
-            <div className="flex min-w-0 items-center">
-              <Globe2
-                aria-hidden="true"
-                className="mr-2 h-5 w-5 shrink-0 text-[#C72A09]"
-                strokeWidth={1.8}
-              />
-              <span className="truncate">grossi-moto.vercel.app</span>
-            </div>
-
+          <div className="absolute right-0 top-0 z-20 rounded-bl-[28px] bg-white pb-4 pl-4">
             <a
               href="tel:+393289185029"
-              className="flex min-w-0 items-center justify-center rounded-sm transition-colors duration-150 hover:text-[#0A0A0A] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C72A09]/45 focus-visible:ring-offset-4 focus-visible:ring-offset-[#F3F3F3] motion-reduce:transition-none"
+              className="font-ui group inline-flex min-h-12 items-center gap-3 rounded-full bg-[#0A0A0A] py-1.5 pl-5 pr-1.5 text-sm font-bold text-white shadow-sm transition-[background-color,transform] duration-200 hover:bg-[#C72A09] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/35 focus-visible:ring-offset-4 focus-visible:ring-offset-white motion-reduce:transform-none motion-reduce:transition-none"
             >
-              <PhoneCall
-                aria-hidden="true"
-                className="mr-2 h-5 w-5 shrink-0 text-[#C72A09]"
-                strokeWidth={1.8}
-              />
-              <span>+39 328 918 5029</span>
+              Chiama ora
+              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-[#0A0A0A] transition-transform duration-200 group-hover:scale-105 motion-reduce:transform-none motion-reduce:transition-none">
+                <ArrowUpRight aria-hidden="true" className="h-4 w-4" strokeWidth={1.9} />
+              </span>
             </a>
-
-            <div className="flex min-w-0 items-center justify-end">
-              <MapPin
-                aria-hidden="true"
-                className="mr-2 h-5 w-5 shrink-0 text-[#C72A09]"
-                strokeWidth={1.8}
-              />
-              <span>Via Festo Porzio, 22, Roma</span>
-            </div>
           </div>
+
+          <motion.section
+            className="w-full px-8 py-24 xl:px-12 xl:py-28"
+            initial={reduceMotion ? false : { opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: reduceMotion ? 0 : 0.6, ease: easeOut }}
+          >
+            <div className="mx-auto max-w-5xl text-center">
+              <motion.p
+                className="font-ui mb-5 text-xs font-bold uppercase tracking-[0.18em] text-[#C72A09]"
+                initial={reduceMotion ? false : { opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: reduceMotion ? 0 : 0.6,
+                  delay: reduceMotion ? 0 : 0.1,
+                  ease: easeOut,
+                }}
+              >
+                Assistenza moto e scooter
+              </motion.p>
+
+              <motion.h1
+                className="font-display mb-6 text-[clamp(4.8rem,7vw,7.6rem)] font-bold uppercase leading-[0.88] tracking-[-0.045em]"
+                initial={reduceMotion ? false : { opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: reduceMotion ? 0 : 0.6,
+                  delay: reduceMotion ? 0 : 0.2,
+                  ease: easeOut,
+                }}
+              >
+                <span className="text-[#C72A09]">Assistenza.</span>
+                <br />
+                Officina. Esperienza.
+              </motion.h1>
+
+              <motion.p
+                className="mx-auto max-w-2xl text-lg leading-relaxed text-black/58"
+                initial={reduceMotion ? false : { opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: reduceMotion ? 0 : 0.6,
+                  delay: reduceMotion ? 0 : 0.4,
+                  ease: easeOut,
+                }}
+              >
+                Tagliandi, diagnosi e accessori per moto e scooter KYMCO e Voge.
+                Raccontaci cosa ti serve: ti aiutiamo a capire da dove partire.
+              </motion.p>
+            </div>
+          </motion.section>
         </motion.div>
       </section>
     </>
