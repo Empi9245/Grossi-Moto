@@ -5,7 +5,6 @@ import { ArrowLeft, ArrowRight, PhoneCall } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useReducedMotion } from "framer-motion";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 
 import { useMediaQuery } from "@/hooks/useMediaQuery";
@@ -19,10 +18,11 @@ export type Service = {
   alt: string;
 };
 
-gsap.registerPlugin(ScrollTrigger, useGSAP);
+gsap.registerPlugin(useGSAP);
 
 const stackOffset = 18;
 const stackScaleStep = 0.024;
+const stackShadeStep = 0.055;
 const maxVisibleDepth = 5;
 
 function stackDepth(index: number) {
@@ -31,6 +31,10 @@ function stackDepth(index: number) {
 
 function stackScale(depth: number) {
   return 1 - depth * stackScaleStep;
+}
+
+function stackShade(depth: number) {
+  return Math.min(depth * stackShadeStep, 0.28);
 }
 
 export function ServiceSwipe({ services }: { services: Service[] }) {
@@ -50,14 +54,18 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
       if (!useMobileStack) return;
 
       const container = stackContainerRef.current;
-      if (!container || totalCards < 2) return;
+      const rail = railRef.current;
+      if (!container || !rail || totalCards < 2) return;
 
       const cards = gsap.utils.toArray<HTMLElement>(
         "[data-service-stack-card]",
         container,
       );
+      const shades = cards.map((card) =>
+        card.querySelector<HTMLElement>("[data-service-depth-shade]"),
+      );
 
-      if (cards.length !== totalCards) return;
+      if (cards.length !== totalCards || shades.some((shade) => !shade)) return;
 
       cards.forEach((card, index) => {
         const depth = stackDepth(index);
@@ -70,39 +78,13 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
           transformOrigin: "left center",
           zIndex: totalCards - depth,
         });
+
+        gsap.set(shades[index], {
+          opacity: stackShade(depth),
+        });
       });
 
-      const snapPoints = Array.from(
-        { length: totalCards },
-        (_, index) => index / transitionCount,
-      );
-
-      const timeline = gsap.timeline({
-        scrollTrigger: {
-          trigger: container,
-          start: "top top",
-          end: "bottom bottom",
-          scrub: 0.62,
-          invalidateOnRefresh: true,
-          snap: {
-            snapTo: (value) => gsap.utils.snap(snapPoints, value),
-            duration: { min: 0.2, max: 0.38 },
-            delay: 0.05,
-            ease: "power1.inOut",
-          },
-          onUpdate: (self) => {
-            const nextIndex = Math.min(
-              totalCards - 1,
-              Math.max(0, Math.round(self.progress * transitionCount)),
-            );
-
-            if (nextIndex !== activeRef.current) {
-              activeRef.current = nextIndex;
-              setActive(nextIndex);
-            }
-          },
-        },
-      });
+      const timeline = gsap.timeline({ paused: true });
 
       for (let index = 0; index < totalCards - 1; index += 1) {
         const position = index;
@@ -134,6 +116,16 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
             },
             position,
           );
+
+          timeline.to(
+            shades[follower]!,
+            {
+              opacity: stackShade(depth),
+              ease: "power1.inOut",
+              duration: 0.84,
+            },
+            position,
+          );
         }
 
         const recycledDepth = stackDepth(totalCards - index - 1);
@@ -149,6 +141,14 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
           position + 0.84,
         );
 
+        timeline.set(
+          shades[index]!,
+          {
+            opacity: stackShade(recycledDepth),
+          },
+          position + 0.84,
+        );
+
         timeline.to(
           cards[index],
           {
@@ -160,8 +160,40 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
         );
       }
 
+      let frame = 0;
+
+      const syncToHorizontalScroll = () => {
+        frame = 0;
+        const maxScroll = Math.max(1, rail.scrollWidth - rail.clientWidth);
+        const progress = gsap.utils.clamp(0, 1, rail.scrollLeft / maxScroll);
+
+        timeline.progress(progress);
+
+        const nextIndex = Math.min(
+          totalCards - 1,
+          Math.max(0, Math.round(progress * transitionCount)),
+        );
+
+        if (nextIndex !== activeRef.current) {
+          activeRef.current = nextIndex;
+          setActive(nextIndex);
+        }
+      };
+
+      const scheduleSync = () => {
+        if (frame) cancelAnimationFrame(frame);
+        frame = requestAnimationFrame(syncToHorizontalScroll);
+      };
+
+      const observer = new ResizeObserver(scheduleSync);
+      observer.observe(rail);
+      rail.addEventListener("scroll", scheduleSync, { passive: true });
+      scheduleSync();
+
       return () => {
-        timeline.scrollTrigger?.kill();
+        if (frame) cancelAnimationFrame(frame);
+        observer.disconnect();
+        rail.removeEventListener("scroll", scheduleSync);
         timeline.kill();
       };
     },
@@ -229,30 +261,20 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
     activeRef.current = targetIndex;
     setActive(targetIndex);
 
+    const rail = railRef.current;
+    if (!rail) return;
+
     if (useMobileStack) {
-      const container = stackContainerRef.current;
-      if (!container) return;
-
-      const sectionTop = window.scrollY + container.getBoundingClientRect().top;
-      const scrollDistance = Math.max(
-        0,
-        container.getBoundingClientRect().height - window.innerHeight,
-      );
-      const progress =
-        transitionCount === 0 ? 0 : targetIndex / transitionCount;
-
-      window.scrollTo({
-        top: sectionTop + scrollDistance * progress,
-        left: 0,
-        behavior: keyboard ? "auto" : "smooth",
+      rail.scrollTo({
+        left: targetIndex * rail.clientWidth,
+        behavior: keyboard ? "instant" : "smooth",
       });
       return;
     }
 
-    const rail = railRef.current;
     const card =
-      rail?.querySelectorAll<HTMLElement>("[data-service-card]")[targetIndex];
-    if (!rail || !card) return;
+      rail.querySelectorAll<HTMLElement>("[data-service-card]")[targetIndex];
+    if (!card) return;
 
     const left =
       rail.scrollLeft +
@@ -317,76 +339,105 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
     return (
       <div className="min-w-0 lg:hidden">
         <div
-          ref={stackContainerRef}
+          ref={railRef}
           role="region"
           aria-label="Servizi Grossi Moto, sequenza orizzontale"
-          className="relative w-full"
-          style={{ height: `${totalCards * 100 + 50}svh` }}
+          tabIndex={0}
+          className="hide-scrollbar relative snap-x snap-mandatory overflow-x-auto overflow-y-hidden overscroll-x-contain focus-visible:outline-2 focus-visible:outline-offset-4"
+          style={{ touchAction: "pan-x pan-y" }}
+          onKeyDown={(event) => {
+            if (event.key === "ArrowLeft") {
+              event.preventDefault();
+              goTo(Math.max(0, active - 1), true);
+            } else if (event.key === "ArrowRight") {
+              event.preventDefault();
+              goTo(Math.min(services.length - 1, active + 1), true);
+            } else if (event.key === "Home") {
+              event.preventDefault();
+              goTo(0, true);
+            } else if (event.key === "End") {
+              event.preventDefault();
+              goTo(services.length - 1, true);
+            }
+          }}
         >
-          <div className="sticky top-0 flex h-[100svh] items-center justify-center overflow-hidden py-[clamp(4.5rem,10svh,6.5rem)]">
-            <div className="relative h-[min(78svh,42rem)] min-h-[32rem] w-[calc(100%-2.5rem)] max-w-[28rem]">
-              {services.map((service, index) => {
-                const isActive = index === active;
-
-                return (
-                  <article
-                    key={service.title}
-                    data-service-stack-card
-                    aria-hidden={!isActive}
-                    inert={!isActive ? true : undefined}
-                    className="absolute inset-0 flex h-full w-full flex-col overflow-hidden rounded-[1.5rem] border border-black/10 bg-white shadow-[0_-10px_36px_rgba(0,0,0,0.12),0_22px_56px_rgba(0,0,0,0.14)] will-change-transform"
-                    style={{ zIndex: totalCards - index }}
-                  >
-                    <div className="relative h-[42%] shrink-0 overflow-hidden bg-black/[0.035]">
-                      <Image
-                        src={service.image}
-                        alt={service.alt}
-                        fill
-                        draggable={false}
-                        sizes="(max-width: 767px) calc(100vw - 2.5rem), 1px"
-                        className="object-cover"
-                      />
-                    </div>
-
-                    <div className="flex min-h-0 flex-1 flex-col p-5">
-                      <h3 className="font-display max-w-[14ch] text-[clamp(1.9rem,7vw,2.75rem)] font-bold uppercase leading-[0.9] tracking-[-0.035em] text-[#0A0A0A]">
-                        {service.title}
-                      </h3>
-                      <p className="mt-3 max-w-[25ch] text-[clamp(1.05rem,4.2vw,1.45rem)] font-semibold leading-[1.06] text-black/82">
-                        {service.statement}
-                      </p>
-                      <p className="mt-3 max-w-[44ch] text-sm leading-6 text-black/64">
-                        {service.description}
-                      </p>
-                      <ul className="font-ui mt-auto grid border-t border-black/12 pt-3 text-[0.68rem] font-semibold uppercase tracking-[0.04em] text-black/66">
-                        {service.features.map((feature) => (
-                          <li
-                            key={feature}
-                            className="border-b border-black/8 py-1.5 last:border-b-0"
-                          >
-                            {feature}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </article>
-                );
-              })}
+          <div
+            className="relative h-[min(78svh,42rem)] min-h-[32rem]"
+            style={{ width: `${Math.max(totalCards, 1) * 100}%` }}
+          >
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 flex"
+            >
+              {services.map((service) => (
+                <span
+                  key={service.title}
+                  className="h-px shrink-0 snap-start"
+                  style={{ width: `${100 / Math.max(totalCards, 1)}%` }}
+                />
+              ))}
             </div>
 
             <div
-              role="status"
-              aria-live="polite"
-              aria-atomic="true"
-              className="font-ui absolute right-4 top-[calc(1rem+env(safe-area-inset-top))] z-50 flex items-center gap-2 rounded-full bg-black/78 px-3 py-2 text-[0.62rem] font-bold uppercase tracking-[0.14em] text-white backdrop-blur-sm"
+              ref={stackContainerRef}
+              className="sticky left-0 z-20 flex h-full items-center justify-center pr-9"
+              style={{ width: `${100 / Math.max(totalCards, 1)}%` }}
             >
-              <span className="font-numeric tabular-nums">
-                {String(active + 1).padStart(2, "0")}
-              </span>
-              <span aria-hidden="true" className="h-px w-4 bg-white/35" />
-              <span className="font-numeric tabular-nums text-white/58">
-                {String(totalCards).padStart(2, "0")}
-              </span>
+              <div className="relative h-full w-full">
+                {services.map((service, index) => {
+                  const isActive = index === active;
+
+                  return (
+                    <article
+                      key={service.title}
+                      data-service-stack-card
+                      aria-hidden={!isActive}
+                      inert={!isActive ? true : undefined}
+                      className="absolute inset-0 flex h-full w-full flex-col overflow-hidden rounded-[1.5rem] border border-black/10 bg-white will-change-transform"
+                      style={{ zIndex: totalCards - index }}
+                    >
+                      <div className="relative h-[42%] shrink-0 overflow-hidden bg-black/[0.035]">
+                        <Image
+                          src={service.image}
+                          alt={service.alt}
+                          fill
+                          draggable={false}
+                          sizes="(max-width: 767px) calc(100vw - 2.25rem), 1px"
+                          className="object-cover"
+                        />
+                      </div>
+
+                      <div className="flex min-h-0 flex-1 flex-col p-5">
+                        <h3 className="font-display max-w-[14ch] text-[clamp(1.9rem,7vw,2.75rem)] font-bold uppercase leading-[0.9] tracking-[-0.035em] text-[#0A0A0A]">
+                          {service.title}
+                        </h3>
+                        <p className="mt-3 max-w-[25ch] text-[clamp(1.05rem,4.2vw,1.45rem)] font-semibold leading-[1.06] text-black/82">
+                          {service.statement}
+                        </p>
+                        <p className="mt-3 max-w-[44ch] text-sm leading-6 text-black/64">
+                          {service.description}
+                        </p>
+                        <ul className="font-ui mt-auto grid border-t border-black/12 pt-3 text-[0.68rem] font-semibold uppercase tracking-[0.04em] text-black/66">
+                          {service.features.map((feature) => (
+                            <li
+                              key={feature}
+                              className="border-b border-black/8 py-1.5 last:border-b-0"
+                            >
+                              {feature}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      <div
+                        data-service-depth-shade
+                        aria-hidden="true"
+                        className="pointer-events-none absolute inset-0 z-30 bg-black opacity-0"
+                      />
+                    </article>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>
