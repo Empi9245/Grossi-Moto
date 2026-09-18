@@ -12,7 +12,7 @@ const workshopItems = [
 export function WorkshopSection() {
   return (
     <section className="relative bg-white text-[var(--gm-ink)]">
-      <div className="relative overflow-hidden rounded-[32px] bg-[var(--home-workshop-surface)] px-4 py-20 sm:rounded-[40px] sm:px-6 sm:py-24 lg:rounded-[56px] lg:px-10 lg:py-32">
+      <div className="relative overflow-hidden rounded-[32px] bg-[var(--home-workshop-surface)] px-4 py-20 sm:rounded-[40px] sm:px-6 sm:py-24 lg:rounded-[56px] lg:px-10 lg:py-20">
         <div
           aria-hidden="true"
           className="font-display pointer-events-none absolute -bottom-[0.18em] left-0 hidden text-[clamp(8rem,19vw,24rem)] font-bold uppercase leading-none text-black/[0.035] lg:block"
@@ -21,7 +21,7 @@ export function WorkshopSection() {
         </div>
 
         <div className="relative mx-auto grid max-w-[92rem] gap-14 lg:grid-cols-[minmax(0,0.95fr)_minmax(26rem,0.5fr)] lg:items-start">
-          <div className="pt-8">
+          <div className="pt-8 lg:pt-0">
             <p className="font-ui text-[0.68rem] font-bold uppercase tracking-[0.22em] text-black/60">
               Officina in sede
             </p>
@@ -41,7 +41,7 @@ export function WorkshopSection() {
           </div>
 
           <div>
-            <article className="grid gap-5 py-7 sm:grid-cols-[2.6rem_minmax(0,1fr)]">
+            <article className="grid gap-5 py-7 sm:grid-cols-[2.6rem_minmax(0,1fr)] lg:py-5">
               <ClipboardCheck aria-hidden="true" className="h-6 w-6 text-black/60" strokeWidth={1.6} />
               <div>
                 <h3 className="font-display text-[clamp(1.9rem,3vw,3.2rem)] font-bold uppercase leading-[0.9]">
@@ -53,7 +53,7 @@ export function WorkshopSection() {
               </div>
             </article>
 
-            <article className="grid gap-5 py-7 sm:grid-cols-[2.6rem_minmax(0,1fr)]">
+            <article className="grid gap-5 py-7 sm:grid-cols-[2.6rem_minmax(0,1fr)] lg:py-5">
               <Settings2 aria-hidden="true" className="h-6 w-6 text-black/60" strokeWidth={1.6} />
               <div>
                 <h3 className="font-display text-[clamp(1.9rem,3vw,3.2rem)] font-bold uppercase leading-[0.9]">
@@ -65,7 +65,7 @@ export function WorkshopSection() {
               </div>
             </article>
 
-            <article className="grid gap-5 py-7 sm:grid-cols-[2.6rem_minmax(0,1fr)]">
+            <article className="grid gap-5 py-7 sm:grid-cols-[2.6rem_minmax(0,1fr)] lg:py-5">
               <Wrench aria-hidden="true" className="h-6 w-6 text-black/60" strokeWidth={1.6} />
               <div>
                 <h3 className="font-display text-[clamp(1.9rem,3vw,3.2rem)] font-bold uppercase leading-[0.9]">
