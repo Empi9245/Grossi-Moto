@@ -40,9 +40,19 @@ function ShowroomScene({
       className="absolute inset-0 grid grid-rows-[auto_minmax(0,1fr)_auto] px-5 sm:px-7"
       style={{ color: scooter.textTone }}
     >
+      <TransitionLink
+        href="/scooters"
+        scooterId={scooter.id}
+        tabIndex={active ? 0 : -1}
+        aria-label={`Scopri di più su ${scooter.name}`}
+        className="absolute inset-0 z-20 rounded-[2rem] outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-black/70 sm:rounded-[2.5rem]"
+      >
+        <span className="sr-only">Scopri il modello</span>
+      </TransitionLink>
+
       <div
         data-showroom-copy
-        className="relative z-30 flex items-center justify-between gap-4 pt-[calc(1.25rem+env(safe-area-inset-top))]"
+        className="pointer-events-none relative z-30 flex items-center justify-between gap-4 pt-[calc(1.25rem+env(safe-area-inset-top))]"
       >
         <div className="flex min-w-0 items-center gap-2">
           <span
@@ -116,7 +126,7 @@ function ShowroomScene({
 
       <div
         data-showroom-copy
-        className="relative z-30 pb-[calc(1.4rem+env(safe-area-inset-bottom))]"
+        className="pointer-events-none relative z-30 pb-[calc(1.4rem+env(safe-area-inset-bottom))]"
       >
         <h3 className="font-display max-w-[11ch] text-[clamp(2.65rem,12vw,4.15rem)] font-bold leading-[0.88] tracking-[-0.035em]">
           {scooter.name}
@@ -161,12 +171,9 @@ function ShowroomScene({
           ))}
         </div>
 
-        <TransitionLink
-          href="/scooters"
-          scooterId={scooter.id}
-          tabIndex={active ? 0 : -1}
-          aria-label={`Scopri di più su ${scooter.name}`}
-          className="font-ui mt-4 inline-flex min-h-11 items-center gap-2 rounded-full bg-black px-5 py-2.5 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-white outline-none transition-transform duration-200 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-3"
+        <span
+          aria-hidden="true"
+          className="font-ui mt-4 inline-flex min-h-11 items-center gap-2 rounded-full bg-black px-5 py-2.5 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-white"
         >
           Scopri il modello
           <ArrowUpRight
@@ -174,7 +181,7 @@ function ShowroomScene({
             className="h-4 w-4"
             strokeWidth={1.8}
           />
-        </TransitionLink>
+        </span>
       </div>
     </article>
   );
@@ -189,12 +196,21 @@ function ReducedMotionShowroom() {
       {showcaseScooters.map((scooter, index) => (
         <article
           key={scooter.id}
-          className="w-[88vw] max-w-[25rem] shrink-0 snap-center overflow-hidden rounded-[1.75rem] p-5 shadow-[0_0_0_1px_rgba(0,0,0,0.06)]"
+          className="relative w-[88vw] max-w-[25rem] shrink-0 snap-center overflow-hidden rounded-[1.75rem] p-5 shadow-[0_0_0_1px_rgba(0,0,0,0.06)]"
           style={{
             background: scooter.backgroundSurface,
             color: scooter.textTone,
           }}
         >
+          <TransitionLink
+            href="/scooters"
+            scooterId={scooter.id}
+            aria-label={`Scopri di più su ${scooter.name}`}
+            className="absolute inset-0 z-20 rounded-[1.75rem] outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-black/70"
+          >
+            <span className="sr-only">Scopri il modello</span>
+          </TransitionLink>
+
           <div className="flex items-center justify-between gap-4">
             <p
               className="font-ui text-[0.6rem] font-bold uppercase tracking-[0.15em]"
@@ -240,11 +256,9 @@ function ReducedMotionShowroom() {
             {scooter.statement}
           </p>
 
-          <TransitionLink
-            href="/scooters"
-            scooterId={scooter.id}
-            aria-label={`Scopri di più su ${scooter.name}`}
-            className="font-ui mt-5 inline-flex min-h-11 items-center gap-2 rounded-full bg-black px-5 py-2.5 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-white outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-3"
+          <span
+            aria-hidden="true"
+            className="font-ui mt-5 inline-flex min-h-11 items-center gap-2 rounded-full bg-black px-5 py-2.5 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-white"
           >
             Scopri il modello
             <ArrowUpRight
@@ -252,7 +266,7 @@ function ReducedMotionShowroom() {
               className="h-4 w-4"
               strokeWidth={1.8}
             />
-          </TransitionLink>
+          </span>
         </article>
       ))}
     </div>
