@@ -941,12 +941,12 @@ function CompactCatalogGrid({
         let nextChapter: HTMLElement | null = null;
         let nextRatio = -1;
 
-        chapterElements.forEach((chapterElement) => {
+        for (const chapterElement of chapterElements) {
           const chapterId = chapterElement.dataset.chapterId as
             | CatalogChapterId
             | undefined;
 
-          if (!chapterId) return;
+          if (!chapterId) continue;
 
           const ratio = visibility.get(chapterId) ?? 0;
 
@@ -954,7 +954,7 @@ function CompactCatalogGrid({
             nextRatio = ratio;
             nextChapter = chapterElement;
           }
-        });
+        }
 
         if (!nextChapter || nextRatio <= 0) return;
 
