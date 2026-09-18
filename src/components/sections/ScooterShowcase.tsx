@@ -23,9 +23,11 @@ type ScooterShowcaseProps = {
 };
 
 const premiumEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
-const scooterTransitionDuration = 0.52;
+const scooterTransitionDuration = 0.68;
 const scooterCopyTransitionDuration = 0.24;
 const scooterSurfaceTransitionDuration = 0.32;
+const scooterTravelDistanceVh = 64;
+const scooterTravelScale = 0.91;
 const wheelIntentThreshold = 18;
 const wheelGestureResetMs = 140;
 const touchIntentThreshold = 10;
@@ -552,6 +554,14 @@ function ScooterSlide({
       ? `scooter-image-${scooter.id}`
       : undefined;
 
+  const indexDistance = Math.abs(slideIndex - activeIndex);
+  const travelDistance =
+    scooterTravelDistanceVh + Math.max(0, indexDistance - 1) * 24;
+  const restingScale = Math.max(
+    0.86,
+    scooterTravelScale - Math.max(0, indexDistance - 1) * 0.025,
+  );
+
   return (
     <motion.div
       aria-hidden={!isActive}
@@ -559,16 +569,32 @@ function ScooterSlide({
       initial={false}
       animate={{
         opacity: isActive ? 1 : 0,
-        y: isActive ? "0vh" : slideIndex < activeIndex ? "-6vh" : "8vh",
-        scale: isActive ? 1 : 0.985,
+        y: isActive
+          ? "0vh"
+          : slideIndex < activeIndex
+            ? `-${travelDistance}vh`
+            : `${travelDistance}vh`,
+        scale: isActive ? 1 : restingScale,
       }}
       transition={{
-        y: { duration: scooterTransitionDuration, ease: premiumEase },
-        scale: { duration: scooterTransitionDuration, ease: premiumEase },
-        opacity: {
-          duration: isActive ? 0.34 : 0.26,
+        y: {
+          duration: scooterTransitionDuration,
           ease: premiumEase,
         },
+        scale: {
+          duration: scooterTransitionDuration,
+          ease: premiumEase,
+        },
+        opacity: isActive
+          ? {
+              duration: 0.14,
+              ease: premiumEase,
+            }
+          : {
+              duration: 0.18,
+              delay: scooterTransitionDuration * 0.58,
+              ease: premiumEase,
+            },
       }}
       onAnimationComplete={() => {
         if (isActive) {
@@ -589,11 +615,29 @@ function ScooterSlide({
         className="absolute left-1/2 bottom-[6%] z-0 rounded-[50%] blur-[10px] sm:blur-[13px]"
         animate={{
           opacity: isActive ? scooter.shadowOpacity : 0,
-          scale: isActive ? 1 : 0.96,
+          scale: isActive ? 1 : 0.92,
           x: `calc(-50% + ${scooter.shadowX})`,
           y: scooter.shadowY,
         }}
-        transition={{ duration: 0.3, ease: premiumEase }}
+        transition={{
+          opacity: {
+            duration: isActive ? 0.2 : 0.16,
+            delay: isActive ? 0.06 : scooterTransitionDuration * 0.5,
+            ease: premiumEase,
+          },
+          scale: {
+            duration: scooterTransitionDuration,
+            ease: premiumEase,
+          },
+          x: {
+            duration: scooterTransitionDuration,
+            ease: premiumEase,
+          },
+          y: {
+            duration: scooterTransitionDuration,
+            ease: premiumEase,
+          },
+        }}
         style={{
           width: scooter.shadowWidth,
           height: scooter.shadowHeight,
