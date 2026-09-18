@@ -378,55 +378,36 @@ function ProductShowroomChapter({
       const container = stackContainerRef.current;
       if (!container || totalCards === 0) return;
 
-      const cards = gsap.utils.toArray<HTMLElement>(
-        "[data-product-stack-card]",
-        container,
-      );
-      const shades = cards.map((card) =>
-        card.querySelector<HTMLElement>("[data-product-depth-shade]"),
-      );
-      const virtualIndexes = cards.map((card) =>
-        Number(card.dataset.productVirtualIndex),
-      );
+      let cards: HTMLElement[] = [];
+      let shades: Array<HTMLElement | null> = [];
+      let virtualIndexes: number[] = [];
+      let position: { value: number } | null = null;
+      let targetPosition = 0;
+      let focusTween: gsap.core.Tween | null = null;
+      let observer: ResizeObserver | null = null;
+      let initFrame = 0;
+      let initAttempts = 0;
+      let disposed = false;
+
       const expectedCardCount = totalCards * copyIndexes.length;
 
-      if (
-        cards.length !== expectedCardCount ||
-        shades.some((shade) => !shade) ||
-        virtualIndexes.some((index) => Number.isNaN(index))
-      ) {
-        return;
-      }
-
-      const startPosition = looping
-        ? totalCards + activeRef.current
-        : activeRef.current;
-      const position = { value: startPosition };
-      let targetPosition = startPosition;
-      let focusTween: gsap.core.Tween | null = null;
-
       const renderPosition = () => {
+        const currentPosition = position;
+        if (!currentPosition || cards.length === 0) return;
+
         const cardWidth = cards[0]?.offsetWidth ?? 0;
+        const containerWidth = container.clientWidth;
+        if (cardWidth === 0 || containerWidth === 0) return;
+
         const lateralScale = 0.9;
-        const cardGap = gsap.utils.clamp(
-          12,
-          16,
-          container.clientWidth * 0.035,
-        );
+        const cardGap = gsap.utils.clamp(12, 16, containerWidth * 0.035);
         const cardSpacing =
           cardWidth * ((1 + lateralScale) / 2) + cardGap;
         const visibleLimit = 1.14;
-        const cardHeight = cards.reduce(
-          (maxHeight, card) => Math.max(maxHeight, card.offsetHeight),
-          0,
-        );
-
-        if (cardHeight > 0) {
-          container.style.height = `${cardHeight}px`;
-        }
 
         cards.forEach((card, cardIndex) => {
-          const slot = virtualIndexes[cardIndex] - position.value;
+          const slot =
+            virtualIndexes[cardIndex] - currentPosition.value;
           const layer = stackLayer(slot);
           const distance = Math.abs(slot);
           const opacity = distance > visibleLimit ? 0 : 1;
@@ -452,21 +433,23 @@ function ProductShowroomChapter({
       };
 
       const recenterCopies = () => {
-        if (!looping) return;
+        const currentPosition = position;
+        if (!looping || !currentPosition) return;
 
         if (targetPosition >= totalCards * 2) {
           targetPosition -= totalCards;
-          position.value -= totalCards;
+          currentPosition.value -= totalCards;
           renderPosition();
         } else if (targetPosition < totalCards) {
           targetPosition += totalCards;
-          position.value += totalCards;
+          currentPosition.value += totalCards;
           renderPosition();
         }
       };
 
       const moveFocus = (requestedIndex: number, immediate = false) => {
-        if (totalCards < 2) return;
+        const currentPosition = position;
+        if (!currentPosition || totalCards < 2) return;
 
         const currentIndex = activeRef.current;
         const nextIndex = looping
@@ -481,7 +464,7 @@ function ProductShowroomChapter({
           activeRef.current = nextIndex;
           setActive(nextIndex);
           targetPosition = looping ? totalCards + nextIndex : nextIndex;
-          position.value = targetPosition;
+          currentPosition.value = targetPosition;
           renderPosition();
           onChapterActiveChange(chapterId, scooters[nextIndex].id);
           return;
@@ -518,14 +501,14 @@ function ProductShowroomChapter({
 
         recenterCopies();
 
-        focusTween = gsap.to(position, {
+        focusTween = gsap.to(currentPosition, {
           value: targetPosition,
           duration: 0.9,
           ease: "sine.inOut",
           overwrite: true,
           onUpdate: renderPosition,
           onComplete: () => {
-            position.value = targetPosition;
+            currentPosition.value = targetPosition;
             recenterCopies();
             renderPosition();
             focusTween = null;
@@ -533,18 +516,57 @@ function ProductShowroomChapter({
         });
       };
 
-      focusRef.current = moveFocus;
-      renderPosition();
+      const initializeStack = () => {
+        if (disposed) return;
 
-      const observer = new ResizeObserver(renderPosition);
-      observer.observe(container);
-      cards.forEach((card) => observer.observe(card));
+        cards = gsap.utils.toArray<HTMLElement>(
+          "[data-product-stack-card]",
+          container,
+        );
+        shades = cards.map((card) =>
+          card.querySelector<HTMLElement>("[data-product-depth-shade]"),
+        );
+        virtualIndexes = cards.map((card) =>
+          Number(card.dataset.productVirtualIndex),
+        );
+
+        const isReady =
+          cards.length === expectedCardCount &&
+          !shades.some((shade) => !shade) &&
+          !virtualIndexes.some((index) => Number.isNaN(index)) &&
+          (cards[0]?.offsetWidth ?? 0) > 0 &&
+          container.clientWidth > 0;
+
+        if (!isReady) {
+          initAttempts += 1;
+          if (initAttempts < 60) {
+            initFrame = requestAnimationFrame(initializeStack);
+          }
+          return;
+        }
+
+        const startPosition = looping
+          ? totalCards + activeRef.current
+          : activeRef.current;
+
+        position = { value: startPosition };
+        targetPosition = startPosition;
+        focusRef.current = moveFocus;
+        renderPosition();
+
+        observer = new ResizeObserver(renderPosition);
+        observer.observe(container);
+      };
+
+      initFrame = requestAnimationFrame(initializeStack);
 
       return () => {
+        disposed = true;
+        cancelAnimationFrame(initFrame);
         focusRef.current = () => {};
-        observer.disconnect();
+        observer?.disconnect();
         focusTween?.kill();
-        gsap.killTweensOf(position);
+        if (position) gsap.killTweensOf(position);
         gsap.killTweensOf(cards);
         shades.forEach((shade) => {
           if (shade) gsap.killTweensOf(shade);
@@ -668,7 +690,7 @@ function ProductShowroomChapter({
       >
         <div
           ref={stackContainerRef}
-          className="relative min-h-[17.75rem] sm:min-h-[19.5rem]"
+          className="relative h-[17.75rem] sm:h-[19.5rem]"
         >
           {copyIndexes.flatMap((copyIndex) =>
             scooters.map((scooter, index) => {
@@ -686,7 +708,10 @@ function ProductShowroomChapter({
                   data-product-virtual-index={virtualIndex}
                   aria-hidden={!isSemanticCard}
                   inert={!isSemanticCard ? true : undefined}
-                  className="absolute left-1/2 top-0 w-[80%] max-w-[31rem] opacity-0 will-change-transform"
+                  className={[
+                    "absolute left-1/2 top-0 w-[80%] max-w-[31rem] opacity-0 will-change-transform",
+                    isSemanticCard ? "" : "pointer-events-none select-none",
+                  ].join(" ")}
                 >
                   <CatalogProductCard
                     scooter={scooter}
