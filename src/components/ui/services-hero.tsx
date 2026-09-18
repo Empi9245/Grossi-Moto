@@ -18,9 +18,9 @@ const HERO_IMAGE = {
 
 const easeOut = [0.22, 1, 0.36, 1] as const;
 const imageOpenClipPath =
-  "polygon(25% 0, 100% 0, 100% 100%, 0% 100%)";
+  "polygon(27% 0, 25.6% 0.25%, 24.5% 1.2%, 0.7% 96.8%, 0.2% 98.5%, 0% 100%, 100% 100%, 100% 0)";
 const imageClosedClipPath =
-  "polygon(100% 0, 100% 0, 100% 100%, 100% 100%)";
+  "polygon(100% 0, 100% 0.25%, 100% 1.2%, 100% 96.8%, 100% 98.5%, 100% 100%, 100% 100%, 100% 0)";
 
 export function ServicesHero() {
   const reduceMotion = useReducedMotion();
@@ -126,7 +126,7 @@ export function ServicesHero() {
 
           <motion.div
             ref={mobileImageRef}
-            className="relative mt-6 min-h-[340px] w-full overflow-hidden rounded-[28px] sm:mt-8 md:hidden"
+            className="relative mt-6 min-h-[340px] w-full overflow-hidden sm:mt-8 md:hidden"
             style={{
               clipPath: reduceMotion ? imageOpenClipPath : mobileImageClipPath,
             }}
@@ -180,7 +180,7 @@ export function ServicesHero() {
         </div>
 
         <motion.div
-          className="relative hidden min-h-[340px] w-full overflow-hidden md:block md:min-h-full md:w-1/2 md:rounded-[40px]"
+          className="relative hidden min-h-[340px] w-full overflow-hidden md:block md:min-h-full md:w-1/2"
           initial={
             reduceMotion
               ? false
