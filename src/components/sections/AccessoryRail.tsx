@@ -10,16 +10,18 @@ import {
   ShieldCheck,
   Smartphone,
 } from "lucide-react";
-import { useRef, useState, type KeyboardEvent } from "react";
+import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 
 import { accessories } from "@/data/accessories";
 
 const pastelColors = [
-  "oklch(91% 0.028 240)",
+  "#BAE1FF",
   "oklch(91.5% 0.028 150)",
-  "oklch(91% 0.032 24)",
+  "#FFB3BA",
   "oklch(92% 0.03 88)",
 ] as const;
+
+const autoAdvanceDelayMs = 6000;
 const accessoryIcons = [ShieldCheck, Box, Lock, Smartphone] as const;
 
 export function AccessoryRail() {
@@ -28,6 +30,16 @@ export function AccessoryRail() {
   const tabs = useRef<Array<HTMLButtonElement | null>>([]);
   const current = accessories[active];
   const currentColor = pastelColors[active];
+
+  useEffect(() => {
+    if (reduceMotion) return;
+
+    const timer = window.setTimeout(() => {
+      setActive((currentActive) => (currentActive + 1) % accessories.length);
+    }, autoAdvanceDelayMs);
+
+    return () => window.clearTimeout(timer);
+  }, [active, reduceMotion]);
 
   function onKeyDown(event: KeyboardEvent<HTMLButtonElement>, index: number) {
     const next =
