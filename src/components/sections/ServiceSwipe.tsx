@@ -98,8 +98,14 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
 
       const renderPosition = () => {
         const cardWidth = cards[0]?.getBoundingClientRect().width ?? 0;
-        const sidePeek = gsap.utils.clamp(34, 42, container.clientWidth * 0.1);
-        const cardSpacing = Math.max(stackOffset, cardWidth - sidePeek);
+        const viewportGutter = Math.max(
+          0,
+          (container.clientWidth - cardWidth) / 2,
+        );
+        const lateralScale = 0.96;
+        const cardGap = gsap.utils.clamp(3, 5, viewportGutter * 0.15);
+        const cardSpacing =
+          cardWidth * ((1 + lateralScale) / 2) + cardGap;
         const visibleLimit = 1.14;
 
         cards.forEach((card, cardIndex) => {
@@ -114,7 +120,7 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
             y: 0,
             rotation: stackRotation(slot) * 0.72,
             rotationY: stackTilt(slot) * 1.45,
-            scale: 1 - Math.min(distance, 1) * 0.06,
+            scale: 1 - Math.min(distance, 1) * (1 - lateralScale),
             opacity,
             transformPerspective: 1200,
             transformOrigin: "center center",
@@ -346,7 +352,7 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
           role="region"
           aria-label="Servizi Grossi Moto, carosello orizzontale infinito"
           tabIndex={0}
-          className="relative overflow-hidden focus-visible:outline-2 focus-visible:outline-offset-4"
+          className="relative -mx-5 overflow-hidden focus-visible:outline-2 focus-visible:outline-offset-4 sm:-mx-7"
           style={{ touchAction: "pan-y" }}
           onPointerDown={(event) => {
             if (!event.isPrimary || event.pointerType === "mouse") return;
@@ -398,9 +404,9 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
         >
           <div
             ref={stackContainerRef}
-            className="flex h-[min(70svh,37rem)] min-h-[29rem] items-center justify-center"
+            className="flex h-[min(60svh,31.5rem)] min-h-[27rem] items-center justify-center"
           >
-            <div className="relative h-full w-[calc(100%-1.75rem)] max-w-[31rem]">
+            <div className="relative h-full w-[calc(100%-3.25rem)] max-w-[31rem]">
               {[0, 1, 2].flatMap((copyIndex) =>
                 services.map((service, index) => {
                   const isSemanticCard = copyIndex === 1 && index === active;
@@ -415,7 +421,7 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
                       inert={!isSemanticCard ? true : undefined}
                       className="absolute inset-0 flex h-full w-full flex-col overflow-hidden rounded-[1.5rem] border border-black/10 bg-white will-change-transform"
                     >
-                      <div className="relative h-[42%] shrink-0 overflow-hidden bg-black/[0.035]">
+                      <div className="relative h-[32%] shrink-0 overflow-hidden bg-black/[0.035]">
                         <Image
                           src={service.image}
                           alt={isSemanticCard ? service.alt : ""}
@@ -426,21 +432,21 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
                         />
                       </div>
 
-                      <div className="flex min-h-0 flex-1 flex-col p-5">
+                      <div className="flex min-h-0 flex-1 flex-col p-4">
                         <h3 className="font-display max-w-[14ch] text-[clamp(1.9rem,7vw,2.75rem)] font-bold uppercase leading-[0.9] tracking-[-0.035em] text-[#0A0A0A]">
                           {service.title}
                         </h3>
-                        <p className="mt-3 max-w-[25ch] text-[clamp(1.05rem,4.2vw,1.45rem)] font-semibold leading-[1.06] text-black/82">
+                        <p className="mt-2 max-w-[25ch] text-[clamp(1.05rem,4.2vw,1.45rem)] font-semibold leading-[1.06] text-black/82">
                           {service.statement}
                         </p>
-                        <p className="mt-3 max-w-[44ch] text-sm leading-6 text-black/64">
+                        <p className="mt-2 max-w-[44ch] text-sm leading-5 text-black/64">
                           {service.description}
                         </p>
-                        <ul className="font-ui mt-auto grid gap-1 pt-3 text-[0.68rem] font-semibold uppercase tracking-[0.04em] text-black/66">
+                        <ul className="font-ui mt-auto grid gap-0.5 pt-2 text-[0.68rem] font-semibold uppercase tracking-[0.04em] text-black/66">
                           {service.features.map((feature) => (
                             <li
                               key={feature}
-                              className="py-1"
+                              className="py-0.5"
                             >
                               {feature}
                             </li>
