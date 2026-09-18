@@ -21,7 +21,6 @@ export type Service = {
 gsap.registerPlugin(useGSAP);
 
 const stackOffset = 24;
-const stackScaleStep = 0.024;
 const stackShadeStep = 0.055;
 const stackRotationStep = 1.35;
 const stackTiltStep = 2.4;
@@ -34,10 +33,6 @@ function stackLayer(slot: number) {
 
 function stackX(slot: number, spacing: number) {
   return slot * spacing;
-}
-
-function stackScale(layer: number) {
-  return 1 - layer * stackScaleStep;
 }
 
 function stackShade(layer: number) {
