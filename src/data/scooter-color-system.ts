@@ -18,7 +18,8 @@ export type ShowroomSurfaceToneId =
   | "dryChampagne"
   | "mutedSage"
   | "lightClay"
-  | "paleStone";
+  | "paleStone"
+  | "smokedLavender";
 
 export type ProductCardToneId =
   | "warmIvory"
@@ -28,7 +29,9 @@ export type ProductCardToneId =
   | "mutedSage"
   | "mineralBlueGrey"
   | "dryChampagne"
-  | "lightClay";
+  | "lightClay"
+  | "smokedLavender"
+  | "mistTeal";
 
 type ProductCardToneFamily =
   | "warmNeutral"
@@ -124,6 +127,18 @@ export const showroomSurfaceTones = {
     accentTone: "oklch(37% 0.056 136)",
     chipSurface: "oklch(95% 0.01 124 / 0.34)",
     shadowTone: "oklch(16% 0.018 132 / 0.86)",
+  },
+  smokedLavender: {
+    backgroundSurface:
+      "linear-gradient(135deg in oklch, oklch(88% 0.018 300) 0%, oklch(80% 0.025 295) 50%, oklch(72% 0.02 285) 100%)",
+    textTone: "oklch(19% 0.018 292)",
+    mutedTone: "oklch(28% 0.018 292 / 0.68)",
+    inactiveTone: "oklch(27% 0.018 292 / 0.31)",
+    watermarkTone: "oklch(18% 0.018 292 / 0.07)",
+    ruleTone: "oklch(25% 0.018 292 / 0.16)",
+    accentTone: "oklch(38% 0.05 300)",
+    chipSurface: "oklch(95% 0.012 296 / 0.34)",
+    shadowTone: "oklch(16% 0.018 292 / 0.86)",
   },
 } as const satisfies Record<ShowroomSurfaceToneId, ShowroomSurfaceTone>;
 
@@ -224,6 +239,30 @@ export const productCardSurfaceTones = {
     mutedTone: "oklch(31% 0.024 34 / 0.62)",
     shadowTone: "oklch(17% 0.024 34 / 0.18)",
   },
+  smokedLavender: {
+    id: "smokedLavender",
+    family: "stone",
+    featureSurface:
+      "linear-gradient(145deg in oklch, oklch(91% 0.014 300) 0%, oklch(83% 0.022 292) 100%)",
+    cardSurface:
+      "linear-gradient(145deg in oklch, oklch(93% 0.01 300) 0%, oklch(86% 0.017 292) 100%)",
+    accentTone: "oklch(38% 0.052 300)",
+    textTone: "oklch(19% 0.018 292)",
+    mutedTone: "oklch(29% 0.018 292 / 0.62)",
+    shadowTone: "oklch(17% 0.018 292 / 0.16)",
+  },
+  mistTeal: {
+    id: "mistTeal",
+    family: "coolMineral",
+    featureSurface:
+      "linear-gradient(145deg in oklch, oklch(90% 0.015 198) 0%, oklch(82% 0.025 205) 100%)",
+    cardSurface:
+      "linear-gradient(145deg in oklch, oklch(93% 0.01 198) 0%, oklch(86% 0.018 205) 100%)",
+    accentTone: "oklch(37% 0.052 205)",
+    textTone: "oklch(19% 0.02 204)",
+    mutedTone: "oklch(29% 0.02 204 / 0.62)",
+    shadowTone: "oklch(17% 0.02 204 / 0.16)",
+  },
 } as const satisfies Record<ProductCardToneId, ProductCardSurfaceTone>;
 
 const productCardToneOrder: ProductCardToneId[] = [
@@ -235,6 +274,8 @@ const productCardToneOrder: ProductCardToneId[] = [
   "paleStone",
   "dryChampagne",
   "lightClay",
+  "smokedLavender",
+  "mistTeal",
 ];
 
 const nearProductCardToneIds: Record<ProductCardToneId, ProductCardToneId[]> = {
@@ -246,7 +287,58 @@ const nearProductCardToneIds: Record<ProductCardToneId, ProductCardToneId[]> = {
   mineralBlueGrey: ["mutedSage"],
   dryChampagne: ["warmIvory", "softSand", "lightClay"],
   lightClay: ["dustyBlush", "dryChampagne"],
+  smokedLavender: ["paleStone", "mineralBlueGrey"],
+  mistTeal: ["mutedSage", "mineralBlueGrey"],
 };
+
+const showroomCatalogToneMap: Record<
+  string,
+  {
+    toneId: ProductCardToneId;
+    showroomToneId: ShowroomSurfaceToneId;
+  }
+> = {
+  "people-s-125-abs": {
+    toneId: "warmIvory",
+    showroomToneId: "heroWarmIvory",
+  },
+  "agility-s-125": {
+    toneId: "mineralBlueGrey",
+    showroomToneId: "mineralBlueGrey",
+  },
+  "downtown-350-gt": {
+    toneId: "dryChampagne",
+    showroomToneId: "dryChampagne",
+  },
+  "agility-350": {
+    toneId: "mutedSage",
+    showroomToneId: "mutedSage",
+  },
+  "x-town-250st": {
+    toneId: "lightClay",
+    showroomToneId: "lightClay",
+  },
+  "ak575-premium": {
+    toneId: "smokedLavender",
+    showroomToneId: "smokedLavender",
+  },
+};
+
+function getShowroomCatalogToneAssignment(
+  scooter: CatalogScooter,
+): ProductCardToneAssignment | null {
+  const mappedTone = showroomCatalogToneMap[scooter.id];
+
+  if (!mappedTone) {
+    return null;
+  }
+
+  return {
+    toneId: mappedTone.toneId,
+    cardSurface:
+      showroomSurfaceTones[mappedTone.showroomToneId].backgroundSurface,
+  };
+}
 
 export function showroomSurfaceTone(toneId: ShowroomSurfaceToneId) {
   return showroomSurfaceTones[toneId];
@@ -340,6 +432,14 @@ export function getCatalogCardToneAssignments(
 
   return scooters.reduce<Record<string, ProductCardToneAssignment>>(
     (assignments, scooter, visibleIndex) => {
+      const showroomToneAssignment = getShowroomCatalogToneAssignment(scooter);
+
+      if (showroomToneAssignment) {
+        assignedToneIds.push(showroomToneAssignment.toneId);
+        assignments[scooter.id] = showroomToneAssignment;
+        return assignments;
+      }
+
       const columnIndex = visibleIndex % safeColumnCount;
       const previousToneId = assignedToneIds[visibleIndex - 1];
       const rowLeftToneId =
