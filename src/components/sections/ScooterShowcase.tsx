@@ -25,7 +25,7 @@ type ScooterShowcaseProps = {
 const premiumEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
 const scooterTransitionDuration = 0.72;
 const scooterCopyTransitionDuration = 0.24;
-const scooterSurfaceTransitionDuration = 0.32;
+const scooterSurfaceTransitionDuration = 0.78;
 const scooterEnterDistanceVh = 72;
 const scooterExitDistanceVh = 78;
 const scooterEnterScale = 0.83;
@@ -375,7 +375,6 @@ function ShowcaseFrame({
     "--showcase-accent": activeScooter.accentTone,
     "--showcase-chip": activeScooter.chipSurface,
     "--showcase-shadow": activeScooter.shadowTone,
-    background: "var(--showcase-bg)",
     color: "var(--showcase-text)",
   };
   const stats = activeScooter.specs;
@@ -387,14 +386,25 @@ function ShowcaseFrame({
       data-active-source={activeScooter.sourceAsset}
       style={showcaseStyle}
     >
-      <AnimatePresence initial={false}>
+      <AnimatePresence initial={false} mode="sync">
         <motion.div
           key={`${activeScooter.id}-surface`}
           aria-hidden="true"
           className="absolute inset-0"
           initial={disableMotion ? false : { opacity: 0 }}
           animate={disableMotion ? undefined : { opacity: 1 }}
-          exit={disableMotion ? undefined : { opacity: 0 }}
+          exit={
+            disableMotion
+              ? undefined
+              : {
+                  opacity: 0,
+                  transition: {
+                    duration: scooterSurfaceTransitionDuration * 0.72,
+                    delay: scooterSurfaceTransitionDuration * 0.18,
+                    ease: premiumEase,
+                  },
+                }
+          }
           transition={{
             duration: scooterSurfaceTransitionDuration,
             ease: premiumEase,
@@ -457,7 +467,7 @@ function ShowcaseFrame({
                 <li key={scooter.id}>
                   <span
                     className={clsx(
-                      "font-display block text-[clamp(2.65rem,10vw,4.8rem)] font-bold leading-[0.9] tracking-normal transition-colors duration-300 lg:text-[clamp(3.8rem,5vw,6.2rem)]",
+                      "font-display block text-[clamp(2.65rem,10vw,4.8rem)] font-bold leading-[0.9] tracking-normal transition-colors duration-500 lg:text-[clamp(3.8rem,5vw,6.2rem)]",
                       index === activeIndex
                         ? "text-[var(--showcase-text)]"
                         : "text-[var(--showcase-inactive)]",
@@ -701,7 +711,7 @@ function ModelRail({ activeIndex }: { activeIndex: number }) {
             <li
               key={scooter.id}
               className={clsx(
-                "font-ui flex shrink-0 items-center gap-2 rounded-full border px-3 py-2 text-[0.67rem] font-bold uppercase tracking-[0.14em] transition-colors duration-300 lg:-rotate-90 lg:rounded-none lg:border-0 lg:bg-transparent lg:px-0 lg:py-0",
+                "font-ui flex shrink-0 items-center gap-2 rounded-full border px-3 py-2 text-[0.67rem] font-bold uppercase tracking-[0.14em] transition-colors duration-500 lg:-rotate-90 lg:rounded-none lg:border-0 lg:bg-transparent lg:px-0 lg:py-0",
                 isActive
                   ? "border-[var(--showcase-rule)] bg-[var(--showcase-chip)] text-[var(--showcase-text)]"
                   : "border-[var(--showcase-rule)] text-[var(--showcase-inactive)]",
@@ -710,7 +720,7 @@ function ModelRail({ activeIndex }: { activeIndex: number }) {
               <span
                 aria-hidden="true"
                 className={clsx(
-                  "h-px w-6 transition-colors duration-300",
+                  "h-px w-6 transition-colors duration-500",
                   isActive
                     ? "bg-[var(--showcase-accent)]"
                     : "bg-[var(--showcase-rule)]",
