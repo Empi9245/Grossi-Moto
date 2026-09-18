@@ -70,7 +70,7 @@ export const showroomSurfaceTones = {
   },
   mineralBlueGrey: {
     backgroundSurface:
-      "linear-gradient(135deg in oklch, oklch(87% 0.017 220) 0%, oklch(79% 0.024 236) 50%, oklch(70% 0.019 252) 100%)",
+      "linear-gradient(135deg in oklch, oklch(84% 0.028 222) 0%, oklch(75% 0.035 238) 50%, oklch(66% 0.028 252) 100%)",
     textTone: "oklch(19% 0.023 238)",
     mutedTone: "oklch(27% 0.023 238 / 0.68)",
     inactiveTone: "oklch(27% 0.022 238 / 0.32)",
