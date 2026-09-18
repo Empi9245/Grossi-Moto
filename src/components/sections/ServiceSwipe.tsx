@@ -416,7 +416,7 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
                       inert={!isSemanticCard ? true : undefined}
                       className="absolute left-1/2 top-0 flex h-full w-[80%] max-w-[31rem] flex-col overflow-hidden rounded-[1.5rem] border border-black/10 bg-white will-change-transform"
                     >
-                      <div className="relative h-[32%] shrink-0 overflow-hidden bg-black/[0.035]">
+                      <div className="relative h-[32%] shrink-0 overflow-hidden rounded-[1.5rem] bg-black/[0.035]">
                         <Image
                           src={service.image}
                           alt={isSemanticCard ? service.alt : ""}
@@ -427,7 +427,7 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
                         />
                       </div>
 
-                      <div className="flex min-h-0 flex-1 flex-col p-4">
+                      <div className="flex min-h-0 flex-1 flex-col p-4 pt-5">
                         <h3 className="font-display max-w-[14ch] text-[clamp(1.9rem,7vw,2.75rem)] font-bold uppercase leading-[0.9] tracking-[-0.035em] text-[#0A0A0A]">
                           {service.title}
                         </h3>
