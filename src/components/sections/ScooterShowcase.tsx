@@ -415,11 +415,6 @@ function ShowcaseFrame({
         />
       </AnimatePresence>
 
-      <div
-        aria-hidden="true"
-        className="absolute left-[1.15rem] top-1/2 z-[1] hidden h-[62%] w-[3rem] -translate-y-1/2 rounded-full border border-[var(--showcase-rule)] bg-white/[0.14] lg:block"
-      />
-
       <div className="relative z-10 grid h-full grid-rows-[auto_minmax(0,0.9fr)_minmax(0,1fr)] px-4 pt-5 pb-4 sm:px-6 md:px-8 lg:grid-cols-[5.25rem_minmax(0,1fr)_minmax(29rem,35vw)] lg:grid-rows-1 lg:px-0 lg:py-0 xl:grid-cols-[5.25rem_minmax(0,1.05fr)_minmax(34rem,35vw)]">
         <ModelRail activeIndex={activeIndex} />
 
@@ -448,8 +443,8 @@ function ShowcaseFrame({
           )}
         </div>
 
-        <aside className="relative flex min-h-0 flex-col justify-end gap-4 pt-3 lg:h-full lg:justify-center lg:pt-0 lg:pr-[clamp(2rem,5vw,6rem)]">
-          <div className="relative min-h-[10.5rem] lg:min-h-[19rem]">
+        <aside className="relative flex min-h-0 flex-col justify-end gap-4 pt-3 lg:h-full lg:justify-start lg:gap-[clamp(1rem,2.2svh,1.75rem)] lg:py-[clamp(1.75rem,4svh,3.5rem)] lg:pr-[clamp(2rem,5vw,6rem)]">
+          <div className="relative min-h-[10.5rem] lg:flex lg:min-h-0 lg:flex-1 lg:items-center">
             <span
               aria-hidden="true"
               className="font-display pointer-events-none absolute -left-2 top-0 text-[clamp(5rem,22vw,13rem)] font-bold leading-none tracking-normal text-[var(--showcase-watermark)] lg:-left-[4rem]"
@@ -466,7 +461,7 @@ function ShowcaseFrame({
                 <li key={scooter.id}>
                   <span
                     className={clsx(
-                      "font-display block text-[clamp(2.65rem,10vw,4.8rem)] font-bold leading-[0.9] tracking-normal transition-colors duration-500 lg:text-[clamp(3.8rem,5vw,6.2rem)]",
+                      "font-display block text-[clamp(2.65rem,10vw,4.8rem)] font-bold leading-[0.9] tracking-normal transition-colors duration-500 lg:text-[clamp(3rem,6.4svh,5.4rem)]",
                       index === activeIndex
                         ? "text-[var(--showcase-text)]"
                         : "text-[var(--showcase-inactive)]",
@@ -519,11 +514,18 @@ function ShowcaseFrame({
                   {activeScooter.statement}
                 </p>
 
-                <div className="mt-4 grid grid-cols-3 gap-3 lg:mt-7 lg:gap-4 lg:rounded-[1.75rem] lg:border lg:border-[var(--showcase-rule)] lg:bg-white/[0.14] lg:p-4">
-                  {stats.map((stat) => (
+                <div className="mt-4 grid grid-cols-3 gap-3 lg:mt-6 lg:gap-0 lg:overflow-hidden lg:rounded-[1.75rem] lg:border lg:border-[var(--showcase-rule)] lg:bg-white/[0.14] lg:p-4">
+                  {stats.map((stat, index) => (
                     <div
                       key={stat.label}
-                      className="min-w-0 border-t border-[var(--showcase-rule)] pt-2"
+                      className={clsx(
+                        "min-w-0 border-t border-[var(--showcase-rule)] pt-2",
+                        "lg:border-t-0 lg:px-4 lg:pt-0",
+                        index === 0
+                          ? "lg:pl-0"
+                          : "lg:border-l lg:border-[var(--showcase-rule)]",
+                        index === stats.length - 1 ? "lg:pr-0" : undefined,
+                      )}
                     >
                       <div className="flex items-start gap-1.5">
                         <p className="font-numeric min-w-0 text-[clamp(1.35rem,5vw,2.55rem)] font-bold leading-none text-[var(--showcase-text)] lg:text-[clamp(1.7rem,2.35vw,3rem)]">
@@ -548,7 +550,7 @@ function ShowcaseFrame({
           <TransitionLink
             href="/scooters"
             scooterId={activeScooter.id}
-            className="font-ui inline-flex w-fit items-center gap-3 text-[0.74rem] font-bold uppercase tracking-[0.13em] text-[var(--showcase-text)] outline-none transition-colors duration-200 hover:text-[var(--showcase-accent)] focus-visible:ring-2 focus-visible:ring-[var(--showcase-accent)] focus-visible:ring-offset-4 focus-visible:ring-offset-[var(--page-background)] lg:absolute lg:right-[clamp(2rem,5vw,6rem)] lg:bottom-[clamp(2rem,5svh,4rem)] lg:min-h-12 lg:rounded-full lg:border lg:border-[var(--showcase-rule)] lg:bg-white/[0.18] lg:px-5 lg:py-3 lg:hover:bg-white/[0.32]"
+            className="font-ui inline-flex w-fit items-center gap-3 text-[0.74rem] font-bold uppercase tracking-[0.13em] text-[var(--showcase-text)] outline-none transition-colors duration-200 hover:text-[var(--showcase-accent)] focus-visible:ring-2 focus-visible:ring-[var(--showcase-accent)] focus-visible:ring-offset-4 focus-visible:ring-offset-[var(--page-background)] lg:min-h-12 lg:flex-none lg:self-start lg:rounded-full lg:border lg:border-[var(--showcase-rule)] lg:bg-white/[0.18] lg:px-5 lg:py-3 lg:hover:bg-white/[0.32]"
           >
             <span className="border-b border-[var(--showcase-rule)] pb-1 lg:border-b-0 lg:pb-0">
               Confronta modelli
@@ -719,7 +721,7 @@ function ModelRail({ activeIndex }: { activeIndex: number }) {
               <span
                 aria-hidden="true"
                 className={clsx(
-                  "h-px w-6 rounded-full transition-all duration-500",
+                  "h-px w-6 rounded-full transition-all duration-500 lg:h-1.5 lg:w-1.5",
                   isActive
                     ? "bg-[var(--showcase-accent)]"
                     : "bg-[var(--showcase-rule)]",
