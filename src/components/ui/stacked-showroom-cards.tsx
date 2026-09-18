@@ -363,6 +363,15 @@ export function StackedShowroomCards() {
         const nextCopy =
           nextScene.querySelectorAll<HTMLElement>("[data-showroom-copy]");
 
+        if (
+          !currentImage ||
+          !nextImage ||
+          currentCopy.length === 0 ||
+          nextCopy.length === 0
+        ) {
+          continue;
+        }
+
         timeline
           .to(
             currentCopy,
