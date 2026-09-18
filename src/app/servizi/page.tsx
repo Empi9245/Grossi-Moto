@@ -56,7 +56,7 @@ function ServicesNav() {
           })}
         </div>
 
-        <div className="flex shrink-0 justify-end lg:justify-self-end">
+        <div className="flex shrink-0 justify-end lg:hidden">
           <a
             href="tel:+393289185029"
             className="font-ui inline-flex min-h-11 items-center gap-2 rounded-full bg-[#0A0A0A] px-3.5 py-2 text-[0.72rem] font-bold uppercase tracking-[0.1em] text-white transition-[opacity,transform] duration-150 hover:opacity-[0.84] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/35 focus-visible:ring-offset-4 focus-visible:ring-offset-white motion-reduce:transform-none motion-reduce:transition-none sm:px-4"
