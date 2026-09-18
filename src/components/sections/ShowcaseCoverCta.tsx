@@ -13,7 +13,7 @@ export function ShowcaseCoverCta() {
         className="absolute inset-x-0 top-0 hidden h-14 bg-white lg:block"
       />
 
-      <div className="relative overflow-hidden rounded-[32px] bg-[var(--home-cover-surface)] px-4 py-20 sm:rounded-[40px] sm:px-6 lg:rounded-[56px] lg:px-10 lg:py-28">
+      <div className="relative overflow-hidden bg-white px-4 py-20 sm:px-6 lg:px-10 lg:py-28">
         <div className="relative mx-auto grid max-w-[92rem] gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(24rem,0.55fr)] lg:items-end">
           <div>
             <p className="font-ui text-xs font-bold uppercase tracking-[0.18em] text-black/60">
@@ -31,14 +31,14 @@ export function ShowcaseCoverCta() {
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link
                 href="/scooters"
-                className="font-ui inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-[var(--gm-black)] px-6 py-3 text-center text-sm font-bold uppercase tracking-[0.08em] text-white transition-opacity duration-200 hover:opacity-88 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/35 focus-visible:ring-offset-4 focus-visible:ring-offset-[var(--home-cover-surface)] sm:w-auto"
+                className="font-ui inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-[var(--gm-black)] px-6 py-3 text-center text-sm font-bold uppercase tracking-[0.08em] text-white transition-opacity duration-200 hover:opacity-88 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/35 focus-visible:ring-offset-4 focus-visible:ring-offset-white sm:w-auto"
               >
                 Confronta i modelli
                 <ArrowUpRight aria-hidden="true" className="h-4 w-4" strokeWidth={1.8} />
               </Link>
               <a
                 href="tel:+393289185029"
-                className="font-ui inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full border border-black/16 bg-black/[0.035] px-6 py-3 text-center text-sm font-bold uppercase tracking-[0.08em] text-black transition-colors duration-200 hover:bg-black/[0.07] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/35 focus-visible:ring-offset-4 focus-visible:ring-offset-[var(--home-cover-surface)] sm:w-auto"
+                className="font-ui inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full border border-black/16 bg-black/[0.035] px-6 py-3 text-center text-sm font-bold uppercase tracking-[0.08em] text-black transition-colors duration-200 hover:bg-black/[0.07] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/35 focus-visible:ring-offset-4 focus-visible:ring-offset-white sm:w-auto"
               >
                 Chiedi un consiglio
                 <PhoneCall aria-hidden="true" className="h-4 w-4" strokeWidth={1.8} />
