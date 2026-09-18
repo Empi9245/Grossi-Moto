@@ -247,6 +247,7 @@ export function ScooterShowcase({
       }
 
       const direction = wheelIntentRef.current > 0 ? 1 : -1;
+
       if (requestStep(direction)) {
         wheelGestureConsumedRef.current = true;
         wheelIntentRef.current = 0;
@@ -496,7 +497,8 @@ function ShowcaseFrame({
                     ? undefined
                     : {
                         opacity: 0,
-                        y: -6,                        transition: {
+                        y: -6,
+                        transition: {
                           duration: 0.16,
                           ease: premiumEase,
                         },
@@ -752,6 +754,7 @@ function ModelRail({ activeIndex }: { activeIndex: number }) {
     </nav>
   );
 }
+
 function StaticShowcase() {
   const smartphone = useMediaQuery("(max-width: 767px)");
   return (
