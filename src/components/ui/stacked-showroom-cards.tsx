@@ -51,7 +51,7 @@ function ShowroomCard({
       data-source-asset={scooter.sourceAsset}
       style={{ background: scooter.backgroundSurface }}
     >
-      <div className="absolute inset-x-0 top-[2%] z-10 h-[66%]">
+      <div className="absolute inset-x-0 top-[3%] z-10 aspect-[4/3]">
         <div
           aria-hidden="true"
           className="absolute left-1/2 bottom-[9%] z-0 rounded-[50%] blur-[12px]"
@@ -242,7 +242,7 @@ export function StackedShowroomCards() {
     return (
       <div className="space-y-5 px-4" aria-label="Scooter in showroom">
         {showcaseScooters.map((scooter, index) => (
-          <div key={scooter.id} className="h-[min(72svh,38rem)] min-h-[28rem]">
+          <div key={scooter.id} className="mx-auto aspect-[3/4] w-full max-w-[24rem]">
             <ShowroomCard
               scooter={scooter}
               index={index}
@@ -263,7 +263,7 @@ export function StackedShowroomCards() {
       style={{ height: `${totalCards * 100 + 50}svh` }}
     >
       <div className="sticky top-0 flex h-[100svh] items-center justify-center overflow-hidden px-4 pb-[calc(3.5rem+env(safe-area-inset-bottom))] pt-[calc(5.5rem+env(safe-area-inset-top))]">
-        <div className="relative h-[min(80svh,42rem)] min-h-[28rem] w-full max-w-[28rem]">
+        <div className="relative aspect-[3/4] w-full max-w-[24rem]">
           {showcaseScooters.map((scooter, index) => (
             <div
               key={scooter.id}
