@@ -701,6 +701,12 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
 
       const direction: 1 | -1 = deltaY < 0 ? 1 : -1;
 
+      if (direction === 1 && focusSection()) {
+        touchStepConsumed = true;
+        event.preventDefault();
+        return;
+      }
+
       if (runStep(direction)) {
         touchStepConsumed = true;
         event.preventDefault();
