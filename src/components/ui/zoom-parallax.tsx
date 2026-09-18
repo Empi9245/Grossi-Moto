@@ -267,8 +267,11 @@ const desktopStepProgress = [0, 0.44, 0.64, 0.84, 1] as const;
 const compactStepProgress = [0, 0.54, 0.7, 0.86, 1] as const;
 const steppedScrollEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
 const steppedScrollTriggerDelta = 6;
-const steppedScrollCooldownMs = 180;
+const steppedScrollCooldownMs = 260;
 const steppedScrollProgressTolerance = 0.015;
+const steppedScrollEntryEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
+const steppedScrollEntryDuration = 0.68;
+const wheelGestureResetMs = 160;
 
 function getCreditRevealRange(index: number, compact: boolean): [number, number] {
   if (compact) {
@@ -278,77 +281,129 @@ function getCreditRevealRange(index: number, compact: boolean): [number, number]
   return [0.2 + index * 0.2, 0.44 + index * 0.2];
 }
 
+function getCreditVisibilityRange(
+  index: number,
+  compact: boolean,
+): [number, number, number, number] {
+  if (compact) {
+    const ranges: [number, number, number, number][] = [
+      [0.28, 0.44, 0.55, 0.6],
+      [0.58, 0.65, 0.71, 0.76],
+      [0.74, 0.82, 0.88, 0.96],
+    ];
+
+    return ranges[index] ?? ranges[ranges.length - 1];
+  }
+
+  const ranges: [number, number, number, number][] = [
+    [0.18, 0.36, 0.45, 0.51],
+    [0.49, 0.58, 0.65, 0.71],
+    [0.69, 0.78, 0.86, 0.94],
+  ];
+
+  return ranges[index] ?? ranges[ranges.length - 1];
+}
+
+function CinematicCreditStory({
+  title,
+  detail,
+  index,
+  progress,
+  compact,
+}: {
+  title: string;
+  detail: string;
+  index: number;
+  progress: MotionValue<number>;
+  compact: boolean;
+}) {
+  const revealRange = getCreditRevealRange(index, compact);
+  const visibilityRange = getCreditVisibilityRange(index, compact);
+  const opacity = useTransform(progress, visibilityRange, [0, 1, 1, 0]);
+  const variant = (index + 1) as CreditAnimationVariant;
+  const titleIntensity = compact ? 30 : 50;
+  const detailIntensity = compact ? 10 : 18;
+  const eyebrowIntensity = compact ? 12 : 24;
+
+  return (
+    <motion.div
+      style={{ opacity }}
+      className="flex h-[48svh] flex-col items-center justify-center px-5 text-center text-[#f4f0e8] sm:px-8 lg:h-[70svh] lg:px-10 lg:[text-shadow:0_4px_28px_rgba(0,0,0,0.45)]"
+    >
+      {index === 0 && (
+        <p
+          aria-label="Dallo showroom all’officina"
+          className="font-ui mb-4 text-[0.6rem] font-bold uppercase tracking-[0.24em] sm:text-xs lg:mb-7"
+        >
+          <AnimatedCreditText
+            text="Dallo showroom all’officina"
+            progress={progress}
+            range={revealRange}
+            intensity={eyebrowIntensity}
+            variant={1}
+          />
+        </p>
+      )}
+      {index === 0 ? (
+        <h2
+          aria-label={title}
+          className={`${creditsFont.className} max-w-[15ch] text-[clamp(2.25rem,min(12vw,10svh),5.25rem)] uppercase leading-[1.02] tracking-[-0.015em] lg:text-[clamp(4.5rem,9.2vw,11rem)]`}
+        >
+          <AnimatedCreditText
+            text={title}
+            progress={progress}
+            range={revealRange}
+            intensity={titleIntensity}
+            variant={1}
+          />
+        </h2>
+      ) : (
+        <h3
+          aria-label={title}
+          className={`${creditsFont.className} max-w-[15ch] text-[clamp(2.25rem,min(12vw,10svh),5.25rem)] uppercase leading-[1.02] tracking-[-0.015em] lg:text-[clamp(4.5rem,9.2vw,11rem)]`}
+        >
+          <AnimatedCreditText
+            text={title}
+            progress={progress}
+            range={revealRange}
+            intensity={titleIntensity}
+            variant={variant}
+          />
+        </h3>
+      )}
+      <p
+        aria-label={detail}
+        className="mt-5 max-w-[38rem] text-[clamp(1rem,1.5vw,1.35rem)] leading-relaxed text-white/85 lg:mt-7"
+      >
+        <AnimatedCreditText
+          text={detail}
+          progress={progress}
+          range={revealRange}
+          intensity={detailIntensity}
+          variant={variant}
+        />
+      </p>
+    </motion.div>
+  );
+}
+
 function CinematicCredits({ progress, compact }: { progress: MotionValue<number>; compact: boolean }) {
   const y = useTransform(progress, [compact ? 0.30 : 0.20, compact ? 0.86 : 0.84], ["100svh", compact ? "-70svh" : "-125svh"]);
+
   return (
     <div className="pointer-events-none absolute inset-0 z-30 [perspective:900px] lg:[perspective:1400px]">
       <motion.div style={{ y }} className="absolute inset-x-0 top-0">
         <div className="origin-center lg:[transform:rotateX(8deg)]">
-          {story.map(({ title, detail }, index) => {
-            const revealRange = getCreditRevealRange(index, compact);
-            const variant = (index + 1) as CreditAnimationVariant;
-            const titleIntensity = compact ? 30 : 50;
-            const detailIntensity = compact ? 10 : 18;
-            const eyebrowIntensity = compact ? 12 : 24;
-
-            return (
-              <div key={title} className="flex h-[48svh] flex-col items-center justify-center px-5 text-center sm:px-8 lg:h-[70svh] lg:px-10 text-[#f4f0e8] lg:[text-shadow:0_4px_28px_rgba(0,0,0,0.45)]">
-                {index === 0 && (
-                  <p
-                    aria-label="Dallo showroom all’officina"
-                    className="font-ui mb-4 text-[0.6rem] sm:text-xs lg:mb-7 font-bold uppercase tracking-[0.24em]"
-                  >
-                    <AnimatedCreditText
-                      text="Dallo showroom all’officina"
-                      progress={progress}
-                      range={revealRange}
-                      intensity={eyebrowIntensity}
-                      variant={1}
-                    />
-                  </p>
-                )}
-                {index === 0 ? (
-                  <h2
-                    aria-label={title}
-                    className={`${creditsFont.className} max-w-[15ch] text-[clamp(2.25rem,min(12vw,10svh),5.25rem)] lg:text-[clamp(4.5rem,9.2vw,11rem)] uppercase leading-[1.02] tracking-[-0.015em]`}
-                  >
-                    <AnimatedCreditText
-                      text={title}
-                      progress={progress}
-                      range={revealRange}
-                      intensity={titleIntensity}
-                      variant={1}
-                    />
-                  </h2>
-                ) : (
-                  <h3
-                    aria-label={title}
-                    className={`${creditsFont.className} max-w-[15ch] text-[clamp(2.25rem,min(12vw,10svh),5.25rem)] lg:text-[clamp(4.5rem,9.2vw,11rem)] uppercase leading-[1.02] tracking-[-0.015em]`}
-                  >
-                    <AnimatedCreditText
-                      text={title}
-                      progress={progress}
-                      range={revealRange}
-                      intensity={titleIntensity}
-                      variant={variant}
-                    />
-                  </h3>
-                )}
-                <p
-                  aria-label={detail}
-                  className="mt-5 max-w-[38rem] lg:mt-7 text-[clamp(1rem,1.5vw,1.35rem)] leading-relaxed text-white/85"
-                >
-                  <AnimatedCreditText
-                    text={detail}
-                    progress={progress}
-                    range={revealRange}
-                    intensity={detailIntensity}
-                    variant={variant}
-                  />
-                </p>
-              </div>
-            );
-          })}
+          {story.map(({ title, detail }, index) => (
+            <CinematicCreditStory
+              key={title}
+              title={title}
+              detail={detail}
+              index={index}
+              progress={progress}
+              compact={compact}
+            />
+          ))}
         </div>
       </motion.div>
     </div>
@@ -360,7 +415,9 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
   const shouldReduceMotion = useReducedMotion();
   const isDesktopViewport = useMediaQuery("(min-width: 1024px)");
   const parallaxImages = images.slice(0, isDesktopViewport ? 9 : 1);
-  const zoomEnd = isDesktopViewport ? 0.172 : 0.287;
+  const zoomEnd = isDesktopViewport
+    ? desktopStepProgress[1]
+    : compactStepProgress[1];
 
   const { scrollYProgress } = useScroll({
     target: container,
@@ -383,6 +440,8 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
     let touchStartX: number | null = null;
     let touchStartY: number | null = null;
     let touchStepConsumed = false;
+    let wheelGestureConsumed = false;
+    let wheelResetTimer: number | null = null;
 
     const getSectionState = () => {
       const rect = section.getBoundingClientRect();
@@ -399,6 +458,7 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
       return {
         isPinned,
         progress,
+        rectTop: rect.top,
         scrollDistance,
         sectionTop,
       };
@@ -445,6 +505,47 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
       return null;
     };
 
+    const focusSection = () => {
+      if (isAnimating || performance.now() < cooldownUntil) {
+        return false;
+      }
+
+      const state = getSectionState();
+      const entrySnapDistance = Math.min(window.innerHeight * 0.55, 520);
+
+      if (
+        state.rectTop <= 4 ||
+        state.rectTop > entrySnapDistance
+      ) {
+        return false;
+      }
+
+      isAnimating = true;
+      activeAnimation = animate(window.scrollY, state.sectionTop, {
+        duration: steppedScrollEntryDuration,
+        ease: steppedScrollEntryEase,
+        onUpdate: (latest) => {
+          window.scrollTo({
+            top: latest,
+            left: 0,
+            behavior: "auto",
+          });
+        },
+        onComplete: () => {
+          window.scrollTo({
+            top: state.sectionTop,
+            left: 0,
+            behavior: "auto",
+          });
+          isAnimating = false;
+          activeAnimation = null;
+          cooldownUntil = performance.now() + steppedScrollCooldownMs;
+        },
+      });
+
+      return true;
+    };
+
     const runStep = (direction: 1 | -1) => {
       if (isAnimating || performance.now() < cooldownUntil) {
         return false;
@@ -480,7 +581,7 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
         targetProgress === stepProgress[1] &&
         state.progress < stepProgress[1] - steppedScrollProgressTolerance;
       const duration =
-        targetProgress === 1 ? 0.78 : isFirstForwardStep ? 1.22 : 0.92;
+        targetProgress === 1 ? 0.86 : isFirstForwardStep ? 1.8 : 1.08;
 
       isAnimating = true;
       activeAnimation = animate(window.scrollY, targetY, {
@@ -517,6 +618,20 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
         return;
       }
 
+      if (wheelResetTimer != null) {
+        window.clearTimeout(wheelResetTimer);
+      }
+
+      wheelResetTimer = window.setTimeout(() => {
+        wheelGestureConsumed = false;
+        wheelResetTimer = null;
+      }, wheelGestureResetMs);
+
+      if (wheelGestureConsumed) {
+        event.preventDefault();
+        return;
+      }
+
       if (isAnimating || performance.now() < cooldownUntil) {
         event.preventDefault();
         return;
@@ -524,7 +639,14 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
 
       const direction: 1 | -1 = event.deltaY > 0 ? 1 : -1;
 
+      if (direction === 1 && focusSection()) {
+        wheelGestureConsumed = true;
+        event.preventDefault();
+        return;
+      }
+
       if (runStep(direction)) {
+        wheelGestureConsumed = true;
         event.preventDefault();
       }
     };
@@ -624,6 +746,11 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
         direction = -1;
       }
 
+      if (direction === 1 && focusSection()) {
+        event.preventDefault();
+        return;
+      }
+
       if (direction != null && runStep(direction)) {
         event.preventDefault();
       }
@@ -655,6 +782,10 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
 
     return () => {
       activeAnimation?.stop();
+
+      if (wheelResetTimer != null) {
+        window.clearTimeout(wheelResetTimer);
+      }
       window.removeEventListener("wheel", onWheel, { capture: true });
       window.removeEventListener("touchstart", onTouchStart, {
         capture: true,
@@ -699,7 +830,11 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
   const scale6 = useTransform(zoomProgress, [0, 1], [1, 6]);
   const scale8 = useTransform(zoomProgress, [0, 1], [1, 8]);
   const scale9 = useTransform(zoomProgress, [0, 1], [1, 9]);
-  const copyScrimOpacity = useTransform(scrollYProgress, [zoomEnd, isDesktopViewport ? 0.25 : 0.39], [0, 0.9]);
+  const copyScrimOpacity = useTransform(
+    scrollYProgress,
+    isDesktopViewport ? [0.28, 0.44] : [0.38, 0.54],
+    [0, 0.9],
+  );
 
   const scales = [scale4, scale5, scale6, scale5, scale6, scale8, scale9, scale6, scale8];
 
