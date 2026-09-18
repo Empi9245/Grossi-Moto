@@ -54,14 +54,14 @@ export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
   return (
     <div
       data-qa="hero-viewport"
-      className="min-h-[100svh] w-full bg-[var(--page-background)] p-2 sm:p-3 lg:p-4 2xl:p-5"
+      className={`${cardMotion ? "h-full" : "min-h-[100svh]"} w-full bg-[var(--page-background)] p-2 sm:p-3 lg:p-4 2xl:p-5`}
     >
       <motion.section
         {...cardMotionProps}
         aria-hidden={cardAriaHidden}
         data-hero-panel={cardMotion ? "true" : undefined}
         style={cardMotionStyle}
-        className="relative mx-auto flex min-h-[calc(100svh-1rem)] w-full max-w-[1920px] overflow-hidden rounded-[var(--hero-card-radius)] bg-[oklch(14%_0.012_40)] [--hero-card-radius:1.35rem] sm:min-h-[calc(100svh-1.5rem)] sm:[--hero-card-radius:1.75rem] lg:min-h-[calc(100svh-2rem)] lg:[--hero-card-radius:2.5rem] 2xl:min-h-[calc(100svh-2.5rem)] 2xl:[--hero-card-radius:3rem]"
+        className={`relative mx-auto flex w-full max-w-[1920px] overflow-hidden rounded-[var(--hero-card-radius)] bg-[oklch(14%_0.012_40)] [--hero-card-radius:1.35rem] sm:[--hero-card-radius:1.75rem] lg:[--hero-card-radius:2.5rem] 2xl:[--hero-card-radius:3rem] ${cardMotion ? "h-full min-h-0" : "min-h-[calc(100svh-1rem)] sm:min-h-[calc(100svh-1.5rem)] lg:min-h-[calc(100svh-2rem)] 2xl:min-h-[calc(100svh-2.5rem)]"}`}
       >
         <div className="relative flex w-full min-w-0 flex-col">
           <div
