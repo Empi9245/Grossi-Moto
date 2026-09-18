@@ -640,60 +640,72 @@ function ScooterSlide({
         willChange: disableMotion ? undefined : "transform",
       }}
     >
-      <div className="relative aspect-[4/3] w-[min(92vw,30rem)] sm:w-[min(78vw,32rem)] md:w-[min(64vw,31rem)] lg:w-[min(50vw,48rem)] xl:w-[min(48vw,54rem)]">
-      <motion.div
-        aria-hidden="true"
-        data-shadow-for={scooter.id}
-        data-active-shadow={isActive}
-        className="absolute left-1/2 bottom-[6%] z-0 rounded-[50%] blur-[10px] sm:blur-[13px]"
-        animate={{
-          opacity: isActive ? scooter.shadowOpacity : 0,
-          scale: isActive ? 1 : 0.92,
-          x: `calc(-50% + ${scooter.shadowX})`,
-          y: scooter.shadowY,
-        }}
-        transition={{ duration: 0.22, ease: premiumEase }}
-        style={{
-          width: scooter.shadowWidth,
-          height: scooter.shadowHeight,
-          background: `radial-gradient(ellipse at center, ${scooter.shadowTone} 0%, ${scooter.shadowTone} 42%, transparent 74%)`,
-          transformOrigin: "center",
-          willChange: isActive ? "transform, opacity" : undefined,
-        }}
-      />
-      <div
-        className="relative z-10 h-full w-full"
-        data-image-offset={`${scooter.imageOffsetX},${scooter.imageOffsetY}`}
-        style={{
-          transform: `translate(${scooter.imageOffsetX}, ${scooter.imageOffsetY})`,
-        }}
+      <TransitionLink
+        href="/scooters"
+        scooterId={scooter.id}
+        tabIndex={isActive ? 0 : -1}
+        aria-label={`Scopri ${scooter.name}`}
+        className="group relative block aspect-[4/3] w-[min(92vw,30rem)] cursor-pointer rounded-[2rem] outline-none focus-visible:ring-2 focus-visible:ring-[var(--showcase-accent)] focus-visible:ring-offset-2 sm:w-[min(78vw,32rem)] md:w-[min(64vw,31rem)] lg:w-[min(50vw,48rem)] xl:w-[min(48vw,54rem)]"
       >
-        {sharedImageLayoutId ? (
-          <motion.img
-            layoutId={sharedImageLayoutId}
-            src={scooter.image}
-            alt={`Scooter ${scooter.name} in vista laterale`}
-            width={500}
-            height={375}
-            draggable={false}
-            fetchPriority={slideIndex === 0 ? "high" : "auto"}
-            decoding="async"
-            className="h-full w-full object-contain object-center"
-          />
-        ) : (
-          <Image
-            draggable={false}
-            src={scooter.image}
-            alt={`Scooter ${scooter.name} in vista laterale`}
-            width={500}
-            height={375}
-            priority={slideIndex === 0}
-            sizes="(max-width: 767px) 92vw, (max-width: 1279px) 50vw, 48vw"
-            className="h-full w-full object-contain object-center"
-          />
-        )}
-      </div>
-      </div>
+        <motion.div
+          aria-hidden="true"
+          data-shadow-for={scooter.id}
+          data-active-shadow={isActive}
+          className="absolute left-1/2 bottom-[6%] z-0 rounded-[50%] blur-[10px] sm:blur-[13px]"
+          animate={{
+            opacity: isActive ? scooter.shadowOpacity : 0,
+            scale: isActive ? 1 : 0.92,
+            x: `calc(-50% + ${scooter.shadowX})`,
+            y: scooter.shadowY,
+          }}
+          transition={{ duration: 0.22, ease: premiumEase }}
+          style={{
+            width: scooter.shadowWidth,
+            height: scooter.shadowHeight,
+            background: `radial-gradient(ellipse at center, ${scooter.shadowTone} 0%, ${scooter.shadowTone} 42%, transparent 74%)`,
+            transformOrigin: "center",
+            willChange: isActive ? "transform, opacity" : undefined,
+          }}
+        />
+        <div
+          className="relative z-10 h-full w-full transition-[filter] duration-300 group-hover:drop-shadow-[0_14px_20px_rgba(0,0,0,0.10)] motion-reduce:transition-none"
+          data-image-offset={`${scooter.imageOffsetX},${scooter.imageOffsetY}`}
+          style={{
+            transform: `translate(${scooter.imageOffsetX}, ${scooter.imageOffsetY})`,
+          }}
+        >
+          {sharedImageLayoutId ? (
+            <motion.img
+              layoutId={sharedImageLayoutId}
+              src={scooter.image}
+              alt={`Scooter ${scooter.name} in vista laterale`}
+              width={500}
+              height={375}
+              draggable={false}
+              fetchPriority={slideIndex === 0 ? "high" : "auto"}
+              decoding="async"
+              className="h-full w-full object-contain object-center"
+            />
+          ) : (
+            <Image
+              draggable={false}
+              src={scooter.image}
+              alt={`Scooter ${scooter.name} in vista laterale`}
+              width={500}
+              height={375}
+              priority={slideIndex === 0}
+              sizes="(max-width: 767px) 92vw, (max-width: 1279px) 50vw, 48vw"
+              className="h-full w-full object-contain object-center"
+            />
+          )}
+        </div>
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute right-[7%] bottom-[12%] z-20 flex h-10 w-10 items-center justify-center rounded-full border border-[var(--showcase-rule)] bg-white/55 text-[var(--showcase-text)] opacity-0 shadow-sm backdrop-blur-sm transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100 motion-reduce:transition-none"
+        >
+          <ArrowUpRight className="h-4 w-4" strokeWidth={1.8} />
+        </span>
+      </TransitionLink>
     </motion.div>
   );
 }
@@ -771,7 +783,12 @@ function StaticShowcase() {
                     color: scooter.textTone,
                   }}
                 >
-                  <div className="relative aspect-[4/3]">
+                  <TransitionLink
+                    href="/scooters"
+                    scooterId={scooter.id}
+                    aria-label={`Scopri ${scooter.name}`}
+                    className="group relative block aspect-[4/3] cursor-pointer rounded-[1.15rem] outline-none focus-visible:ring-2 focus-visible:ring-black/60 focus-visible:ring-offset-2"
+                  >
                     <div
                       aria-hidden="true"
                       className="absolute left-1/2 bottom-[6%] z-0 rounded-[50%] blur-[10px]"
@@ -784,7 +801,7 @@ function StaticShowcase() {
                       }}
                     />
                     <div
-                      className="relative z-10 h-full w-full"
+                      className="relative z-10 h-full w-full transition-[filter] duration-300 group-hover:drop-shadow-[0_10px_16px_rgba(0,0,0,0.10)] motion-reduce:transition-none"
                       style={{
                         transform: `translate(${scooter.imageOffsetX}, ${scooter.imageOffsetY})`,
                       }}
@@ -799,7 +816,13 @@ function StaticShowcase() {
                         className="h-full w-full object-contain"
                       />
                     </div>
-                  </div>
+                    <span
+                      aria-hidden="true"
+                      className="pointer-events-none absolute right-3 bottom-3 z-20 flex h-9 w-9 items-center justify-center rounded-full border border-black/10 bg-white/65 text-black/75 opacity-0 shadow-sm backdrop-blur-sm transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100 motion-reduce:transition-none"
+                    >
+                      <ArrowUpRight className="h-4 w-4" strokeWidth={1.8} />
+                    </span>
+                  </TransitionLink>
                   <div
                     className="mt-4 border-t pt-4"
                     style={{ borderColor: scooter.ruleTone }}
