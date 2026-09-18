@@ -1,5 +1,11 @@
 # Project Memory
 
+## Home — Officina desktop compattata 2026-09-18
+
+- `src/components/sections/WorkshopSection.tsx`: corretto il titolo desktop “Il tuo mezzo, seguito nel tempo.” aumentando l'interlinea solo da `lg`, così la virgola non invade più la riga successiva.
+- Ridotto l'ingombro verticale desktop con padding esterno più contenuto, titolo e descrizione leggermente più piccoli, spazi tra blocchi/CTA ridotti e colonna destra più compatta. Struttura, copy, CTA, icone e decorazione restano invariati.
+- Mobile e tablet non sono stati modificati: tutti i nuovi aggiustamenti sono applicati tramite classi `lg:`.
+
 ## Home — focus ZoomParallax desktop stabilizzato 2026-09-18
 
 - `src/components/ui/zoom-parallax.tsx`: reso più robusto l'aggancio iniziale desktop della sezione. Durante l'animazione di focus il target viene ricalcolato dalla posizione reale del contenitore, così eventuali piccoli shift di layout non lasciano il viewport fuori asse.
