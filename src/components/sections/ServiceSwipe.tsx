@@ -97,8 +97,8 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
 
       const renderPosition = () => {
         const cardWidth = cards[0]?.offsetWidth ?? 0;
-        const lateralScale = 0.96;
-        const cardGap = 2;
+        const lateralScale = 0.9;
+        const cardGap = gsap.utils.clamp(8, 11, container.clientWidth * 0.025);
         const cardSpacing =
           cardWidth * ((1 + lateralScale) / 2) + cardGap;
         const visibleLimit = 1.14;
@@ -114,17 +114,17 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
             xPercent: -50,
             y: 0,
             rotation: stackRotation(slot) * 0.72,
-            rotationY: stackTilt(slot) * 1.45,
+            rotationY: stackTilt(slot) * 1.75,
             scale: 1 - Math.min(distance, 1) * (1 - lateralScale),
             opacity,
-            transformPerspective: 1200,
+            transformPerspective: 1050,
             transformOrigin: "center center",
             force3D: true,
             zIndex: Math.round(1000 - distance * 100),
           });
 
           gsap.set(shades[cardIndex], {
-            opacity: distance < 1.12 ? stackShade(layer) * 0.8 : 0,
+            opacity: distance < 1.12 ? stackShade(layer) * 1.1 : 0,
           });
         });
       };
