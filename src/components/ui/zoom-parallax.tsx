@@ -304,42 +304,37 @@ function getCreditVisibilityRange(
   return ranges[index] ?? ranges[ranges.length - 1];
 }
 
-function CinematicCreditStory({
+function DesktopCinematicCreditStory({
   title,
   detail,
   index,
   progress,
-  compact,
 }: {
   title: string;
   detail: string;
   index: number;
   progress: MotionValue<number>;
-  compact: boolean;
 }) {
-  const revealRange = getCreditRevealRange(index, compact);
-  const visibilityRange = getCreditVisibilityRange(index, compact);
+  const revealRange = getCreditRevealRange(index, false);
+  const visibilityRange = getCreditVisibilityRange(index, false);
   const opacity = useTransform(progress, visibilityRange, [0, 1, 1, 0]);
   const variant = (index + 1) as CreditAnimationVariant;
-  const titleIntensity = compact ? 30 : 50;
-  const detailIntensity = compact ? 10 : 18;
-  const eyebrowIntensity = compact ? 12 : 24;
 
   return (
     <motion.div
       style={{ opacity }}
-      className="flex h-[48svh] flex-col items-center justify-center px-5 text-center text-[#f4f0e8] sm:px-8 lg:h-[70svh] lg:px-10 lg:[text-shadow:0_4px_28px_rgba(0,0,0,0.45)]"
+      className="flex h-[70svh] flex-col items-center justify-center px-10 text-center text-[#f4f0e8] [text-shadow:0_4px_28px_rgba(0,0,0,0.45)]"
     >
       {index === 0 && (
         <p
           aria-label="Dallo showroom all’officina"
-          className="font-ui mb-4 text-[0.6rem] font-bold uppercase tracking-[0.24em] sm:text-xs lg:mb-7"
+          className="font-ui mb-7 text-xs font-bold uppercase tracking-[0.24em]"
         >
           <AnimatedCreditText
             text="Dallo showroom all’officina"
             progress={progress}
             range={revealRange}
-            intensity={eyebrowIntensity}
+            intensity={24}
             variant={1}
           />
         </p>
@@ -347,39 +342,39 @@ function CinematicCreditStory({
       {index === 0 ? (
         <h2
           aria-label={title}
-          className={`${creditsFont.className} max-w-[15ch] text-[clamp(2.25rem,min(12vw,10svh),5.25rem)] uppercase leading-[1.02] tracking-[-0.015em] lg:text-[clamp(4.5rem,9.2vw,11rem)]`}
+          className={`${creditsFont.className} max-w-[15ch] text-[clamp(4.5rem,9.2vw,11rem)] uppercase leading-[1.02] tracking-[-0.015em]`}
         >
           <AnimatedCreditText
             text={title}
             progress={progress}
             range={revealRange}
-            intensity={titleIntensity}
+            intensity={50}
             variant={1}
           />
         </h2>
       ) : (
         <h3
           aria-label={title}
-          className={`${creditsFont.className} max-w-[15ch] text-[clamp(2.25rem,min(12vw,10svh),5.25rem)] uppercase leading-[1.02] tracking-[-0.015em] lg:text-[clamp(4.5rem,9.2vw,11rem)]`}
+          className={`${creditsFont.className} max-w-[15ch] text-[clamp(4.5rem,9.2vw,11rem)] uppercase leading-[1.02] tracking-[-0.015em]`}
         >
           <AnimatedCreditText
             text={title}
             progress={progress}
             range={revealRange}
-            intensity={titleIntensity}
+            intensity={50}
             variant={variant}
           />
         </h3>
       )}
       <p
         aria-label={detail}
-        className="mt-5 max-w-[38rem] text-[clamp(1rem,1.5vw,1.35rem)] leading-relaxed text-white/85 lg:mt-7"
+        className="mt-7 max-w-[38rem] text-[clamp(1rem,1.5vw,1.35rem)] leading-relaxed text-white/85"
       >
         <AnimatedCreditText
           text={detail}
           progress={progress}
           range={revealRange}
-          intensity={detailIntensity}
+          intensity={18}
           variant={variant}
         />
       </p>
@@ -387,23 +382,82 @@ function CinematicCreditStory({
   );
 }
 
-function CinematicCredits({ progress, compact }: { progress: MotionValue<number>; compact: boolean }) {
-  const y = useTransform(progress, [compact ? 0.30 : 0.20, compact ? 0.86 : 0.84], ["100svh", compact ? "-70svh" : "-125svh"]);
+function MobileCinematicCreditStory({
+  title,
+  detail,
+  index,
+  progress,
+}: {
+  title: string;
+  detail: string;
+  index: number;
+  progress: MotionValue<number>;
+}) {
+  const visibilityRange = getCreditVisibilityRange(index, true);
+  const opacity = useTransform(progress, visibilityRange, [0, 1, 1, 0]);
+  const y = useTransform(progress, visibilityRange, [28, 0, 0, -22]);
+  const scale = useTransform(progress, visibilityRange, [0.97, 1, 1, 0.985]);
 
   return (
-    <div className="pointer-events-none absolute inset-0 z-30 [perspective:900px] lg:[perspective:1400px]">
-      <motion.div style={{ y }} className="absolute inset-x-0 top-0">
+    <motion.div
+      style={{ opacity, y, scale }}
+      className="flex h-[48svh] flex-col items-center justify-center px-5 text-center text-[#f4f0e8] will-change-transform sm:px-8"
+    >
+      {index === 0 && (
+        <p className="font-ui mb-4 text-[0.6rem] font-bold uppercase tracking-[0.24em] sm:text-xs">
+          Dallo showroom all’officina
+        </p>
+      )}
+      {index === 0 ? (
+        <h2
+          className={`${creditsFont.className} max-w-[15ch] text-[clamp(2.25rem,min(12vw,10svh),5.25rem)] uppercase leading-[1.02] tracking-[-0.015em]`}
+        >
+          {title}
+        </h2>
+      ) : (
+        <h3
+          className={`${creditsFont.className} max-w-[15ch] text-[clamp(2.25rem,min(12vw,10svh),5.25rem)] uppercase leading-[1.02] tracking-[-0.015em]`}
+        >
+          {title}
+        </h3>
+      )}
+      <p className="mt-5 max-w-[38rem] text-[clamp(1rem,1.5vw,1.35rem)] leading-relaxed text-white/85">
+        {detail}
+      </p>
+    </motion.div>
+  );
+}
+
+function CinematicCredits({ progress, compact }: { progress: MotionValue<number>; compact: boolean }) {
+  const y = useTransform(
+    progress,
+    [compact ? 0.3 : 0.2, compact ? 0.86 : 0.84],
+    ["100svh", compact ? "-70svh" : "-125svh"],
+  );
+
+  return (
+    <div className="pointer-events-none absolute inset-0 z-30 lg:[perspective:1400px]">
+      <motion.div style={{ y }} className="absolute inset-x-0 top-0 will-change-transform">
         <div className="origin-center lg:[transform:rotateX(8deg)]">
-          {story.map(({ title, detail }, index) => (
-            <CinematicCreditStory
-              key={title}
-              title={title}
-              detail={detail}
-              index={index}
-              progress={progress}
-              compact={compact}
-            />
-          ))}
+          {story.map(({ title, detail }, index) =>
+            compact ? (
+              <MobileCinematicCreditStory
+                key={title}
+                title={title}
+                detail={detail}
+                index={index}
+                progress={progress}
+              />
+            ) : (
+              <DesktopCinematicCreditStory
+                key={title}
+                title={title}
+                detail={detail}
+                index={index}
+                progress={progress}
+              />
+            ),
+          )}
         </div>
       </motion.div>
     </div>
@@ -440,6 +494,7 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
     let touchStartX: number | null = null;
     let touchStartY: number | null = null;
     let touchStepConsumed = false;
+    let touchControlsSection = false;
     let wheelGestureConsumed = false;
     let wheelResetTimer: number | null = null;
 
@@ -670,11 +725,27 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
       touchStartX = event.touches[0]?.clientX ?? null;
       touchStartY = event.touches[0]?.clientY ?? null;
       touchStepConsumed = false;
+
+      if (!isDesktopViewport) {
+        const rect = section.getBoundingClientRect();
+        const entrySnapDistance = Math.min(window.innerHeight * 0.55, 520);
+        touchControlsSection =
+          rect.top <= entrySnapDistance &&
+          rect.bottom >= window.innerHeight - 4;
+      } else {
+        touchControlsSection = false;
+      }
     };
 
     const onTouchMove = (event: TouchEvent) => {
+      if (touchStepConsumed) {
+        if (touchControlsSection || isAnimating) {
+          event.preventDefault();
+        }
+        return;
+      }
+
       if (
-        touchStepConsumed ||
         touchStartX == null ||
         touchStartY == null ||
         event.touches.length !== 1
@@ -694,8 +765,18 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
 
       const deltaX = currentX - touchStartX;
       const deltaY = currentY - touchStartY;
+      const isVerticalDirection = Math.abs(deltaY) > Math.abs(deltaX);
+
+      if (
+        touchControlsSection &&
+        isVerticalDirection &&
+        Math.abs(deltaY) > steppedScrollTriggerDelta
+      ) {
+        event.preventDefault();
+      }
+
       const isVerticalIntent =
-        Math.abs(deltaY) > Math.abs(deltaX) &&
+        isVerticalDirection &&
         Math.abs(deltaY) > steppedScrollTriggerDelta * 2;
 
       if (!isVerticalIntent) {
@@ -703,7 +784,9 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
       }
 
       if (isAnimating || performance.now() < cooldownUntil) {
-        event.preventDefault();
+        if (touchControlsSection) {
+          event.preventDefault();
+        }
         return;
       }
 
@@ -725,6 +808,7 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
       touchStartX = null;
       touchStartY = null;
       touchStepConsumed = false;
+      touchControlsSection = false;
     };
 
     const onKeyDown = (event: KeyboardEvent) => {
