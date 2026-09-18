@@ -13,7 +13,7 @@ import localFont from "next/font/local";
 
 const creditsFont = localFont({ src: "../../../public/fonts/anton-latin.woff2", display: "swap", preload: false });
 import Link from "next/link";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 
@@ -272,6 +272,18 @@ const steppedScrollProgressTolerance = 0.015;
 const steppedScrollEntryEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
 const steppedScrollEntryDuration = 0.68;
 const wheelGestureResetMs = 160;
+const idleFloatEase: [number, number, number, number] = [0.45, 0, 0.55, 1];
+const idleFloatPatterns = [
+  { x: 4, y: -7, rotate: -0.18, duration: 5.8 },
+  { x: 9, y: -12, rotate: 0.48, duration: 6.4 },
+  { x: -8, y: 10, rotate: -0.42, duration: 5.6 },
+  { x: 7, y: 9, rotate: 0.36, duration: 6.8 },
+  { x: -6, y: -9, rotate: -0.3, duration: 5.9 },
+  { x: 10, y: 7, rotate: 0.44, duration: 6.6 },
+  { x: -7, y: -8, rotate: -0.38, duration: 5.5 },
+  { x: 8, y: 11, rotate: 0.34, duration: 6.2 },
+  { x: -9, y: 8, rotate: -0.46, duration: 6.9 },
+] as const;
 
 function getCreditRevealRange(index: number, compact: boolean): [number, number] {
   if (compact) {
@@ -468,6 +480,8 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
   const container = useRef<HTMLDivElement | null>(null);
   const shouldReduceMotion = useReducedMotion();
   const isDesktopViewport = useMediaQuery("(min-width: 1024px)");
+  const introAssembledRef = useRef(false);
+  const [isIntroAssembled, setIsIntroAssembled] = useState(false);
   const parallaxImages = images.slice(0, isDesktopViewport ? 9 : 1);
   const zoomEnd = isDesktopViewport
     ? desktopStepProgress[1]
@@ -497,6 +511,15 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
     let touchControlsSection = false;
     let wheelGestureConsumed = false;
     let wheelResetTimer: number | null = null;
+
+    const setIntroAssembly = (next: boolean) => {
+      if (introAssembledRef.current === next) {
+        return;
+      }
+
+      introAssembledRef.current = next;
+      setIsIntroAssembled(next);
+    };
 
     const getSectionState = () => {
       const rect = section.getBoundingClientRect();
@@ -575,6 +598,7 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
         return false;
       }
 
+      setIntroAssembly(true);
       isAnimating = true;
       activeAnimation = animate(window.scrollY, state.sectionTop, {
         duration: steppedScrollEntryDuration,
@@ -610,6 +634,10 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
 
       if (!state.isPinned) {
         return false;
+      }
+
+      if (!introAssembledRef.current) {
+        setIntroAssembly(true);
       }
 
       const targetProgress = getTargetProgress(state.progress, direction);
@@ -858,6 +886,22 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
       }
     };
 
+    const syncIntroAssembly = () => {
+      if (isAnimating) {
+        return;
+      }
+
+      const state = getSectionState();
+
+      if (state.rectTop > 12) {
+        setIntroAssembly(false);
+      } else if (state.isPinned) {
+        setIntroAssembly(true);
+      }
+    };
+
+    syncIntroAssembly();
+    window.addEventListener("scroll", syncIntroAssembly, { passive: true });
     window.addEventListener("wheel", onWheel, {
       capture: true,
       passive: false,
@@ -888,6 +932,7 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
       if (wheelResetTimer != null) {
         window.clearTimeout(wheelResetTimer);
       }
+      window.removeEventListener("scroll", syncIntroAssembly);
       window.removeEventListener("wheel", onWheel, { capture: true });
       window.removeEventListener("touchstart", onTouchStart, {
         capture: true,
@@ -958,11 +1003,46 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
       <div className="sticky top-0 h-[100svh] overflow-hidden">
         {parallaxImages.map(({ src, alt }, index) => {
           const scale = isDesktopViewport ? scales[index % scales.length] : mobileScale;
+          const idlePattern =
+            idleFloatPatterns[index % idleFloatPatterns.length];
+          const idleStrength = isDesktopViewport ? 1 : 0.42;
+          const settleDelay = isDesktopViewport ? index * 0.025 : 0;
 
           return (
             <motion.div
               key={src}
               style={{ scale: isDesktopViewport ? scale : 1 }}
+              animate={
+                isIntroAssembled
+                  ? { x: 0, y: 0 }
+                  : {
+                      x: [
+                        0,
+                        idlePattern.x * idleStrength,
+                        idlePattern.x * -0.45 * idleStrength,
+                        0,
+                      ],
+                      y: [
+                        0,
+                        idlePattern.y * idleStrength,
+                        idlePattern.y * -0.35 * idleStrength,
+                        0,
+                      ],
+                    }
+              }
+              transition={
+                isIntroAssembled
+                  ? {
+                      duration: 0.5,
+                      delay: settleDelay,
+                      ease: steppedScrollEntryEase,
+                    }
+                  : {
+                      duration: idlePattern.duration,
+                      repeat: Infinity,
+                      ease: idleFloatEase,
+                    }
+              }
               className={`absolute top-0 flex h-full w-full items-center justify-center ${
                 index === 0 ? "z-20" : "z-10"
               } ${
@@ -1000,6 +1080,31 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
               }`}
             >
               <motion.div
+                animate={
+                  isIntroAssembled
+                    ? { rotate: 0 }
+                    : {
+                        rotate: [
+                          0,
+                          idlePattern.rotate * idleStrength,
+                          idlePattern.rotate * -0.65 * idleStrength,
+                          0,
+                        ],
+                      }
+                }
+                transition={
+                  isIntroAssembled
+                    ? {
+                        duration: 0.48,
+                        delay: settleDelay,
+                        ease: steppedScrollEntryEase,
+                      }
+                    : {
+                        duration: idlePattern.duration * 1.08,
+                        repeat: Infinity,
+                        ease: idleFloatEase,
+                      }
+                }
                 style={{
                   scale: isDesktopViewport ? 1 : mobileScale,
                   borderRadius:
