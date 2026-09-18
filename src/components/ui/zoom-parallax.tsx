@@ -929,13 +929,13 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
           className="pointer-events-none absolute inset-0 z-20 bg-[linear-gradient(105deg,oklch(8%_0.012_42/0.84),oklch(8%_0.012_42/0.58)_56%,oklch(8%_0.012_42/0.42))] will-change-opacity"
         />
 
-        <div className="pointer-events-none absolute inset-0 z-30 text-[oklch(18%_0.014_56)]">
+        <div className="pointer-events-none absolute inset-0 z-30 text-white">
           <motion.div
             style={{ x: introLeftX, opacity: introOpacity }}
             className="absolute left-[6vw] top-[4svh] max-w-[85vw] will-change-transform lg:left-[4vw] lg:top-[3svh] lg:max-w-[26vw]"
           >
-            <p className="font-ui mb-3 text-[0.65rem] font-bold uppercase tracking-[0.2em]">Grossi Moto · Roma</p>
-            <p className={`${creditsFont.className} text-[clamp(1.75rem,7vw,3rem)] lg:text-[clamp(2rem,3.1vw,4rem)] leading-[0.95] tracking-[-0.02em]`}>
+            <p className="font-ui mb-3 text-[0.65rem] font-bold uppercase tracking-[0.2em] text-white/80 [text-shadow:0_2px_12px_rgba(0,0,0,0.28)]">Grossi Moto · Roma</p>
+            <p className="font-display text-[clamp(1.75rem,7vw,3rem)] font-bold leading-[0.95] tracking-[-0.02em] [text-shadow:0_3px_18px_rgba(0,0,0,0.3)] lg:text-[clamp(2rem,3.1vw,4rem)]">
               La tua prossima strada.
             </p>
           </motion.div>
@@ -943,8 +943,8 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
             style={{ x: introRightX, opacity: introOpacity }}
             className="absolute bottom-[calc(6.5rem+env(safe-area-inset-bottom))] right-[6vw] max-w-[85vw] text-right will-change-transform lg:bottom-[5svh] lg:right-[4vw] lg:max-w-[25vw]"
           >
-            <p className={`${creditsFont.className} text-[clamp(1.75rem,7vw,3rem)] lg:text-[clamp(2rem,3.6vw,4.5rem)] leading-[0.95] tracking-[-0.02em]`}>Parte da qui.</p>
-            <p className="font-ui mt-4 text-xs tracking-wide">Dalla scelta del mezzo, a ogni nuovo viaggio.</p>
+            <p className="font-display text-[clamp(1.75rem,7vw,3rem)] font-bold leading-[0.95] tracking-[-0.02em] [text-shadow:0_3px_18px_rgba(0,0,0,0.3)] lg:text-[clamp(2rem,3.6vw,4.5rem)]">Parte da qui.</p>
+            <p className="font-ui mt-4 text-xs tracking-wide text-white/80 [text-shadow:0_2px_12px_rgba(0,0,0,0.28)]">Dalla scelta del mezzo, a ogni nuovo viaggio.</p>
           </motion.div>
         </div>
 
