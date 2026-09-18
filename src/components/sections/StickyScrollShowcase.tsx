@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { PhoneCall } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 
 import { ServiceSwipe, type Service } from "./ServiceSwipe";
@@ -95,109 +95,86 @@ export function StickyScrollShowcase() {
   return (
     <section
       aria-labelledby="services-showcase-heading"
-      className="bg-white px-5 py-16 text-[#0A0A0A] sm:px-7 sm:py-20 md:px-10 lg:px-5 lg:py-24 xl:py-28"
+      className="bg-white px-5 py-16 text-[#0A0A0A] sm:px-7 sm:py-20 md:px-10 lg:px-2 lg:py-12 xl:py-14"
     >
-      <div className="mx-auto max-w-[122rem]">
-        <div className="grid gap-7 border-t border-black/16 pt-6 lg:grid-cols-[minmax(0,1.3fr)_minmax(24rem,0.7fr)] lg:items-end lg:gap-12 lg:px-9 xl:px-11">
+      <div className="mx-auto max-w-7xl">
+        <div className="lg:px-2">
           <h2
             id="services-showcase-heading"
-            className="font-display max-w-[11ch] text-[clamp(3.2rem,10vw,8.5rem)] font-bold uppercase leading-[0.84] tracking-[-0.04em]"
+            className="font-display text-[clamp(3rem,6vw,5.8rem)] font-bold uppercase leading-[0.9] tracking-[-0.04em]"
           >
             Cosa possiamo fare per te.
           </h2>
-          <p className="max-w-[34rem] text-base leading-7 text-black/64 sm:text-lg sm:leading-8">
+          <p className="mt-4 max-w-2xl text-base leading-7 text-black/60 sm:text-lg sm:leading-8">
             Dalla manutenzione alla scelta del mezzo: un unico punto di
             riferimento per capire cosa serve e come procedere.
           </p>
         </div>
 
-        <div className="mt-12 sm:mt-16 lg:mt-20">
+        <div className="mt-12">
           <ServiceSwipe services={services} />
 
-          <div className="hidden grid-cols-3 gap-5 lg:grid xl:gap-6">
+          <div className="hidden grid-cols-3 gap-4 lg:grid xl:gap-6">
             {services.map((service, index) => (
               <motion.article
                 key={service.title}
-                className="group relative flex min-h-[36rem] flex-col overflow-hidden rounded-[32px] border border-gray-200 bg-white shadow-sm"
+                className="group relative min-h-[390px] overflow-hidden rounded-3xl bg-[#F4F4F2] p-6"
                 initial={
                   reduceMotion
                     ? false
                     : {
                         opacity: 0,
-                        y: 24,
+                        y: 20,
                       }
                 }
                 whileInView={{
                   opacity: 1,
                   y: 0,
                 }}
-                viewport={{ once: true, amount: 0.16 }}
+                viewport={{ once: true, amount: 0.18 }}
                 transition={{
-                  duration: reduceMotion ? 0 : 0.55,
-                  delay: reduceMotion ? 0 : (index % 3) * 0.08,
+                  duration: reduceMotion ? 0 : 0.6,
+                  delay: reduceMotion ? 0 : (index % 3) * 0.1,
                   ease: easeOut,
                 }}
-                whileHover={reduceMotion ? undefined : { y: -6 }}
               >
-                <div className="relative aspect-[4/3] overflow-hidden bg-gray-50">
-                  <Image
-                    src={service.image}
-                    alt={service.alt}
-                    fill
-                    sizes="(min-width: 1024px) 32vw, 1px"
-                    className="object-cover transition-transform duration-500 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.035] motion-reduce:transition-none"
-                    priority={index < 3}
-                  />
+                <h3 className="font-display relative z-10 mx-auto max-w-[12ch] text-center text-[clamp(2rem,2.7vw,3.35rem)] font-bold uppercase leading-[0.9] tracking-[-0.035em] text-[#0A0A0A]">
+                  {service.title}
+                </h3>
 
-                  <div className="font-ui absolute left-5 top-5 flex min-h-9 items-center rounded-full bg-white/94 px-3 text-[0.68rem] font-bold uppercase tracking-[0.14em] text-[#0A0A0A] shadow-sm backdrop-blur-sm">
-                    <span className="mr-2 text-[#C72A09]">
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-                    / {String(services.length).padStart(2, "0")}
+                <div className="absolute inset-x-6 top-[6.5rem] flex h-[13.5rem] items-center justify-center xl:top-[7.2rem] xl:h-[14.5rem]">
+                  <div className="relative h-full w-[78%] overflow-hidden rounded-2xl bg-white/55">
+                    <Image
+                      src={service.image}
+                      alt={service.alt}
+                      fill
+                      sizes="(min-width: 1024px) 25vw, 1px"
+                      className="object-cover opacity-95 transition-[transform,opacity] duration-500 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.06] group-hover:opacity-100 motion-reduce:transform-none motion-reduce:transition-none"
+                    />
                   </div>
                 </div>
 
-                <div className="flex flex-1 flex-col p-6 xl:p-7">
-                  <h3 className="font-display max-w-[14ch] text-[clamp(2rem,2.6vw,3.35rem)] font-bold uppercase leading-[0.88] tracking-[-0.035em] text-gray-900">
-                    {service.title}
-                  </h3>
-
-                  <p className="mt-4 max-w-[25ch] text-[clamp(1.15rem,1.35vw,1.5rem)] font-semibold leading-[1.06] text-gray-900">
+                <div className="absolute inset-x-6 bottom-6 pr-16">
+                  <p className="text-[1.02rem] font-semibold leading-[1.12] text-black/82">
                     {service.statement}
                   </p>
-
-                  <p className="mt-4 max-w-[42ch] text-sm leading-6 text-gray-600 xl:text-[0.98rem] xl:leading-7">
+                  <p className="mt-2 line-clamp-2 text-sm leading-6 text-black/56">
                     {service.description}
                   </p>
+                </div>
 
-                  <ul className="font-ui mt-6 grid border-y border-black/10 text-[0.68rem] font-bold uppercase tracking-[0.045em] text-gray-600">
-                    {service.features.map((feature) => (
-                      <li
-                        key={feature}
-                        className="border-b border-black/8 py-2.5 last:border-b-0"
-                      >
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
-
-                  <div className="mt-auto flex items-end justify-between gap-4 pt-7">
-                    <span className="font-ui text-[0.65rem] font-bold uppercase tracking-[0.14em] text-black/40">
-                      Grossimoto · Roma
-                    </span>
-
-                    <a
-                      href="tel:+393289185029"
-                      aria-label={`Chiama per informazioni su ${service.title}`}
-                      className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#0A0A0A] text-white transition-[background-color,transform] duration-200 hover:bg-[#C72A09] active:scale-[0.96] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/35 focus-visible:ring-offset-3 motion-reduce:transform-none motion-reduce:transition-none"
-                    >
-                      <PhoneCall
-                        aria-hidden="true"
-                        className="h-4 w-4"
-                        strokeWidth={1.8}
-                      />
-                    </a>
-                  </div>
+                <div className="absolute bottom-0 right-0 z-20 h-20 w-20 rounded-tl-2xl border-l border-t border-black/5 bg-white">
+                  <a
+                    href="tel:+393289185029"
+                    aria-label={"Chiama per informazioni su " + service.title}
+                    className="absolute bottom-3 right-3 flex h-12 w-12 items-center justify-center rounded-full bg-[#0A0A0A] text-white shadow-sm transition-[background-color,transform] duration-300 group-hover:bg-[#C72A09] group-hover:scale-105 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/35 focus-visible:ring-offset-3 motion-reduce:transform-none motion-reduce:transition-none"
+                  >
+                    <ArrowUpRight
+                      aria-hidden="true"
+                      className="h-5 w-5"
+                      strokeWidth={1.9}
+                    />
+                  </a>
                 </div>
               </motion.article>
             ))}
