@@ -33,6 +33,9 @@ type CatalogProductCardProps = {
   transitionImageId: string | null;
   cardToneAssignment?: ProductCardToneAssignment;
   isPriority?: boolean;
+  instanceId?: string;
+  isSemanticInstance?: boolean;
+  collapseFocusTargetId?: string;
   onExpandScooter: (scooterId: string) => void;
   onCollapseScooter: () => void;
 };
@@ -132,14 +135,20 @@ export const CatalogProductCard = memo(function CatalogProductCard({
   transitionImageId,
   cardToneAssignment,
   isPriority = false,
+  instanceId,
+  isSemanticInstance = true,
+  collapseFocusTargetId,
   onExpandScooter,
   onCollapseScooter,
 }: CatalogProductCardProps) {
   const style = getProductStyle(scooter, cardToneAssignment);
   const brand = getCatalogScooterBrand(scooter);
-  const cardTitleId = `catalog-card-title-${scooter.id}`;
-  const expandedContentId = `catalog-card-content-${scooter.id}`;
-  const cardTriggerId = `catalog-card-trigger-${scooter.id}`;
+  const instanceSuffix = instanceId ? `-${instanceId}` : "";
+  const cardTitleId = `catalog-card-title-${scooter.id}${instanceSuffix}`;
+  const expandedContentId =
+    `catalog-card-content-${scooter.id}${instanceSuffix}`;
+  const cardTriggerId =
+    `catalog-card-trigger-${scooter.id}${instanceSuffix}`;
   const sharedImageLayoutId =
     !shouldReduceMotion && isExpanded && transitionImageId === scooter.id
       ? `scooter-image-${scooter.id}`
@@ -164,7 +173,9 @@ export const CatalogProductCard = memo(function CatalogProductCard({
   const handleCompactCollapse = () => {
     onCollapseScooter();
     requestAnimationFrame(() => {
-      document.getElementById(cardTriggerId)?.focus();
+      document
+        .getElementById(collapseFocusTargetId ?? cardTriggerId)
+        ?.focus();
     });
   };
 
@@ -187,7 +198,7 @@ export const CatalogProductCard = memo(function CatalogProductCard({
           ? "z-10 self-stretch md:col-span-2 md:row-span-2 lg:col-span-6"
           : "z-0 self-start md:col-span-1 md:row-span-1 lg:col-span-3",
       )}
-      data-scooter-id={scooter.id}
+      data-scooter-id={isSemanticInstance ? scooter.id : undefined}
       data-expanded={isExpanded}
       data-selected={isSelected}
       data-card-tone={cardToneAssignment?.toneId ?? scooter.cardToneId}
