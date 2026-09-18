@@ -18,7 +18,7 @@ const HERO_IMAGE = {
 
 const easeOut = [0.22, 1, 0.36, 1] as const;
 const imageOpenClipPath =
-  "polygon(27% 0, 25.6% 0.25%, 24.5% 1.2%, 3.8% 91.5%, 1.8% 95%, 0.5% 98.2%, 0% 100%, 100% 100%, 100% 0)";
+  "polygon(19% 0, 17.8% 0.25%, 16.8% 1.2%, 3.8% 91.5%, 1.8% 95%, 0.5% 98.2%, 0% 100%, 100% 100%, 100% 0)";
 const imageClosedClipPath =
   "polygon(100% 0, 100% 0.25%, 100% 1.2%, 100% 91.5%, 100% 95%, 100% 98.2%, 100% 100%, 100% 100%, 100% 0)";
 
@@ -72,21 +72,8 @@ export function ServicesHero() {
         variants={containerVariants}
       >
         <div className="flex w-full flex-col justify-between md:w-1/2 md:p-12 lg:w-3/5 lg:p-16 xl:p-20">
-          <div className="px-8 pt-8 sm:px-10 sm:pt-10 md:px-0 md:pt-0">
-            <motion.header className="mb-12 lg:mb-16" variants={itemVariants}>
-              <div className="flex items-center">
-                <div>
-                  <p className="font-ui text-lg font-bold leading-none text-[#0A0A0A] sm:text-xl">
-                    Grossimoto
-                  </p>
-                  <p className="font-ui mt-1 text-[0.62rem] font-bold uppercase tracking-[0.17em] text-black/46">
-                    Moto e scooter a Roma
-                  </p>
-                </div>
-              </div>
-            </motion.header>
-
-            <motion.main className="hidden md:block" variants={containerVariants}>
+          <div className="hidden md:block">
+            <motion.main variants={containerVariants}>
               <motion.p
                 className="font-ui mb-5 text-[0.68rem] font-bold uppercase tracking-[0.18em] text-black/48 sm:text-xs"
                 variants={itemVariants}
@@ -131,7 +118,7 @@ export function ServicesHero() {
 
           <div
             ref={mobileImageRef}
-            className="relative mt-6 min-h-[620px] w-full overflow-hidden sm:mt-8 md:hidden"
+            className="relative min-h-[620px] w-full overflow-hidden md:hidden"
           >
             <motion.div
               className="absolute inset-0 overflow-hidden"
@@ -269,7 +256,7 @@ export function ServicesHero() {
 
       <section className="hidden bg-white px-2 pb-2 lg:block">
         <motion.div
-          className="relative mx-auto mt-6 max-w-7xl overflow-hidden rounded-2xl bg-[#F4F4F2] text-[#0A0A0A]"
+          className="relative mx-auto mt-6 max-w-7xl overflow-hidden rounded-2xl bg-[#F8F8F6] text-[#0A0A0A]"
           initial={reduceMotion ? false : { opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: reduceMotion ? 0 : 0.6, ease: easeOut }}
