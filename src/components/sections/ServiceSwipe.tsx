@@ -32,12 +32,8 @@ function stackLayer(slot: number) {
   return Math.min(Math.abs(slot), maxVisibleDepth);
 }
 
-function stackX(slot: number, focusTravel = 0) {
-  const distance = Math.abs(slot);
-  const focusSeparation =
-    distance < 1 ? Math.sin(Math.PI * distance) * focusTravel : 0;
-
-  return slot * stackOffset + Math.sign(slot) * focusSeparation;
+function stackX(slot: number, spacing: number) {
+  return slot * spacing;
 }
 
 function stackScale(layer: number) {
@@ -106,37 +102,24 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
       let focusTween: gsap.core.Tween | null = null;
 
       const renderPosition = () => {
-        const focusTravel = gsap.utils.clamp(
-          150,
-          220,
-          container.clientWidth * 0.5,
-        );
-        const visibleLimit = totalCards / 2 + 0.6;
+        const cardWidth = cards[0]?.getBoundingClientRect().width ?? 0;
+        const sidePeek = gsap.utils.clamp(18, 28, container.clientWidth * 0.065);
+        const cardSpacing = Math.max(stackOffset, cardWidth - sidePeek);
+        const visibleLimit = 1.12;
 
         cards.forEach((card, cardIndex) => {
           const slot = virtualIndexes[cardIndex] - position.value;
           const layer = stackLayer(slot);
           const distance = Math.abs(slot);
-          const edgeFadeStart = Math.max(1.5, totalCards / 2 - 0.65);
-          const depthOpacity = gsap.utils.clamp(
-            0.08,
-            1,
-            1 - Math.max(0, layer - edgeFadeStart) * 1.4,
-          );
-          const opacity = distance > visibleLimit ? 0 : depthOpacity;
-          const focusArc = distance < 1 ? Math.sin(Math.PI * distance) : 0;
+          const opacity = distance > visibleLimit ? 0 : 1;
 
           gsap.set(card, {
-            x: stackX(slot, focusTravel),
+            x: stackX(slot, cardSpacing),
             xPercent: 0,
-            y: layer * 1.5 - focusArc * 9,
-            rotation:
-              stackRotation(slot) +
-              Math.sign(slot) * focusArc * stackRotationStep * 2.25,
-            rotationY:
-              stackTilt(slot) -
-              Math.sign(slot) * focusArc * stackTiltStep * 1.6,
-            scale: stackScale(layer) - focusArc * 0.006,
+            y: 0,
+            rotation: stackRotation(slot) * 0.55,
+            rotationY: stackTilt(slot) * 0.55,
+            scale: 1 - Math.min(distance, 1) * 0.012,
             opacity,
             transformPerspective: 1200,
             transformOrigin: "center center",
@@ -145,7 +128,7 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
           });
 
           gsap.set(shades[cardIndex], {
-            opacity: stackShade(layer),
+            opacity: distance < 1.12 ? stackShade(layer) * 0.8 : 0,
           });
         });
       };
@@ -197,8 +180,8 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
 
         focusTween = gsap.to(position, {
           value: targetPosition,
-          duration: 0.62,
-          ease: "power2.inOut",
+          duration: 0.9,
+          ease: "sine.inOut",
           overwrite: true,
           onUpdate: renderPosition,
           onComplete: () => {
@@ -422,7 +405,7 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
             ref={stackContainerRef}
             className="flex h-[min(78svh,42rem)] min-h-[32rem] items-center justify-center"
           >
-            <div className="relative h-full w-[calc(100%-4rem)] max-w-[28rem]">
+            <div className="relative h-full w-[calc(100%-2.75rem)] max-w-[30rem]">
               {[0, 1, 2].flatMap((copyIndex) =>
                 services.map((service, index) => {
                   const isSemanticCard = copyIndex === 1 && index === active;
@@ -443,7 +426,7 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
                           alt={isSemanticCard ? service.alt : ""}
                           fill
                           draggable={false}
-                          sizes="(max-width: 767px) calc(100vw - 4rem), 1px"
+                          sizes="(max-width: 767px) calc(100vw - 2.75rem), 1px"
                           className="object-cover"
                         />
                       </div>
