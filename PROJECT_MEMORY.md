@@ -1,5 +1,11 @@
 # Project Memory
 
+## Home — focus ZoomParallax desktop stabilizzato 2026-09-18
+
+- `src/components/ui/zoom-parallax.tsx`: reso più robusto l'aggancio iniziale desktop della sezione. Durante l'animazione di focus il target viene ricalcolato dalla posizione reale del contenitore, così eventuali piccoli shift di layout non lasciano il viewport fuori asse.
+- A fine aggancio il lock resta attivo per due `requestAnimationFrame` consecutivi e corregge solo scostamenti superiori a 0,75 px prima di riabilitare lo scroll a step. Gli input wheel restano quindi bloccati anche durante l'assestamento, evitando scatti dovuti a inerzia residua.
+- Mobile/tablet, progressi degli step, durata/easing dello zoom, copy, immagini, CTA e reduced-motion non sono stati modificati.
+
 ## Servizi — redesign white / black / red 2026-09-17
 
 - `/servizi` è stata ricostruita come esperienza coerente con Home/Gamma: canvas bianco, Hero nera fotografica arrotondata, showcase servizi bianco, Process nero, CTA finale `#C72A09`, Footer nero. Rimossi lo stacco fotografico standalone e le superfici beige/cream/brown dalla pagina.
