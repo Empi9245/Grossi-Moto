@@ -190,14 +190,11 @@ export default async function ContattiPage({
           <h2 id="contact-channels-title" className="sr-only">
             Modi per contattare Grossi Moto
           </h2>
-          <div className="grid border-y border-black/12 sm:grid-cols-3 sm:divide-x sm:divide-black/12">
-            {channels.map(({ icon: Icon, label, value, href, cta, note }, index) => (
+          <div className="grid gap-6 sm:grid-cols-3 sm:gap-4 lg:gap-6">
+            {channels.map(({ icon: Icon, label, value, href, cta, note }) => (
               <article
                 key={label}
-                className={[
-                  "flex min-w-0 flex-col py-7 sm:px-6 sm:py-8 lg:px-8 lg:py-10",
-                  index > 0 ? "border-t border-black/12 sm:border-t-0" : "",
-                ].join(" ")}
+                className="flex min-w-0 flex-col py-4 sm:px-4 sm:py-6 lg:px-6 lg:py-8"
               >
                 <div className="flex items-center gap-3 text-[#C72A09]">
                   <Icon aria-hidden="true" className="h-5 w-5" strokeWidth={1.8} />
@@ -296,18 +293,18 @@ export default async function ContattiPage({
               </a>
             </div>
 
-            <div className="border-t border-white/16 pt-7 lg:border-l lg:border-t-0 lg:pl-12 lg:pt-0">
+            <div className="pt-7 lg:pl-12 lg:pt-0">
               <div className="flex items-center gap-3 text-[#C72A09]">
                 <Clock aria-hidden="true" className="h-5 w-5" strokeWidth={1.8} />
                 <h2 className="font-ui text-[0.68rem] font-bold uppercase tracking-[0.2em] sm:text-xs">
                   Orari di apertura
                 </h2>
               </div>
-              <ul className="mt-7 divide-y divide-white/14 border-y border-white/14">
+              <ul className="mt-7 grid gap-3">
                 {hours.map(({ days, time }) => (
                   <li
                     key={days}
-                    className="grid gap-1 py-4 text-sm sm:grid-cols-[7rem_minmax(0,1fr)] sm:items-baseline sm:gap-5"
+                    className="grid gap-1 rounded-2xl bg-white/[0.06] px-4 py-3 text-sm sm:grid-cols-[7rem_minmax(0,1fr)] sm:items-baseline sm:gap-5"
                   >
                     <span className="font-semibold text-white">{days}</span>
                     <span className="font-numeric break-words text-white/62 sm:text-right">
@@ -322,7 +319,7 @@ export default async function ContattiPage({
       </section>
 
       <section className="px-5 py-20 sm:px-7 sm:py-24 md:px-10 lg:px-14 lg:py-28 xl:px-20">
-        <div className="mx-auto flex max-w-[92rem] flex-col gap-8 border-t border-black/12 pt-10 lg:flex-row lg:items-end lg:justify-between lg:gap-14 lg:pt-14">
+        <div className="mx-auto flex max-w-[92rem] flex-col gap-8 pt-10 lg:flex-row lg:items-end lg:justify-between lg:gap-14 lg:pt-14">
           <div>
             <p className="font-ui text-[0.68rem] font-bold uppercase tracking-[0.2em] text-[#C72A09] sm:text-xs">
               Hai ancora un dubbio?

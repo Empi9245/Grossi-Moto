@@ -294,7 +294,7 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
     "inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-black/18 bg-white text-black transition-[background-color,border-color,transform] duration-150 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] hover:border-black/34 hover:bg-black/[0.04] active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-3 aria-disabled:pointer-events-none aria-disabled:opacity-30 motion-reduce:transform-none motion-reduce:transition-none";
 
   const controls = (
-    <div className="font-ui mt-7 flex flex-wrap items-center justify-between gap-4 border-t border-black/12 pt-4">
+    <div className="font-ui mt-7 flex flex-wrap items-center justify-between gap-4 pt-4">
       <a
         href="tel:+393289185029"
         className="inline-flex min-h-11 items-center gap-2 text-sm font-bold text-black underline decoration-black/28 underline-offset-4 transition-[text-decoration-color,transform] duration-150 hover:decoration-black active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-3 motion-reduce:transform-none motion-reduce:transition-none"
@@ -518,11 +518,11 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
               <p className="mt-4 max-w-[44ch] text-sm leading-6 text-black/64 sm:text-base sm:leading-7">
                 {service.description}
               </p>
-              <ul className="font-ui mt-5 grid gap-2 border-t border-black/12 pt-4 text-[0.74rem] font-semibold uppercase tracking-[0.04em] text-black/66">
+              <ul className="font-ui mt-5 grid gap-2 pt-4 text-[0.74rem] font-semibold uppercase tracking-[0.04em] text-black/66">
                 {service.features.map((feature) => (
                   <li
                     key={feature}
-                    className="border-b border-black/8 pb-2 last:border-b-0"
+                    className="pb-2"
                   >
                     {feature}
                   </li>

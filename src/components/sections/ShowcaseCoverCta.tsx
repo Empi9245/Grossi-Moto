@@ -14,8 +14,6 @@ export function ShowcaseCoverCta() {
       />
 
       <div className="relative overflow-hidden rounded-[32px] bg-[var(--home-cover-surface)] px-4 py-20 sm:rounded-[40px] sm:px-6 lg:rounded-[56px] lg:px-10 lg:py-28">
-        <div aria-hidden="true" className="absolute inset-x-0 top-0 h-px bg-black/10" />
-
         <div className="relative mx-auto grid max-w-[92rem] gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(24rem,0.55fr)] lg:items-end">
           <div>
             <p className="font-ui text-xs font-bold uppercase tracking-[0.18em] text-black/60">

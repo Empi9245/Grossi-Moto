@@ -10,7 +10,7 @@ const hours = [
 export function ContactBriefSection() {
   return (
     <section className="rounded-[32px] bg-[var(--home-contact-surface)] px-4 py-14 text-[var(--gm-ink)] sm:rounded-[40px] sm:px-6 lg:rounded-[56px] lg:px-10">
-      <div className="mx-auto grid max-w-[92rem] gap-8 border-y border-black/12 py-8 lg:grid-cols-[minmax(0,0.8fr)_minmax(23rem,0.52fr)] lg:items-center">
+      <div className="mx-auto grid max-w-[92rem] gap-8 py-8 lg:grid-cols-[minmax(0,0.8fr)_minmax(23rem,0.52fr)] lg:items-center">
         <div>
           <p className="font-ui text-[0.68rem] font-bold uppercase tracking-[0.18em] text-black/55">
             Contatti e orari

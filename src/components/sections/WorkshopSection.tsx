@@ -21,7 +21,7 @@ export function WorkshopSection() {
         </div>
 
         <div className="relative mx-auto grid max-w-[92rem] gap-14 lg:grid-cols-[minmax(0,0.95fr)_minmax(26rem,0.5fr)] lg:items-start">
-          <div className="border-t border-black/16 pt-8">
+          <div className="pt-8">
             <p className="font-ui text-[0.68rem] font-bold uppercase tracking-[0.22em] text-black/60">
               Officina in sede
             </p>
@@ -40,8 +40,8 @@ export function WorkshopSection() {
             </a>
           </div>
 
-          <div className="border-y border-black/16">
-            <article className="grid gap-5 border-b border-black/14 py-7 sm:grid-cols-[2.6rem_minmax(0,1fr)]">
+          <div>
+            <article className="grid gap-5 py-7 sm:grid-cols-[2.6rem_minmax(0,1fr)]">
               <ClipboardCheck aria-hidden="true" className="h-6 w-6 text-black/60" strokeWidth={1.6} />
               <div>
                 <h3 className="font-display text-[clamp(1.9rem,3vw,3.2rem)] font-bold uppercase leading-[0.9]">
@@ -53,7 +53,7 @@ export function WorkshopSection() {
               </div>
             </article>
 
-            <article className="grid gap-5 border-b border-black/14 py-7 sm:grid-cols-[2.6rem_minmax(0,1fr)]">
+            <article className="grid gap-5 py-7 sm:grid-cols-[2.6rem_minmax(0,1fr)]">
               <Settings2 aria-hidden="true" className="h-6 w-6 text-black/60" strokeWidth={1.6} />
               <div>
                 <h3 className="font-display text-[clamp(1.9rem,3vw,3.2rem)] font-bold uppercase leading-[0.9]">
@@ -73,7 +73,7 @@ export function WorkshopSection() {
                 </h3>
                 <ul className="font-ui mt-6 grid gap-x-5 gap-y-3 text-xs font-bold uppercase tracking-[0.12em] text-black/82 sm:grid-cols-2">
                   {workshopItems.map((item) => (
-                    <li key={item} className="border-t border-black/20 pt-2">
+                    <li key={item} className="pt-2">
                       <span aria-hidden="true" className="sr-only" />
                       <span>{item}</span>
                     </li>

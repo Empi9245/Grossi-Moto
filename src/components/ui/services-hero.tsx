@@ -192,7 +192,7 @@ export function ServicesHero() {
             className="mx-8 mt-10 mb-8 sm:mx-10 sm:mb-10 md:mx-0 md:mt-14 md:mb-0 lg:mt-20"
             variants={itemVariants}
           >
-            <div className="grid grid-cols-1 gap-5 border-t border-black/12 pt-6 text-xs font-medium text-black/58 sm:grid-cols-3 sm:gap-6">
+            <div className="grid grid-cols-1 gap-5 pt-6 text-xs font-medium text-black/58 sm:grid-cols-3 sm:gap-6">
               <div className="flex min-w-0 items-center">
                 <Globe2
                   aria-hidden="true"

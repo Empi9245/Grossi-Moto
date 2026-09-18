@@ -35,13 +35,11 @@ export function BottomLeftCard() {
         230 recensioni
       </p>
 
-      <div className="my-4 hidden h-px w-full bg-[oklch(24%_0.016_45/0.14)] [@media(min-width:80rem)_and_(min-height:56.25rem)]:block" />
-
-      <p className="hidden text-sm leading-relaxed text-[oklch(35%_0.018_50)] [@media(min-width:80rem)_and_(min-height:56.25rem)]:block">
+      <p className="mt-4 hidden text-sm leading-relaxed text-[oklch(35%_0.018_50)] [@media(min-width:80rem)_and_(min-height:56.25rem)]:block">
         La parola a chi ci ha scelto.
       </p>
 
-      <span className="font-ui mt-4 hidden items-center justify-between gap-3 border-t border-[oklch(24%_0.016_45/0.14)] pt-3 text-sm font-semibold [@media(min-width:80rem)_and_(min-height:56.25rem)]:flex">
+      <span className="font-ui mt-4 hidden items-center justify-between gap-3 text-sm font-semibold [@media(min-width:80rem)_and_(min-height:56.25rem)]:flex">
         <span className="inline-flex items-center gap-2">
           <Star aria-hidden="true" className="h-4 w-4" />
           Leggi le recensioni

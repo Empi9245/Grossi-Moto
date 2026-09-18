@@ -223,11 +223,11 @@ export function StickyScrollShowcase() {
                           </p>
                         </div>
 
-                        <ul className="font-ui mt-auto grid border-t border-black/12 pt-4 text-[0.72rem] font-semibold uppercase tracking-[0.04em] text-black/66">
+                        <ul className="font-ui mt-auto grid pt-4 text-[0.72rem] font-semibold uppercase tracking-[0.04em] text-black/66">
                           {service.features.map((feature) => (
                             <li
                               key={feature}
-                              className="border-b border-black/8 py-2 last:border-b-0"
+                              className="py-2"
                             >
                               {feature}
                             </li>
