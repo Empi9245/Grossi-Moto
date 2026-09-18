@@ -63,7 +63,7 @@ export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
         style={cardMotionStyle}
         className={`relative mx-auto flex w-full max-w-[1920px] overflow-hidden rounded-[var(--hero-card-radius)] bg-[oklch(14%_0.012_40)] [--hero-card-radius:1.35rem] sm:[--hero-card-radius:1.75rem] lg:[--hero-card-radius:2.5rem] 2xl:[--hero-card-radius:3rem] ${cardMotion ? "h-full min-h-0" : "min-h-[calc(100svh-1rem)] sm:min-h-[calc(100svh-1.5rem)] lg:min-h-[calc(100svh-2rem)] 2xl:min-h-[calc(100svh-2.5rem)]"}`}
       >
-        <div className="relative flex w-full min-w-0 flex-col">
+        <div className="relative flex min-h-0 w-full min-w-0 flex-col">
           <div
             aria-hidden="true"
             data-qa="hero-video-fallback"
@@ -109,12 +109,12 @@ export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
             className="absolute inset-x-0 top-0 z-[3] h-44 bg-[linear-gradient(180deg,oklch(8%_0.012_40/0.72),transparent)]"
           />
 
-          <div className="relative z-10 flex w-full flex-1 flex-col">
+          <div className="relative z-10 flex min-h-0 w-full flex-1 flex-col">
             <Navbar />
 
             <div
               data-qa="hero-copy"
-              className="mx-auto flex min-w-0 w-full max-w-[78rem] flex-1 flex-col items-center px-5 pt-[clamp(1rem,3svh,2.5rem)] pb-8 text-center xl:pb-6 sm:px-7 md:px-8 xl:pt-[clamp(1.5rem,5svh,5rem)]"
+              className="mx-auto flex min-h-0 min-w-0 w-full max-w-[78rem] flex-1 flex-col items-center px-5 pt-[clamp(1rem,3svh,2.5rem)] pb-8 text-center xl:pb-6 sm:px-7 md:px-8 xl:pt-[clamp(1.5rem,5svh,5rem)]"
             >
               <HeroBadge />
 
