@@ -1,13 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { useReducedMotion } from "framer-motion";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
 import { PhoneCall } from "lucide-react";
+import { motion, useReducedMotion } from "framer-motion";
 
-import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { ServiceSwipe, type Service } from "./ServiceSwipe";
 
 const services: Service[] = [
@@ -91,225 +87,18 @@ const services: Service[] = [
   },
 ];
 
-const DESKTOP_WIDTH = 1200;
-const TABLET_MIN_WIDTH = 768;
-const DEPTH_MIN = -1;
-const DEPTH_MAX = 1;
-const Z_INDEX_MIN = 1;
-
-const CARD_WIDTH = 260;
-const CARD_HEIGHT = 290;
-const RIGHT_RADIUS_X = 420;
-const RIGHT_RADIUS_Y = 360;
-const RIGHT_DEPTH_MAX = 40;
-const RIGHT_ANGLE_OFFSET = 0;
-const IMAGE_FOCUS_START = 0.45;
-const IMAGE_FOCUS_POWER = 3.2;
-const IMAGE_SIDE_SCALE = 0.58;
-const IMAGE_CENTER_SCALE = 1;
-const IMAGE_SIDE_OPACITY = 0.14;
-const IMAGE_CENTER_OPACITY = 1;
-const ACTIVE_PHASE = 0.75;
-
-function wrapProgress(value: number) {
-  let wrappedValue = value % 1;
-
-  if (wrappedValue < 0) {
-    wrappedValue += 1;
-  }
-
-  return wrappedValue;
-}
-
-function getCircularPosition(
-  progress: number,
-  radiusX: number,
-  radiusY: number,
-  angleOffset = 0,
-) {
-  const angle = progress * Math.PI * 2 + angleOffset;
-
-  return {
-    x: Math.sin(angle) * radiusX,
-    y: Math.cos(angle) * radiusY,
-    horizontalDepth: Math.sin(angle),
-  };
-}
-
-function getStrength(value: number) {
-  return gsap.utils.clamp(
-    0,
-    1,
-    gsap.utils.mapRange(DEPTH_MIN, DEPTH_MAX, 0, 1, value),
-  );
-}
-
-function shapeFocus(strength: number, start: number, power: number) {
-  const normalized = gsap.utils.clamp(
-    0,
-    1,
-    (strength - start) / (1 - start),
-  );
-
-  return Math.pow(normalized, power);
-}
+const easeOut = [0.22, 1, 0.36, 1] as const;
 
 export function StickyScrollShowcase() {
-  const desktopRootRef = useRef<HTMLDivElement>(null);
-  const stickyRef = useRef<HTMLDivElement>(null);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const isDesktopViewport = useMediaQuery("(min-width: 1024px)");
   const reduceMotion = useReducedMotion();
-
-  useEffect(() => {
-    const root = desktopRootRef.current;
-    const sticky = stickyRef.current;
-
-    if (!root || !sticky || !isDesktopViewport || reduceMotion) return;
-
-    gsap.registerPlugin(ScrollTrigger);
-
-    const textNodes = Array.from(
-      root.querySelectorAll<HTMLElement>("[data-service-copy]"),
-    );
-    const cardNodes = Array.from(
-      root.querySelectorAll<HTMLElement>("[data-service-visual]"),
-    );
-    const total = services.length;
-
-    if (!total || textNodes.length !== total || cardNodes.length !== total) {
-      return;
-    }
-
-    const render = (scrollProgress: number) => {
-      const width = window.innerWidth;
-      const factor =
-        width < DESKTOP_WIDTH && width >= TABLET_MIN_WIDTH
-          ? width / DESKTOP_WIDTH
-          : 1;
-      const itemProgress = scrollProgress * (total - 1);
-
-      textNodes.forEach((node, index) => {
-        const delta = index - itemProgress;
-        const distance = Math.abs(delta);
-        const focus = gsap.utils.clamp(0, 1, 1 - distance);
-        const travel = Math.min(distance, 1);
-        const x =
-          delta >= 0
-            ? -170 * travel * factor
-            : 120 * travel * factor;
-
-        gsap.set(node, {
-          x,
-          y: 0,
-          scale: gsap.utils.interpolate(0.985, 1, focus),
-          opacity: Math.pow(focus, 1.45),
-          zIndex: Math.round(10 + focus * 20),
-          visibility: distance <= 1 ? "visible" : "hidden",
-          pointerEvents: distance < 0.45 ? "auto" : "none",
-          transformOrigin: "0% 50%",
-        });
-      });
-
-      const radiusX = RIGHT_RADIUS_X * factor;
-      const radiusY = RIGHT_RADIUS_Y * factor;
-
-      cardNodes.forEach((node, index) => {
-        const localProgress = wrapProgress(
-          (index - itemProgress) / total + ACTIVE_PHASE,
-        );
-        const position = getCircularPosition(
-          localProgress,
-          radiusX,
-          radiusY,
-          RIGHT_ANGLE_OFFSET,
-        );
-        const rawStrength = getStrength(-position.horizontalDepth);
-        const focusStrength = shapeFocus(
-          rawStrength,
-          IMAGE_FOCUS_START,
-          IMAGE_FOCUS_POWER,
-        );
-        const scale = gsap.utils.interpolate(
-          IMAGE_SIDE_SCALE,
-          IMAGE_CENTER_SCALE,
-          focusStrength,
-        );
-        const opacity = gsap.utils.interpolate(
-          IMAGE_SIDE_OPACITY,
-          IMAGE_CENTER_OPACITY,
-          focusStrength,
-        );
-        const zIndex = Math.round(
-          gsap.utils.interpolate(
-            Z_INDEX_MIN,
-            RIGHT_DEPTH_MAX,
-            focusStrength,
-          ),
-        );
-
-        gsap.set(node, {
-          width: CARD_WIDTH * factor,
-          height: CARD_HEIGHT * factor,
-          xPercent: -50,
-          yPercent: -50,
-          x: position.x,
-          y: position.y,
-          scale,
-          opacity,
-          zIndex,
-          transformOrigin: "50% 50%",
-        });
-      });
-
-      const nextIndex = Math.max(
-        0,
-        Math.min(total - 1, Math.round(itemProgress)),
-      );
-      setActiveIndex((current) =>
-        current === nextIndex ? current : nextIndex,
-      );
-    };
-
-    render(0);
-
-    const context = gsap.context(() => {
-      ScrollTrigger.create({
-        trigger: root,
-        start: "top top",
-        end: `+=${100 * total}%`,
-        pin: sticky,
-        pinSpacing: true,
-        scrub: 1.1,
-        invalidateOnRefresh: true,
-        anticipatePin: 1,
-        snap: {
-          snapTo: 1 / (total - 1),
-          duration: { min: 0.16, max: 0.34 },
-          delay: 0.08,
-          ease: "power2.out",
-          inertia: false,
-        },
-        onUpdate: (self) => render(self.progress),
-      });
-    }, root);
-
-    const onResize = () => ScrollTrigger.refresh();
-    window.addEventListener("resize", onResize);
-
-    return () => {
-      window.removeEventListener("resize", onResize);
-      context.revert();
-    };
-  }, [isDesktopViewport, reduceMotion]);
 
   return (
     <section
       aria-labelledby="services-showcase-heading"
-      className="bg-white px-5 py-16 text-[#0A0A0A] sm:px-7 sm:py-20 md:px-10 lg:px-14 lg:py-28 xl:px-20"
+      className="bg-white px-5 py-16 text-[#0A0A0A] sm:px-7 sm:py-20 md:px-10 lg:px-5 lg:py-24 xl:py-28"
     >
-      <div className="mx-auto max-w-[92rem]">
-        <div className="grid gap-7 border-t border-black/16 pt-6 lg:grid-cols-[minmax(0,1.3fr)_minmax(24rem,0.7fr)] lg:items-end lg:gap-12">
+      <div className="mx-auto max-w-[122rem]">
+        <div className="grid gap-7 border-t border-black/16 pt-6 lg:grid-cols-[minmax(0,1.3fr)_minmax(24rem,0.7fr)] lg:items-end lg:gap-12 lg:px-9 xl:px-11">
           <h2
             id="services-showcase-heading"
             className="font-display max-w-[11ch] text-[clamp(3.2rem,10vw,8.5rem)] font-bold uppercase leading-[0.84] tracking-[-0.04em]"
@@ -325,154 +114,92 @@ export function StickyScrollShowcase() {
         <div className="mt-12 sm:mt-16 lg:mt-20">
           <ServiceSwipe services={services} />
 
-          <div
-            ref={desktopRootRef}
-            className={reduceMotion ? "hidden" : "hidden lg:block"}
-          >
-            <div
-              ref={stickyRef}
-              className="relative h-[100svh] min-h-[700px] overflow-hidden"
-            >
-              <div className="grid h-full grid-cols-[minmax(25rem,0.9fr)_minmax(0,1.1fr)] items-center gap-6 xl:grid-cols-[minmax(28rem,0.86fr)_minmax(0,1.14fr)] xl:gap-10">
-                <div className="relative z-20 h-[72svh] min-h-[34rem] max-h-[48rem] overflow-hidden pr-8 xl:pr-12">
-                  {services.map((service, index) => {
-                    const isActive = index === activeIndex;
-
-                    return (
-                      <article
-                        key={service.title}
-                        data-service-copy
-                        aria-hidden={!isActive}
-                        className="absolute inset-0 flex flex-col justify-center opacity-0 will-change-[transform,opacity]"
-                      >
-                        <div className="font-ui flex items-center gap-4 text-[0.7rem] font-bold uppercase tracking-[0.14em] text-black/46">
-                          <span className="text-[#C72A09]">
-                            {String(index + 1).padStart(2, "0")}
-                          </span>
-                          <span
-                            className="h-px w-10 bg-black/18"
-                            aria-hidden="true"
-                          />
-                          <span>{String(services.length).padStart(2, "0")}</span>
-                        </div>
-
-                        <h3 className="font-display mt-5 max-w-[12ch] text-[clamp(3rem,4.3vw,5.3rem)] font-bold uppercase leading-[0.84] tracking-[-0.04em]">
-                          {service.title}
-                        </h3>
-                        <p className="mt-6 max-w-[23ch] text-[clamp(1.4rem,1.9vw,2.15rem)] font-semibold leading-[1.02] text-black/84">
-                          {service.statement}
-                        </p>
-                        <p className="mt-5 max-w-[35rem] text-base leading-7 text-black/64 xl:text-lg xl:leading-8">
-                          {service.description}
-                        </p>
-
-                        <ul className="font-ui mt-7 grid max-w-[35rem] border-y border-black/14 text-[0.73rem] font-bold uppercase tracking-[0.05em] text-black/66">
-                          {service.features.map((feature) => (
-                            <li
-                              key={feature}
-                              className="border-b border-black/10 py-2.5 last:border-b-0"
-                            >
-                              {feature}
-                            </li>
-                          ))}
-                        </ul>
-
-                        <a
-                          href="tel:+393289185029"
-                          tabIndex={isActive ? 0 : -1}
-                          className="font-ui mt-7 inline-flex min-h-12 w-fit items-center gap-2 rounded-full bg-[#0A0A0A] px-6 py-3 text-sm font-bold uppercase tracking-[0.08em] text-white transition-[opacity,transform] duration-150 hover:opacity-[0.84] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/35 focus-visible:ring-offset-4 focus-visible:ring-offset-white motion-reduce:transform-none motion-reduce:transition-none"
-                        >
-                          Chiama per informazioni
-                          <PhoneCall
-                            aria-hidden="true"
-                            className="h-4 w-4"
-                            strokeWidth={1.8}
-                          />
-                        </a>
-                      </article>
-                    );
-                  })}
-                </div>
-
-                <div className="relative h-[82svh] min-h-[39rem] max-h-[56rem]">
-                  <div
-                    className="absolute top-1/2"
-                    style={{
-                      left: "calc(50% + clamp(190px, 15vw, 250px))",
-                    }}
-                  >
-                    {services.map((service, index) => (
-                      <figure
-                        key={service.title}
-                        data-service-visual
-                        aria-hidden={index !== activeIndex}
-                        className="absolute left-1/2 top-1/2 overflow-hidden rounded-[24px] border border-gray-200 bg-gray-50 shadow-[0_22px_50px_rgba(0,0,0,0.16)] opacity-0 will-change-[transform,opacity]"
-                      >
-                        <Image
-                          src={service.image}
-                          alt={service.alt}
-                          fill
-                          sizes="(min-width: 1200px) 260px, 230px"
-                          className="object-cover"
-                          priority={index === 0}
-                        />
-                      </figure>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div
-            className={
-              reduceMotion
-                ? "hidden gap-12 lg:grid lg:grid-cols-2 xl:gap-16"
-                : "hidden"
-            }
-          >
-            {services.map((service) => (
-              <article key={service.title}>
-                <div className="relative aspect-[4/3] overflow-hidden rounded-[28px] border border-gray-200 bg-gray-50">
+          <div className="hidden grid-cols-3 gap-5 lg:grid xl:gap-6">
+            {services.map((service, index) => (
+              <motion.article
+                key={service.title}
+                className="group relative flex min-h-[36rem] flex-col overflow-hidden rounded-[32px] border border-gray-200 bg-white shadow-sm"
+                initial={
+                  reduceMotion
+                    ? false
+                    : {
+                        opacity: 0,
+                        y: 24,
+                      }
+                }
+                whileInView={{
+                  opacity: 1,
+                  y: 0,
+                }}
+                viewport={{ once: true, amount: 0.16 }}
+                transition={{
+                  duration: reduceMotion ? 0 : 0.55,
+                  delay: reduceMotion ? 0 : (index % 3) * 0.08,
+                  ease: easeOut,
+                }}
+                whileHover={reduceMotion ? undefined : { y: -6 }}
+              >
+                <div className="relative aspect-[4/3] overflow-hidden bg-gray-50">
                   <Image
                     src={service.image}
                     alt={service.alt}
                     fill
-                    sizes="(min-width: 1024px) 44vw, 1px"
-                    className="object-cover"
+                    sizes="(min-width: 1024px) 32vw, 1px"
+                    className="object-cover transition-transform duration-500 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.035] motion-reduce:transition-none"
+                    priority={index < 3}
                   />
+
+                  <div className="font-ui absolute left-5 top-5 flex min-h-9 items-center rounded-full bg-white/94 px-3 text-[0.68rem] font-bold uppercase tracking-[0.14em] text-[#0A0A0A] shadow-sm backdrop-blur-sm">
+                    <span className="mr-2 text-[#C72A09]">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    / {String(services.length).padStart(2, "0")}
+                  </div>
                 </div>
-                <h3 className="font-display mt-7 max-w-[12ch] text-[clamp(3rem,5vw,5.5rem)] font-bold uppercase leading-[0.86] tracking-[-0.04em]">
-                  {service.title}
-                </h3>
-                <p className="mt-5 max-w-[24ch] text-2xl font-semibold leading-[1.02] text-black/84">
-                  {service.statement}
-                </p>
-                <p className="mt-4 max-w-[36rem] text-base leading-7 text-black/64">
-                  {service.description}
-                </p>
-                <ul className="font-ui mt-6 grid max-w-[36rem] border-y border-black/14 text-[0.75rem] font-bold uppercase tracking-[0.05em] text-black/66">
-                  {service.features.map((feature) => (
-                    <li
-                      key={feature}
-                      className="border-b border-black/10 py-3 last:border-b-0"
+
+                <div className="flex flex-1 flex-col p-6 xl:p-7">
+                  <h3 className="font-display max-w-[14ch] text-[clamp(2rem,2.6vw,3.35rem)] font-bold uppercase leading-[0.88] tracking-[-0.035em] text-gray-900">
+                    {service.title}
+                  </h3>
+
+                  <p className="mt-4 max-w-[25ch] text-[clamp(1.15rem,1.35vw,1.5rem)] font-semibold leading-[1.06] text-gray-900">
+                    {service.statement}
+                  </p>
+
+                  <p className="mt-4 max-w-[42ch] text-sm leading-6 text-gray-600 xl:text-[0.98rem] xl:leading-7">
+                    {service.description}
+                  </p>
+
+                  <ul className="font-ui mt-6 grid border-y border-black/10 text-[0.68rem] font-bold uppercase tracking-[0.045em] text-gray-600">
+                    {service.features.map((feature) => (
+                      <li
+                        key={feature}
+                        className="border-b border-black/8 py-2.5 last:border-b-0"
+                      >
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+
+                  <div className="mt-auto flex items-end justify-between gap-4 pt-7">
+                    <span className="font-ui text-[0.65rem] font-bold uppercase tracking-[0.14em] text-black/40">
+                      Grossimoto · Roma
+                    </span>
+
+                    <a
+                      href="tel:+393289185029"
+                      aria-label={`Chiama per informazioni su ${service.title}`}
+                      className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#0A0A0A] text-white transition-[background-color,transform] duration-200 hover:bg-[#C72A09] active:scale-[0.96] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/35 focus-visible:ring-offset-3 motion-reduce:transform-none motion-reduce:transition-none"
                     >
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-                <a
-                  href="tel:+393289185029"
-                  className="font-ui mt-7 inline-flex min-h-12 w-fit items-center gap-2 rounded-full bg-[#0A0A0A] px-6 py-3 text-sm font-bold uppercase tracking-[0.08em] text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/35 focus-visible:ring-offset-4 focus-visible:ring-offset-white"
-                >
-                  Chiama per informazioni
-                  <PhoneCall
-                    aria-hidden="true"
-                    className="h-4 w-4"
-                    strokeWidth={1.8}
-                  />
-                </a>
-              </article>
+                      <PhoneCall
+                        aria-hidden="true"
+                        className="h-4 w-4"
+                        strokeWidth={1.8}
+                      />
+                    </a>
+                  </div>
+                </div>
+              </motion.article>
             ))}
           </div>
         </div>
