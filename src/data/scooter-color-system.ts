@@ -70,7 +70,7 @@ export const showroomSurfaceTones = {
   },
   mineralBlueGrey: {
     backgroundSurface:
-      "linear-gradient(135deg in oklch, oklch(84% 0.028 222) 0%, oklch(75% 0.035 238) 50%, oklch(66% 0.028 252) 100%)",
+      "linear-gradient(138deg in oklch, oklch(86% 0.022 220) 0%, oklch(78% 0.028 236) 52%, oklch(70% 0.023 250) 100%)",
     textTone: "oklch(19% 0.023 238)",
     mutedTone: "oklch(27% 0.023 238 / 0.68)",
     inactiveTone: "oklch(27% 0.022 238 / 0.32)",
@@ -82,7 +82,7 @@ export const showroomSurfaceTones = {
   },
   dryChampagne: {
     backgroundSurface:
-      "linear-gradient(135deg in oklch, oklch(89% 0.022 80) 0%, oklch(81% 0.028 70) 50%, oklch(73% 0.02 58) 100%)",
+      "linear-gradient(138deg in oklch, oklch(90% 0.019 82) 0%, oklch(82% 0.025 70) 52%, oklch(74% 0.02 58) 100%)",
     textTone: "oklch(20% 0.021 64)",
     mutedTone: "oklch(29% 0.021 64 / 0.67)",
     inactiveTone: "oklch(28% 0.02 64 / 0.31)",
@@ -94,7 +94,7 @@ export const showroomSurfaceTones = {
   },
   mutedSage: {
     backgroundSurface:
-      "linear-gradient(135deg in oklch, oklch(88% 0.022 145) 0%, oklch(80% 0.032 158) 50%, oklch(72% 0.024 172) 100%)",
+      "linear-gradient(138deg in oklch, oklch(89% 0.02 145) 0%, oklch(81% 0.027 158) 52%, oklch(73% 0.022 170) 100%)",
     textTone: "oklch(19% 0.024 158)",
     mutedTone: "oklch(28% 0.024 158 / 0.67)",
     inactiveTone: "oklch(28% 0.023 158 / 0.31)",
@@ -106,7 +106,7 @@ export const showroomSurfaceTones = {
   },
   lightClay: {
     backgroundSurface:
-      "linear-gradient(135deg in oklch, oklch(86% 0.026 42) 0%, oklch(77% 0.036 34) 50%, oklch(68% 0.028 30) 100%)",
+      "linear-gradient(138deg in oklch, oklch(87% 0.022 44) 0%, oklch(79% 0.03 35) 52%, oklch(71% 0.024 28) 100%)",
     textTone: "oklch(20% 0.026 32)",
     mutedTone: "oklch(28% 0.026 32 / 0.68)",
     inactiveTone: "oklch(27% 0.024 32 / 0.32)",
@@ -130,7 +130,7 @@ export const showroomSurfaceTones = {
   },
   smokedLavender: {
     backgroundSurface:
-      "linear-gradient(135deg in oklch, oklch(88% 0.018 300) 0%, oklch(80% 0.025 295) 50%, oklch(72% 0.02 285) 100%)",
+      "linear-gradient(138deg in oklch, oklch(89% 0.016 300) 0%, oklch(81% 0.022 295) 52%, oklch(73% 0.018 285) 100%)",
     textTone: "oklch(19% 0.018 292)",
     mutedTone: "oklch(28% 0.018 292 / 0.68)",
     inactiveTone: "oklch(27% 0.018 292 / 0.31)",
