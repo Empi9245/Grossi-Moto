@@ -64,7 +64,10 @@ const localBusinessJsonLd = {
 
 export default function Home() {
   return (
-    <main id="main-content" className="min-h-screen bg-white">
+    <main
+      id="main-content"
+      className="min-h-screen bg-white lg:[&>section+footer]:mt-2 lg:[&>section+section]:mt-2"
+    >
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
