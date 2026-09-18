@@ -40,9 +40,9 @@ export function WorkshopSection() {
             </a>
           </div>
 
-          <div className="lg:grid lg:gap-3">
-            <article className="grid gap-5 py-7 sm:grid-cols-[2.6rem_minmax(0,1fr)] lg:rounded-[28px] lg:bg-white/55 lg:px-5 lg:py-4">
-              <ClipboardCheck aria-hidden="true" className="h-6 w-6 text-black/60 lg:h-10 lg:w-10 lg:rounded-full lg:bg-white/75 lg:p-2" strokeWidth={1.6} />
+          <div className="lg:grid lg:gap-6">
+            <article className="grid gap-5 py-7 sm:grid-cols-[2.6rem_minmax(0,1fr)] lg:max-w-[28rem] lg:py-3">
+              <ClipboardCheck aria-hidden="true" className="h-6 w-6 text-black/60 lg:h-10 lg:w-10 lg:rounded-full lg:bg-white/70 lg:p-2" strokeWidth={1.6} />
               <div>
                 <h3 className="font-display text-[clamp(1.9rem,3vw,3.2rem)] font-bold uppercase leading-[0.9]">
                   Prima consegna e controlli
@@ -53,8 +53,8 @@ export function WorkshopSection() {
               </div>
             </article>
 
-            <article className="grid gap-5 py-7 sm:grid-cols-[2.6rem_minmax(0,1fr)] lg:rounded-[28px] lg:bg-white/55 lg:px-5 lg:py-4">
-              <Settings2 aria-hidden="true" className="h-6 w-6 text-black/60 lg:h-10 lg:w-10 lg:rounded-full lg:bg-white/75 lg:p-2" strokeWidth={1.6} />
+            <article className="grid gap-5 py-7 sm:grid-cols-[2.6rem_minmax(0,1fr)] lg:ml-10 lg:max-w-[27rem] lg:py-3">
+              <Settings2 aria-hidden="true" className="h-6 w-6 text-black/60 lg:h-10 lg:w-10 lg:rounded-full lg:bg-white/70 lg:p-2" strokeWidth={1.6} />
               <div>
                 <h3 className="font-display text-[clamp(1.9rem,3vw,3.2rem)] font-bold uppercase leading-[0.9]">
                   Manutenzione e diagnosi
@@ -65,15 +65,15 @@ export function WorkshopSection() {
               </div>
             </article>
 
-            <article className="grid gap-5 py-7 sm:grid-cols-[2.6rem_minmax(0,1fr)] lg:rounded-[28px] lg:bg-white/45 lg:px-5 lg:py-4">
-              <Wrench aria-hidden="true" className="h-6 w-6 text-black/60 lg:h-10 lg:w-10 lg:rounded-full lg:bg-white/75 lg:p-2" strokeWidth={1.6} />
+            <article className="grid gap-5 py-7 sm:grid-cols-[2.6rem_minmax(0,1fr)] lg:mt-1 lg:py-2">
+              <Wrench aria-hidden="true" className="h-6 w-6 text-black/60 lg:h-10 lg:w-10 lg:rounded-full lg:bg-white/70 lg:p-2" strokeWidth={1.6} />
               <div>
                 <h3 className="font-display text-[clamp(1.9rem,3vw,3.2rem)] font-bold uppercase leading-[0.9]">
                   Lavori disponibili
                 </h3>
                 <ul className="font-ui mt-6 grid gap-x-5 gap-y-3 text-xs font-bold uppercase tracking-[0.12em] text-black/82 sm:grid-cols-2 lg:mt-4 lg:gap-2">
                   {workshopItems.map((item) => (
-                    <li key={item} className="pt-2 lg:rounded-full lg:bg-white/70 lg:px-3 lg:py-2">
+                    <li key={item} className="pt-2 lg:rounded-full lg:bg-white/58 lg:px-3 lg:py-2">
                       <span aria-hidden="true" className="sr-only" />
                       <span>{item}</span>
                     </li>
