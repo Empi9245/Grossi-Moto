@@ -343,6 +343,7 @@ function ProductShowroomChapter({
     y: number;
     pointerId: number;
   } | null>(null);
+  const suppressClickRef = useRef(false);
   const expandedIdRef = useRef(expandedId);
   const collapseRef = useRef(onCollapseScooter);
   const initialExpandedIndex = expandedId
@@ -614,6 +615,8 @@ function ProductShowroomChapter({
         className="relative -mx-5 overflow-hidden focus-visible:outline-2 focus-visible:outline-offset-4 sm:-mx-7"
         style={{ touchAction: "pan-y" }}
         onPointerDown={(event) => {
+          suppressClickRef.current = false;
+
           if (
             totalCards < 2 ||
             !event.isPrimary ||
@@ -646,10 +649,18 @@ function ProductShowroomChapter({
             return;
           }
 
+          suppressClickRef.current = true;
           goTo(activeRef.current + (deltaX < 0 ? 1 : -1));
         }}
         onPointerCancel={() => {
           swipeStartRef.current = null;
+        }}
+        onClickCapture={(event) => {
+          if (!suppressClickRef.current) return;
+
+          suppressClickRef.current = false;
+          event.preventDefault();
+          event.stopPropagation();
         }}
         onKeyDown={(event) => {
           if (event.key === "ArrowLeft") {
@@ -859,6 +870,7 @@ function CompactCatalogGrid({
   onCollapseScooter,
 }: CatalogGridVariantProps) {
   const activeChapterRef = useRef<CatalogChapterId | null>(null);
+  const activeScooterRef = useRef<string | null>(null);
   const cardToneAssignments = useMemo(
     () => getCatalogCardToneAssignments(toneSourceScooters, 1),
     [toneSourceScooters],
@@ -880,6 +892,7 @@ function CompactCatalogGrid({
   const handleChapterActiveChange = useCallback(
     (chapterId: CatalogChapterId, scooterId: string) => {
       if (activeChapterRef.current === chapterId) {
+        activeScooterRef.current = scooterId;
         onActiveScooterChange?.(scooterId);
       }
     },
@@ -953,9 +966,12 @@ function CompactCatalogGrid({
 
         const chapterChanged =
           activeChapterRef.current !== nextChapterId;
+        const scooterChanged =
+          activeScooterRef.current !== nextScooterId;
         activeChapterRef.current = nextChapterId;
+        activeScooterRef.current = nextScooterId;
 
-        if (chapterChanged) {
+        if (chapterChanged || scooterChanged) {
           onActiveScooterChange(nextScooterId);
         }
       },
