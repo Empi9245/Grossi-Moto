@@ -682,6 +682,7 @@ function ScooterSlide({
           />
         )}
       </div>
+      </div>
     </motion.div>
   );
 }
