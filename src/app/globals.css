@@ -21,10 +21,10 @@
   --gm-brand-soft: oklch(93.2% 0.027 230);
   --gm-brand-subtle: oklch(96.8% 0.013 230);
   --home-showroom-surface: var(--gm-neutral-soft);
-  --home-cover-surface: var(--gm-white);
-  --home-experience-surface: var(--gm-green-soft);
-  --home-accessories-surface: var(--gm-neutral-soft);
-  --home-workshop-surface: var(--gm-brand-subtle);
+  --home-cover-surface: oklch(98.4% 0.004 82);
+  --home-experience-surface: oklch(95.4% 0.006 250);
+  --home-accessories-surface: oklch(96.5% 0.01 285);
+  --home-workshop-surface: oklch(95.2% 0.012 220);
   --home-contact-surface: var(--gm-white);
   --font-display: var(--font-instrument-sans), "Aptos Display", "Helvetica Neue",
     Arial, ui-sans-serif, system-ui, sans-serif;
