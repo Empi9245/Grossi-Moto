@@ -339,10 +339,9 @@ export function ScooterShowcase({
       data-showcase-mode="pinned"
       style={{
         height: `calc(100svh * ${showcaseScooters.length})`,
-        background: showcaseScooters[0]?.backgroundSurface,
       }}
     >
-      <div className="sticky top-0 h-[100svh] overflow-hidden">
+      <div className="sticky top-0 h-[100svh] overflow-hidden lg:bg-white lg:p-4 xl:p-5">
         <ShowcaseFrame
           activeIndex={activeIndex}
           transitionDirection={transitionDirection}
@@ -381,7 +380,7 @@ function ShowcaseFrame({
 
   return (
     <div
-      className="relative h-full overflow-hidden text-[var(--showcase-text)]"
+      className="relative h-full overflow-hidden text-[var(--showcase-text)] lg:rounded-[48px] xl:rounded-[56px]"
       data-active-model={activeScooter.id}
       data-active-source={activeScooter.sourceAsset}
       style={showcaseStyle}
@@ -418,13 +417,13 @@ function ShowcaseFrame({
 
       <div
         aria-hidden="true"
-        className="absolute left-0 top-0 z-[1] hidden h-full w-[5.25rem] border-r border-[var(--showcase-rule)] lg:block"
+        className="absolute left-[1.15rem] top-1/2 z-[1] hidden h-[62%] w-[3rem] -translate-y-1/2 rounded-full border border-[var(--showcase-rule)] bg-white/[0.14] lg:block"
       />
 
       <div className="relative z-10 grid h-full grid-rows-[auto_minmax(0,0.9fr)_minmax(0,1fr)] px-4 pt-5 pb-4 sm:px-6 md:px-8 lg:grid-cols-[5.25rem_minmax(0,1fr)_minmax(29rem,35vw)] lg:grid-rows-1 lg:px-0 lg:py-0 xl:grid-cols-[5.25rem_minmax(0,1.05fr)_minmax(34rem,35vw)]">
         <ModelRail activeIndex={activeIndex} />
 
-        <div className="relative min-h-0 overflow-hidden lg:h-[100svh]">
+        <div className="relative min-h-0 overflow-hidden lg:h-full">
           {disableMotion ? (
             <ScooterSlide
               activeIndex={0}
@@ -520,7 +519,7 @@ function ShowcaseFrame({
                   {activeScooter.statement}
                 </p>
 
-                <div className="mt-4 grid grid-cols-3 gap-3 lg:mt-7 lg:gap-5">
+                <div className="mt-4 grid grid-cols-3 gap-3 lg:mt-7 lg:gap-4 lg:rounded-[1.75rem] lg:border lg:border-[var(--showcase-rule)] lg:bg-white/[0.14] lg:p-4">
                   {stats.map((stat) => (
                     <div
                       key={stat.label}
@@ -549,9 +548,9 @@ function ShowcaseFrame({
           <TransitionLink
             href="/scooters"
             scooterId={activeScooter.id}
-            className="font-ui inline-flex w-fit items-center gap-3 text-[0.74rem] font-bold uppercase tracking-[0.13em] text-[var(--showcase-text)] outline-none transition-colors duration-200 hover:text-[var(--showcase-accent)] focus-visible:ring-2 focus-visible:ring-[var(--showcase-accent)] focus-visible:ring-offset-4 focus-visible:ring-offset-[var(--page-background)] lg:absolute lg:right-[clamp(2rem,5vw,6rem)] lg:bottom-[clamp(2rem,5svh,4rem)]"
+            className="font-ui inline-flex w-fit items-center gap-3 text-[0.74rem] font-bold uppercase tracking-[0.13em] text-[var(--showcase-text)] outline-none transition-colors duration-200 hover:text-[var(--showcase-accent)] focus-visible:ring-2 focus-visible:ring-[var(--showcase-accent)] focus-visible:ring-offset-4 focus-visible:ring-offset-[var(--page-background)] lg:absolute lg:right-[clamp(2rem,5vw,6rem)] lg:bottom-[clamp(2rem,5svh,4rem)] lg:min-h-12 lg:rounded-full lg:border lg:border-[var(--showcase-rule)] lg:bg-white/[0.18] lg:px-5 lg:py-3 lg:hover:bg-white/[0.32]"
           >
-            <span className="border-b border-[var(--showcase-rule)] pb-1">
+            <span className="border-b border-[var(--showcase-rule)] pb-1 lg:border-b-0 lg:pb-0">
               Confronta modelli
             </span>
             <ArrowUpRight aria-hidden="true" className="h-4 w-4" strokeWidth={1.8} />
@@ -701,7 +700,7 @@ function ModelRail({ activeIndex }: { activeIndex: number }) {
   return (
     <nav
       aria-label="Categorie scooter nello showcase"
-      className="min-w-0 lg:flex lg:h-full lg:items-center lg:justify-center"
+      className="min-w-0 lg:relative lg:z-10 lg:flex lg:h-full lg:items-center lg:justify-center"
     >
       <ol className="flex min-w-0 gap-2 overflow-x-auto pb-1 lg:h-[54svh] lg:flex-col lg:justify-between lg:gap-0 lg:overflow-visible lg:pb-0">
         {showcaseScooters.map((scooter, index) => {
@@ -720,7 +719,7 @@ function ModelRail({ activeIndex }: { activeIndex: number }) {
               <span
                 aria-hidden="true"
                 className={clsx(
-                  "h-px w-6 transition-colors duration-500",
+                  "h-px w-6 rounded-full transition-all duration-500",
                   isActive
                     ? "bg-[var(--showcase-accent)]"
                     : "bg-[var(--showcase-rule)]",
