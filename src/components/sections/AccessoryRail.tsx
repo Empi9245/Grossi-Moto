@@ -15,10 +15,10 @@ import { useRef, useState, type KeyboardEvent } from "react";
 import { accessories } from "@/data/accessories";
 
 const pastelColors = [
-  "oklch(88% 0.085 15)",
-  "oklch(89% 0.07 145)",
-  "oklch(88% 0.07 245)",
-  "oklch(90% 0.085 90)",
+  "oklch(91% 0.032 24)",
+  "oklch(91.5% 0.028 150)",
+  "oklch(91% 0.028 240)",
+  "oklch(92% 0.03 88)",
 ] as const;
 const accessoryIcons = [ShieldCheck, Box, Lock, Smartphone] as const;
 
@@ -53,7 +53,7 @@ export function AccessoryRail() {
       <div
         role="tablist"
         aria-label="Categorie accessori"
-        className="grid grid-cols-2 gap-2 rounded-[1.5rem] bg-white/45 p-2 sm:grid-cols-4"
+        className="grid grid-cols-2 gap-2 rounded-[1.5rem] bg-white/55 p-2 sm:grid-cols-4"
       >
         {accessories.map((item, index) => {
           const Icon = accessoryIcons[index];
@@ -72,8 +72,8 @@ export function AccessoryRail() {
               tabIndex={active === index ? 0 : -1}
               onClick={() => setActive(index)}
               onKeyDown={(event) => onKeyDown(event, index)}
-              className={`flex min-h-14 items-center justify-center gap-2 rounded-[1rem] px-3 py-3 text-sm font-semibold text-[#111111] transition-colors duration-150 active:bg-white/70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#111111] motion-reduce:transition-none ${
-                active === index ? "" : "hover:bg-white/35"
+              className={`flex min-h-14 items-center justify-center gap-2 rounded-[1rem] px-3 py-3 text-sm font-semibold text-[#111111] transition-colors duration-150 active:bg-white/78 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#111111] motion-reduce:transition-none ${
+                active === index ? "" : "hover:bg-white/32"
               }`}
               style={{
                 backgroundColor: active === index ? pastelColors[index] : undefined,
@@ -90,7 +90,7 @@ export function AccessoryRail() {
         className="mt-6 grid overflow-hidden rounded-[1.5rem] transition-colors duration-150 motion-reduce:transition-none lg:grid-cols-2 lg:rounded-[2rem]"
         style={{ backgroundColor: currentColor }}
       >
-        <div className="relative aspect-[4/3] overflow-hidden bg-white/25 lg:aspect-auto lg:min-h-[27rem]">
+        <div className="relative aspect-[4/3] overflow-hidden bg-white/30 lg:aspect-auto lg:min-h-[27rem]">
           <AnimatePresence initial={false}>
             <motion.div
               key={current.image}
