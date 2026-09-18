@@ -34,6 +34,11 @@ export function ServicesHero() {
     [0, 1],
     [imageOpenClipPath, imageClosedClipPath],
   );
+  const mobileImageX = useTransform(
+    mobileImageScrollProgress,
+    [0, 1],
+    ["0%", "80%"],
+  );
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -129,6 +134,7 @@ export function ServicesHero() {
             className="relative mt-6 min-h-[340px] w-full overflow-hidden sm:mt-8 md:hidden"
             style={{
               clipPath: reduceMotion ? imageOpenClipPath : mobileImageClipPath,
+              x: reduceMotion ? "0%" : mobileImageX,
             }}
           >
             <Image
