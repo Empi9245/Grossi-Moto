@@ -102,7 +102,7 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
           (container.clientWidth - cardWidth) / 2,
         );
         const lateralScale = 0.96;
-        const cardGap = gsap.utils.clamp(3, 5, viewportGutter * 0.15);
+        const cardGap = 2;
         const cardSpacing =
           cardWidth * ((1 + lateralScale) / 2) + cardGap;
         const visibleLimit = 1.14;
@@ -405,7 +405,7 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
             ref={stackContainerRef}
             className="flex h-[min(60svh,31.5rem)] min-h-[27rem] items-center justify-center"
           >
-            <div className="relative h-full w-[calc(100%-3.25rem)] max-w-[31rem]">
+            <div className="relative h-full w-[80%] max-w-[31rem]">
               {[0, 1, 2].flatMap((copyIndex) =>
                 services.map((service, index) => {
                   const isSemanticCard = copyIndex === 1 && index === active;
