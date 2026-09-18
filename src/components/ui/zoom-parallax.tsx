@@ -719,6 +719,7 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
         touchStartX = null;
         touchStartY = null;
         touchStepConsumed = false;
+        touchControlsSection = false;
         return;
       }
 
@@ -766,9 +767,12 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
       const deltaX = currentX - touchStartX;
       const deltaY = currentY - touchStartY;
       const isVerticalDirection = Math.abs(deltaY) > Math.abs(deltaX);
+      const shouldControlTouch =
+        touchControlsSection &&
+        (deltaY < 0 || getSectionState().isPinned);
 
       if (
-        touchControlsSection &&
+        shouldControlTouch &&
         isVerticalDirection &&
         Math.abs(deltaY) > steppedScrollTriggerDelta
       ) {
@@ -784,7 +788,7 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
       }
 
       if (isAnimating || performance.now() < cooldownUntil) {
-        if (touchControlsSection) {
+        if (shouldControlTouch) {
           event.preventDefault();
         }
         return;
