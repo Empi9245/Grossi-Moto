@@ -72,39 +72,32 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
       const container = stackContainerRef.current;
       if (!container || totalCards < 2) return;
 
-      const cards = gsap.utils.toArray<HTMLElement>(
-        "[data-service-stack-card]",
-        container,
-      );
-      const shades = cards.map((card) =>
-        card.querySelector<HTMLElement>("[data-service-depth-shade]"),
-      );
-      const virtualIndexes = cards.map((card) =>
-        Number(card.dataset.serviceVirtualIndex),
-      );
-
-      if (
-        cards.length !== totalCards * 3 ||
-        shades.some((shade) => !shade) ||
-        virtualIndexes.some((index) => Number.isNaN(index))
-      ) {
-        return;
-      }
-
-      const position = { value: totalCards + activeRef.current };
-      let targetPosition = position.value;
+      let cards: HTMLElement[] = [];
+      let shades: Array<HTMLElement | null> = [];
+      let virtualIndexes: number[] = [];
+      let position: { value: number } | null = null;
+      let targetPosition = 0;
       let focusTween: gsap.core.Tween | null = null;
+      let observer: ResizeObserver | null = null;
+      let initFrame = 0;
+      let initAttempts = 0;
+      let disposed = false;
 
       const renderPosition = () => {
+        if (!position || cards.length === 0) return;
+
         const cardWidth = cards[0]?.offsetWidth ?? 0;
+        const containerWidth = container.clientWidth;
+        if (cardWidth === 0 || containerWidth === 0) return;
+
         const lateralScale = 0.9;
-        const cardGap = gsap.utils.clamp(12, 16, container.clientWidth * 0.035);
+        const cardGap = gsap.utils.clamp(12, 16, containerWidth * 0.035);
         const cardSpacing =
           cardWidth * ((1 + lateralScale) / 2) + cardGap;
         const visibleLimit = 1.14;
 
         cards.forEach((card, cardIndex) => {
-          const slot = virtualIndexes[cardIndex] - position.value;
+          const slot = virtualIndexes[cardIndex] - position!.value;
           const layer = stackLayer(slot);
           const distance = Math.abs(slot);
           const opacity = distance > visibleLimit ? 0 : 1;
@@ -130,6 +123,8 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
       };
 
       const recenterCopies = () => {
+        if (!position) return;
+
         if (targetPosition >= totalCards * 2) {
           targetPosition -= totalCards;
           position.value -= totalCards;
@@ -142,6 +137,8 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
       };
 
       const moveFocus = (requestedIndex: number, immediate = false) => {
+        if (!position) return;
+
         const currentIndex = activeRef.current;
         const wrappedFocus = gsap.utils.wrap(0, totalCards, requestedIndex);
 
@@ -181,6 +178,7 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
           overwrite: true,
           onUpdate: renderPosition,
           onComplete: () => {
+            if (!position) return;
             position.value = targetPosition;
             recenterCopies();
             renderPosition();
@@ -189,17 +187,54 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
         });
       };
 
-      mobileFocusRef.current = moveFocus;
-      renderPosition();
+      const initializeStack = () => {
+        if (disposed) return;
 
-      const observer = new ResizeObserver(renderPosition);
-      observer.observe(container);
+        cards = gsap.utils.toArray<HTMLElement>(
+          "[data-service-stack-card]",
+          container,
+        );
+        shades = cards.map((card) =>
+          card.querySelector<HTMLElement>("[data-service-depth-shade]"),
+        );
+        virtualIndexes = cards.map((card) =>
+          Number(card.dataset.serviceVirtualIndex),
+        );
+
+        const isReady =
+          cards.length === totalCards * 3 &&
+          !shades.some((shade) => !shade) &&
+          !virtualIndexes.some((index) => Number.isNaN(index)) &&
+          (cards[0]?.offsetWidth ?? 0) > 0 &&
+          container.clientWidth > 0;
+
+        if (!isReady) {
+          initAttempts += 1;
+          if (initAttempts < 60) {
+            initFrame = requestAnimationFrame(initializeStack);
+          }
+          return;
+        }
+
+        position = { value: totalCards + activeRef.current };
+        targetPosition = position.value;
+        mobileFocusRef.current = moveFocus;
+        renderPosition();
+
+        observer = new ResizeObserver(renderPosition);
+        observer.observe(container);
+        if (cards[0]) observer.observe(cards[0]);
+      };
+
+      initFrame = requestAnimationFrame(initializeStack);
 
       return () => {
+        disposed = true;
+        cancelAnimationFrame(initFrame);
         mobileFocusRef.current = () => {};
-        observer.disconnect();
+        observer?.disconnect();
         focusTween?.kill();
-        gsap.killTweensOf(position);
+        if (position) gsap.killTweensOf(position);
         gsap.killTweensOf(cards);
         shades.forEach((shade) => {
           if (shade) gsap.killTweensOf(shade);
@@ -414,7 +449,7 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
                       data-service-virtual-index={virtualIndex}
                       aria-hidden={!isSemanticCard}
                       inert={!isSemanticCard ? true : undefined}
-                      className="absolute left-1/2 top-0 flex h-full w-[80%] max-w-[31rem] flex-col overflow-hidden rounded-[1.5rem] border border-black/10 bg-white will-change-transform"
+                      className="absolute left-1/2 top-0 flex h-full w-[80%] max-w-[31rem] flex-col overflow-hidden rounded-[1.5rem] border border-black/10 bg-white opacity-0 will-change-transform"
                     >
                       <div className="relative h-[32%] shrink-0 overflow-hidden rounded-[1.5rem] bg-black/[0.035]">
                         <Image
@@ -431,19 +466,23 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
                         <h3 className="font-display max-w-[14ch] text-[clamp(1.9rem,7vw,2.75rem)] font-bold uppercase leading-[0.9] tracking-[-0.035em] text-[#0A0A0A]">
                           {service.title}
                         </h3>
-                        <p className="mt-2 max-w-[25ch] text-[clamp(1.05rem,4.2vw,1.45rem)] font-semibold leading-[1.06] text-black/82">
+                        <p className="mt-2 max-w-[25ch] text-[clamp(1.05rem,4.2vw,1.45rem)] font-semibold leading-[1.06] text-[#C72A09]">
                           {service.statement}
                         </p>
-                        <p className="mt-2 max-w-[44ch] text-sm leading-5 text-black/64">
+                        <p className="mt-2.5 max-w-[44ch] text-sm leading-5 text-black/72">
                           {service.description}
                         </p>
-                        <ul className="font-ui mt-auto grid gap-0.5 pt-2 text-[0.68rem] font-semibold uppercase tracking-[0.04em] text-black/66">
+                        <ul className="font-ui mt-auto grid gap-1.5 pt-3 text-[0.68rem] font-semibold uppercase tracking-[0.045em] text-black/78">
                           {service.features.map((feature) => (
                             <li
                               key={feature}
-                              className="py-0.5"
+                              className="flex items-start gap-2 py-0.5"
                             >
-                              {feature}
+                              <span
+                                aria-hidden="true"
+                                className="mt-[0.42rem] h-1.5 w-1.5 shrink-0 rounded-full bg-[#C72A09]"
+                              />
+                              <span>{feature}</span>
                             </li>
                           ))}
                         </ul>
@@ -512,19 +551,23 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
               <h3 className="font-display max-w-[14ch] text-[clamp(2rem,7vw,3rem)] font-bold uppercase leading-[0.9] tracking-[-0.035em] text-[#0A0A0A]">
                 {service.title}
               </h3>
-              <p className="mt-4 max-w-[24ch] text-[clamp(1.2rem,4.5vw,1.7rem)] font-semibold leading-[1.05] text-black/82">
+              <p className="mt-4 max-w-[24ch] text-[clamp(1.2rem,4.5vw,1.7rem)] font-semibold leading-[1.05] text-[#C72A09] md:text-black/82">
                 {service.statement}
               </p>
-              <p className="mt-4 max-w-[44ch] text-sm leading-6 text-black/64 sm:text-base sm:leading-7">
+              <p className="mt-4 max-w-[44ch] text-sm leading-6 text-black/72 sm:text-base sm:leading-7 md:text-black/64">
                 {service.description}
               </p>
-              <ul className="font-ui mt-5 grid gap-2 pt-4 text-[0.74rem] font-semibold uppercase tracking-[0.04em] text-black/66">
+              <ul className="font-ui mt-5 grid gap-2 pt-4 text-[0.74rem] font-semibold uppercase tracking-[0.045em] text-black/78 md:tracking-[0.04em] md:text-black/66">
                 {service.features.map((feature) => (
                   <li
                     key={feature}
-                    className="pb-2"
+                    className="flex items-start gap-2 pb-2 md:block"
                   >
-                    {feature}
+                    <span
+                      aria-hidden="true"
+                      className="mt-[0.46rem] h-1.5 w-1.5 shrink-0 rounded-full bg-[#C72A09] md:hidden"
+                    />
+                    <span>{feature}</span>
                   </li>
                 ))}
               </ul>
