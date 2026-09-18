@@ -97,78 +97,240 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
 
       if (cards.length !== totalCards || shades.some((shade) => !shade)) return;
 
-      const position = { value: activeRef.current };
-      let focusTween: gsap.core.Tween | null = null;
+      let transition: gsap.core.Timeline | null = null;
 
-      const renderPosition = () => {
+      const getLayout = (index: number, focusIndex: number) => {
+        const slot = circularSlot(index, focusIndex, totalCards);
+        const layer = stackLayer(slot);
+        const edgeFadeStart = Math.max(1.5, totalCards / 2 - 0.65);
+        const opacity = gsap.utils.clamp(
+          0.08,
+          1,
+          1 - Math.max(0, layer - edgeFadeStart) * 1.4,
+        );
+
+        return {
+          slot,
+          layer,
+          x: stackX(slot),
+          y: layer * 1.5,
+          rotation: stackRotation(slot),
+          rotationY: stackTilt(slot),
+          scale: stackScale(layer),
+          opacity,
+          shade: stackShade(layer),
+          zIndex: Math.round(100 - layer * 10),
+        };
+      };
+
+      const renderResting = (focusIndex: number) => {
         cards.forEach((card, index) => {
-          const slot = circularSlot(index, position.value, totalCards);
-          const layer = stackLayer(slot);
-          const edgeFadeStart = Math.max(1.5, totalCards / 2 - 0.65);
-          const edgeOpacity = gsap.utils.clamp(
-            0.08,
-            1,
-            1 - Math.max(0, layer - edgeFadeStart) * 1.4,
-          );
+          const layout = getLayout(index, focusIndex);
 
           gsap.set(card, {
-            x: stackX(slot),
+            x: layout.x,
             xPercent: 0,
-            y: layer * 1.5,
-            rotation: stackRotation(slot),
-            rotationY: stackTilt(slot),
-            scale: stackScale(layer),
-            opacity: edgeOpacity,
+            y: layout.y,
+            rotation: layout.rotation,
+            rotationY: layout.rotationY,
+            scale: layout.scale,
+            opacity: layout.opacity,
             transformPerspective: 1200,
             transformOrigin: "center center",
             force3D: true,
-            zIndex: Math.round(100 - layer * 10),
+            zIndex: layout.zIndex,
           });
 
           gsap.set(shades[index], {
-            opacity: stackShade(layer),
+            opacity: layout.shade,
           });
         });
       };
 
-      const moveFocus = (focusIndex: number, immediate = false) => {
-        const wrappedFocus = gsap.utils.wrap(0, totalCards, focusIndex);
-        const nearestTarget =
-          wrappedFocus +
-          Math.round((position.value - wrappedFocus) / totalCards) * totalCards;
+      const moveFocus = (requestedIndex: number, immediate = false) => {
+        const currentIndex = activeRef.current;
+        const wrappedFocus = gsap.utils.wrap(0, totalCards, requestedIndex);
 
-        focusTween?.kill();
-
-        activeRef.current = wrappedFocus;
-        setActive(wrappedFocus);
+        if (wrappedFocus === currentIndex) return;
 
         if (immediate) {
-          position.value = nearestTarget;
-          renderPosition();
+          transition?.kill();
+          transition = null;
+          activeRef.current = wrappedFocus;
+          setActive(wrappedFocus);
+          renderResting(wrappedFocus);
           return;
         }
 
-        focusTween = gsap.to(position, {
-          value: nearestTarget,
-          duration: 0.64,
-          ease: "power2.inOut",
-          overwrite: true,
-          onUpdate: renderPosition,
+        if (transition?.isActive()) return;
+
+        const direction = requestedIndex > currentIndex ? 1 : -1;
+        const outgoingCard = cards[currentIndex];
+        const incomingCard = cards[wrappedFocus];
+        const outgoingShade = shades[currentIndex]!;
+        const incomingShade = shades[wrappedFocus]!;
+        const exitDistance = Math.max(
+          220,
+          Math.min(container.clientWidth * 0.72, 320),
+        );
+        const outgoingFinal = getLayout(currentIndex, wrappedFocus);
+        const incomingFinal = getLayout(wrappedFocus, wrappedFocus);
+
+        renderResting(currentIndex);
+
+        cards.forEach((card, index) => {
+          if (index === currentIndex || index === wrappedFocus) return;
+
+          const layout = getLayout(index, wrappedFocus);
+
+          gsap.to(card, {
+            x: layout.x,
+            y: layout.y,
+            rotation: layout.rotation,
+            rotationY: layout.rotationY,
+            scale: layout.scale,
+            opacity: layout.opacity,
+            duration: 0.64,
+            ease: "power2.inOut",
+            overwrite: "auto",
+          });
+
+          gsap.to(shades[index]!, {
+            opacity: layout.shade,
+            duration: 0.64,
+            ease: "power2.inOut",
+            overwrite: "auto",
+          });
+        });
+
+        gsap.set(outgoingCard, { zIndex: 140 });
+        gsap.set(incomingCard, { zIndex: 110 });
+
+        transition = gsap.timeline({
+          defaults: { overwrite: "auto" },
           onComplete: () => {
-            position.value = nearestTarget;
-            renderPosition();
-            focusTween = null;
+            activeRef.current = wrappedFocus;
+            setActive(wrappedFocus);
+            renderResting(wrappedFocus);
+            transition = null;
           },
         });
+
+        transition
+          .to(
+            outgoingCard,
+            {
+              x: -direction * exitDistance,
+              y: -10,
+              rotation: -direction * 5.5,
+              rotationY: direction * 8,
+              scale: 0.985,
+              duration: 0.42,
+              ease: "power2.in",
+            },
+            0,
+          )
+          .to(
+            outgoingShade,
+            {
+              opacity: 0.02,
+              duration: 0.32,
+              ease: "power1.out",
+            },
+            0,
+          )
+          .to(
+            incomingCard,
+            {
+              x: direction * stackOffset * 0.38,
+              y: 1,
+              rotation: direction * stackRotationStep * 0.35,
+              rotationY: -direction * stackTiltStep * 0.45,
+              scale: 0.992,
+              duration: 0.38,
+              ease: "power2.out",
+            },
+            0.04,
+          )
+          .to(
+            incomingShade,
+            {
+              opacity: 0.018,
+              duration: 0.38,
+              ease: "power1.out",
+            },
+            0.04,
+          )
+          .set(outgoingCard, { zIndex: 70 }, 0.42)
+          .set(incomingCard, { zIndex: 140 }, 0.42)
+          .to(
+            incomingCard,
+            {
+              x: incomingFinal.x,
+              y: incomingFinal.y,
+              rotation: incomingFinal.rotation,
+              rotationY: incomingFinal.rotationY,
+              scale: incomingFinal.scale,
+              opacity: 1,
+              duration: 0.24,
+              ease: "power2.out",
+            },
+            0.42,
+          )
+          .to(
+            incomingShade,
+            {
+              opacity: incomingFinal.shade,
+              duration: 0.24,
+              ease: "power2.out",
+            },
+            0.42,
+          )
+          .to(
+            outgoingCard,
+            {
+              opacity: 0,
+              duration: 0.1,
+              ease: "none",
+            },
+            0.42,
+          )
+          .set(
+            outgoingCard,
+            {
+              x: outgoingFinal.x,
+              y: outgoingFinal.y,
+              rotation: outgoingFinal.rotation,
+              rotationY: outgoingFinal.rotationY,
+              scale: outgoingFinal.scale,
+              zIndex: outgoingFinal.zIndex,
+            },
+            0.53,
+          )
+          .set(
+            outgoingShade,
+            {
+              opacity: outgoingFinal.shade,
+            },
+            0.53,
+          )
+          .to(
+            outgoingCard,
+            {
+              opacity: outgoingFinal.opacity,
+              duration: 0.13,
+              ease: "power1.out",
+            },
+            0.53,
+          );
       };
 
       mobileFocusRef.current = moveFocus;
-      renderPosition();
+      renderResting(activeRef.current);
 
       return () => {
         mobileFocusRef.current = () => {};
-        focusTween?.kill();
-        gsap.killTweensOf(position);
+        transition?.kill();
         gsap.killTweensOf(cards);
         shades.forEach((shade) => {
           if (shade) gsap.killTweensOf(shade);
@@ -232,8 +394,7 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
     if (useMobileStack) {
       if (totalCards === 0) return;
 
-      const targetIndex = gsap.utils.wrap(0, totalCards, index);
-      mobileFocusRef.current(targetIndex, keyboard);
+      mobileFocusRef.current(index, keyboard);
       return;
     }
 
