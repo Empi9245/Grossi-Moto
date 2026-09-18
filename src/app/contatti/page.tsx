@@ -194,10 +194,10 @@ export default async function ContattiPage({
             {channels.map(({ icon: Icon, label, value, href, cta, note }) => (
               <article
                 key={label}
-                className="flex min-w-0 flex-col py-4 sm:px-4 sm:py-6 lg:px-6 lg:py-8"
+                className="flex min-w-0 flex-col rounded-[28px] bg-black/[0.035] px-5 py-6 sm:px-5 sm:py-6 lg:px-6 lg:py-7"
               >
                 <div className="flex items-center gap-3 text-[#C72A09]">
-                  <Icon aria-hidden="true" className="h-5 w-5" strokeWidth={1.8} />
+                  <Icon aria-hidden="true" className="h-10 w-10 rounded-full bg-[#C72A09]/10 p-2.5 text-[#C72A09]" strokeWidth={1.8} />
                   <p className="font-ui text-[0.68rem] font-bold uppercase tracking-[0.18em]">
                     {label}
                   </p>
@@ -251,7 +251,7 @@ export default async function ContattiPage({
               </a>
             </div>
 
-            <div className="rounded-[24px] bg-white p-5 text-[#0A0A0A] shadow-[0_1px_0_rgba(255,255,255,0.18)] sm:rounded-[30px] sm:p-7 lg:p-9">
+            <div className="rounded-[24px] bg-white p-5 text-[#0A0A0A] sm:rounded-[30px] sm:p-7 lg:p-9">
               <ContactForm
                 key={model?.id ?? initialSubject}
                 initialSubject={initialSubject}
