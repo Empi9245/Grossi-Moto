@@ -431,19 +431,23 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
                         <h3 className="font-display max-w-[14ch] text-[clamp(1.9rem,7vw,2.75rem)] font-bold uppercase leading-[0.9] tracking-[-0.035em] text-[#0A0A0A]">
                           {service.title}
                         </h3>
-                        <p className="mt-2 max-w-[25ch] text-[clamp(1.05rem,4.2vw,1.45rem)] font-semibold leading-[1.06] text-black/82">
+                        <p className="mt-2 max-w-[25ch] text-[clamp(1.05rem,4.2vw,1.45rem)] font-semibold leading-[1.06] text-[#C72A09]">
                           {service.statement}
                         </p>
-                        <p className="mt-2 max-w-[44ch] text-sm leading-5 text-black/64">
+                        <p className="mt-2.5 max-w-[44ch] text-sm leading-5 text-black/72">
                           {service.description}
                         </p>
-                        <ul className="font-ui mt-auto grid gap-0.5 pt-2 text-[0.68rem] font-semibold uppercase tracking-[0.04em] text-black/66">
+                        <ul className="font-ui mt-auto grid gap-1.5 pt-3 text-[0.68rem] font-semibold uppercase tracking-[0.045em] text-black/78">
                           {service.features.map((feature) => (
                             <li
                               key={feature}
-                              className="py-0.5"
+                              className="flex items-start gap-2 py-0.5"
                             >
-                              {feature}
+                              <span
+                                aria-hidden="true"
+                                className="mt-[0.42rem] h-1.5 w-1.5 shrink-0 rounded-full bg-[#C72A09]"
+                              />
+                              <span>{feature}</span>
                             </li>
                           ))}
                         </ul>
@@ -512,19 +516,23 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
               <h3 className="font-display max-w-[14ch] text-[clamp(2rem,7vw,3rem)] font-bold uppercase leading-[0.9] tracking-[-0.035em] text-[#0A0A0A]">
                 {service.title}
               </h3>
-              <p className="mt-4 max-w-[24ch] text-[clamp(1.2rem,4.5vw,1.7rem)] font-semibold leading-[1.05] text-black/82">
+              <p className="mt-4 max-w-[24ch] text-[clamp(1.2rem,4.5vw,1.7rem)] font-semibold leading-[1.05] text-[#C72A09] md:text-black/82">
                 {service.statement}
               </p>
-              <p className="mt-4 max-w-[44ch] text-sm leading-6 text-black/64 sm:text-base sm:leading-7">
+              <p className="mt-4 max-w-[44ch] text-sm leading-6 text-black/72 sm:text-base sm:leading-7 md:text-black/64">
                 {service.description}
               </p>
-              <ul className="font-ui mt-5 grid gap-2 pt-4 text-[0.74rem] font-semibold uppercase tracking-[0.04em] text-black/66">
+              <ul className="font-ui mt-5 grid gap-2 pt-4 text-[0.74rem] font-semibold uppercase tracking-[0.045em] text-black/78 md:tracking-[0.04em] md:text-black/66">
                 {service.features.map((feature) => (
                   <li
                     key={feature}
-                    className="pb-2"
+                    className="flex items-start gap-2 pb-2 md:block"
                   >
-                    {feature}
+                    <span
+                      aria-hidden="true"
+                      className="mt-[0.46rem] h-1.5 w-1.5 shrink-0 rounded-full bg-[#C72A09] md:hidden"
+                    />
+                    <span>{feature}</span>
                   </li>
                 ))}
               </ul>
