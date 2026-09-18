@@ -28,19 +28,13 @@ const stackTiltStep = 2.4;
 const maxVisibleDepth = 5;
 const mobileSwipeThreshold = 36;
 
-function circularSlot(index: number, focusIndex: number, total: number) {
+function circularSlot(index: number, position: number, total: number) {
   if (total <= 1) return 0;
 
-  const rawSlot = index - focusIndex;
-  let slot = gsap.utils.wrap(0, total, rawSlot);
+  const repeatedIndex =
+    index + Math.round((position - index) / total) * total;
 
-  if (slot > total / 2) slot -= total;
-
-  if (total % 2 === 0 && slot === total / 2) {
-    slot = rawSlot < 0 ? -slot : slot;
-  }
-
-  return slot;
+  return repeatedIndex - position;
 }
 
 function stackLayer(slot: number) {
@@ -103,55 +97,78 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
 
       if (cards.length !== totalCards || shades.some((shade) => !shade)) return;
 
-      const renderFocus = (focusIndex: number, immediate = false) => {
-        const wrappedFocus = gsap.utils.wrap(0, totalCards, focusIndex);
+      const position = { value: activeRef.current };
+      let focusTween: gsap.core.Tween | null = null;
 
+      const renderPosition = () => {
         cards.forEach((card, index) => {
-          const slot = circularSlot(index, wrappedFocus, totalCards);
+          const slot = circularSlot(index, position.value, totalCards);
           const layer = stackLayer(slot);
-          const cardVars = {
+          const edgeFadeStart = Math.max(1.5, totalCards / 2 - 0.65);
+          const edgeOpacity = gsap.utils.clamp(
+            0.08,
+            1,
+            1 - Math.max(0, layer - edgeFadeStart) * 1.4,
+          );
+
+          gsap.set(card, {
             x: stackX(slot),
             xPercent: 0,
             y: layer * 1.5,
             rotation: stackRotation(slot),
             rotationY: stackTilt(slot),
             scale: stackScale(layer),
-            opacity: 1,
+            opacity: edgeOpacity,
             transformPerspective: 1200,
             transformOrigin: "center center",
             force3D: true,
-            zIndex: totalCards - layer,
-          };
-
-          if (immediate) {
-            gsap.set(card, cardVars);
-            gsap.set(shades[index], { opacity: stackShade(layer) });
-            return;
-          }
-
-          gsap.to(card, {
-            ...cardVars,
-            duration: 0.56,
-            ease: "power2.inOut",
-            overwrite: "auto",
+            zIndex: Math.round(100 - layer * 10),
           });
-          gsap.to(shades[index]!, {
+
+          gsap.set(shades[index], {
             opacity: stackShade(layer),
-            duration: 0.56,
-            ease: "power2.inOut",
-            overwrite: "auto",
           });
         });
+      };
+
+      const moveFocus = (focusIndex: number, immediate = false) => {
+        const wrappedFocus = gsap.utils.wrap(0, totalCards, focusIndex);
+        const nearestTarget =
+          wrappedFocus +
+          Math.round((position.value - wrappedFocus) / totalCards) * totalCards;
+
+        focusTween?.kill();
 
         activeRef.current = wrappedFocus;
         setActive(wrappedFocus);
+
+        if (immediate) {
+          position.value = nearestTarget;
+          renderPosition();
+          return;
+        }
+
+        focusTween = gsap.to(position, {
+          value: nearestTarget,
+          duration: 0.64,
+          ease: "power2.inOut",
+          overwrite: true,
+          onUpdate: renderPosition,
+          onComplete: () => {
+            position.value = nearestTarget;
+            renderPosition();
+            focusTween = null;
+          },
+        });
       };
 
-      mobileFocusRef.current = renderFocus;
-      renderFocus(activeRef.current, true);
+      mobileFocusRef.current = moveFocus;
+      renderPosition();
 
       return () => {
         mobileFocusRef.current = () => {};
+        focusTween?.kill();
+        gsap.killTweensOf(position);
         gsap.killTweensOf(cards);
         shades.forEach((shade) => {
           if (shade) gsap.killTweensOf(shade);
