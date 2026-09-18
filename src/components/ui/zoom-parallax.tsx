@@ -581,7 +581,15 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
         targetProgress === stepProgress[1] &&
         state.progress < stepProgress[1] - steppedScrollProgressTolerance;
       const duration =
-        targetProgress === 1 ? 0.86 : isFirstForwardStep ? 1.8 : 1.08;
+        direction === -1
+          ? targetProgress === 0
+            ? 1.45
+            : 1.22
+          : targetProgress === 1
+            ? 0.86
+            : isFirstForwardStep
+              ? 1.8
+              : 1.08;
 
       isAnimating = true;
       activeAnimation = animate(window.scrollY, targetY, {
