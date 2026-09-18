@@ -20,7 +20,6 @@ export type Service = {
 
 gsap.registerPlugin(useGSAP);
 
-const stackOffset = 24;
 const stackShadeStep = 0.055;
 const stackRotationStep = 1.35;
 const stackTiltStep = 2.4;
