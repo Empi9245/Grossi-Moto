@@ -26,16 +26,24 @@ const stackShadeStep = 0.055;
 const maxVisibleDepth = 5;
 const mobileSwipeThreshold = 36;
 
-function stackDepth(index: number) {
-  return Math.min(index, maxVisibleDepth);
+function stackLayer(slot: number) {
+  if (slot <= 0) return 0;
+  return Math.min(Math.ceil(slot / 2), maxVisibleDepth);
 }
 
-function stackScale(depth: number) {
-  return 1 - depth * stackScaleStep;
+function stackX(slot: number) {
+  if (slot <= 0) return 0;
+
+  const side = slot % 2 === 1 ? 1 : -1;
+  return side * stackLayer(slot) * stackOffset;
 }
 
-function stackShade(depth: number) {
-  return Math.min(depth * stackShadeStep, 0.28);
+function stackScale(layer: number) {
+  return 1 - layer * stackScaleStep;
+}
+
+function stackShade(layer: number) {
+  return Math.min(layer * stackShadeStep, 0.28);
 }
 
 export function ServiceSwipe({ services }: { services: Service[] }) {
@@ -74,19 +82,19 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
       if (cards.length !== totalCards || shades.some((shade) => !shade)) return;
 
       cards.forEach((card, index) => {
-        const depth = stackDepth(index);
+        const layer = stackLayer(index);
 
         gsap.set(card, {
-          x: depth * stackOffset,
+          x: stackX(index),
           xPercent: 0,
-          scale: stackScale(depth),
+          scale: stackScale(layer),
           opacity: 1,
-          transformOrigin: "left center",
-          zIndex: totalCards - depth,
+          transformOrigin: "center center",
+          zIndex: totalCards - layer,
         });
 
         gsap.set(shades[index], {
-          opacity: stackShade(depth),
+          opacity: stackShade(layer),
         });
       });
 
@@ -108,15 +116,16 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
         );
 
         for (let follower = index + 1; follower < totalCards; follower += 1) {
-          const depth = stackDepth(follower - index - 1);
+          const slot = follower - index - 1;
+          const layer = stackLayer(slot);
 
           timeline.to(
             cards[follower],
             {
-              x: depth * stackOffset,
+              x: stackX(slot),
               xPercent: 0,
-              scale: stackScale(depth),
-              zIndex: totalCards - depth,
+              scale: stackScale(layer),
+              zIndex: totalCards - layer,
               ease: "power1.inOut",
               duration: 0.84,
             },
@@ -126,7 +135,7 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
           timeline.to(
             shades[follower]!,
             {
-              opacity: stackShade(depth),
+              opacity: stackShade(layer),
               ease: "power1.inOut",
               duration: 0.84,
             },
@@ -134,15 +143,16 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
           );
         }
 
-        const recycledDepth = stackDepth(totalCards - index - 1);
+        const recycledSlot = totalCards - index - 1;
+        const recycledLayer = stackLayer(recycledSlot);
 
         timeline.set(
           cards[index],
           {
-            x: recycledDepth * stackOffset,
+            x: stackX(recycledSlot),
             xPercent: 122,
-            scale: stackScale(recycledDepth),
-            zIndex: totalCards - recycledDepth,
+            scale: stackScale(recycledLayer),
+            zIndex: totalCards - recycledLayer,
           },
           position + 0.84,
         );
@@ -150,7 +160,7 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
         timeline.set(
           shades[index]!,
           {
-            opacity: stackShade(recycledDepth),
+            opacity: stackShade(recycledLayer),
           },
           position + 0.84,
         );
@@ -418,10 +428,10 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
 
             <div
               ref={stackContainerRef}
-              className="sticky left-0 z-20 flex h-full items-center justify-center pr-9"
+              className="sticky left-0 z-20 flex h-full items-center justify-center"
               style={{ width: `${100 / Math.max(totalCards, 1)}%` }}
             >
-              <div className="relative h-full w-full">
+              <div className="relative h-full w-[calc(100%-3.5rem)] max-w-[28rem]">
                 {services.map((service, index) => {
                   const isActive = index === active;
 
@@ -440,7 +450,7 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
                           alt={service.alt}
                           fill
                           draggable={false}
-                          sizes="(max-width: 767px) calc(100vw - 2.25rem), 1px"
+                          sizes="(max-width: 767px) calc(100vw - 3.5rem), 1px"
                           className="object-cover"
                         />
                       </div>
