@@ -23,16 +23,19 @@ type ScooterShowcaseProps = {
 };
 
 const premiumEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
-const scooterTransitionDuration = 0.68;
+const scooterTransitionDuration = 0.72;
 const scooterCopyTransitionDuration = 0.24;
 const scooterSurfaceTransitionDuration = 0.32;
-const scooterTravelDistanceVh = 64;
-const scooterTravelScale = 0.91;
+const scooterEnterDistanceVh = 72;
+const scooterExitDistanceVh = 78;
+const scooterEnterScale = 0.83;
+const scooterExitScale = 0.87;
 const wheelIntentThreshold = 18;
 const wheelGestureResetMs = 140;
 const touchIntentThreshold = 10;
 
 type ShowcaseStyle = CSSProperties & Record<`--${string}`, string>;
+type ShowcaseDirection = 1 | -1;
 
 function clampIndex(index: number) {
   return Math.min(showcaseScooters.length - 1, Math.max(0, index));
@@ -49,6 +52,8 @@ export function ScooterShowcase({
   const lastWheelEventAtRef = useRef(0);
   const wheelIntentRef = useRef(0);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [transitionDirection, setTransitionDirection] =
+    useState<ShowcaseDirection>(1);
   const shouldReduceMotion = useReducedMotion();
 
   useEffect(() => {
@@ -90,7 +95,13 @@ export function ScooterShowcase({
 
   const setIndexImmediately = useCallback((index: number) => {
     const nextIndex = clampIndex(index);
+    const currentIndex = activeIndexRef.current;
 
+    if (nextIndex === currentIndex) {
+      return;
+    }
+
+    setTransitionDirection(nextIndex > currentIndex ? 1 : -1);
     activeIndexRef.current = nextIndex;
     setActiveIndex(nextIndex);
   }, []);
@@ -114,7 +125,11 @@ export function ScooterShowcase({
         return;
       }
 
+      const direction: ShowcaseDirection =
+        targetIndex > activeIndexRef.current ? 1 : -1;
+
       isAnimatingRef.current = true;
+      setTransitionDirection(direction);
       activeIndexRef.current = targetIndex;
       setActiveIndex(targetIndex);
       settleScrollAtIndex(targetIndex);
@@ -330,6 +345,7 @@ export function ScooterShowcase({
       <div className="sticky top-0 h-[100svh] overflow-hidden">
         <ShowcaseFrame
           activeIndex={activeIndex}
+          transitionDirection={transitionDirection}
           onScooterTransitionComplete={handleScooterTransitionComplete}
         />
       </div>
@@ -339,10 +355,12 @@ export function ScooterShowcase({
 
 function ShowcaseFrame({
   activeIndex,
+  transitionDirection = 1,
   onScooterTransitionComplete,
   disableMotion = false,
 }: {
   activeIndex: number;
+  transitionDirection?: ShowcaseDirection;
   onScooterTransitionComplete?: (index: number) => void;
   disableMotion?: boolean;
 }) {
@@ -398,25 +416,26 @@ function ShowcaseFrame({
 
         <div className="relative min-h-0 overflow-hidden lg:h-[100svh]">
           {disableMotion ? (
-            <ScooterSlide activeIndex={0} slideIndex={0} />
+            <ScooterSlide
+              activeIndex={0}
+              slideIndex={0}
+              direction={1}
+              disableMotion
+            />
           ) : (
-            <div className="absolute inset-0">
-              {showcaseScooters.map((scooter, index) => (
-                <div
-                  key={scooter.id}
-                  className={clsx(
-                    "absolute inset-0 flex items-center justify-center lg:justify-start lg:pl-[clamp(2rem,6vw,7rem)]",
-                    index === activeIndex ? "z-20" : "z-10",
-                  )}
-                >
-                  <ScooterSlide
-                    activeIndex={activeIndex}
-                    slideIndex={index}
-                    onTransitionComplete={onScooterTransitionComplete}
-                  />
-                </div>
-              ))}
-            </div>
+            <AnimatePresence
+              initial={false}
+              mode="sync"
+              custom={transitionDirection}
+            >
+              <ScooterSlide
+                key={activeScooter.id}
+                activeIndex={activeIndex}
+                slideIndex={activeIndex}
+                direction={transitionDirection}
+                onTransitionComplete={onScooterTransitionComplete}
+              />
+            </AnimatePresence>
           )}
         </div>
 
@@ -536,11 +555,15 @@ function ShowcaseFrame({
 function ScooterSlide({
   activeIndex,
   slideIndex,
+  direction,
   onTransitionComplete,
+  disableMotion = false,
 }: {
   activeIndex: number;
   slideIndex: number;
+  direction: ShowcaseDirection;
   onTransitionComplete?: (index: number) => void;
+  disableMotion?: boolean;
 }) {
   const scooter = showcaseScooters[slideIndex] ?? showcaseScooters[0];
   const isActive = activeIndex === slideIndex;
@@ -554,28 +577,35 @@ function ScooterSlide({
       ? `scooter-image-${scooter.id}`
       : undefined;
 
-  const indexDistance = Math.abs(slideIndex - activeIndex);
-  const travelDistance =
-    scooterTravelDistanceVh + Math.max(0, indexDistance - 1) * 24;
-  const restingScale = Math.max(
-    0.86,
-    scooterTravelScale - Math.max(0, indexDistance - 1) * 0.025,
-  );
+  const scooterMotionVariants = {
+    enter: (motionDirection: ShowcaseDirection) => ({
+      y:
+        motionDirection > 0
+          ? `${scooterEnterDistanceVh}vh`
+          : `-${scooterEnterDistanceVh}vh`,
+      scale: scooterEnterScale,
+    }),
+    center: {
+      y: "0vh",
+      scale: 1,
+    },
+    exit: (motionDirection: ShowcaseDirection) => ({
+      y:
+        motionDirection > 0
+          ? `-${scooterExitDistanceVh}vh`
+          : `${scooterExitDistanceVh}vh`,
+      scale: scooterExitScale,
+    }),
+  };
 
   return (
     <motion.div
       aria-hidden={!isActive}
-      className="relative aspect-[4/3] w-[min(92vw,30rem)] sm:w-[min(78vw,32rem)] md:w-[min(64vw,31rem)] lg:w-[min(56vw,52rem)] xl:w-[min(54vw,58rem)]"
-      initial={false}
-      animate={{
-        opacity: isActive ? 1 : 0,
-        y: isActive
-          ? "0vh"
-          : slideIndex < activeIndex
-            ? `-${travelDistance}vh`
-            : `${travelDistance}vh`,
-        scale: isActive ? 1 : restingScale,
-      }}
+      custom={direction}
+      variants={scooterMotionVariants}
+      initial={disableMotion ? false : "enter"}
+      animate={disableMotion ? undefined : "center"}
+      exit={disableMotion ? undefined : "exit"}
       transition={{
         y: {
           duration: scooterTransitionDuration,
@@ -585,29 +615,21 @@ function ScooterSlide({
           duration: scooterTransitionDuration,
           ease: premiumEase,
         },
-        opacity: isActive
-          ? {
-              duration: 0.14,
-              ease: premiumEase,
-            }
-          : {
-              duration: 0.18,
-              delay: scooterTransitionDuration * 0.58,
-              ease: premiumEase,
-            },
       }}
       onAnimationComplete={() => {
         if (isActive) {
           onTransitionComplete?.(slideIndex);
         }
       }}
+      className="absolute inset-0 flex items-center justify-center lg:justify-start lg:pl-[clamp(2rem,6vw,7rem)]"
       data-source-asset={scooter.sourceAsset}
       data-active-slide={isActive}
       style={{
         pointerEvents: isActive ? "auto" : "none",
-        willChange: "transform, opacity",
+        willChange: disableMotion ? undefined : "transform",
       }}
     >
+      <div className="relative aspect-[4/3] w-[min(92vw,30rem)] sm:w-[min(78vw,32rem)] md:w-[min(64vw,31rem)] lg:w-[min(50vw,48rem)] xl:w-[min(48vw,54rem)]">
       <motion.div
         aria-hidden="true"
         data-shadow-for={scooter.id}
@@ -619,25 +641,7 @@ function ScooterSlide({
           x: `calc(-50% + ${scooter.shadowX})`,
           y: scooter.shadowY,
         }}
-        transition={{
-          opacity: {
-            duration: isActive ? 0.2 : 0.16,
-            delay: isActive ? 0.06 : scooterTransitionDuration * 0.5,
-            ease: premiumEase,
-          },
-          scale: {
-            duration: scooterTransitionDuration,
-            ease: premiumEase,
-          },
-          x: {
-            duration: scooterTransitionDuration,
-            ease: premiumEase,
-          },
-          y: {
-            duration: scooterTransitionDuration,
-            ease: premiumEase,
-          },
-        }}
+        transition={{ duration: 0.22, ease: premiumEase }}
         style={{
           width: scooter.shadowWidth,
           height: scooter.shadowHeight,
@@ -673,7 +677,7 @@ function ScooterSlide({
             width={500}
             height={375}
             priority={slideIndex === 0}
-            sizes="(max-width: 767px) 92vw, (max-width: 1279px) 56vw, 54vw"
+            sizes="(max-width: 767px) 92vw, (max-width: 1279px) 50vw, 48vw"
             className="h-full w-full object-contain object-center"
           />
         )}
