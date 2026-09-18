@@ -939,6 +939,11 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
   );
 
   const scales = [scale4, scale5, scale6, scale5, scale6, scale8, scale9, scale6, scale8];
+  const desktopLeadImageBorderRadius = useTransform(
+    zoomProgress,
+    [0, 0.88, 1],
+    ["1.25rem", "1.25rem", "0rem"],
+  );
 
   if (shouldReduceMotion) {
     return <><StaticParallaxFallback images={parallaxImages} /><ExperienceContact /></>;
@@ -994,7 +999,16 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
                   : ""
               }`}
             >
-              <motion.div style={{ scale: isDesktopViewport ? 1 : mobileScale }} className="relative h-[44svh] w-[76vw] overflow-hidden lg:h-[25vh] lg:w-[25vw] rounded-[1.25rem] bg-[oklch(18%_0.014_56)] lg:shadow-[0_24px_70px_oklch(18%_0.014_56/0.18)]">
+              <motion.div
+                style={{
+                  scale: isDesktopViewport ? 1 : mobileScale,
+                  borderRadius:
+                    isDesktopViewport && index === 0
+                      ? desktopLeadImageBorderRadius
+                      : undefined,
+                }}
+                className="relative h-[44svh] w-[76vw] overflow-hidden lg:h-[25vh] lg:w-[25vw] rounded-[1.25rem] bg-[oklch(18%_0.014_56)] lg:shadow-[0_24px_70px_oklch(18%_0.014_56/0.18)]"
+              >
                 <Image
                   src={src}
                   alt={alt ?? `Parallax image ${index + 1}`}
