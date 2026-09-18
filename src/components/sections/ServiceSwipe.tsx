@@ -31,12 +31,13 @@ const mobileSwipeThreshold = 36;
 function circularSlot(index: number, focusIndex: number, total: number) {
   if (total <= 1) return 0;
 
-  let slot = gsap.utils.wrap(0, total, index - focusIndex);
+  const rawSlot = index - focusIndex;
+  let slot = gsap.utils.wrap(0, total, rawSlot);
 
   if (slot > total / 2) slot -= total;
 
   if (total % 2 === 0 && slot === total / 2) {
-    slot = index % 2 === 0 ? -slot : slot;
+    slot = rawSlot < 0 ? -slot : slot;
   }
 
   return slot;
@@ -118,6 +119,7 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
             opacity: 1,
             transformPerspective: 1200,
             transformOrigin: "center center",
+            force3D: true,
             zIndex: totalCards - layer,
           };
 
@@ -211,6 +213,87 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
 
   const goTo = (index: number, keyboard = false) => {
     if (useMobileStack) {
+      if (totalCards === 0) return;
+
+      const targetIndex = gsap.utils.wrap(0, totalCards, index);
+      mobileFocusRef.current(targetIndex, keyboard);
+      return;
+    }
+
+    const targetIndex = Math.min(totalCards - 1, Math.max(0, index));
+
+    activeRef.current = targetIndex;
+    setActive(targetIndex);
+
+    const rail = railRef.current;
+    if (!rail) return;
+
+    const card =
+      rail.querySelectorAll<HTMLElement>("[data-service-card]")[targetIndex];
+    if (!card) return;
+
+    const left =
+      rail.scrollLeft +
+      card.getBoundingClientRect().left -
+      rail.getBoundingClientRect().left;
+
+    rail.scrollTo({
+      left,
+      behavior: keyboard || shouldReduceMotion ? "instant" : "smooth",
+    });
+  };
+
+  const controlClass =
+    "inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-black/18 bg-white text-black transition-[background-color,border-color,transform] duration-150 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] hover:border-black/34 hover:bg-black/[0.04] active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-3 aria-disabled:pointer-events-none aria-disabled:opacity-30 motion-reduce:transform-none motion-reduce:transition-none";
+
+  const controls = (
+    <div className="font-ui mt-7 flex flex-wrap items-center justify-between gap-4 border-t border-black/12 pt-4">
+      <a
+        href="tel:+393289185029"
+        className="inline-flex min-h-11 items-center gap-2 text-sm font-bold text-black underline decoration-black/28 underline-offset-4 transition-[text-decoration-color,transform] duration-150 hover:decoration-black active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-3 motion-reduce:transform-none motion-reduce:transition-none"
+      >
+        Parliamone insieme
+        <PhoneCall aria-hidden="true" className="h-4 w-4" strokeWidth={1.8} />
+      </a>
+
+      <div className="flex items-center gap-2.5">
+        <span
+          className="mr-1 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-black/46"
+          aria-live="polite"
+        >
+          {active + 1} / {services.length}
+        </span>
+        <button
+          type="button"
+          aria-label="Servizio precedente"
+          aria-disabled={!useMobileStack && active === 0}
+          className={controlClass}
+          onClick={(event) => {
+            if (useMobileStack || active > 0) {
+              goTo(activeRef.current - 1, event.detail === 0);
+            }
+          }}
+        >
+          <ArrowLeft aria-hidden="true" size={18} strokeWidth={1.8} />
+        </button>
+        <button
+          type="button"
+          aria-label="Servizio successivo"
+          aria-disabled={!useMobileStack && active === services.length - 1}
+          className={controlClass}
+          onClick={(event) => {
+            if (useMobileStack || active < services.length - 1) {
+              goTo(activeRef.current + 1, event.detail === 0);
+            }
+          }}
+        >
+          <ArrowRight aria-hidden="true" size={18} strokeWidth={1.8} />
+        </button>
+      </div>
+    </div>
+  );
+
+  if (useMobileStack) {
     return (
       <div className="min-w-0 lg:hidden">
         <div
