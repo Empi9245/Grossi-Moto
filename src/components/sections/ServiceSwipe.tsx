@@ -28,21 +28,16 @@ const stackTiltStep = 2.4;
 const maxVisibleDepth = 5;
 const mobileSwipeThreshold = 36;
 
-function circularSlot(index: number, position: number, total: number) {
-  if (total <= 1) return 0;
-
-  const repeatedIndex =
-    index + Math.round((position - index) / total) * total;
-
-  return repeatedIndex - position;
-}
-
 function stackLayer(slot: number) {
   return Math.min(Math.abs(slot), maxVisibleDepth);
 }
 
-function stackX(slot: number) {
-  return slot * stackOffset;
+function stackX(slot: number, focusTravel = 0) {
+  const distance = Math.abs(slot);
+  const focusSeparation =
+    distance < 1 ? Math.sin(Math.PI * distance) * focusTravel : 0;
+
+  return slot * stackOffset + Math.sign(slot) * focusSeparation;
 }
 
 function stackScale(layer: number) {
@@ -94,243 +89,138 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
       const shades = cards.map((card) =>
         card.querySelector<HTMLElement>("[data-service-depth-shade]"),
       );
+      const virtualIndexes = cards.map((card) =>
+        Number(card.dataset.serviceVirtualIndex),
+      );
 
-      if (cards.length !== totalCards || shades.some((shade) => !shade)) return;
+      if (
+        cards.length !== totalCards * 3 ||
+        shades.some((shade) => !shade) ||
+        virtualIndexes.some((index) => Number.isNaN(index))
+      ) {
+        return;
+      }
 
-      let transition: gsap.core.Timeline | null = null;
+      const position = { value: totalCards + activeRef.current };
+      let targetPosition = position.value;
+      let focusTween: gsap.core.Tween | null = null;
 
-      const getLayout = (index: number, focusIndex: number) => {
-        const slot = circularSlot(index, focusIndex, totalCards);
-        const layer = stackLayer(slot);
-        const edgeFadeStart = Math.max(1.5, totalCards / 2 - 0.65);
-        const opacity = gsap.utils.clamp(
-          0.08,
-          1,
-          1 - Math.max(0, layer - edgeFadeStart) * 1.4,
+      const renderPosition = () => {
+        const focusTravel = gsap.utils.clamp(
+          150,
+          220,
+          container.clientWidth * 0.5,
         );
+        const visibleLimit = totalCards / 2 + 0.6;
 
-        return {
-          slot,
-          layer,
-          x: stackX(slot),
-          y: layer * 1.5,
-          rotation: stackRotation(slot),
-          rotationY: stackTilt(slot),
-          scale: stackScale(layer),
-          opacity,
-          shade: stackShade(layer),
-          zIndex: Math.round(100 - layer * 10),
-        };
-      };
-
-      const renderResting = (focusIndex: number) => {
-        cards.forEach((card, index) => {
-          const layout = getLayout(index, focusIndex);
+        cards.forEach((card, cardIndex) => {
+          const slot = virtualIndexes[cardIndex] - position.value;
+          const layer = stackLayer(slot);
+          const distance = Math.abs(slot);
+          const edgeFadeStart = Math.max(1.5, totalCards / 2 - 0.65);
+          const depthOpacity = gsap.utils.clamp(
+            0.08,
+            1,
+            1 - Math.max(0, layer - edgeFadeStart) * 1.4,
+          );
+          const opacity = distance > visibleLimit ? 0 : depthOpacity;
+          const focusArc = distance < 1 ? Math.sin(Math.PI * distance) : 0;
 
           gsap.set(card, {
-            x: layout.x,
+            x: stackX(slot, focusTravel),
             xPercent: 0,
-            y: layout.y,
-            rotation: layout.rotation,
-            rotationY: layout.rotationY,
-            scale: layout.scale,
-            opacity: layout.opacity,
+            y: layer * 1.5 - focusArc * 9,
+            rotation:
+              stackRotation(slot) +
+              Math.sign(slot) * focusArc * stackRotationStep * 2.25,
+            rotationY:
+              stackTilt(slot) -
+              Math.sign(slot) * focusArc * stackTiltStep * 1.6,
+            scale: stackScale(layer) - focusArc * 0.006,
+            opacity,
             transformPerspective: 1200,
             transformOrigin: "center center",
             force3D: true,
-            zIndex: layout.zIndex,
+            zIndex: Math.round(1000 - distance * 100),
           });
 
-          gsap.set(shades[index], {
-            opacity: layout.shade,
+          gsap.set(shades[cardIndex], {
+            opacity: stackShade(layer),
           });
         });
+      };
+
+      const recenterCopies = () => {
+        if (targetPosition >= totalCards * 2) {
+          targetPosition -= totalCards;
+          position.value -= totalCards;
+          renderPosition();
+        } else if (targetPosition < totalCards) {
+          targetPosition += totalCards;
+          position.value += totalCards;
+          renderPosition();
+        }
       };
 
       const moveFocus = (requestedIndex: number, immediate = false) => {
         const currentIndex = activeRef.current;
         const wrappedFocus = gsap.utils.wrap(0, totalCards, requestedIndex);
 
-        if (wrappedFocus === currentIndex) return;
-
         if (immediate) {
-          transition?.kill();
-          transition = null;
+          focusTween?.kill();
+          focusTween = null;
           activeRef.current = wrappedFocus;
           setActive(wrappedFocus);
-          renderResting(wrappedFocus);
+          targetPosition = totalCards + wrappedFocus;
+          position.value = targetPosition;
+          renderPosition();
           return;
         }
 
-        if (transition?.isActive()) return;
+        let direction = Math.sign(requestedIndex - currentIndex);
 
-        const direction = requestedIndex > currentIndex ? 1 : -1;
-        const outgoingCard = cards[currentIndex];
-        const incomingCard = cards[wrappedFocus];
-        const outgoingShade = shades[currentIndex]!;
-        const incomingShade = shades[wrappedFocus]!;
-        const exitDistance = Math.max(
-          220,
-          Math.min(container.clientWidth * 0.72, 320),
-        );
-        const outgoingFinal = getLayout(currentIndex, wrappedFocus);
-        const incomingFinal = getLayout(wrappedFocus, wrappedFocus);
+        if (requestedIndex === totalCards && currentIndex === totalCards - 1) {
+          direction = 1;
+        } else if (requestedIndex === -1 && currentIndex === 0) {
+          direction = -1;
+        }
 
-        renderResting(currentIndex);
+        if (direction === 0) return;
 
-        cards.forEach((card, index) => {
-          if (index === currentIndex || index === wrappedFocus) return;
+        focusTween?.kill();
 
-          const layout = getLayout(index, wrappedFocus);
+        targetPosition += direction;
+        activeRef.current = wrappedFocus;
+        setActive(wrappedFocus);
 
-          gsap.to(card, {
-            x: layout.x,
-            y: layout.y,
-            rotation: layout.rotation,
-            rotationY: layout.rotationY,
-            scale: layout.scale,
-            opacity: layout.opacity,
-            duration: 0.64,
-            ease: "power2.inOut",
-            overwrite: "auto",
-          });
+        recenterCopies();
 
-          gsap.to(shades[index]!, {
-            opacity: layout.shade,
-            duration: 0.64,
-            ease: "power2.inOut",
-            overwrite: "auto",
-          });
-        });
-
-        gsap.set(outgoingCard, { zIndex: 140 });
-        gsap.set(incomingCard, { zIndex: 110 });
-
-        transition = gsap.timeline({
-          defaults: { overwrite: "auto" },
+        focusTween = gsap.to(position, {
+          value: targetPosition,
+          duration: 0.62,
+          ease: "power2.inOut",
+          overwrite: true,
+          onUpdate: renderPosition,
           onComplete: () => {
-            activeRef.current = wrappedFocus;
-            setActive(wrappedFocus);
-            renderResting(wrappedFocus);
-            transition = null;
+            position.value = targetPosition;
+            recenterCopies();
+            renderPosition();
+            focusTween = null;
           },
         });
-
-        transition
-          .to(
-            outgoingCard,
-            {
-              x: -direction * exitDistance,
-              y: -10,
-              rotation: -direction * 5.5,
-              rotationY: direction * 8,
-              scale: 0.985,
-              duration: 0.42,
-              ease: "power2.in",
-            },
-            0,
-          )
-          .to(
-            outgoingShade,
-            {
-              opacity: 0.02,
-              duration: 0.32,
-              ease: "power1.out",
-            },
-            0,
-          )
-          .to(
-            incomingCard,
-            {
-              x: direction * stackOffset * 0.38,
-              y: 1,
-              rotation: direction * stackRotationStep * 0.35,
-              rotationY: -direction * stackTiltStep * 0.45,
-              scale: 0.992,
-              duration: 0.38,
-              ease: "power2.out",
-            },
-            0.04,
-          )
-          .to(
-            incomingShade,
-            {
-              opacity: 0.018,
-              duration: 0.38,
-              ease: "power1.out",
-            },
-            0.04,
-          )
-          .set(outgoingCard, { zIndex: 70 }, 0.42)
-          .set(incomingCard, { zIndex: 140 }, 0.42)
-          .to(
-            incomingCard,
-            {
-              x: incomingFinal.x,
-              y: incomingFinal.y,
-              rotation: incomingFinal.rotation,
-              rotationY: incomingFinal.rotationY,
-              scale: incomingFinal.scale,
-              opacity: 1,
-              duration: 0.24,
-              ease: "power2.out",
-            },
-            0.42,
-          )
-          .to(
-            incomingShade,
-            {
-              opacity: incomingFinal.shade,
-              duration: 0.24,
-              ease: "power2.out",
-            },
-            0.42,
-          )
-          .to(
-            outgoingCard,
-            {
-              opacity: 0,
-              duration: 0.1,
-              ease: "none",
-            },
-            0.42,
-          )
-          .set(
-            outgoingCard,
-            {
-              x: outgoingFinal.x,
-              y: outgoingFinal.y,
-              rotation: outgoingFinal.rotation,
-              rotationY: outgoingFinal.rotationY,
-              scale: outgoingFinal.scale,
-              zIndex: outgoingFinal.zIndex,
-            },
-            0.53,
-          )
-          .set(
-            outgoingShade,
-            {
-              opacity: outgoingFinal.shade,
-            },
-            0.53,
-          )
-          .to(
-            outgoingCard,
-            {
-              opacity: outgoingFinal.opacity,
-              duration: 0.13,
-              ease: "power1.out",
-            },
-            0.53,
-          );
       };
 
       mobileFocusRef.current = moveFocus;
-      renderResting(activeRef.current);
+      renderPosition();
+
+      const observer = new ResizeObserver(renderPosition);
+      observer.observe(container);
 
       return () => {
         mobileFocusRef.current = () => {};
-        transition?.kill();
+        observer.disconnect();
+        focusTween?.kill();
+        gsap.killTweensOf(position);
         gsap.killTweensOf(cards);
         shades.forEach((shade) => {
           if (shade) gsap.killTweensOf(shade);
@@ -533,59 +423,62 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
             className="flex h-[min(78svh,42rem)] min-h-[32rem] items-center justify-center"
           >
             <div className="relative h-full w-[calc(100%-4rem)] max-w-[28rem]">
-              {services.map((service, index) => {
-                const isActive = index === active;
+              {[0, 1, 2].flatMap((copyIndex) =>
+                services.map((service, index) => {
+                  const isSemanticCard = copyIndex === 1 && index === active;
+                  const virtualIndex = copyIndex * totalCards + index;
 
-                return (
-                  <article
-                    key={service.title}
-                    data-service-stack-card
-                    aria-hidden={!isActive}
-                    inert={!isActive ? true : undefined}
-                    className="absolute inset-0 flex h-full w-full flex-col overflow-hidden rounded-[1.5rem] border border-black/10 bg-white will-change-transform"
-                    style={{ zIndex: totalCards - index }}
-                  >
-                    <div className="relative h-[42%] shrink-0 overflow-hidden bg-black/[0.035]">
-                      <Image
-                        src={service.image}
-                        alt={service.alt}
-                        fill
-                        draggable={false}
-                        sizes="(max-width: 767px) calc(100vw - 4rem), 1px"
-                        className="object-cover"
+                  return (
+                    <article
+                      key={`${copyIndex}-${service.title}`}
+                      data-service-stack-card
+                      data-service-virtual-index={virtualIndex}
+                      aria-hidden={!isSemanticCard}
+                      inert={!isSemanticCard ? true : undefined}
+                      className="absolute inset-0 flex h-full w-full flex-col overflow-hidden rounded-[1.5rem] border border-black/10 bg-white will-change-transform"
+                    >
+                      <div className="relative h-[42%] shrink-0 overflow-hidden bg-black/[0.035]">
+                        <Image
+                          src={service.image}
+                          alt={isSemanticCard ? service.alt : ""}
+                          fill
+                          draggable={false}
+                          sizes="(max-width: 767px) calc(100vw - 4rem), 1px"
+                          className="object-cover"
+                        />
+                      </div>
+
+                      <div className="flex min-h-0 flex-1 flex-col p-5">
+                        <h3 className="font-display max-w-[14ch] text-[clamp(1.9rem,7vw,2.75rem)] font-bold uppercase leading-[0.9] tracking-[-0.035em] text-[#0A0A0A]">
+                          {service.title}
+                        </h3>
+                        <p className="mt-3 max-w-[25ch] text-[clamp(1.05rem,4.2vw,1.45rem)] font-semibold leading-[1.06] text-black/82">
+                          {service.statement}
+                        </p>
+                        <p className="mt-3 max-w-[44ch] text-sm leading-6 text-black/64">
+                          {service.description}
+                        </p>
+                        <ul className="font-ui mt-auto grid border-t border-black/12 pt-3 text-[0.68rem] font-semibold uppercase tracking-[0.04em] text-black/66">
+                          {service.features.map((feature) => (
+                            <li
+                              key={feature}
+                              className="border-b border-black/8 py-1.5 last:border-b-0"
+                            >
+                              {feature}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      <div
+                        data-service-depth-shade
+                        aria-hidden="true"
+                        className="pointer-events-none absolute inset-0 z-30 bg-black opacity-0"
                       />
-                    </div>
-
-                    <div className="flex min-h-0 flex-1 flex-col p-5">
-                      <h3 className="font-display max-w-[14ch] text-[clamp(1.9rem,7vw,2.75rem)] font-bold uppercase leading-[0.9] tracking-[-0.035em] text-[#0A0A0A]">
-                        {service.title}
-                      </h3>
-                      <p className="mt-3 max-w-[25ch] text-[clamp(1.05rem,4.2vw,1.45rem)] font-semibold leading-[1.06] text-black/82">
-                        {service.statement}
-                      </p>
-                      <p className="mt-3 max-w-[44ch] text-sm leading-6 text-black/64">
-                        {service.description}
-                      </p>
-                      <ul className="font-ui mt-auto grid border-t border-black/12 pt-3 text-[0.68rem] font-semibold uppercase tracking-[0.04em] text-black/66">
-                        {service.features.map((feature) => (
-                          <li
-                            key={feature}
-                            className="border-b border-black/8 py-1.5 last:border-b-0"
-                          >
-                            {feature}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-
-                    <div
-                      data-service-depth-shade
-                      aria-hidden="true"
-                      className="pointer-events-none absolute inset-0 z-30 bg-black opacity-0"
-                    />
-                  </article>
-                );
-              })}
+                    </article>
+                  );
+                }),
+              )}
             </div>
           </div>
         </div>
