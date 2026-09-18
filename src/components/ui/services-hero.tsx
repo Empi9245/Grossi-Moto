@@ -255,75 +255,97 @@ export function ServicesHero() {
       </motion.section>
 
       <section className="hidden bg-white px-2 pb-2 lg:block">
-        <motion.div
-          className="relative mx-auto mt-6 max-w-7xl overflow-hidden rounded-2xl bg-[#F8F8F6] text-[#0A0A0A]"
-          initial={reduceMotion ? false : { opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: reduceMotion ? 0 : 0.6, ease: easeOut }}
-        >
-          <div className="absolute right-0 top-0 z-20 rounded-bl-[28px] bg-white pb-4 pl-4">
+        <div className="relative mx-auto max-w-7xl">
+          <svg
+            aria-hidden="true"
+            focusable="false"
+            className="absolute h-0 w-0"
+          >
+            <defs>
+              <clipPath
+                id="services-hero-desktop-clip"
+                clipPathUnits="objectBoundingBox"
+              >
+                <path d="M 0.025 0 H 0.78 C 0.805 0 0.82 0.025 0.82 0.055 V 0.09 C 0.82 0.125 0.84 0.15 0.875 0.15 H 0.975 C 0.99 0.15 1 0.165 1 0.185 V 0.95 C 1 0.98 0.98 1 0.955 1 H 0.025 C 0.01 1 0 0.98 0 0.95 V 0.05 C 0 0.02 0.01 0 0.025 0 Z" />
+              </clipPath>
+            </defs>
+          </svg>
+
+          <motion.div
+            className="relative min-h-[34rem] bg-[#F4F4F2] text-[#0A0A0A]"
+            style={{ clipPath: "url(#services-hero-desktop-clip)" }}
+            initial={reduceMotion ? false : { opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: reduceMotion ? 0 : 0.6, ease: easeOut }}
+          >
+            <motion.section
+              className="flex min-h-[34rem] w-full items-center px-8 py-24 xl:px-12 xl:py-28"
+              initial={reduceMotion ? false : { opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: reduceMotion ? 0 : 0.6, ease: easeOut }}
+            >
+              <div className="mx-auto w-full max-w-5xl text-center">
+                <motion.p
+                  className="font-ui mb-5 text-xs font-bold uppercase tracking-[0.18em] text-[#C72A09]"
+                  initial={reduceMotion ? false : { opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: reduceMotion ? 0 : 0.6,
+                    delay: reduceMotion ? 0 : 0.1,
+                    ease: easeOut,
+                  }}
+                >
+                  Assistenza moto e scooter
+                </motion.p>
+
+                <motion.h1
+                  className="font-display mb-6 text-[clamp(4.8rem,7vw,7.6rem)] font-bold uppercase leading-[0.88] tracking-[-0.045em]"
+                  initial={reduceMotion ? false : { opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: reduceMotion ? 0 : 0.6,
+                    delay: reduceMotion ? 0 : 0.2,
+                    ease: easeOut,
+                  }}
+                >
+                  <span className="text-[#C72A09]">Assistenza.</span>
+                  <br />
+                  Officina. Esperienza.
+                </motion.h1>
+
+                <motion.p
+                  className="mx-auto max-w-2xl text-lg leading-relaxed text-black/58"
+                  initial={reduceMotion ? false : { opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: reduceMotion ? 0 : 0.6,
+                    delay: reduceMotion ? 0 : 0.4,
+                    ease: easeOut,
+                  }}
+                >
+                  Tagliandi, diagnosi e accessori per moto e scooter KYMCO e Voge.
+                  Raccontaci cosa ti serve: ti aiutiamo a capire da dove partire.
+                </motion.p>
+              </div>
+            </motion.section>
+          </motion.div>
+
+          <div className="absolute right-0 top-0 z-20 flex h-[5.15rem] w-[14.75rem] items-start justify-end pt-1 xl:w-[15.5rem]">
             <a
               href="tel:+393289185029"
               className="font-ui group inline-flex min-h-12 items-center gap-3 rounded-full bg-[#0A0A0A] py-1.5 pl-5 pr-1.5 text-sm font-bold text-white shadow-sm transition-[background-color,transform] duration-200 hover:bg-[#C72A09] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/35 focus-visible:ring-offset-4 focus-visible:ring-offset-white motion-reduce:transform-none motion-reduce:transition-none"
             >
               Chiama ora
               <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-[#0A0A0A] transition-transform duration-200 group-hover:scale-105 motion-reduce:transform-none motion-reduce:transition-none">
-                <ArrowUpRight aria-hidden="true" className="h-4 w-4" strokeWidth={1.9} />
+                <ArrowUpRight
+                  aria-hidden="true"
+                  className="h-4 w-4"
+                  strokeWidth={1.9}
+                />
               </span>
             </a>
           </div>
-
-          <motion.section
-            className="w-full px-8 py-24 xl:px-12 xl:py-28"
-            initial={reduceMotion ? false : { opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: reduceMotion ? 0 : 0.6, ease: easeOut }}
-          >
-            <div className="mx-auto max-w-5xl text-center">
-              <motion.p
-                className="font-ui mb-5 text-xs font-bold uppercase tracking-[0.18em] text-[#C72A09]"
-                initial={reduceMotion ? false : { opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{
-                  duration: reduceMotion ? 0 : 0.6,
-                  delay: reduceMotion ? 0 : 0.1,
-                  ease: easeOut,
-                }}
-              >
-                Assistenza moto e scooter
-              </motion.p>
-
-              <motion.h1
-                className="font-display mb-6 text-[clamp(4.8rem,7vw,7.6rem)] font-bold uppercase leading-[0.88] tracking-[-0.045em]"
-                initial={reduceMotion ? false : { opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{
-                  duration: reduceMotion ? 0 : 0.6,
-                  delay: reduceMotion ? 0 : 0.2,
-                  ease: easeOut,
-                }}
-              >
-                <span className="text-[#C72A09]">Assistenza.</span>
-                <br />
-                Officina. Esperienza.
-              </motion.h1>
-
-              <motion.p
-                className="mx-auto max-w-2xl text-lg leading-relaxed text-black/58"
-                initial={reduceMotion ? false : { opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{
-                  duration: reduceMotion ? 0 : 0.6,
-                  delay: reduceMotion ? 0 : 0.4,
-                  ease: easeOut,
-                }}
-              >
-                Tagliandi, diagnosi e accessori per moto e scooter KYMCO e Voge.
-                Raccontaci cosa ti serve: ti aiutiamo a capire da dove partire.
-              </motion.p>
-            </div>
-          </motion.section>
-        </motion.div>
+        </div>
       </section>
     </>
   );
