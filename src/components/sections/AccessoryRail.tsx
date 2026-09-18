@@ -14,7 +14,12 @@ import { useRef, useState, type KeyboardEvent } from "react";
 
 import { accessories } from "@/data/accessories";
 
-const pastelColors = ["#FFB3BA", "#BAFFC9", "#BAE1FF", "#FFFFBA"] as const;
+const pastelColors = [
+  "oklch(88% 0.085 15)",
+  "oklch(89% 0.07 145)",
+  "oklch(88% 0.07 245)",
+  "oklch(90% 0.085 90)",
+] as const;
 const accessoryIcons = [ShieldCheck, Box, Lock, Smartphone] as const;
 
 export function AccessoryRail() {
