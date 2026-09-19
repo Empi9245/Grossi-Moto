@@ -22,6 +22,8 @@ const stackScaleStep = 0.024;
 const maxVisibleDepth = 5;
 const touchStepThreshold = 14;
 const touchStepDuration = 0.86;
+const wheelStepThreshold = 8;
+const wheelGestureResetMs = 160;
 
 function stackDepth(index: number) {
   return Math.min(index, maxVisibleDepth);
@@ -167,11 +169,6 @@ export function StackedShowroomCards() {
         });
       });
 
-      const snapPoints = Array.from(
-        { length: totalCards },
-        (_, index) => index / transitionCount,
-      );
-
       const timeline = gsap.timeline({
         scrollTrigger: {
           trigger: container,
@@ -179,12 +176,6 @@ export function StackedShowroomCards() {
           end: "bottom bottom",
           scrub: 0.62,
           invalidateOnRefresh: true,
-          snap: {
-            snapTo: (value) => gsap.utils.snap(snapPoints, value),
-            duration: { min: 0.2, max: 0.38 },
-            delay: 0.05,
-            ease: "power1.inOut",
-          },
           onUpdate: (self) => {
             const nextIndex = Math.min(
               totalCards - 1,
@@ -235,6 +226,8 @@ export function StackedShowroomCards() {
       const scrollTrigger = timeline.scrollTrigger;
       let stepScrollTween: ReturnType<typeof gsap.to> | null = null;
       let refreshRaf = 0;
+      let wheelGestureConsumed = false;
+      let wheelResetTimer: number | null = null;
 
       const isInsideShowroomScroll = () =>
         Boolean(
@@ -290,6 +283,50 @@ export function StackedShowroomCards() {
         });
 
         return true;
+      };
+
+      const onWheel = (event: WheelEvent) => {
+        if (
+          !isInsideShowroomScroll() ||
+          Math.abs(event.deltaY) < Math.abs(event.deltaX)
+        ) {
+          return;
+        }
+
+        if (wheelResetTimer != null) {
+          window.clearTimeout(wheelResetTimer);
+        }
+
+        wheelResetTimer = window.setTimeout(() => {
+          wheelGestureConsumed = false;
+          wheelResetTimer = null;
+        }, wheelGestureResetMs);
+
+        if (isStepScrollAnimatingRef.current || wheelGestureConsumed) {
+          event.preventDefault();
+          return;
+        }
+
+        if (Math.abs(event.deltaY) < wheelStepThreshold) {
+          event.preventDefault();
+          return;
+        }
+
+        const direction = event.deltaY > 0 ? 1 : -1;
+        const currentIndex = activeIndexRef.current;
+        const canStep =
+          (direction > 0 && currentIndex < totalCards - 1) ||
+          (direction < 0 && currentIndex > 0);
+
+        if (!canStep) {
+          return;
+        }
+
+        event.preventDefault();
+
+        if (scrollToCard(currentIndex + direction)) {
+          wheelGestureConsumed = true;
+        }
       };
 
       const onTouchStart = (event: TouchEvent) => {
@@ -361,6 +398,7 @@ export function StackedShowroomCards() {
         });
       };
 
+      container.addEventListener("wheel", onWheel, { passive: false });
       container.addEventListener("touchstart", onTouchStart, { passive: true });
       container.addEventListener("touchmove", onTouchMove, { passive: false });
       container.addEventListener("touchend", resetTouchGesture, {
@@ -376,8 +414,12 @@ export function StackedShowroomCards() {
 
       return () => {
         cancelAnimationFrame(refreshRaf);
+        if (wheelResetTimer != null) {
+          window.clearTimeout(wheelResetTimer);
+        }
         stepScrollTween?.kill();
         isStepScrollAnimatingRef.current = false;
+        container.removeEventListener("wheel", onWheel);
         container.removeEventListener("touchstart", onTouchStart);
         container.removeEventListener("touchmove", onTouchMove);
         container.removeEventListener("touchend", resetTouchGesture);
