@@ -1,5 +1,14 @@
 # Project Memory
 
+## Hero Home mobile — handoff zoom/showroom 2026-09-19
+
+- Le scritte finali dell'overlay mobile (`Roma · Scooter · Moto · Officina` e `Grossi Moto`) sono state alzate di 3rem senza spostare la CTA `Scopri la gamma`.
+- `scroll-expansion-hero.tsx` ora separa esplicitamente la fine dello zoom dall'uscita verso lo showroom: il gesto che porta il progresso a 1 viene consumato e non può più avviare nello stesso frame/gesture la transizione alla sezione successiva.
+- A zoom completo viene applicato un breve settle di 280ms. Su touch serve un nuovo gesto iniziato a hero già espansa; su wheel l'uscita è accettata solo dopo il settle. La transizione verso lo showroom conserva easing premium `[0.22,1,0.36,1]` ma non scende più sotto 0.58s, evitando il salto percepito sui gesti veloci.
+- Modifica limitata alla hero mobile; il reveal desktop di `HeroRevealStage` non è stato toccato.
+- Verifica statica del codice completata sul master. Lint/build locale non eseguibili in questo runtime perché il container non riesce a risolvere `github.com`; usare CI/Vercel come verifica build quando disponibile.
+
+
 ## Home — Officina desktop compattata 2026-09-18
 
 - `src/components/sections/WorkshopSection.tsx`: corretto il titolo desktop “Il tuo mezzo, seguito nel tempo.” aumentando l'interlinea solo da `lg`, così la virgola non invade più la riga successiva.
