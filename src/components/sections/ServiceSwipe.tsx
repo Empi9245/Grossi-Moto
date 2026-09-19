@@ -559,14 +559,14 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
                       data-service-virtual-index={virtualIndex}
                       aria-hidden={!isSemanticCard}
                       inert={!isSemanticCard ? true : undefined}
-                      className="absolute left-1/2 top-0 flex h-full w-[80%] max-w-[31rem] flex-col overflow-hidden rounded-[1.5rem] border border-black/[0.055] bg-[#F5F5F7] opacity-0 shadow-[0_12px_32px_rgba(0,0,0,0.07)] will-change-transform"
+                      className="absolute left-1/2 top-0 flex h-full w-[80%] max-w-[31rem] flex-col overflow-hidden rounded-[1.5rem] border border-white/20 bg-[#B12B14] opacity-0 will-change-transform"
                     >
                       <div
                         className={`relative shrink-0 transition-[height] duration-300 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none ${
                           isOpen ? "h-[28%]" : "h-[66%]"
                         }`}
                       >
-                        <div className="absolute inset-x-2 bottom-0 top-2 overflow-hidden rounded-t-[1.3rem] rounded-b-[1.8rem] bg-[#ECEDEF] ring-1 ring-black/[0.035]">
+                        <div className="absolute inset-x-2 bottom-0 top-2 overflow-hidden rounded-t-[1.3rem] rounded-b-[1.8rem] bg-[#991F0F] ring-1 ring-white/10">
                           <Image
                             src={service.image}
                             alt={isSemanticCard ? service.alt : ""}
@@ -580,14 +580,14 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
 
                       <div className="relative z-10 flex min-h-0 flex-1 flex-col px-4 pb-3 pt-2.5">
                         <div className="font-ui flex items-center justify-between gap-3 text-[0.61rem] font-bold uppercase tracking-[0.14em]">
-                          <span className="text-[#B12B14]">
+                          <span className="text-white/85">
                             {serviceNumber}
                           </span>
-                          <span className="text-black/38">Servizi</span>
+                          <span className="text-white/55">Servizi</span>
                         </div>
 
                         <h3
-                          className={`font-display mt-2 max-w-[15ch] font-bold uppercase leading-[0.92] tracking-[-0.03em] text-[#0A0A0A] ${
+                          className={`font-display mt-2 max-w-[15ch] font-bold uppercase leading-[0.92] tracking-[-0.03em] text-white ${
                             isOpen
                               ? "text-[clamp(1.5rem,5.8vw,1.95rem)]"
                               : "text-[clamp(1.6rem,6.25vw,2.15rem)]"
@@ -597,7 +597,7 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
                         </h3>
 
                         <p
-                          className={`max-w-[29ch] font-medium leading-[1.18] text-black/72 ${
+                          className={`max-w-[29ch] font-medium leading-[1.18] text-white/82 ${
                             isOpen
                               ? "mt-2 text-[0.84rem]"
                               : "mt-1.5 text-[clamp(0.84rem,3.55vw,0.98rem)]"
@@ -621,7 +621,7 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
                                 ease: [0.22, 1, 0.36, 1],
                               }}
                             >
-                              <p className="text-[0.76rem] leading-[1.45] text-black/62">
+                              <p className="text-[0.76rem] leading-[1.45] text-white/70">
                                 {service.description}
                               </p>
 
@@ -629,11 +629,11 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
                                 {service.features.map((feature, featureIndex) => (
                                   <li
                                     key={feature}
-                                    className="flex items-start gap-2.5 text-[0.71rem] font-medium leading-[1.3] text-black/78"
+                                    className="flex items-start gap-2.5 text-[0.71rem] font-medium leading-[1.3] text-white/82"
                                   >
                                     <span
                                       aria-hidden="true"
-                                      className="w-4 shrink-0 pt-px text-[0.62rem] font-bold tabular-nums text-[#B12B14]"
+                                      className="w-4 shrink-0 pt-px text-[0.62rem] font-bold tabular-nums text-white/62"
                                     >
                                       {String(featureIndex + 1).padStart(2, "0")}
                                     </span>
@@ -647,7 +647,7 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
 
                         <div
                           aria-hidden="true"
-                          className="font-ui mt-auto flex items-center justify-end gap-1.5 pt-1.5 text-[0.63rem] font-semibold uppercase tracking-[0.1em] text-black/46"
+                          className="font-ui mt-auto flex items-center justify-end gap-1.5 pt-1.5 text-[0.63rem] font-semibold uppercase tracking-[0.1em] text-white/60"
                         >
                           {isOpen ? (
                             <>
@@ -687,7 +687,7 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
                               current === index ? null : index,
                             );
                           }}
-                          className="absolute inset-0 z-20 rounded-[1.5rem] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/45 focus-visible:ring-inset"
+                          className="absolute inset-0 z-20 rounded-[1.5rem] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-inset"
                         />
                       ) : null}
 

@@ -125,7 +125,7 @@ export function StickyScrollShowcase() {
               return (
                 <motion.article
                   key={service.title}
-                  className="group relative min-h-[410px] overflow-hidden rounded-3xl bg-[#F4F4F2] p-6 xl:min-h-[440px] xl:p-7"
+                  className="group relative min-h-[410px] overflow-hidden rounded-3xl bg-[#B12B14] p-6 xl:min-h-[440px] xl:p-7"
                   initial={
                     reduceMotion
                       ? false
@@ -145,7 +145,7 @@ export function StickyScrollShowcase() {
                     ease: easeOut,
                   }}
                 >
-                  <h3 className="font-display pointer-events-none relative z-10 mx-auto max-w-[12ch] text-center text-[clamp(2rem,2.7vw,3.35rem)] font-bold uppercase leading-[0.9] tracking-[-0.035em] text-[#0A0A0A]">
+                  <h3 className="font-display pointer-events-none relative z-10 mx-auto max-w-[12ch] text-center text-[clamp(2rem,2.7vw,3.35rem)] font-bold uppercase leading-[0.9] tracking-[-0.035em] text-white">
                     {service.title}
                   </h3>
 
@@ -168,7 +168,7 @@ export function StickyScrollShowcase() {
                     aria-label={`Apri i dettagli di ${service.title}`}
                     tabIndex={isOpen ? -1 : 0}
                     onClick={() => setOpenService(index)}
-                    className="absolute inset-0 z-20 rounded-3xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/45 focus-visible:ring-inset"
+                    className="absolute inset-0 z-20 rounded-3xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-inset"
                   />
 
                   <div
@@ -186,7 +186,7 @@ export function StickyScrollShowcase() {
                         id={detailsId}
                         role="region"
                         aria-label={`Dettagli: ${service.title}`}
-                        className="absolute inset-0 z-40 flex flex-col bg-[#F4F4F2] p-7 xl:p-8"
+                        className="absolute inset-0 z-40 flex flex-col bg-[#B12B14] p-7 xl:p-8"
                         initial={
                           reduceMotion
                             ? { opacity: 1 }
@@ -210,18 +210,18 @@ export function StickyScrollShowcase() {
                         }}
                       >
                         <div className="pr-14">
-                          <p className="font-ui text-[0.68rem] font-bold uppercase tracking-[0.15em] text-black/46">
+                          <p className="font-ui text-[0.68rem] font-bold uppercase tracking-[0.15em] text-white/55">
                             {service.title}
                           </p>
-                          <p className="font-display mt-5 max-w-[14ch] text-[clamp(2rem,2.4vw,3rem)] font-bold leading-[0.95] tracking-[-0.035em] text-[#0A0A0A]">
+                          <p className="font-display mt-5 max-w-[14ch] text-[clamp(2rem,2.4vw,3rem)] font-bold leading-[0.95] tracking-[-0.035em] text-white">
                             {service.statement}
                           </p>
-                          <p className="mt-5 max-w-[40ch] text-base leading-7 text-black/62">
+                          <p className="mt-5 max-w-[40ch] text-base leading-7 text-white/72">
                             {service.description}
                           </p>
                         </div>
 
-                        <ul className="font-ui mt-auto grid pt-4 text-[0.72rem] font-semibold uppercase tracking-[0.04em] text-black/66">
+                        <ul className="font-ui mt-auto grid pt-4 text-[0.72rem] font-semibold uppercase tracking-[0.04em] text-white/72">
                           {service.features.map((feature) => (
                             <li
                               key={feature}
