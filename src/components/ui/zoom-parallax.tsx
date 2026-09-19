@@ -901,6 +901,15 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
         return;
       }
 
+      const activeElement = document.activeElement;
+      const ownsKeyboardGesture =
+        getSectionState().isPinned ||
+        (activeElement instanceof Node && section.contains(activeElement));
+
+      if (!ownsKeyboardGesture) {
+        return;
+      }
+
       const target = event.target;
 
       if (
@@ -955,23 +964,23 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
 
     syncIntroAssembly();
     window.addEventListener("scroll", syncIntroAssembly, { passive: true });
-    window.addEventListener("wheel", onWheel, {
+    section.addEventListener("wheel", onWheel, {
       capture: true,
       passive: false,
     });
-    window.addEventListener("touchstart", onTouchStart, {
+    section.addEventListener("touchstart", onTouchStart, {
       capture: true,
       passive: true,
     });
-    window.addEventListener("touchmove", onTouchMove, {
+    section.addEventListener("touchmove", onTouchMove, {
       capture: true,
       passive: false,
     });
-    window.addEventListener("touchend", onTouchEnd, {
+    section.addEventListener("touchend", onTouchEnd, {
       capture: true,
       passive: true,
     });
-    window.addEventListener("touchcancel", onTouchEnd, {
+    section.addEventListener("touchcancel", onTouchEnd, {
       capture: true,
       passive: true,
     });
@@ -991,17 +1000,17 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
       }
 
       window.removeEventListener("scroll", syncIntroAssembly);
-      window.removeEventListener("wheel", onWheel, { capture: true });
-      window.removeEventListener("touchstart", onTouchStart, {
+      section.removeEventListener("wheel", onWheel, { capture: true });
+      section.removeEventListener("touchstart", onTouchStart, {
         capture: true,
       });
-      window.removeEventListener("touchmove", onTouchMove, {
+      section.removeEventListener("touchmove", onTouchMove, {
         capture: true,
       });
-      window.removeEventListener("touchend", onTouchEnd, {
+      section.removeEventListener("touchend", onTouchEnd, {
         capture: true,
       });
-      window.removeEventListener("touchcancel", onTouchEnd, {
+      section.removeEventListener("touchcancel", onTouchEnd, {
         capture: true,
       });
       window.removeEventListener("keydown", onKeyDown, {
