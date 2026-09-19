@@ -328,21 +328,19 @@ export default function ScrollExpansionHero({
       <section className="relative flex min-h-[100dvh] flex-col items-center justify-start">
         <div className="relative flex min-h-[100dvh] w-full flex-col items-center">
           <motion.div
-            className="absolute inset-0 z-0 h-full bg-[oklch(14%_0.012_40)]"
+            className="absolute inset-0 z-0 h-full"
             initial={{ opacity: reducedMotion ? 0 : 1 }}
             animate={{ opacity: reducedMotion ? 0 : 1 - scrollProgress }}
             transition={{ duration: 0.1 }}
           >
-            {mediaType === "image" ? (
-              <Image
-                src={bgImageSrc}
-                alt=""
-                width={1920}
-                height={1080}
-                className="h-screen w-screen object-cover object-center"
-                priority
-              />
-            ) : null}
+            <Image
+              src={bgImageSrc}
+              alt=""
+              width={1920}
+              height={1080}
+              className="h-screen w-screen object-cover object-center"
+              priority
+            />
             <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(5,8,11,0.62)_0%,rgba(8,11,15,0.2)_38%,rgba(4,6,9,0.58)_100%)]" />
           </motion.div>
 
