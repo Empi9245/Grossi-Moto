@@ -175,7 +175,7 @@ export function StickyScrollShowcase() {
                     aria-hidden="true"
                     className="pointer-events-none absolute bottom-0 right-0 z-30 h-20 w-20 rounded-tl-2xl border-l border-t border-black/5 bg-white"
                   >
-                    <span className="absolute bottom-3 right-3 flex h-12 w-12 items-center justify-center rounded-[0.8rem] bg-[#0A0A0A] text-white shadow-sm transition-[background-color,transform] duration-300 group-hover:bg-[#C72A09] motion-reduce:transform-none motion-reduce:transition-none">
+                    <span className="absolute bottom-3 right-3 flex h-12 w-12 items-center justify-center rounded-[0.8rem] bg-[#0A0A0A] text-white shadow-sm transition-[background-color,transform] duration-300 group-hover:bg-[#B12B14] motion-reduce:transform-none motion-reduce:transition-none">
                       <DisclosureMark expanded={false} />
                     </span>
                   </div>
@@ -241,7 +241,7 @@ export function StickyScrollShowcase() {
                           type="button"
                           aria-label={`Chiudi i dettagli di ${service.title}`}
                           onClick={() => setOpenService(null)}
-                          className="absolute bottom-3 right-3 z-10 flex h-12 w-12 items-center justify-center rounded-[0.8rem] bg-[#0A0A0A] text-white shadow-sm transition-[background-color,transform] duration-200 hover:bg-[#C72A09] active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/40 focus-visible:ring-offset-3 focus-visible:ring-offset-white motion-reduce:transform-none motion-reduce:transition-none"
+                          className="absolute bottom-3 right-3 z-10 flex h-12 w-12 items-center justify-center rounded-[0.8rem] bg-[#0A0A0A] text-white shadow-sm transition-[background-color,transform] duration-200 hover:bg-[#B12B14] active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/40 focus-visible:ring-offset-3 focus-visible:ring-offset-white motion-reduce:transform-none motion-reduce:transition-none"
                         >
                           <DisclosureMark expanded />
                         </button>

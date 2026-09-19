@@ -83,7 +83,7 @@ export function ServicesHero() {
                 variants={containerVariants}
               >
                 <motion.p
-                  className="font-ui inline-flex min-h-6 w-fit self-center items-center rounded-full bg-[#C72A09] px-2.5 py-1 text-[0.56rem] font-bold uppercase tracking-[0.12em] text-white shadow-[0_10px_26px_rgba(91,13,0,0.26)]"
+                  className="font-ui inline-flex min-h-6 w-fit self-center items-center rounded-full bg-[#B12B14] px-2.5 py-1 text-[0.56rem] font-bold uppercase tracking-[0.12em] text-white shadow-[0_10px_26px_rgba(91,13,0,0.26)]"
                   variants={itemVariants}
                 >
                   OFFICINA · ASSISTENZA · ROMA
@@ -95,7 +95,7 @@ export function ServicesHero() {
                 >
                   Il tuo mezzo,
                   <br />
-                  <span className="text-[#C72A09]">seguito bene.</span>
+                  <span className="text-[#B12B14]">seguito bene.</span>
                 </motion.h1>
 
                 <motion.p
@@ -114,7 +114,7 @@ export function ServicesHero() {
                 >
                   <Link
                     href="/contatti?argomento=officina#richiesta"
-                    className="font-ui inline-flex min-h-11 items-center justify-center gap-2 rounded-[0.9rem] bg-[#C72A09] px-5 py-2.5 text-[0.78rem] font-bold text-white shadow-[0_14px_38px_rgba(91,13,0,0.34)] transition-[background-color,transform] duration-200 hover:bg-[#B92508] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/85 focus-visible:ring-offset-4 focus-visible:ring-offset-black/60 motion-reduce:transform-none motion-reduce:transition-none"
+                    className="font-ui inline-flex min-h-11 items-center justify-center gap-2 rounded-[0.9rem] bg-[#B12B14] px-5 py-2.5 text-[0.78rem] font-bold text-white shadow-[0_14px_38px_rgba(91,13,0,0.34)] transition-[background-color,transform] duration-200 hover:bg-[#982411] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/85 focus-visible:ring-offset-4 focus-visible:ring-offset-black/60 motion-reduce:transform-none motion-reduce:transition-none"
                   >
                     Scrivi all’officina
                     <ActionMark />
@@ -127,14 +127,14 @@ export function ServicesHero() {
                 >
                   <span
                     aria-hidden="true"
-                    className="font-numeric pointer-events-none absolute -right-1 -top-2 text-[5.75rem] font-bold leading-none tracking-[-0.08em] text-[#C72A09]/[0.07] [@media(max-height:700px)]:text-[4.8rem]"
+                    className="font-numeric pointer-events-none absolute -right-1 -top-2 text-[5.75rem] font-bold leading-none tracking-[-0.08em] text-[#B12B14]/[0.07] [@media(max-height:700px)]:text-[4.8rem]"
                   >
                     01
                   </span>
 
                   <div className="relative z-10 flex items-start justify-between gap-4">
                     <div>
-                      <p className="font-ui text-[0.58rem] font-bold uppercase tracking-[0.18em] text-[#C72A09]">
+                      <p className="font-ui text-[0.58rem] font-bold uppercase tracking-[0.18em] text-[#B12B14]">
                         Servizi
                       </p>
                       <p className="font-display mt-1 text-[1.55rem] font-bold uppercase leading-[0.9] tracking-[-0.035em] text-[#0A0A0A] [@media(max-height:700px)]:text-[1.35rem]">
@@ -148,16 +148,16 @@ export function ServicesHero() {
 
                   <div className="relative z-10 mt-4 grid grid-cols-2 gap-2 [@media(max-height:700px)]:mt-3">
                     <div className="rounded-[1rem] bg-white/82 px-3 py-3 shadow-[inset_0_0_0_1px_rgba(10,10,10,0.06),0_8px_22px_rgba(10,10,10,0.05)] [@media(max-height:700px)]:py-2.5">
-                      <span className="font-numeric block text-[0.55rem] font-semibold text-[#C72A09]">01</span>
+                      <span className="font-numeric block text-[0.55rem] font-semibold text-[#B12B14]">01</span>
                       <p className="font-ui mt-1 text-[0.78rem] font-bold leading-tight text-[#0A0A0A]">Tagliandi</p>
                     </div>
                     <div className="rounded-[1rem] bg-white/82 px-3 py-3 shadow-[inset_0_0_0_1px_rgba(10,10,10,0.06),0_8px_22px_rgba(10,10,10,0.05)] [@media(max-height:700px)]:py-2.5">
-                      <span className="font-numeric block text-[0.55rem] font-semibold text-[#C72A09]">02</span>
+                      <span className="font-numeric block text-[0.55rem] font-semibold text-[#B12B14]">02</span>
                       <p className="font-ui mt-1 text-[0.78rem] font-bold leading-tight text-[#0A0A0A]">Diagnosi</p>
                     </div>
                     <div className="col-span-2 flex items-end justify-between gap-3 rounded-[1rem] bg-white/82 px-3 py-3 shadow-[inset_0_0_0_1px_rgba(10,10,10,0.06),0_8px_22px_rgba(10,10,10,0.05)] [@media(max-height:700px)]:py-2.5">
                       <div>
-                        <span className="font-numeric block text-[0.55rem] font-semibold text-[#C72A09]">03</span>
+                        <span className="font-numeric block text-[0.55rem] font-semibold text-[#B12B14]">03</span>
                         <p className="font-ui mt-1 text-[0.78rem] font-bold leading-tight text-[#0A0A0A]">Montaggio accessori</p>
                       </div>
                       <span className="font-ui text-[0.55rem] font-bold uppercase tracking-[0.14em] text-black/42">
@@ -195,12 +195,12 @@ export function ServicesHero() {
               <motion.h1 className="font-display max-w-[11ch] text-[clamp(4.4rem,7vw,7.5rem)] font-bold uppercase leading-[0.86] tracking-[-0.045em] text-[#0A0A0A]" variants={itemVariants}>
                 Assistenza.
                 <br />
-                <span className="text-[#C72A09]">Officina.</span>
+                <span className="text-[#B12B14]">Officina.</span>
                 <br />
                 Esperienza.
               </motion.h1>
 
-              <motion.div className="my-8 h-1 w-20 bg-[#C72A09]" variants={itemVariants} />
+              <motion.div className="my-8 h-1 w-20 bg-[#B12B14]" variants={itemVariants} />
 
               <motion.p className="mb-8 max-w-[34rem] text-lg font-medium leading-8 text-black/58" variants={itemVariants}>
                 Tagliandi, diagnosi e accessori per moto e scooter KYMCO e Voge.
@@ -210,7 +210,7 @@ export function ServicesHero() {
               <motion.div variants={itemVariants}>
                 <Link
                   href="/contatti?argomento=officina#richiesta"
-                  className="font-ui inline-flex min-h-11 items-center text-base font-bold uppercase tracking-[0.14em] text-[#C72A09] transition-opacity duration-150 hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C72A09]/45 focus-visible:ring-offset-4 focus-visible:ring-offset-white motion-reduce:transition-none"
+                  className="font-ui inline-flex min-h-11 items-center text-base font-bold uppercase tracking-[0.14em] text-[#B12B14] transition-opacity duration-150 hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#B12B14]/45 focus-visible:ring-offset-4 focus-visible:ring-offset-white motion-reduce:transition-none"
                 >
                   Scrivi all’officina
                 </Link>
@@ -220,20 +220,20 @@ export function ServicesHero() {
             <motion.footer className="mt-14 mb-0" variants={itemVariants}>
               <div className="grid grid-cols-1 gap-5 pt-6 text-xs font-medium text-black/58 sm:grid-cols-3 sm:gap-6">
                 <div className="flex min-w-0 items-center">
-                  <Globe2 aria-hidden="true" className="mr-2 h-5 w-5 shrink-0 text-[#C72A09]" strokeWidth={1.8} />
+                  <Globe2 aria-hidden="true" className="mr-2 h-5 w-5 shrink-0 text-[#B12B14]" strokeWidth={1.8} />
                   <span className="truncate">grossi-moto.vercel.app</span>
                 </div>
 
                 <a
                   href="tel:+393289185029"
-                  className="flex min-w-0 items-center rounded-sm transition-colors duration-150 hover:text-[#0A0A0A] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C72A09]/45 focus-visible:ring-offset-4 focus-visible:ring-offset-white motion-reduce:transition-none"
+                  className="flex min-w-0 items-center rounded-sm transition-colors duration-150 hover:text-[#0A0A0A] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#B12B14]/45 focus-visible:ring-offset-4 focus-visible:ring-offset-white motion-reduce:transition-none"
                 >
-                  <PhoneCall aria-hidden="true" className="mr-2 h-5 w-5 shrink-0 text-[#C72A09]" strokeWidth={1.8} />
+                  <PhoneCall aria-hidden="true" className="mr-2 h-5 w-5 shrink-0 text-[#B12B14]" strokeWidth={1.8} />
                   <span>+39 328 918 5029</span>
                 </a>
 
                 <div className="flex min-w-0 items-center">
-                  <MapPin aria-hidden="true" className="mr-2 h-5 w-5 shrink-0 text-[#C72A09]" strokeWidth={1.8} />
+                  <MapPin aria-hidden="true" className="mr-2 h-5 w-5 shrink-0 text-[#B12B14]" strokeWidth={1.8} />
                   <span>Via Festo Porzio, 22, Roma</span>
                 </div>
               </div>
@@ -273,7 +273,7 @@ export function ServicesHero() {
           >
             <div className="mx-auto w-full max-w-6xl text-center">
               <motion.p
-                className="font-ui mb-5 text-xs font-bold uppercase tracking-[0.18em] text-[#C72A09]"
+                className="font-ui mb-5 text-xs font-bold uppercase tracking-[0.18em] text-[#B12B14]"
                 initial={reduceMotion ? false : { opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{
@@ -295,7 +295,7 @@ export function ServicesHero() {
                   ease: easeOut,
                 }}
               >
-                <span className="text-[#C72A09]">Assistenza.</span>
+                <span className="text-[#B12B14]">Assistenza.</span>
                 <br />
                 Officina. Esperienza.
               </motion.h1>

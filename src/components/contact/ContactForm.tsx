@@ -121,8 +121,8 @@ export function ContactForm({
     [
       "min-h-12 w-full rounded-2xl border border-transparent bg-black/[0.035] px-4 py-3 text-base text-[#0A0A0A] outline-none transition-[border-color,box-shadow,background-color] duration-150 placeholder:text-black/32 sm:text-sm motion-reduce:transition-none",
       hasError
-        ? "border-[#C72A09] bg-[#C72A09]/[0.035] ring-1 ring-[#C72A09]/12 focus:border-[#C72A09] focus:ring-2 focus:ring-[#C72A09]/18"
-        : "hover:bg-black/[0.055] focus:border-[#C72A09] focus:bg-white focus:ring-2 focus:ring-[#C72A09]/16",
+        ? "border-[#B12B14] bg-[#B12B14]/[0.035] ring-1 ring-[#B12B14]/12 focus:border-[#B12B14] focus:ring-2 focus:ring-[#B12B14]/18"
+        : "hover:bg-black/[0.055] focus:border-[#B12B14] focus:bg-white focus:ring-2 focus:ring-[#B12B14]/16",
     ].join(" ");
 
   const describedBy = (field: FieldName) =>
@@ -160,7 +160,7 @@ export function ContactForm({
       </div>
 
       <div className="pb-2">
-        <p className="font-ui text-[0.68rem] font-bold uppercase tracking-[0.18em] text-[#C72A09]">
+        <p className="font-ui text-[0.68rem] font-bold uppercase tracking-[0.18em] text-[#B12B14]">
           La tua richiesta
         </p>
         <p className="mt-2 max-w-[42rem] text-sm leading-6 text-black/52">
@@ -190,7 +190,7 @@ export function ContactForm({
             onInvalid={() => handleInvalid("name")}
           />
           {errors.name && (
-            <p id="name-error" className="text-sm font-medium text-[#C72A09]">
+            <p id="name-error" className="text-sm font-medium text-[#B12B14]">
               Errore: {errors.name}
             </p>
           )}
@@ -217,7 +217,7 @@ export function ContactForm({
             onInvalid={() => handleInvalid("email")}
           />
           {errors.email && (
-            <p id="email-error" className="text-sm font-medium text-[#C72A09]">
+            <p id="email-error" className="text-sm font-medium text-[#B12B14]">
               Errore: {errors.email}
             </p>
           )}
@@ -270,7 +270,7 @@ export function ContactForm({
           ))}
         </select>
         {errors.subject && (
-          <p id="subject-error" className="text-sm font-medium text-[#C72A09]">
+          <p id="subject-error" className="text-sm font-medium text-[#B12B14]">
             Errore: {errors.subject}
           </p>
         )}
@@ -297,7 +297,7 @@ export function ContactForm({
           onInvalid={() => handleInvalid("message")}
         />
         {errors.message && (
-          <p id="message-error" className="text-sm font-medium text-[#C72A09]">
+          <p id="message-error" className="text-sm font-medium text-[#B12B14]">
             Errore: {errors.message}
           </p>
         )}
@@ -312,7 +312,7 @@ export function ContactForm({
             required
             aria-invalid={Boolean(errors.privacy)}
             aria-describedby={describedBy("privacy")}
-            className="mt-0.5 h-5 w-5 shrink-0 rounded accent-[#C72A09] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C72A09]/45 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+            className="mt-0.5 h-5 w-5 shrink-0 rounded accent-[#B12B14] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#B12B14]/45 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
             onChange={() => handleChange("privacy")}
             onInvalid={() => handleInvalid("privacy")}
           />
@@ -324,7 +324,7 @@ export function ContactForm({
             <span className="ml-1 font-medium text-black/46">Obbligatorio.</span>{" "}
             <Link
               href="/privacy"
-              className="font-semibold text-[#0A0A0A] underline decoration-black/30 underline-offset-2 outline-none transition-colors duration-150 hover:text-[#C72A09] focus-visible:ring-2 focus-visible:ring-[#C72A09]/45 focus-visible:ring-offset-2 motion-reduce:transition-none"
+              className="font-semibold text-[#0A0A0A] underline decoration-black/30 underline-offset-2 outline-none transition-colors duration-150 hover:text-[#B12B14] focus-visible:ring-2 focus-visible:ring-[#B12B14]/45 focus-visible:ring-offset-2 motion-reduce:transition-none"
             >
               Leggi la privacy policy
             </Link>
@@ -334,7 +334,7 @@ export function ContactForm({
         {errors.privacy && (
           <p
             id="privacy-error"
-            className="mt-2 pl-8 text-sm font-medium text-[#C72A09]"
+            className="mt-2 pl-8 text-sm font-medium text-[#B12B14]"
           >
             Errore: {errors.privacy}
           </p>
@@ -353,7 +353,7 @@ export function ContactForm({
           </p>
         )}
         {status === "error" && (
-          <p className="rounded-2xl bg-[#C72A09]/[0.06] px-4 py-3 font-medium text-[#9D2208]">
+          <p className="rounded-2xl bg-[#B12B14]/[0.06] px-4 py-3 font-medium text-[#9D2208]">
             Non abbiamo ricevuto conferma dell’invio. Il messaggio è ancora qui:
             puoi riprovare o{" "}
             <a
@@ -371,7 +371,7 @@ export function ContactForm({
         type="submit"
         disabled={status === "sending"}
         aria-busy={status === "sending"}
-        className="font-ui inline-flex min-h-12 w-full items-center justify-center rounded-[0.9rem] border border-[#0A0A0A] bg-[#0A0A0A] px-6 py-3 text-sm font-bold uppercase tracking-[0.08em] text-white transition-[background-color,transform,opacity] duration-150 hover:bg-[#C72A09] active:scale-[0.98] disabled:cursor-wait disabled:opacity-55 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C72A09]/50 focus-visible:ring-offset-4 focus-visible:ring-offset-white motion-reduce:transform-none motion-reduce:transition-none sm:w-auto sm:min-w-52"
+        className="font-ui inline-flex min-h-12 w-full items-center justify-center rounded-[0.9rem] border border-[#0A0A0A] bg-[#0A0A0A] px-6 py-3 text-sm font-bold uppercase tracking-[0.08em] text-white transition-[background-color,transform,opacity] duration-150 hover:bg-[#B12B14] active:scale-[0.98] disabled:cursor-wait disabled:opacity-55 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#B12B14]/50 focus-visible:ring-offset-4 focus-visible:ring-offset-white motion-reduce:transform-none motion-reduce:transition-none sm:w-auto sm:min-w-52"
       >
         {status === "sending" ? "Invio in corso…" : "Invia la richiesta"}
       </button>

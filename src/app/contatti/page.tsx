@@ -134,7 +134,7 @@ export default async function ContattiPage({
       <section className="px-5 pb-16 pt-10 sm:px-7 sm:pb-20 sm:pt-14 md:px-10 lg:px-14 lg:pb-24 lg:pt-20 xl:px-20">
         <div className="mx-auto grid max-w-[92rem] gap-10 lg:grid-cols-[minmax(0,1.15fr)_minmax(24rem,0.85fr)] lg:items-end lg:gap-16">
           <div>
-            <p className="font-ui text-[0.68rem] font-bold uppercase tracking-[0.2em] text-[#C72A09] sm:text-xs">
+            <p className="font-ui text-[0.68rem] font-bold uppercase tracking-[0.2em] text-[#B12B14] sm:text-xs">
               Contatti
             </p>
             <h1 className="font-display mt-5 max-w-[10ch] text-[clamp(3.1rem,16vw,9rem)] font-bold uppercase leading-[0.84] tracking-[-0.045em]">
@@ -159,13 +159,13 @@ export default async function ContattiPage({
               </a>
               <Link
                 href="#richiesta"
-                className="font-ui inline-flex min-h-12 items-center justify-center gap-2 rounded-[0.9rem] border border-[#0A0A0A]/18 px-6 py-3 text-sm font-bold uppercase tracking-[0.08em] text-[#0A0A0A] transition-[border-color,background-color,transform] duration-150 hover:border-[#0A0A0A]/35 hover:bg-black/[0.035] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C72A09]/45 focus-visible:ring-offset-4 focus-visible:ring-offset-white motion-reduce:transform-none motion-reduce:transition-none"
+                className="font-ui inline-flex min-h-12 items-center justify-center gap-2 rounded-[0.9rem] border border-[#0A0A0A]/18 px-6 py-3 text-sm font-bold uppercase tracking-[0.08em] text-[#0A0A0A] transition-[border-color,background-color,transform] duration-150 hover:border-[#0A0A0A]/35 hover:bg-black/[0.035] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#B12B14]/45 focus-visible:ring-offset-4 focus-visible:ring-offset-white motion-reduce:transform-none motion-reduce:transition-none"
               >
                 Invia una richiesta
               </Link>
               <Link
                 href="#sede"
-                className="font-ui group inline-flex min-h-11 items-center justify-center gap-2 rounded-[0.9rem] border border-[#C72A09]/30 px-4 text-sm font-bold text-[#C72A09] outline-none transition-opacity duration-150 hover:opacity-70 focus-visible:ring-2 focus-visible:ring-[#C72A09]/40 focus-visible:ring-offset-4 focus-visible:ring-offset-white motion-reduce:transition-none sm:justify-start"
+                className="font-ui group inline-flex min-h-11 items-center justify-center gap-2 rounded-[0.9rem] border border-[#B12B14]/30 px-4 text-sm font-bold text-[#B12B14] outline-none transition-opacity duration-150 hover:opacity-70 focus-visible:ring-2 focus-visible:ring-[#B12B14]/40 focus-visible:ring-offset-4 focus-visible:ring-offset-white motion-reduce:transition-none sm:justify-start"
               >
                 Come raggiungerci
                 <ActionMark />
@@ -186,8 +186,8 @@ export default async function ContattiPage({
                 key={label}
                 className="flex min-w-0 flex-col rounded-[28px] bg-black/[0.035] px-5 py-6 sm:px-5 sm:py-6 lg:px-6 lg:py-7"
               >
-                <div className="flex items-center gap-3 text-[#C72A09]">
-                  <Icon aria-hidden="true" className="h-10 w-10 rounded-full bg-[#C72A09]/10 p-2.5 text-[#C72A09]" strokeWidth={1.8} />
+                <div className="flex items-center gap-3 text-[#B12B14]">
+                  <Icon aria-hidden="true" className="h-10 w-10 rounded-full bg-[#B12B14]/10 p-2.5 text-[#B12B14]" strokeWidth={1.8} />
                   <p className="font-ui text-[0.68rem] font-bold uppercase tracking-[0.18em]">
                     {label}
                   </p>
@@ -202,7 +202,7 @@ export default async function ContattiPage({
                   href={href}
                   target={href.startsWith("http") ? "_blank" : undefined}
                   rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
-                  className="font-ui group mt-5 inline-flex min-h-11 w-fit items-center gap-2 rounded-[0.8rem] border border-black/12 px-3 text-sm font-bold text-[#0A0A0A] outline-none transition-colors duration-150 hover:text-[#C72A09] focus-visible:ring-2 focus-visible:ring-[#C72A09]/45 focus-visible:ring-offset-4 focus-visible:ring-offset-white motion-reduce:transition-none"
+                  className="font-ui group mt-5 inline-flex min-h-11 w-fit items-center gap-2 rounded-[0.8rem] border border-black/12 px-3 text-sm font-bold text-[#0A0A0A] outline-none transition-colors duration-150 hover:text-[#B12B14] focus-visible:ring-2 focus-visible:ring-[#B12B14]/45 focus-visible:ring-offset-4 focus-visible:ring-offset-white motion-reduce:transition-none"
                 >
                   {cta}
                   <ActionMark />
@@ -214,7 +214,7 @@ export default async function ContattiPage({
       </section>
 
       <section className="bg-white px-2 pb-2 sm:px-4 sm:pb-4 lg:px-5 lg:pb-5">
-        <div className="overflow-hidden rounded-[32px] bg-[#C72A09] px-5 py-12 text-white sm:rounded-[40px] sm:px-7 sm:py-16 md:px-10 lg:rounded-[56px] lg:px-14 lg:py-20 xl:px-16">
+        <div className="overflow-hidden rounded-[32px] bg-[#B12B14] px-5 py-12 text-white sm:rounded-[40px] sm:px-7 sm:py-16 md:px-10 lg:rounded-[56px] lg:px-14 lg:py-20 xl:px-16">
           <div className="mx-auto grid max-w-[92rem] gap-10 lg:grid-cols-[minmax(0,0.72fr)_minmax(32rem,1.28fr)] lg:items-start lg:gap-16 xl:gap-20">
             <div className="lg:sticky lg:top-10">
               <p className="font-ui text-[0.68rem] font-bold uppercase tracking-[0.2em] text-white/70 sm:text-xs">
@@ -230,7 +230,7 @@ export default async function ContattiPage({
               </p>
               <a
                 href="tel:+393289185029"
-                className="font-ui mt-7 inline-flex min-h-11 items-center gap-2 rounded-[0.8rem] border border-white/30 px-3 text-sm font-bold text-white outline-none transition-opacity duration-150 hover:opacity-75 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-4 focus-visible:ring-offset-[#C72A09] motion-reduce:transition-none"
+                className="font-ui mt-7 inline-flex min-h-11 items-center gap-2 rounded-[0.8rem] border border-white/30 px-3 text-sm font-bold text-white outline-none transition-opacity duration-150 hover:opacity-75 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-4 focus-visible:ring-offset-[#B12B14] motion-reduce:transition-none"
               >
                 +39 328 918 5029
                 <PhoneCall aria-hidden="true" className="h-4 w-4" strokeWidth={1.8} />
@@ -252,7 +252,7 @@ export default async function ContattiPage({
         <div className="overflow-hidden rounded-[32px] bg-[#111111] px-5 py-14 text-white sm:rounded-[40px] sm:px-7 sm:py-16 md:px-10 lg:rounded-[56px] lg:px-14 lg:py-20 xl:px-16">
           <div className="mx-auto grid max-w-[92rem] gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(24rem,0.72fr)] lg:items-start lg:gap-20">
             <div>
-              <div className="flex items-center gap-3 text-[#C72A09]">
+              <div className="flex items-center gap-3 text-[#B12B14]">
                 <MapPin aria-hidden="true" className="h-5 w-5" strokeWidth={1.8} />
                 <p className="font-ui text-[0.68rem] font-bold uppercase tracking-[0.2em] sm:text-xs">
                   Showroom e officina
@@ -276,7 +276,7 @@ export default async function ContattiPage({
             </div>
 
             <div className="pt-7 lg:pl-12 lg:pt-0">
-              <div className="flex items-center gap-3 text-[#C72A09]">
+              <div className="flex items-center gap-3 text-[#B12B14]">
                 <Clock aria-hidden="true" className="h-5 w-5" strokeWidth={1.8} />
                 <h2 className="font-ui text-[0.68rem] font-bold uppercase tracking-[0.2em] sm:text-xs">
                   Orari di apertura
@@ -303,7 +303,7 @@ export default async function ContattiPage({
       <section className="px-5 py-20 sm:px-7 sm:py-24 md:px-10 lg:px-14 lg:py-28 xl:px-20">
         <div className="mx-auto flex max-w-[92rem] flex-col gap-8 pt-10 lg:flex-row lg:items-end lg:justify-between lg:gap-14 lg:pt-14">
           <div>
-            <p className="font-ui text-[0.68rem] font-bold uppercase tracking-[0.2em] text-[#C72A09] sm:text-xs">
+            <p className="font-ui text-[0.68rem] font-bold uppercase tracking-[0.2em] text-[#B12B14] sm:text-xs">
               Un ultimo dubbio?
             </p>
             <h2 className="font-display mt-3 text-[clamp(3rem,7vw,6rem)] font-bold uppercase leading-[0.88] tracking-[-0.04em]">
@@ -321,7 +321,7 @@ export default async function ContattiPage({
             </a>
             <Link
               href="#richiesta"
-              className="font-ui inline-flex min-h-12 items-center justify-center rounded-[0.9rem] border border-[#C72A09] px-6 py-3 text-sm font-bold uppercase tracking-[0.08em] text-[#C72A09] transition-[background-color,color,transform] duration-150 hover:bg-[#C72A09] hover:text-white active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C72A09]/45 focus-visible:ring-offset-4 focus-visible:ring-offset-white motion-reduce:transform-none motion-reduce:transition-none"
+              className="font-ui inline-flex min-h-12 items-center justify-center rounded-[0.9rem] border border-[#B12B14] px-6 py-3 text-sm font-bold uppercase tracking-[0.08em] text-[#B12B14] transition-[background-color,color,transform] duration-150 hover:bg-[#B12B14] hover:text-white active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#B12B14]/45 focus-visible:ring-offset-4 focus-visible:ring-offset-white motion-reduce:transform-none motion-reduce:transition-none"
             >
               Invia una richiesta
             </Link>

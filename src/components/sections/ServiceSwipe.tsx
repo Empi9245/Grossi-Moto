@@ -393,7 +393,7 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
       <div className="flex items-center justify-between gap-4">
         <div className="flex min-w-0 flex-1 items-center gap-3">
           <span
-            className="text-[0.68rem] font-bold tabular-nums tracking-[0.08em] text-[#C72A09]"
+            className="text-[0.68rem] font-bold tabular-nums tracking-[0.08em] text-[#B12B14]"
             aria-hidden="true"
           >
             {String(active + 1).padStart(2, "0")}
@@ -407,7 +407,7 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
                 key={service.title}
                 className={`h-1 rounded-full transition-[width,background-color] duration-200 motion-reduce:transition-none ${
                   index === active
-                    ? "w-7 bg-[#C72A09]"
+                    ? "w-7 bg-[#B12B14]"
                     : "w-1 bg-black/20"
                 }`}
               />
@@ -578,7 +578,7 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
 
                       <div className="relative z-10 flex min-h-0 flex-1 flex-col px-4 pb-3 pt-2.5">
                         <div className="font-ui flex items-center justify-between gap-3 text-[0.61rem] font-bold uppercase tracking-[0.14em]">
-                          <span className="text-[#C72A09]">
+                          <span className="text-[#B12B14]">
                             {serviceNumber}
                           </span>
                           <span className="text-black/38">Servizi</span>
@@ -631,7 +631,7 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
                                   >
                                     <span
                                       aria-hidden="true"
-                                      className="w-4 shrink-0 pt-px text-[0.62rem] font-bold tabular-nums text-[#C72A09]"
+                                      className="w-4 shrink-0 pt-px text-[0.62rem] font-bold tabular-nums text-[#B12B14]"
                                     >
                                       {String(featureIndex + 1).padStart(2, "0")}
                                     </span>
@@ -833,7 +833,7 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
               <h3 className="font-display max-w-[14ch] text-[clamp(2rem,7vw,3rem)] font-bold uppercase leading-[0.9] tracking-[-0.035em] text-[#0A0A0A]">
                 {service.title}
               </h3>
-              <p className="mt-4 max-w-[24ch] text-[clamp(1.2rem,4.5vw,1.7rem)] font-semibold leading-[1.05] text-[#C72A09] md:text-black/82">
+              <p className="mt-4 max-w-[24ch] text-[clamp(1.2rem,4.5vw,1.7rem)] font-semibold leading-[1.05] text-[#B12B14] md:text-black/82">
                 {service.statement}
               </p>
               <p className="mt-4 max-w-[44ch] text-sm leading-6 text-black/72 sm:text-base sm:leading-7 md:text-black/64">
@@ -847,7 +847,7 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
                   >
                     <span
                       aria-hidden="true"
-                      className="mt-[0.46rem] h-1.5 w-1.5 shrink-0 rounded-full bg-[#C72A09] md:hidden"
+                      className="mt-[0.46rem] h-1.5 w-1.5 shrink-0 rounded-full bg-[#B12B14] md:hidden"
                     />
                     <span>{feature}</span>
                   </li>
