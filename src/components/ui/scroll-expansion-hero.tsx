@@ -312,8 +312,8 @@ export default function ScrollExpansionHero({
     syncProgress,
   ]);
 
-  const mediaWidth = `calc(300px + (100vw - 300px) * ${scrollProgress})`;
-  const mediaHeight = `calc(400px + (100dvh - 400px) * ${scrollProgress})`;
+  const mediaWidth = `calc(${300 * (1 - scrollProgress)}px + ${100 * scrollProgress}vw)`;
+  const mediaHeight = `calc(${400 * (1 - scrollProgress)}px + ${100 * scrollProgress}dvh)`;
   const textTranslateX = scrollProgress * 180;
   const initialCopyOpacity = clamp(1 - scrollProgress * 1.45, 0, 1);
   const endOverlayProgress = reducedMotion
