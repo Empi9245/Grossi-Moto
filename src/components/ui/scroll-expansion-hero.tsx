@@ -10,6 +10,7 @@ import {
   useState,
 } from "react";
 import { animate, motion } from "framer-motion";
+import { preload } from "react-dom";
 
 interface ScrollExpansionHeroProps {
   mediaType?: "video" | "image";
@@ -41,6 +42,14 @@ export default function ScrollExpansionHero({
   endOverlay,
   reducedMotion = false,
 }: ScrollExpansionHeroProps) {
+  if (mediaType === "video" && !reducedMotion) {
+    preload(mediaSrc, {
+      as: "video",
+      type: "video/mp4",
+      fetchPriority: "high",
+    });
+  }
+
   const rootRef = useRef<HTMLDivElement | null>(null);
   const scrollProgressRef = useRef(0);
   const mediaFullyExpandedRef = useRef(false);
@@ -287,19 +296,21 @@ export default function ScrollExpansionHero({
       <section className="relative flex min-h-[100dvh] flex-col items-center justify-start">
         <div className="relative flex min-h-[100dvh] w-full flex-col items-center">
           <motion.div
-            className="absolute inset-0 z-0 h-full"
+            className="absolute inset-0 z-0 h-full bg-[oklch(14%_0.012_40)]"
             initial={{ opacity: reducedMotion ? 0 : 1 }}
             animate={{ opacity: reducedMotion ? 0 : 1 - scrollProgress }}
             transition={{ duration: 0.1 }}
           >
-            <Image
-              src={bgImageSrc}
-              alt=""
-              width={1920}
-              height={1080}
-              className="h-screen w-screen object-cover object-center"
-              priority
-            />
+            {mediaType === "image" ? (
+              <Image
+                src={bgImageSrc}
+                alt=""
+                width={1920}
+                height={1080}
+                className="h-screen w-screen object-cover object-center"
+                priority
+              />
+            ) : null}
             <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(5,8,11,0.62)_0%,rgba(8,11,15,0.2)_38%,rgba(4,6,9,0.58)_100%)]" />
           </motion.div>
 
