@@ -25,7 +25,7 @@ export function MobileAppNav() {
     <nav
       aria-label="Navigazione principale mobile"
       inert={!isVisible}
-      className={`mobile-app-nav fixed inset-x-3 bottom-[calc(0.75rem+env(safe-area-inset-bottom))] z-[70] grid grid-cols-4 gap-1 overflow-hidden rounded-[1.45rem] bg-[oklch(12%_0.014_42/0.94)] p-1.5 text-[oklch(92%_0.012_78)] shadow-[0_16px_42px_rgba(17,11,9,0.28)] ring-1 ring-[oklch(96%_0.008_80/0.12)] backdrop-blur-xl transition-[clip-path,opacity] duration-[340ms] ease-[cubic-bezier(0.22,1,0.36,1)] will-change-[clip-path,opacity] motion-reduce:transition-none lg:hidden ${
+      className={`mobile-app-nav fixed inset-x-3 bottom-[calc(0.75rem+env(safe-area-inset-bottom))] z-[1100] grid grid-cols-4 gap-1 overflow-hidden rounded-[1.45rem] bg-[oklch(12%_0.014_42/0.94)] p-1.5 text-[oklch(92%_0.012_78)] shadow-[0_16px_42px_rgba(17,11,9,0.28)] ring-1 ring-[oklch(96%_0.008_80/0.12)] backdrop-blur-xl transition-[clip-path,opacity] duration-[340ms] ease-[cubic-bezier(0.22,1,0.36,1)] will-change-[clip-path,opacity] motion-reduce:transition-none lg:hidden ${
         isVisible
           ? "opacity-100 [clip-path:inset(0_0_0_0_round_1.45rem)]"
           : "pointer-events-none opacity-0 [clip-path:inset(0_50%_0_50%_round_999px)]"
