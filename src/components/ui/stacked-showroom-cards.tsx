@@ -77,7 +77,9 @@ function ShowroomCard({
             alt={`Scooter ${scooter.name} in vista laterale`}
             width={500}
             height={375}
-            priority={index === 0}
+            loading={index === 0 ? "eager" : "lazy"}
+            fetchPriority="auto"
+            decoding="async"
             sizes="(max-width: 767px) 92vw, 28rem"
             className="h-full w-full object-contain object-center"
           />

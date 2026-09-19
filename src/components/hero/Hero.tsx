@@ -41,6 +41,12 @@ export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
     const video = videoRef.current;
     if (!video) return;
 
+    if (isMobileViewport) {
+      video.pause();
+      setVideoPlaying(false);
+      return;
+    }
+
     if (shouldReduceMotion) {
       video.pause();
       return;
@@ -159,12 +165,12 @@ export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
     };
   }, [isMobileViewport]);
 
-  if (isMobileViewport) {
-    return (
+  return (
+    <>
       <div
         ref={heroRootRef}
         data-qa="hero-viewport"
-        className="relative w-full overflow-x-clip bg-white"
+        className="relative w-full overflow-x-clip bg-white md:hidden"
       >
         <a
           href="/"
@@ -222,13 +228,12 @@ export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
             </div>
           }
           reducedMotion={shouldReduceMotion}
+          interactionEnabled={isMobileViewport}
+          mediaQuery="(max-width: 767px)"
         />
       </div>
-    );
-  }
 
-  return (
-    <div
+      <div
       ref={heroRootRef}
       data-qa="hero-viewport"
       className={`hidden md:block ${cardMotion ? "h-full" : "min-h-[100svh]"} w-full bg-[var(--page-background)] p-2 sm:p-3 lg:p-4 2xl:p-5`}
@@ -265,9 +270,9 @@ export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
             onError={() => setVideoPlaying(false)}
             onEmptied={() => setVideoPlaying(false)}
           >
-            <source src="/hero-video.mp4" media="(max-width: 767px)" type="video/mp4" />
             <source
               src="/hero-video.mp4"
+              media="(min-width: 768px)"
               type="video/mp4"
               onError={() => setVideoPlaying(false)}
             />
@@ -362,6 +367,7 @@ export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
           </div>
         </div>
       </motion.section>
-    </div>
+      </div>
+    </>
   );
 }

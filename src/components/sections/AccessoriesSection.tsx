@@ -1,5 +1,3 @@
-"use client";
-
 import { AccessoryRail } from "./AccessoryRail";
 
 export function AccessoriesSection() {

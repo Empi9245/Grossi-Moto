@@ -10,7 +10,6 @@ import {
   useState,
 } from "react";
 import { animate, motion } from "framer-motion";
-import { preload } from "react-dom";
 
 interface ScrollExpansionHeroProps {
   mediaType?: "video" | "image";
@@ -24,6 +23,8 @@ interface ScrollExpansionHeroProps {
   children?: ReactNode;
   endOverlay?: ReactNode;
   reducedMotion?: boolean;
+  interactionEnabled?: boolean;
+  mediaQuery?: string;
 }
 
 const clamp = (value: number, min: number, max: number) =>
@@ -41,15 +42,9 @@ export default function ScrollExpansionHero({
   children,
   endOverlay,
   reducedMotion = false,
+  interactionEnabled = true,
+  mediaQuery,
 }: ScrollExpansionHeroProps) {
-  if (mediaType === "video" && !reducedMotion) {
-    preload(mediaSrc, {
-      as: "video",
-      type: "video/mp4",
-      fetchPriority: "high",
-    });
-  }
-
   const rootRef = useRef<HTMLDivElement | null>(null);
   const scrollProgressRef = useRef(0);
   const mediaFullyExpandedRef = useRef(false);
@@ -226,7 +221,7 @@ export default function ScrollExpansionHero({
   }, [canExitHero]);
 
   useEffect(() => {
-    if (reducedMotion) {
+    if (reducedMotion || !interactionEnabled) {
       return;
     }
 
@@ -413,6 +408,7 @@ export default function ScrollExpansionHero({
     eventTargetsHero,
     expandHero,
     isHeroInteractionActive,
+    interactionEnabled,
     reducedMotion,
     scrollToShowroom,
     syncProgress,
@@ -481,7 +477,6 @@ export default function ScrollExpansionHero({
                       />
                     ) : (
                       <video
-                        src={mediaSrc}
                         autoPlay
                         muted
                         loop
@@ -491,7 +486,13 @@ export default function ScrollExpansionHero({
                         controls={false}
                         disablePictureInPicture
                         disableRemotePlayback
-                      />
+                      >
+                        <source
+                          src={mediaSrc}
+                          media={mediaQuery}
+                          type="video/mp4"
+                        />
+                      </video>
                     )}
                     <motion.div
                       className="absolute inset-0 bg-black/30"
