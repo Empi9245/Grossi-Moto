@@ -33,7 +33,9 @@ export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
   const heroRootRef = useRef<HTMLDivElement>(null);
   const { style: cardMotionStyle, ...cardMotionProps } = cardMotion ?? {};
   const videoRef = useRef<HTMLVideoElement>(null);
+  const callCtaRef = useRef<HTMLAnchorElement>(null);
   const [videoPlaying, setVideoPlaying] = useState(false);
+  const [callCtaOnLightSurface, setCallCtaOnLightSurface] = useState(false);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -63,6 +65,100 @@ export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
     };
   }, [isMobileViewport, shouldReduceMotion]);
 
+  useEffect(() => {
+    if (!isMobileViewport) return;
+
+    let frameId = 0;
+
+    const getSurfaceLightness = (color: string) => {
+      if (!color || color === "transparent") return null;
+
+      const oklch = color.match(/^oklch\(\s*([\d.]+)(%?)/i);
+      if (oklch) {
+        const value = Number.parseFloat(oklch[1]);
+        return oklch[2] === "%" ? value / 100 : value;
+      }
+
+      const rgb = color.match(/^rgba?\((.+)\)$/i);
+      if (!rgb) return null;
+
+      const parts = rgb[1]
+        .replace(/,/g, " ")
+        .replace(/\//g, " ")
+        .trim()
+        .split(/\s+/);
+
+      if (parts.length < 3) return null;
+
+      const alpha = parts[3] ? Number.parseFloat(parts[3]) : 1;
+      if (Number.isFinite(alpha) && alpha <= 0.08) return null;
+
+      const toChannel = (value: string) =>
+        value.endsWith("%")
+          ? Number.parseFloat(value) / 100
+          : Number.parseFloat(value) / 255;
+
+      const [red, green, blue] = parts.slice(0, 3).map(toChannel);
+      if (![red, green, blue].every(Number.isFinite)) return null;
+
+      return 0.2126 * red + 0.7152 * green + 0.0722 * blue;
+    };
+
+    const updateCallCtaTheme = () => {
+      frameId = 0;
+      const cta = callCtaRef.current;
+      if (!cta) return;
+
+      const rect = cta.getBoundingClientRect();
+      const elements = document.elementsFromPoint(
+        rect.left + rect.width / 2,
+        rect.top + rect.height / 2,
+      );
+
+      let nextOnLightSurface = false;
+
+      for (const element of elements) {
+        if (element === cta || cta.contains(element)) continue;
+
+        if (
+          element instanceof HTMLImageElement ||
+          element instanceof HTMLVideoElement
+        ) {
+          nextOnLightSurface = false;
+          break;
+        }
+
+        const lightness = getSurfaceLightness(
+          window.getComputedStyle(element).backgroundColor,
+        );
+
+        if (lightness === null) continue;
+
+        nextOnLightSurface = lightness >= 0.72;
+        break;
+      }
+
+      setCallCtaOnLightSurface((current) =>
+        current === nextOnLightSurface ? current : nextOnLightSurface,
+      );
+    };
+
+    const scheduleUpdate = () => {
+      if (frameId) return;
+      frameId = window.requestAnimationFrame(updateCallCtaTheme);
+    };
+
+    updateCallCtaTheme();
+    window.addEventListener("scroll", scheduleUpdate, { passive: true });
+    window.addEventListener("resize", scheduleUpdate);
+
+    return () => {
+      window.removeEventListener("scroll", scheduleUpdate);
+      window.removeEventListener("resize", scheduleUpdate);
+      if (frameId) window.cancelAnimationFrame(frameId);
+    };
+  }, [isMobileViewport]);
+
   if (isMobileViewport) {
     return (
       <div
@@ -84,9 +180,15 @@ export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
         </a>
 
         <motion.a
+          ref={callCtaRef}
           href="tel:+393289185029"
           {...subtleHover(shouldReduceMotion)}
-          className="font-ui fixed right-4 top-[calc(1rem+env(safe-area-inset-top))] z-[60] inline-flex min-h-10 shrink-0 items-center gap-2 rounded-[0.9rem] bg-[oklch(92%_0.014_78)] px-3.5 py-2.5 text-sm font-medium text-[oklch(17%_0.012_40)] shadow-[0_14px_38px_rgba(20,14,11,0.22)] transition-opacity duration-200 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(84%_0.04_72)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
+          className={[
+            "font-ui fixed right-4 top-[calc(1rem+env(safe-area-inset-top))] z-[60] inline-flex min-h-10 shrink-0 items-center gap-2 rounded-[0.9rem] px-3.5 py-2.5 text-sm font-medium transition-[background-color,color,box-shadow,opacity] duration-300 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-4 focus-visible:ring-offset-transparent motion-reduce:transition-none",
+            callCtaOnLightSurface
+              ? "bg-[#0A0A0A] text-white shadow-[0_14px_38px_rgba(10,10,10,0.2)] focus-visible:ring-black/45"
+              : "bg-white text-[#0A0A0A] shadow-[0_14px_38px_rgba(20,14,11,0.22)] focus-visible:ring-white/85",
+          ].join(" ")}
         >
           <Phone aria-hidden="true" className="h-4 w-4" strokeWidth={1.8} />
           <span>Chiama</span>
@@ -112,7 +214,7 @@ export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
               </div>
               <a
                 href="/scooters"
-                className="group font-ui mt-4 inline-flex min-h-11 items-center gap-2 rounded-[0.9rem] border border-white/25 bg-white/88 px-4 py-2.5 text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-[oklch(17%_0.012_40)] shadow-[0_14px_36px_rgba(0,0,0,0.18)] backdrop-blur-md transition-[background-color,transform] duration-200 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-4 focus-visible:ring-offset-transparent active:scale-[0.98] motion-reduce:transition-none"
+                className="group font-ui mt-4 inline-flex min-h-11 items-center gap-2 rounded-[0.9rem] border border-white/25 bg-white px-4 py-2.5 text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-[oklch(17%_0.012_40)] shadow-[0_14px_36px_rgba(0,0,0,0.18)] backdrop-blur-md transition-[background-color,transform] duration-200 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-4 focus-visible:ring-offset-transparent active:scale-[0.98] motion-reduce:transition-none"
               >
                 <span>Scopri la gamma</span>
                 <ActionMark />
@@ -231,7 +333,7 @@ export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
                 <motion.a
                   href="/scooters"
                   {...subtleHover(shouldReduceMotion)}
-                  className="font-ui inline-flex min-h-12 items-center justify-center gap-2 rounded-[0.9rem] bg-[oklch(93%_0.012_78)] px-4 py-3 text-sm leading-normal font-medium sm:px-6 text-[oklch(17%_0.012_40)] shadow-[0_16px_48px_rgba(13,9,7,0.24)] transition-opacity duration-200 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(84%_0.04_72)] focus-visible:ring-offset-4 focus-visible:ring-offset-[oklch(14%_0.012_40)] sm:text-base"
+                  className="font-ui inline-flex min-h-12 items-center justify-center gap-2 rounded-[0.9rem] bg-white px-4 py-3 text-sm leading-normal font-medium sm:px-6 text-[oklch(17%_0.012_40)] shadow-[0_16px_48px_rgba(13,9,7,0.24)] transition-opacity duration-200 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(84%_0.04_72)] focus-visible:ring-offset-4 focus-visible:ring-offset-[oklch(14%_0.012_40)] sm:text-base"
                 >
                   Confronta la gamma
                   <ActionMark />
