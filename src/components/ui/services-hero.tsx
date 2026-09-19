@@ -78,27 +78,27 @@ export function ServicesHero() {
               <Navbar />
 
               <motion.main
-                className="mx-auto flex w-full max-w-[32rem] flex-1 flex-col items-start px-4 pt-[clamp(0.5rem,1.8svh,1.25rem)] pb-[calc(5.75rem+env(safe-area-inset-bottom))] text-left sm:px-5 [@media(max-height:700px)]:pt-1.5 [@media(max-height:700px)]:pb-[calc(5.25rem+env(safe-area-inset-bottom))]"
+                className="mx-auto flex w-full max-w-[32rem] flex-1 flex-col justify-center px-4 pt-[clamp(0.75rem,2.2svh,1.5rem)] pb-[calc(5.75rem+env(safe-area-inset-bottom))] text-left sm:px-5 [@media(max-height:700px)]:pt-1.5 [@media(max-height:700px)]:pb-[calc(5.25rem+env(safe-area-inset-bottom))]"
                 variants={containerVariants}
               >
                 <motion.p
-                  className="font-ui inline-flex min-h-7 items-center rounded-full bg-[oklch(94%_0.012_78/0.96)] px-3 py-1.5 text-[0.61rem] font-semibold uppercase tracking-[0.13em] text-[oklch(18%_0.014_42)] shadow-[0_10px_30px_rgba(20,14,11,0.16)]"
+                  className="font-ui inline-flex min-h-7 items-center rounded-full bg-[#C72A09] px-3 py-1.5 text-[0.61rem] font-bold uppercase tracking-[0.13em] text-white shadow-[0_12px_34px_rgba(91,13,0,0.3)]"
                   variants={itemVariants}
                 >
                   OFFICINA · ASSISTENZA · ROMA
                 </motion.p>
 
                 <motion.h1
-                  className="font-display mt-3 w-full max-w-[18.5rem] text-[clamp(2.75rem,12.5vw,3.35rem)] font-normal leading-[0.96] tracking-normal text-white [overflow-wrap:normal] [word-break:normal] [@media(max-height:700px)]:mt-2 [@media(max-height:700px)]:text-[2.5rem]"
+                  className="font-display mt-3 w-full max-w-[20rem] text-[clamp(2.95rem,13.2vw,3.55rem)] font-bold uppercase leading-[0.86] tracking-[-0.045em] text-white [overflow-wrap:normal] [word-break:normal] [@media(max-height:700px)]:mt-2 [@media(max-height:700px)]:text-[2.45rem]"
                   variants={itemVariants}
                 >
                   Il tuo mezzo,
                   <br />
-                  seguito bene.
+                  <span className="text-[#C72A09]">seguito bene.</span>
                 </motion.h1>
 
                 <motion.p
-                  className="mt-3 w-full max-w-[20rem] text-[clamp(0.78rem,3.35vw,0.875rem)] leading-[1.55] text-white/82 [overflow-wrap:break-word] [@media(max-height:700px)]:mt-2 [@media(max-height:700px)]:text-[0.74rem] [@media(max-height:700px)]:leading-[1.45]"
+                  className="mt-3 w-full max-w-[21rem] text-[clamp(0.8rem,3.45vw,0.9rem)] font-medium leading-[1.5] text-white/86 [overflow-wrap:break-word] [@media(max-height:700px)]:mt-2 [@media(max-height:700px)]:text-[0.73rem] [@media(max-height:700px)]:leading-[1.42]"
                   variants={itemVariants}
                 >
                   Tagliandi, diagnosi e assistenza per moto e scooter KYMCO e Voge.
@@ -113,7 +113,7 @@ export function ServicesHero() {
                 >
                   <Link
                     href="/contatti?argomento=officina#richiesta"
-                    className="font-ui inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-[oklch(94%_0.012_78)] px-5 py-2.5 text-[0.78rem] font-medium text-[oklch(17%_0.012_40)] shadow-[0_14px_40px_rgba(13,9,7,0.22)] transition-opacity duration-200 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-4 focus-visible:ring-offset-black/60 motion-reduce:transition-none"
+                    className="font-ui inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-[#C72A09] px-5 py-2.5 text-[0.78rem] font-bold text-white shadow-[0_14px_38px_rgba(91,13,0,0.34)] transition-[background-color,transform] duration-200 hover:bg-[#B92508] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/85 focus-visible:ring-offset-4 focus-visible:ring-offset-black/60 motion-reduce:transform-none motion-reduce:transition-none"
                   >
                     Scrivi all’officina
                     <ArrowUpRight aria-hidden="true" className="h-4 w-4" strokeWidth={1.8} />
@@ -121,30 +121,62 @@ export function ServicesHero() {
                 </motion.div>
 
                 <motion.div
-                  className="mt-auto flex w-full items-end justify-between gap-2 pt-4 [@media(max-height:700px)]:pt-2"
+                  className="relative mt-[clamp(1.5rem,4svh,2.75rem)] w-full overflow-hidden rounded-[1.35rem] bg-[#C72A09] p-4 text-white shadow-[0_20px_56px_rgba(74,10,0,0.38)] [@media(max-height:700px)]:mt-4 [@media(max-height:700px)]:p-3"
                   variants={itemVariants}
                 >
-                  <div className="relative w-[9.5rem] rounded-[1rem] bg-[oklch(94%_0.012_78/0.97)] p-3 text-[oklch(18%_0.014_42)] shadow-[0_18px_50px_rgba(13,9,7,0.24)] min-[375px]:w-[10.25rem] [@media(max-height:700px)]:p-2.5">
-                    <span className="font-numeric absolute right-3 top-2.5 text-[0.65rem] font-semibold text-[#C72A09] [@media(max-height:700px)]:right-2.5 [@media(max-height:700px)]:top-2">
+                  <span
+                    aria-hidden="true"
+                    className="font-numeric pointer-events-none absolute -right-1 -top-2 text-[5.75rem] font-bold leading-none tracking-[-0.08em] text-white/[0.09] [@media(max-height:700px)]:text-[4.8rem]"
+                  >
+                    01
+                  </span>
+
+                  <div className="relative z-10 flex items-start justify-between gap-4">
+                    <div>
+                      <p className="font-ui text-[0.58rem] font-bold uppercase tracking-[0.18em] text-white/70">
+                        Servizi
+                      </p>
+                      <p className="font-display mt-1 text-[1.55rem] font-bold uppercase leading-[0.9] tracking-[-0.035em] [@media(max-height:700px)]:text-[1.35rem]">
+                        Officina in sede.
+                      </p>
+                    </div>
+                    <span className="font-numeric flex h-8 min-w-8 items-center justify-center rounded-full bg-[#0A0A0A] px-2 text-[0.67rem] font-semibold text-white shadow-[0_8px_24px_rgba(0,0,0,0.2)]">
                       01
                     </span>
-                    <p className="font-ui pr-7 text-[0.61rem] font-bold uppercase tracking-[0.12em] text-[oklch(25%_0.016_45)]">
-                      Officina in sede
-                    </p>
-                    <div className="mt-2.5 space-y-1 text-[0.69rem] font-medium leading-[1.3] text-[oklch(29%_0.016_48)] [@media(max-height:700px)]:mt-2 [@media(max-height:700px)]:text-[0.65rem]">
-                      <p>Tagliandi</p>
-                      <p>Diagnosi</p>
-                      <p>Montaggio accessori</p>
+                  </div>
+
+                  <div className="relative z-10 mt-4 grid grid-cols-2 border-y border-white/24 [@media(max-height:700px)]:mt-3">
+                    <div className="border-r border-white/24 py-3 pr-3 [@media(max-height:700px)]:py-2.5">
+                      <span className="font-numeric block text-[0.55rem] font-semibold text-white/55">01</span>
+                      <p className="font-ui mt-1 text-[0.78rem] font-bold leading-tight">Tagliandi</p>
+                    </div>
+                    <div className="py-3 pl-3 [@media(max-height:700px)]:py-2.5">
+                      <span className="font-numeric block text-[0.55rem] font-semibold text-white/55">02</span>
+                      <p className="font-ui mt-1 text-[0.78rem] font-bold leading-tight">Diagnosi</p>
+                    </div>
+                    <div className="col-span-2 flex items-end justify-between gap-3 border-t border-white/24 py-3 [@media(max-height:700px)]:py-2.5">
+                      <div>
+                        <span className="font-numeric block text-[0.55rem] font-semibold text-white/55">03</span>
+                        <p className="font-ui mt-1 text-[0.78rem] font-bold leading-tight">Montaggio accessori</p>
+                      </div>
+                      <span className="font-ui text-[0.55rem] font-bold uppercase tracking-[0.14em] text-white/58">
+                        Moto · Scooter
+                      </span>
                     </div>
                   </div>
 
-                  <div className="font-ui flex max-w-[7.25rem] items-center gap-1.5 rounded-full bg-black/58 px-2.5 py-2 text-[0.61rem] font-medium leading-[1.25] text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.16)] backdrop-blur-sm min-[375px]:max-w-[8.25rem] min-[375px]:px-3">
-                    <MapPin
-                      aria-hidden="true"
-                      className="h-3.5 w-3.5 shrink-0 text-white/88"
-                      strokeWidth={1.8}
-                    />
-                    <span>Via Festo Porzio 22</span>
+                  <div className="relative z-10 mt-3 flex items-center justify-between gap-3 rounded-[0.9rem] bg-[#0A0A0A]/88 px-3 py-2.5 text-white shadow-[0_10px_24px_rgba(0,0,0,0.16)] [@media(max-height:700px)]:mt-2.5 [@media(max-height:700px)]:py-2">
+                    <div className="font-ui flex min-w-0 items-center gap-2 text-[0.68rem] font-semibold leading-[1.2]">
+                      <MapPin
+                        aria-hidden="true"
+                        className="h-3.5 w-3.5 shrink-0 text-white/78"
+                        strokeWidth={1.8}
+                      />
+                      <span className="truncate">Via Festo Porzio 22</span>
+                    </div>
+                    <span className="font-ui shrink-0 text-[0.54rem] font-bold uppercase tracking-[0.15em] text-white/48">
+                      Roma
+                    </span>
                   </div>
                 </motion.div>
               </motion.main>
