@@ -43,6 +43,7 @@ export default function ScrollExpansionHero({
   const scrollProgressRef = useRef(0);
   const mediaFullyExpandedRef = useRef(false);
   const touchStartYRef = useRef<number | null>(null);
+  const touchScrollHandoffRef = useRef(false);
 
   const [scrollProgress, setScrollProgress] = useState(0);
   const [showContent, setShowContent] = useState(false);
@@ -92,11 +93,29 @@ export default function ScrollExpansionHero({
         return;
       }
 
+      const scrollFactor = 0.0009;
+      const currentProgress = scrollProgressRef.current;
+      const nextProgress = currentProgress + event.deltaY * scrollFactor;
+
       event.preventDefault();
-      syncProgress(scrollProgressRef.current + event.deltaY * 0.0009);
+      syncProgress(nextProgress);
+
+      if (event.deltaY > 0 && nextProgress >= 1) {
+        const consumedDelta = (1 - currentProgress) / scrollFactor;
+        const overflowDelta = Math.max(0, event.deltaY - consumedDelta);
+
+        if (overflowDelta > 0) {
+          window.scrollBy({
+            top: overflowDelta,
+            left: 0,
+            behavior: "auto",
+          });
+        }
+      }
     };
 
     const handleTouchStart = (event: TouchEvent) => {
+      touchScrollHandoffRef.current = false;
       touchStartYRef.current = event.touches[0]?.clientY ?? null;
     };
 
@@ -109,6 +128,17 @@ export default function ScrollExpansionHero({
       }
 
       const deltaY = startY - touchY;
+
+      if (touchScrollHandoffRef.current) {
+        event.preventDefault();
+        window.scrollBy({
+          top: deltaY,
+          left: 0,
+          behavior: "auto",
+        });
+        touchStartYRef.current = touchY;
+        return;
+      }
 
       if (
         mediaFullyExpandedRef.current &&
@@ -126,13 +156,32 @@ export default function ScrollExpansionHero({
         return;
       }
 
-      event.preventDefault();
       const scrollFactor = deltaY < 0 ? 0.008 : 0.005;
-      syncProgress(scrollProgressRef.current + deltaY * scrollFactor);
+      const currentProgress = scrollProgressRef.current;
+      const nextProgress = currentProgress + deltaY * scrollFactor;
+
+      event.preventDefault();
+      syncProgress(nextProgress);
       touchStartYRef.current = touchY;
+
+      if (deltaY > 0 && nextProgress >= 1) {
+        const consumedDelta = (1 - currentProgress) / scrollFactor;
+        const overflowDelta = Math.max(0, deltaY - consumedDelta);
+
+        touchScrollHandoffRef.current = true;
+
+        if (overflowDelta > 0) {
+          window.scrollBy({
+            top: overflowDelta,
+            left: 0,
+            behavior: "auto",
+          });
+        }
+      }
     };
 
     const handleTouchEnd = () => {
+      touchScrollHandoffRef.current = false;
       touchStartYRef.current = null;
     };
 
@@ -211,7 +260,7 @@ export default function ScrollExpansionHero({
                       loop
                       playsInline
                       preload="auto"
-                      className="h-full w-full object-cover"
+                      className="h-full w-full scale-[1.08] object-cover object-center"
                       controls={false}
                       disablePictureInPicture
                       disableRemotePlayback
