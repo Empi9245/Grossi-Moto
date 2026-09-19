@@ -386,11 +386,31 @@ function ProductShowroomChapter({
       let targetPosition = 0;
       let focusTween: gsap.core.Tween | null = null;
       let observer: ResizeObserver | null = null;
+      let cardObserver: ResizeObserver | null = null;
       let initFrame = 0;
       let initAttempts = 0;
       let disposed = false;
 
       const expectedCardCount = totalCards * copyIndexes.length;
+
+      const syncContainerHeight = () => {
+        if (cards.length === 0) return;
+
+        const tallestCard = cards.reduce(
+          (height, card) => Math.max(height, card.offsetHeight),
+          0,
+        );
+        const minimumHeight = window.matchMedia("(min-width: 640px)").matches
+          ? 336
+          : 320;
+        const nextHeight = Math.ceil(
+          Math.max(minimumHeight, tallestCard + 12),
+        );
+
+        if (container.style.height !== `${nextHeight}px`) {
+          container.style.height = `${nextHeight}px`;
+        }
+      };
 
       const renderPosition = () => {
         const currentPosition = position;
@@ -553,10 +573,17 @@ function ProductShowroomChapter({
         position = { value: startPosition };
         targetPosition = startPosition;
         focusRef.current = moveFocus;
+        syncContainerHeight();
         renderPosition();
 
         observer = new ResizeObserver(renderPosition);
         observer.observe(container);
+
+        cardObserver = new ResizeObserver(() => {
+          syncContainerHeight();
+          renderPosition();
+        });
+        cards.forEach((card) => cardObserver?.observe(card));
       };
 
       initFrame = requestAnimationFrame(initializeStack);
@@ -566,6 +593,8 @@ function ProductShowroomChapter({
         cancelAnimationFrame(initFrame);
         focusRef.current = () => {};
         observer?.disconnect();
+        cardObserver?.disconnect();
+        container.style.height = "";
         focusTween?.kill();
         if (position) gsap.killTweensOf(position);
         gsap.killTweensOf(cards);
@@ -695,7 +724,7 @@ function ProductShowroomChapter({
       >
         <div
           ref={stackContainerRef}
-          className="relative h-[20rem] sm:h-[21rem]"
+          className="relative min-h-[20rem] sm:min-h-[21rem]"
         >
           {copyIndexes.flatMap((copyIndex) =>
             scooters.map((scooter, index) => {
