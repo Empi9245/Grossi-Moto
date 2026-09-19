@@ -4,6 +4,7 @@ import { ActionMark } from "@/components/ui/control-glyphs";
 import { CalendarCheck, Phone } from "lucide-react";
 import { motion, type MotionProps } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
+import { preload } from "react-dom";
 
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 
@@ -21,6 +22,12 @@ type HeroProps = {
 };
 
 export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
+  preload("/hero-video.mp4", {
+    as: "video",
+    type: "video/mp4",
+    fetchPriority: "high",
+  });
+
   const shouldReduceMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
   const isMobileViewport = useMediaQuery("(max-width: 767px)");
   const heroRootRef = useRef<HTMLDivElement>(null);
@@ -122,7 +129,7 @@ export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
     <div
       ref={heroRootRef}
       data-qa="hero-viewport"
-      className={`${cardMotion ? "h-full" : "min-h-[100svh]"} w-full bg-[var(--page-background)] p-2 sm:p-3 lg:p-4 2xl:p-5`}
+      className={`hidden md:block ${cardMotion ? "h-full" : "min-h-[100svh]"} w-full bg-[var(--page-background)] p-2 sm:p-3 lg:p-4 2xl:p-5`}
     >
       <motion.section
         {...cardMotionProps}
