@@ -761,21 +761,36 @@ function StaticShowcase() {
   return (
     <section
       aria-label="Scooter in evidenza"
-      className="bg-[var(--page-background)] px-4 py-14 text-[oklch(18%_0.014_56)] sm:px-6 sm:py-16 lg:px-10 lg:py-24"
+      className={clsx(
+        "bg-[var(--page-background)] text-[oklch(18%_0.014_56)]",
+        smartphone
+          ? "px-0 py-0"
+          : "px-4 py-14 sm:px-6 sm:py-16 lg:px-10 lg:py-24",
+      )}
       data-showcase-mode="static"
     >
       <div className="mx-auto max-w-[92rem]">
-        <div className="border-t border-[oklch(20%_0.014_56/0.16)] pt-5">
-          <p className="font-ui text-xs font-bold uppercase tracking-[0.18em] text-[oklch(24%_0.014_56/0.54)]">
-            Gamma in evidenza
-          </p>
-          <h2 className="font-display mt-3 max-w-[12ch] text-[clamp(3rem,10vw,6rem)] font-bold leading-[0.92] tracking-normal text-[oklch(18%_0.014_56)]">
-            Scooter in showroom
-          </h2>
-        </div>
+        {!smartphone ? (
+          <div className="border-t border-[oklch(20%_0.014_56/0.16)] pt-5">
+            <p className="font-ui text-xs font-bold uppercase tracking-[0.18em] text-[oklch(24%_0.014_56/0.54)]">
+              Gamma in evidenza
+            </p>
+            <h2 className="font-display mt-3 max-w-[12ch] text-[clamp(3rem,10vw,6rem)] font-bold leading-[0.92] tracking-normal text-[oklch(18%_0.014_56)]">
+              Scooter in showroom
+            </h2>
+          </div>
+        ) : null}
 
         {smartphone ? (
-          <div className="-mx-4 mt-8">
+          <div className="relative" data-showroom-entry>
+            <div className="pointer-events-none absolute left-4 right-[5.75rem] top-[calc(1.25rem+env(safe-area-inset-top))] z-[60]">
+              <p className="font-ui text-[0.58rem] font-bold uppercase tracking-[0.18em] text-[oklch(24%_0.014_56/0.54)]">
+                Gamma in evidenza
+              </p>
+              <h2 className="font-display mt-1.5 max-w-[11rem] text-[clamp(1.7rem,7vw,2.2rem)] font-bold leading-[0.92] tracking-normal text-[oklch(18%_0.014_56)]">
+                Scooter in showroom
+              </h2>
+            </div>
             <StackedShowroomCards />
           </div>
         ) : (
@@ -863,7 +878,10 @@ function StaticShowcase() {
 
         <Link
           href="/scooters"
-          className="font-ui mt-7 inline-flex min-h-12 items-center justify-center gap-2 rounded-[0.9rem] bg-[oklch(18%_0.014_56)] px-5 py-3 text-sm font-bold text-[oklch(96%_0.01_78)] transition-colors hover:bg-[oklch(26%_0.014_56)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(38%_0.08_28)] focus-visible:ring-offset-4"
+          className={clsx(
+            "font-ui inline-flex min-h-12 items-center justify-center gap-2 rounded-[0.9rem] bg-[oklch(18%_0.014_56)] px-5 py-3 text-sm font-bold text-[oklch(96%_0.01_78)] transition-colors hover:bg-[oklch(26%_0.014_56)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(38%_0.08_28)] focus-visible:ring-offset-4",
+            smartphone ? "mx-4 mb-14 mt-8" : "mt-7",
+          )}
         >
           Apri tutta la gamma
           <ActionMark />
