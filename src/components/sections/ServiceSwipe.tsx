@@ -1,9 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { ArrowLeft, ArrowRight, PhoneCall } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowUpRight, PhoneCall, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 
@@ -25,6 +25,7 @@ const stackRotationStep = 1.35;
 const stackTiltStep = 2.4;
 const maxVisibleDepth = 5;
 const mobileSwipeThreshold = 36;
+const mobileTapTolerance = 10;
 
 function stackLayer(slot: number) {
   return Math.min(Math.abs(slot), maxVisibleDepth);
@@ -57,8 +58,12 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
     y: number;
     pointerId: number;
   } | null>(null);
+  const suppressMobileTapRef = useRef(false);
   const activeRef = useRef(0);
   const [active, setActive] = useState(0);
+  const [openMobileService, setOpenMobileService] = useState<number | null>(
+    null,
+  );
   const isTabletViewport = useMediaQuery("(min-width: 768px)");
   const isMobileViewport = !isTabletViewport;
   const shouldReduceMotion = useReducedMotion();
@@ -298,6 +303,7 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
     if (useMobileStack) {
       if (totalCards === 0) return;
 
+      setOpenMobileService(null);
       mobileFocusRef.current(index, keyboard);
       return;
     }
@@ -375,6 +381,76 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
     </div>
   );
 
+  const mobileControls = (
+    <div className="font-ui mt-6 pt-3">
+      <div className="flex items-center justify-between gap-4">
+        <div className="flex min-w-0 flex-1 items-center gap-3">
+          <span
+            className="text-[0.68rem] font-bold tabular-nums tracking-[0.08em] text-[#C72A09]"
+            aria-hidden="true"
+          >
+            {String(active + 1).padStart(2, "0")}
+          </span>
+          <div
+            aria-hidden="true"
+            className="flex min-w-0 flex-1 items-center justify-center gap-1.5"
+          >
+            {services.map((service, index) => (
+              <span
+                key={service.title}
+                className={`h-1 rounded-full transition-[width,background-color] duration-200 motion-reduce:transition-none ${
+                  index === active
+                    ? "w-7 bg-[#C72A09]"
+                    : "w-1 bg-black/20"
+                }`}
+              />
+            ))}
+          </div>
+          <span
+            className="text-[0.68rem] font-bold tabular-nums tracking-[0.08em] text-black/42"
+            aria-hidden="true"
+          >
+            {String(totalCards).padStart(2, "0")}
+          </span>
+          <span className="sr-only" aria-live="polite">
+            Servizio {active + 1} di {totalCards}
+          </span>
+        </div>
+
+        <div className="flex shrink-0 overflow-hidden rounded-full border border-black/12 bg-white shadow-sm">
+          <button
+            type="button"
+            aria-label="Servizio precedente"
+            className="inline-flex min-h-11 min-w-11 items-center justify-center text-black transition-colors duration-150 hover:bg-black/[0.04] active:bg-black/[0.07] focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-[-2px] motion-reduce:transition-none"
+            onClick={(event) =>
+              goTo(activeRef.current - 1, event.detail === 0)
+            }
+          >
+            <ArrowLeft aria-hidden="true" size={17} strokeWidth={1.8} />
+          </button>
+          <button
+            type="button"
+            aria-label="Servizio successivo"
+            className="inline-flex min-h-11 min-w-11 items-center justify-center border-l border-black/10 text-black transition-colors duration-150 hover:bg-black/[0.04] active:bg-black/[0.07] focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-[-2px] motion-reduce:transition-none"
+            onClick={(event) =>
+              goTo(activeRef.current + 1, event.detail === 0)
+            }
+          >
+            <ArrowRight aria-hidden="true" size={17} strokeWidth={1.8} />
+          </button>
+        </div>
+      </div>
+
+      <a
+        href="tel:+393289185029"
+        className="mt-4 inline-flex min-h-10 items-center gap-2 rounded-full border border-black/10 px-3.5 text-[0.72rem] font-semibold tracking-[0.01em] text-black/66 transition-[background-color,border-color] duration-150 hover:border-black/20 hover:bg-black/[0.025] focus-visible:outline-2 focus-visible:outline-offset-3 motion-reduce:transition-none"
+      >
+        Parliamone insieme
+        <PhoneCall aria-hidden="true" className="h-3.5 w-3.5" strokeWidth={1.8} />
+      </a>
+    </div>
+  );
+
   if (useMobileStack) {
     return (
       <div className="min-w-0 lg:hidden">
@@ -385,7 +461,11 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
           className="relative -mx-5 overflow-hidden focus-visible:outline-2 focus-visible:outline-offset-4 sm:-mx-7"
           style={{ touchAction: "pan-y" }}
           onPointerDown={(event) => {
-            if (!event.isPrimary || event.pointerType === "mouse") return;
+            if (!event.isPrimary) return;
+
+            suppressMobileTapRef.current = false;
+
+            if (event.pointerType === "mouse") return;
 
             swipeStartRef.current = {
               x: event.clientX,
@@ -404,17 +484,26 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
             const horizontalDistance = Math.abs(deltaX);
             const verticalDistance = Math.abs(deltaY);
 
-            if (
-              horizontalDistance < mobileSwipeThreshold ||
-              horizontalDistance <= verticalDistance * 1.15
-            ) {
+            const isHorizontalSwipe =
+              horizontalDistance >= mobileSwipeThreshold &&
+              horizontalDistance > verticalDistance * 1.15;
+
+            if (isHorizontalSwipe) {
+              suppressMobileTapRef.current = true;
+              goTo(activeRef.current + (deltaX < 0 ? 1 : -1));
               return;
             }
 
-            goTo(activeRef.current + (deltaX < 0 ? 1 : -1));
+            if (
+              Math.max(horizontalDistance, verticalDistance) >
+              mobileTapTolerance
+            ) {
+              suppressMobileTapRef.current = true;
+            }
           }}
           onPointerCancel={() => {
             swipeStartRef.current = null;
+            suppressMobileTapRef.current = true;
           }}
           onKeyDown={(event) => {
             if (event.key === "ArrowLeft") {
@@ -429,6 +518,9 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
             } else if (event.key === "End") {
               event.preventDefault();
               goTo(totalCards - 1, true);
+            } else if (event.key === "Escape" && openMobileService !== null) {
+              event.preventDefault();
+              setOpenMobileService(null);
             }
           }}
         >
@@ -441,6 +533,10 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
                 services.map((service, index) => {
                   const isSemanticCard = copyIndex === 1 && index === active;
                   const virtualIndex = copyIndex * totalCards + index;
+                  const isOpen =
+                    isSemanticCard && openMobileService === index;
+                  const detailsId = `mobile-service-details-${index}`;
+                  const serviceNumber = String(index + 1).padStart(2, "0");
 
                   return (
                     <article
@@ -449,9 +545,13 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
                       data-service-virtual-index={virtualIndex}
                       aria-hidden={!isSemanticCard}
                       inert={!isSemanticCard ? true : undefined}
-                      className="absolute left-1/2 top-0 flex h-full w-[80%] max-w-[31rem] flex-col overflow-hidden rounded-[1.5rem] border border-black/10 bg-white opacity-0 will-change-transform"
+                      className="absolute left-1/2 top-0 flex h-full w-[80%] max-w-[31rem] flex-col overflow-hidden rounded-[1.5rem] border border-gray-200 bg-white opacity-0 shadow-sm will-change-transform"
                     >
-                      <div className="relative h-[32%] shrink-0 overflow-hidden rounded-[1.5rem] bg-black/[0.035]">
+                      <div
+                        className={`relative shrink-0 overflow-hidden rounded-t-[1.45rem] bg-gray-50 transition-[height] duration-300 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none ${
+                          isOpen ? "h-[24%]" : "h-[61%]"
+                        }`}
+                      >
                         <Image
                           src={service.image}
                           alt={isSemanticCard ? service.alt : ""}
@@ -462,31 +562,121 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
                         />
                       </div>
 
-                      <div className="flex min-h-0 flex-1 flex-col p-4 pt-5">
-                        <h3 className="font-display max-w-[14ch] text-[clamp(1.9rem,7vw,2.75rem)] font-bold uppercase leading-[0.9] tracking-[-0.035em] text-[#0A0A0A]">
+                      <div className="relative z-10 flex min-h-0 flex-1 flex-col px-4 pb-3.5 pt-3">
+                        <div className="font-ui flex items-center justify-between gap-3 text-[0.61rem] font-bold uppercase tracking-[0.14em]">
+                          <span className="text-[#C72A09]">
+                            {serviceNumber}
+                          </span>
+                          <span className="text-black/38">Servizi</span>
+                        </div>
+
+                        <h3
+                          className={`font-display mt-2 max-w-[15ch] font-bold uppercase leading-[0.92] tracking-[-0.03em] text-[#0A0A0A] ${
+                            isOpen
+                              ? "text-[clamp(1.35rem,5.4vw,1.8rem)]"
+                              : "text-[clamp(1.55rem,6.1vw,2.1rem)]"
+                          }`}
+                        >
                           {service.title}
                         </h3>
-                        <p className="mt-2 max-w-[25ch] text-[clamp(1.05rem,4.2vw,1.45rem)] font-semibold leading-[1.06] text-[#C72A09]">
+
+                        <p
+                          className={`max-w-[29ch] font-medium leading-[1.18] text-black/72 ${
+                            isOpen
+                              ? "mt-1.5 text-[0.78rem]"
+                              : "mt-2 text-[clamp(0.82rem,3.5vw,0.96rem)]"
+                          }`}
+                        >
                           {service.statement}
                         </p>
-                        <p className="mt-2.5 max-w-[44ch] text-sm leading-5 text-black/72">
-                          {service.description}
-                        </p>
-                        <ul className="font-ui mt-auto grid gap-1.5 pt-3 text-[0.68rem] font-semibold uppercase tracking-[0.045em] text-black/78">
-                          {service.features.map((feature) => (
-                            <li
-                              key={feature}
-                              className="flex items-start gap-2 py-0.5"
+
+                        <AnimatePresence initial={false}>
+                          {isOpen ? (
+                            <motion.div
+                              id={detailsId}
+                              role="region"
+                              aria-label={`Dettagli: ${service.title}`}
+                              className="mt-2.5 min-h-0"
+                              initial={{ opacity: 0, y: 5 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              exit={{ opacity: 0, y: 3 }}
+                              transition={{
+                                duration: 0.2,
+                                ease: [0.22, 1, 0.36, 1],
+                              }}
                             >
-                              <span
-                                aria-hidden="true"
-                                className="mt-[0.42rem] h-1.5 w-1.5 shrink-0 rounded-full bg-[#C72A09]"
+                              <p className="text-[0.7rem] leading-[1.38] text-black/60">
+                                {service.description}
+                              </p>
+
+                              <ul className="font-ui mt-2.5 grid gap-1.5">
+                                {service.features.map((feature, featureIndex) => (
+                                  <li
+                                    key={feature}
+                                    className="flex items-start gap-2 text-[0.65rem] font-medium leading-[1.25] text-black/76"
+                                  >
+                                    <span
+                                      aria-hidden="true"
+                                      className="w-4 shrink-0 pt-px text-[0.58rem] font-bold tabular-nums text-[#C72A09]"
+                                    >
+                                      {String(featureIndex + 1).padStart(2, "0")}
+                                    </span>
+                                    <span>{feature}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </motion.div>
+                          ) : null}
+                        </AnimatePresence>
+
+                        <div
+                          aria-hidden="true"
+                          className="font-ui mt-auto flex items-center justify-end gap-1.5 pt-2 text-[0.61rem] font-semibold uppercase tracking-[0.1em] text-black/46"
+                        >
+                          {isOpen ? (
+                            <>
+                              Chiudi
+                              <X className="h-3.5 w-3.5" strokeWidth={1.8} />
+                            </>
+                          ) : (
+                            <>
+                              Scopri
+                              <ArrowUpRight
+                                className="h-3.5 w-3.5"
+                                strokeWidth={1.8}
                               />
-                              <span>{feature}</span>
-                            </li>
-                          ))}
-                        </ul>
+                            </>
+                          )}
+                        </div>
                       </div>
+
+                      {isSemanticCard ? (
+                        <button
+                          type="button"
+                          aria-expanded={isOpen}
+                          aria-controls={detailsId}
+                          aria-label={
+                            isOpen
+                              ? `Chiudi i dettagli di ${service.title}`
+                              : `Apri i dettagli di ${service.title}`
+                          }
+                          onClick={(event) => {
+                            if (
+                              event.detail !== 0 &&
+                              suppressMobileTapRef.current
+                            ) {
+                              suppressMobileTapRef.current = false;
+                              return;
+                            }
+
+                            suppressMobileTapRef.current = false;
+                            setOpenMobileService((current) =>
+                              current === index ? null : index,
+                            );
+                          }}
+                          className="absolute inset-0 z-20 rounded-[1.5rem] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/45 focus-visible:ring-inset"
+                        />
+                      ) : null}
 
                       <div
                         data-service-depth-shade
@@ -501,7 +691,7 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
           </div>
         </div>
 
-        {controls}
+        {mobileControls}
       </div>
     );
   }
