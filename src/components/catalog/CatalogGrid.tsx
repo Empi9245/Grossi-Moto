@@ -622,7 +622,7 @@ function ProductShowroomChapter({
         role="region"
         aria-label={label + ": modelli da sfogliare"}
         tabIndex={0}
-        className="relative -mx-5 overflow-hidden focus-visible:outline-2 focus-visible:outline-offset-4 sm:-mx-7"
+        className="relative -mx-5 cursor-grab overflow-hidden focus-visible:outline-2 focus-visible:outline-offset-4 active:cursor-grabbing sm:-mx-7"
         style={{ touchAction: "pan-y" }}
         onPointerDown={(event) => {
           suppressClickRef.current = false;
@@ -630,9 +630,13 @@ function ProductShowroomChapter({
           if (
             totalCards < 2 ||
             !event.isPrimary ||
-            event.pointerType === "mouse"
+            (event.pointerType === "mouse" && event.button !== 0)
           ) {
             return;
+          }
+
+          if (event.pointerType === "mouse") {
+            event.currentTarget.setPointerCapture(event.pointerId);
           }
 
           swipeStartRef.current = {
