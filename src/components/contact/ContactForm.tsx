@@ -371,7 +371,7 @@ export function ContactForm({
         type="submit"
         disabled={status === "sending"}
         aria-busy={status === "sending"}
-        className="font-ui inline-flex min-h-12 w-full items-center justify-center rounded-full bg-[#0A0A0A] px-6 py-3 text-sm font-bold uppercase tracking-[0.08em] text-white transition-[background-color,transform,opacity] duration-150 hover:bg-[#C72A09] active:scale-[0.98] disabled:cursor-wait disabled:opacity-55 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C72A09]/50 focus-visible:ring-offset-4 focus-visible:ring-offset-white motion-reduce:transform-none motion-reduce:transition-none sm:w-auto sm:min-w-52"
+        className="font-ui inline-flex min-h-12 w-full items-center justify-center rounded-[0.9rem] border border-[#0A0A0A] bg-[#0A0A0A] px-6 py-3 text-sm font-bold uppercase tracking-[0.08em] text-white transition-[background-color,transform,opacity] duration-150 hover:bg-[#C72A09] active:scale-[0.98] disabled:cursor-wait disabled:opacity-55 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C72A09]/50 focus-visible:ring-offset-4 focus-visible:ring-offset-white motion-reduce:transform-none motion-reduce:transition-none sm:w-auto sm:min-w-52"
       >
         {status === "sending" ? "Invio in corso…" : "Invia la richiesta"}
       </button>

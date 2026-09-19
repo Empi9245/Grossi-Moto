@@ -2,14 +2,7 @@
 
 import Image from "next/image";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import {
-  ArrowUpRight,
-  Box,
-  Check,
-  Lock,
-  ShieldCheck,
-  Smartphone,
-} from "lucide-react";
+import { Box, Check, Lock, ShieldCheck, Smartphone } from "lucide-react";
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 
 import { accessories } from "@/data/accessories";
@@ -160,10 +153,10 @@ export function AccessoryRail() {
           <a
             href="tel:+393289185029"
             aria-label={`Chiedi compatibilità: ${current.title}`}
-            className="font-ui mt-6 inline-flex min-h-12 w-fit items-center gap-2 rounded-full bg-white/90 px-5 py-3 text-sm font-semibold text-[#111111] transition-colors hover:bg-white active:bg-white/80 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#111111]"
+            className="font-ui mt-6 inline-flex min-h-12 w-fit items-center gap-2 rounded-[0.9rem] bg-white/90 px-5 py-3 text-sm font-semibold text-[#111111] transition-colors hover:bg-white active:bg-white/80 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#111111]"
           >
             Chiedi compatibilità
-            <ArrowUpRight aria-hidden="true" className="h-4 w-4" />
+            
           </a>
         </div>
       </div>

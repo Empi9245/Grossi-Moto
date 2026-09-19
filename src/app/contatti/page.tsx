@@ -1,13 +1,7 @@
+import { ActionMark } from "@/components/ui/control-glyphs";
 import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
-import {
-  ArrowUpRight,
-  Clock,
-  Mail,
-  MapPin,
-  Phone,
-  PhoneCall,
-} from "lucide-react";
+import { Clock, Mail, MapPin, Phone, PhoneCall } from "lucide-react";
 
 import { ContactForm } from "@/components/contact/ContactForm";
 import { SiteFooter } from "@/components/layout/SiteFooter";
@@ -102,7 +96,7 @@ function ContactsNav() {
         <div className="ml-auto flex shrink-0 justify-end lg:hidden">
           <a
             href="tel:+393289185029"
-            className="font-ui inline-flex min-h-11 items-center gap-2 rounded-full bg-[#0A0A0A] px-3.5 py-2 text-[0.72rem] font-bold uppercase tracking-[0.1em] text-white transition-[opacity,transform] duration-150 hover:opacity-[0.84] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/35 focus-visible:ring-offset-4 focus-visible:ring-offset-white motion-reduce:transform-none motion-reduce:transition-none sm:px-4"
+            className="font-ui inline-flex min-h-11 items-center gap-2 rounded-[0.9rem] bg-[#0A0A0A] px-3.5 py-2 text-[0.72rem] font-bold uppercase tracking-[0.1em] text-white transition-[opacity,transform] duration-150 hover:opacity-[0.84] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/35 focus-visible:ring-offset-4 focus-visible:ring-offset-white motion-reduce:transform-none motion-reduce:transition-none sm:px-4"
           >
             <PhoneCall aria-hidden="true" className="h-4 w-4" strokeWidth={1.8} />
             <span className="hidden sm:inline">Chiama ora</span>
@@ -158,27 +152,23 @@ export default async function ContattiPage({
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
               <a
                 href="tel:+393289185029"
-                className="font-ui inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#0A0A0A] px-6 py-3 text-sm font-bold uppercase tracking-[0.08em] text-white transition-[opacity,transform] duration-150 hover:opacity-[0.86] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/40 focus-visible:ring-offset-4 focus-visible:ring-offset-white motion-reduce:transform-none motion-reduce:transition-none"
+                className="font-ui inline-flex min-h-12 items-center justify-center gap-2 rounded-[0.9rem] bg-[#0A0A0A] px-6 py-3 text-sm font-bold uppercase tracking-[0.08em] text-white transition-[opacity,transform] duration-150 hover:opacity-[0.86] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/40 focus-visible:ring-offset-4 focus-visible:ring-offset-white motion-reduce:transform-none motion-reduce:transition-none"
               >
                 Chiama ora
                 <PhoneCall aria-hidden="true" className="h-4 w-4" strokeWidth={1.8} />
               </a>
               <Link
                 href="#richiesta"
-                className="font-ui inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-[#0A0A0A]/18 px-6 py-3 text-sm font-bold uppercase tracking-[0.08em] text-[#0A0A0A] transition-[border-color,background-color,transform] duration-150 hover:border-[#0A0A0A]/35 hover:bg-black/[0.035] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C72A09]/45 focus-visible:ring-offset-4 focus-visible:ring-offset-white motion-reduce:transform-none motion-reduce:transition-none"
+                className="font-ui inline-flex min-h-12 items-center justify-center gap-2 rounded-[0.9rem] border border-[#0A0A0A]/18 px-6 py-3 text-sm font-bold uppercase tracking-[0.08em] text-[#0A0A0A] transition-[border-color,background-color,transform] duration-150 hover:border-[#0A0A0A]/35 hover:bg-black/[0.035] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C72A09]/45 focus-visible:ring-offset-4 focus-visible:ring-offset-white motion-reduce:transform-none motion-reduce:transition-none"
               >
                 Invia una richiesta
               </Link>
               <Link
                 href="#sede"
-                className="font-ui group inline-flex min-h-11 items-center justify-center gap-2 px-2 text-sm font-bold text-[#C72A09] outline-none transition-opacity duration-150 hover:opacity-70 focus-visible:ring-2 focus-visible:ring-[#C72A09]/40 focus-visible:ring-offset-4 focus-visible:ring-offset-white motion-reduce:transition-none sm:justify-start"
+                className="font-ui group inline-flex min-h-11 items-center justify-center gap-2 rounded-[0.9rem] border border-[#C72A09]/30 px-4 text-sm font-bold text-[#C72A09] outline-none transition-opacity duration-150 hover:opacity-70 focus-visible:ring-2 focus-visible:ring-[#C72A09]/40 focus-visible:ring-offset-4 focus-visible:ring-offset-white motion-reduce:transition-none sm:justify-start"
               >
                 Come raggiungerci
-                <ArrowUpRight
-                  aria-hidden="true"
-                  className="h-4 w-4 transition-transform duration-150 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transform-none motion-reduce:transition-none"
-                  strokeWidth={1.8}
-                />
+                <ActionMark />
               </Link>
             </div>
           </div>
@@ -212,14 +202,10 @@ export default async function ContattiPage({
                   href={href}
                   target={href.startsWith("http") ? "_blank" : undefined}
                   rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
-                  className="font-ui group mt-5 inline-flex min-h-11 w-fit items-center gap-2 rounded-sm text-sm font-bold text-[#0A0A0A] outline-none transition-colors duration-150 hover:text-[#C72A09] focus-visible:ring-2 focus-visible:ring-[#C72A09]/45 focus-visible:ring-offset-4 focus-visible:ring-offset-white motion-reduce:transition-none"
+                  className="font-ui group mt-5 inline-flex min-h-11 w-fit items-center gap-2 rounded-[0.8rem] border border-black/12 px-3 text-sm font-bold text-[#0A0A0A] outline-none transition-colors duration-150 hover:text-[#C72A09] focus-visible:ring-2 focus-visible:ring-[#C72A09]/45 focus-visible:ring-offset-4 focus-visible:ring-offset-white motion-reduce:transition-none"
                 >
                   {cta}
-                  <ArrowUpRight
-                    aria-hidden="true"
-                    className="h-4 w-4 transition-transform duration-150 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transform-none motion-reduce:transition-none"
-                    strokeWidth={1.8}
-                  />
+                  <ActionMark />
                 </a>
               </article>
             ))}
@@ -244,7 +230,7 @@ export default async function ContattiPage({
               </p>
               <a
                 href="tel:+393289185029"
-                className="font-ui mt-7 inline-flex min-h-11 items-center gap-2 rounded-sm text-sm font-bold text-white outline-none transition-opacity duration-150 hover:opacity-75 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-4 focus-visible:ring-offset-[#C72A09] motion-reduce:transition-none"
+                className="font-ui mt-7 inline-flex min-h-11 items-center gap-2 rounded-[0.8rem] border border-white/30 px-3 text-sm font-bold text-white outline-none transition-opacity duration-150 hover:opacity-75 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-4 focus-visible:ring-offset-[#C72A09] motion-reduce:transition-none"
               >
                 +39 328 918 5029
                 <PhoneCall aria-hidden="true" className="h-4 w-4" strokeWidth={1.8} />
@@ -282,14 +268,10 @@ export default async function ContattiPage({
                 href="https://share.google/ppfR023TdQcVrYya3"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-ui group mt-8 inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-bold uppercase tracking-[0.08em] text-[#0A0A0A] transition-[background-color,transform] duration-150 hover:bg-white/90 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-4 focus-visible:ring-offset-[#111111] motion-reduce:transform-none motion-reduce:transition-none"
+                className="font-ui group mt-8 inline-flex min-h-12 items-center justify-center gap-2 rounded-[0.9rem] bg-white px-6 py-3 text-sm font-bold uppercase tracking-[0.08em] text-[#0A0A0A] transition-[background-color,transform] duration-150 hover:bg-white/90 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-4 focus-visible:ring-offset-[#111111] motion-reduce:transform-none motion-reduce:transition-none"
               >
                 Apri su Google Maps
-                <ArrowUpRight
-                  aria-hidden="true"
-                  className="h-4 w-4 transition-transform duration-150 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transform-none motion-reduce:transition-none"
-                  strokeWidth={1.8}
-                />
+                <ActionMark />
               </a>
             </div>
 
@@ -332,14 +314,14 @@ export default async function ContattiPage({
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
             <a
               href="tel:+393289185029"
-              className="font-ui inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#0A0A0A] px-6 py-3 text-sm font-bold uppercase tracking-[0.08em] text-white transition-[opacity,transform] duration-150 hover:opacity-[0.86] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/40 focus-visible:ring-offset-4 focus-visible:ring-offset-white motion-reduce:transform-none motion-reduce:transition-none"
+              className="font-ui inline-flex min-h-12 items-center justify-center gap-2 rounded-[0.9rem] bg-[#0A0A0A] px-6 py-3 text-sm font-bold uppercase tracking-[0.08em] text-white transition-[opacity,transform] duration-150 hover:opacity-[0.86] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/40 focus-visible:ring-offset-4 focus-visible:ring-offset-white motion-reduce:transform-none motion-reduce:transition-none"
             >
               Chiama ora
               <PhoneCall aria-hidden="true" className="h-4 w-4" strokeWidth={1.8} />
             </a>
             <Link
               href="#richiesta"
-              className="font-ui inline-flex min-h-12 items-center justify-center rounded-full border border-[#C72A09] px-6 py-3 text-sm font-bold uppercase tracking-[0.08em] text-[#C72A09] transition-[background-color,color,transform] duration-150 hover:bg-[#C72A09] hover:text-white active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C72A09]/45 focus-visible:ring-offset-4 focus-visible:ring-offset-white motion-reduce:transform-none motion-reduce:transition-none"
+              className="font-ui inline-flex min-h-12 items-center justify-center rounded-[0.9rem] border border-[#C72A09] px-6 py-3 text-sm font-bold uppercase tracking-[0.08em] text-[#C72A09] transition-[background-color,color,transform] duration-150 hover:bg-[#C72A09] hover:text-white active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C72A09]/45 focus-visible:ring-offset-4 focus-visible:ring-offset-white motion-reduce:transform-none motion-reduce:transition-none"
             >
               Invia una richiesta
             </Link>

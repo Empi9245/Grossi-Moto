@@ -1,7 +1,8 @@
 "use client";
 
+import { DirectionMark, DisclosureMark } from "@/components/ui/control-glyphs";
 import Image from "next/image";
-import { ArrowLeft, ArrowRight, ArrowUpRight, PhoneCall, X } from "lucide-react";
+import { PhoneCall } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import gsap from "gsap";
@@ -338,7 +339,7 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
   };
 
   const controlClass =
-    "inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-black/18 bg-white text-black transition-[background-color,border-color,transform] duration-150 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] hover:border-black/34 hover:bg-black/[0.04] active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-3 aria-disabled:pointer-events-none aria-disabled:opacity-30 motion-reduce:transform-none motion-reduce:transition-none";
+    "group inline-flex min-h-11 min-w-11 items-center justify-center rounded-[0.8rem] border border-black/18 bg-white text-black transition-[background-color,border-color,transform] duration-150 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] hover:border-black/34 hover:bg-black/[0.04] active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-3 aria-disabled:pointer-events-none aria-disabled:opacity-30 motion-reduce:transform-none motion-reduce:transition-none";
 
   const controls = (
     <div className="font-ui mt-7 flex flex-wrap items-center justify-between gap-4 pt-4">
@@ -368,7 +369,7 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
             }
           }}
         >
-          <ArrowLeft aria-hidden="true" size={18} strokeWidth={1.8} />
+          <DirectionMark direction="previous" />
         </button>
         <button
           type="button"
@@ -381,7 +382,7 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
             }
           }}
         >
-          <ArrowRight aria-hidden="true" size={18} strokeWidth={1.8} />
+          <DirectionMark direction="next" />
         </button>
       </div>
     </div>
@@ -423,33 +424,33 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
           </span>
         </div>
 
-        <div className="flex shrink-0 overflow-hidden rounded-full border border-black/12 bg-white shadow-sm">
+        <div className="flex shrink-0 gap-2">
           <button
             type="button"
             aria-label="Servizio precedente"
-            className="inline-flex min-h-11 min-w-11 items-center justify-center text-black transition-colors duration-150 hover:bg-black/[0.04] active:bg-black/[0.07] focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-[-2px] motion-reduce:transition-none"
+            className="group inline-flex min-h-11 min-w-11 items-center justify-center rounded-[0.8rem] border border-black/14 bg-white text-black shadow-sm transition-[background-color,border-color] duration-150 hover:border-black/28 hover:bg-black/[0.04] active:bg-black/[0.07] focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-2 motion-reduce:transition-none"
             onClick={(event) =>
               goTo(activeRef.current - 1, event.detail === 0)
             }
           >
-            <ArrowLeft aria-hidden="true" size={17} strokeWidth={1.8} />
+            <DirectionMark direction="previous" />
           </button>
           <button
             type="button"
             aria-label="Servizio successivo"
-            className="inline-flex min-h-11 min-w-11 items-center justify-center border-l border-black/10 text-black transition-colors duration-150 hover:bg-black/[0.04] active:bg-black/[0.07] focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-[-2px] motion-reduce:transition-none"
+            className="group inline-flex min-h-11 min-w-11 items-center justify-center rounded-[0.8rem] border border-black/14 bg-white text-black shadow-sm transition-[background-color,border-color] duration-150 hover:border-black/28 hover:bg-black/[0.04] active:bg-black/[0.07] focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-2 motion-reduce:transition-none"
             onClick={(event) =>
               goTo(activeRef.current + 1, event.detail === 0)
             }
           >
-            <ArrowRight aria-hidden="true" size={17} strokeWidth={1.8} />
+            <DirectionMark direction="next" />
           </button>
         </div>
       </div>
 
       <a
         href="tel:+393289185029"
-        className="mt-4 inline-flex min-h-10 items-center gap-2 rounded-full border border-black/10 px-3.5 text-[0.72rem] font-semibold tracking-[0.01em] text-black/66 transition-[background-color,border-color] duration-150 hover:border-black/20 hover:bg-black/[0.025] focus-visible:outline-2 focus-visible:outline-offset-3 motion-reduce:transition-none"
+        className="mt-4 inline-flex min-h-10 items-center gap-2 rounded-[0.9rem] border border-black/10 px-3.5 text-[0.72rem] font-semibold tracking-[0.01em] text-black/66 transition-[background-color,border-color] duration-150 hover:border-black/20 hover:bg-black/[0.025] focus-visible:outline-2 focus-visible:outline-offset-3 motion-reduce:transition-none"
       >
         Parliamone insieme
         <PhoneCall aria-hidden="true" className="h-3.5 w-3.5" strokeWidth={1.8} />
@@ -649,15 +650,12 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
                           {isOpen ? (
                             <>
                               Chiudi
-                              <X className="h-3.5 w-3.5" strokeWidth={1.8} />
+                              <DisclosureMark expanded />
                             </>
                           ) : (
                             <>
                               Scopri
-                              <ArrowUpRight
-                                className="h-3.5 w-3.5"
-                                strokeWidth={1.8}
-                              />
+                              <DisclosureMark expanded={false} />
                             </>
                           )}
                         </div>

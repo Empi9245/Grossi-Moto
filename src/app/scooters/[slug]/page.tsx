@@ -1,8 +1,9 @@
+import { ActionMark } from "@/components/ui/control-glyphs";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ArrowUpRight, PhoneCall } from "lucide-react";
+import { PhoneCall } from "lucide-react";
 
 import { CatalogNavbar } from "@/components/catalog/CatalogNavbar";
 import { SiteFooter } from "@/components/layout/SiteFooter";
@@ -178,7 +179,7 @@ export default async function ScooterModelPage({ params }: ModelPageProps) {
                   <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                     <a
                       href="tel:+393289185029"
-                      className="font-ui inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-black px-6 py-3 text-sm font-bold uppercase tracking-[0.08em] text-white transition-[opacity,transform] duration-200 hover:opacity-82 active:translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/35 focus-visible:ring-offset-4"
+                      className="font-ui inline-flex min-h-12 items-center justify-center gap-2 rounded-[0.9rem] bg-black px-6 py-3 text-sm font-bold uppercase tracking-[0.08em] text-white transition-[opacity,transform] duration-200 hover:opacity-82 active:translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/35 focus-visible:ring-offset-4"
                     >
                       Chiama per disponibilità
                       <PhoneCall
@@ -189,14 +190,10 @@ export default async function ScooterModelPage({ params }: ModelPageProps) {
                     </a>
                     <Link
                       href={`/contatti?modello=${encodeURIComponent(scooter.id)}#richiesta`}
-                      className="font-ui inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-black/14 bg-white/35 px-6 py-3 text-sm font-bold uppercase tracking-[0.08em] text-current transition-colors duration-200 hover:bg-white/58 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/35 focus-visible:ring-offset-4"
+                      className="font-ui inline-flex min-h-12 items-center justify-center gap-2 rounded-[0.9rem] border border-black/14 bg-white/35 px-6 py-3 text-sm font-bold uppercase tracking-[0.08em] text-current transition-colors duration-200 hover:bg-white/58 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/35 focus-visible:ring-offset-4"
                     >
                       Chiedi prezzo e disponibilità
-                      <ArrowUpRight
-                        aria-hidden="true"
-                        className="h-4 w-4"
-                        strokeWidth={1.8}
-                      />
+                      <ActionMark />
                     </Link>
                   </div>
                 </div>
@@ -260,25 +257,17 @@ export default async function ScooterModelPage({ params }: ModelPageProps) {
             <div className="mt-8 flex flex-wrap items-center gap-3 border-t border-black/10 pt-7">
               <Link
                 href="/scooters"
-                className="font-ui inline-flex min-h-11 items-center gap-2 rounded-full px-3 text-xs font-bold uppercase tracking-[0.08em] text-black transition-colors hover:text-black/58 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/35"
+                className="font-ui inline-flex min-h-11 items-center gap-2 rounded-[0.9rem] px-3 text-xs font-bold uppercase tracking-[0.08em] text-black transition-colors hover:text-black/58 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/35"
               >
-                <ArrowLeft
-                  aria-hidden="true"
-                  className="h-4 w-4"
-                  strokeWidth={1.8}
-                />
+                
                 Torna alla gamma
               </Link>
               <Link
                 href={`/scooters?focus=${encodeURIComponent(scooter.id)}`}
-                className="font-ui inline-flex min-h-11 items-center gap-2 rounded-full px-3 text-xs font-bold uppercase tracking-[0.08em] text-black transition-colors hover:text-black/58 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/35"
+                className="font-ui inline-flex min-h-11 items-center gap-2 rounded-[0.9rem] px-3 text-xs font-bold uppercase tracking-[0.08em] text-black transition-colors hover:text-black/58 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/35"
               >
                 Apri nel catalogo
-                <ArrowUpRight
-                  aria-hidden="true"
-                  className="h-4 w-4"
-                  strokeWidth={1.8}
-                />
+                <ActionMark />
               </Link>
             </div>
 
@@ -314,11 +303,7 @@ export default async function ScooterModelPage({ params }: ModelPageProps) {
                       </p>
                       <span className="font-ui mt-5 inline-flex min-h-10 items-center gap-2 text-[0.68rem] font-bold uppercase tracking-[0.1em] text-black">
                         Vedi il modello
-                        <ArrowUpRight
-                          aria-hidden="true"
-                          className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-                          strokeWidth={1.8}
-                        />
+                        <ActionMark />
                       </span>
                     </Link>
                   ))}

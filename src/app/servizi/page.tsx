@@ -1,6 +1,7 @@
+import { ActionMark } from "@/components/ui/control-glyphs";
 import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
-import { ArrowUpRight, PhoneCall } from "lucide-react";
+import { PhoneCall } from "lucide-react";
 
 import { ServicesHero } from "@/components/ui/services-hero";
 import { StickyScrollShowcase } from "@/components/sections/StickyScrollShowcase";
@@ -59,7 +60,7 @@ function ServicesNav() {
         <div className="flex shrink-0 justify-end lg:hidden">
           <a
             href="tel:+393289185029"
-            className="font-ui inline-flex min-h-11 items-center gap-2 rounded-full bg-[#0A0A0A] px-3.5 py-2 text-[0.72rem] font-bold uppercase tracking-[0.1em] text-white transition-[opacity,transform] duration-150 hover:opacity-[0.84] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/35 focus-visible:ring-offset-4 focus-visible:ring-offset-white motion-reduce:transform-none motion-reduce:transition-none sm:px-4"
+            className="font-ui inline-flex min-h-11 items-center gap-2 rounded-[0.9rem] bg-[#0A0A0A] px-3.5 py-2 text-[0.72rem] font-bold uppercase tracking-[0.1em] text-white transition-[opacity,transform] duration-150 hover:opacity-[0.84] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/35 focus-visible:ring-offset-4 focus-visible:ring-offset-white motion-reduce:transform-none motion-reduce:transition-none sm:px-4"
           >
             <PhoneCall aria-hidden="true" className="h-4 w-4" strokeWidth={1.8} />
             <span className="hidden sm:inline">Chiama ora</span>
@@ -111,21 +112,17 @@ export default function ServiziPage() {
               <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
                 <a
                   href="tel:+393289185029"
-                  className="font-ui inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#0A0A0A] px-6 py-3 text-sm font-bold uppercase tracking-[0.08em] text-white transition-[opacity,transform] duration-150 hover:opacity-[0.88] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-4 focus-visible:ring-offset-[#C72A09] motion-reduce:transform-none motion-reduce:transition-none"
+                  className="font-ui inline-flex min-h-12 items-center justify-center gap-2 rounded-[0.9rem] bg-[#0A0A0A] px-6 py-3 text-sm font-bold uppercase tracking-[0.08em] text-white transition-[opacity,transform] duration-150 hover:opacity-[0.88] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-4 focus-visible:ring-offset-[#C72A09] motion-reduce:transform-none motion-reduce:transition-none"
                 >
                   Chiama ora
                   <PhoneCall aria-hidden="true" className="h-4 w-4" strokeWidth={1.8} />
                 </a>
                 <Link
                   href="/contatti?argomento=officina#richiesta"
-                  className="font-ui group inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-white/58 bg-white/[0.04] px-6 py-3 text-sm font-bold uppercase tracking-[0.08em] text-white transition-[background-color,transform] duration-150 hover:bg-white/10 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-4 focus-visible:ring-offset-[#C72A09] motion-reduce:transform-none motion-reduce:transition-none"
+                  className="font-ui group inline-flex min-h-12 items-center justify-center gap-2 rounded-[0.9rem] border border-white/58 bg-white/[0.04] px-6 py-3 text-sm font-bold uppercase tracking-[0.08em] text-white transition-[background-color,transform] duration-150 hover:bg-white/10 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-4 focus-visible:ring-offset-[#C72A09] motion-reduce:transform-none motion-reduce:transition-none"
                 >
                   Scrivi all’officina
-                  <ArrowUpRight
-                    aria-hidden="true"
-                    className="h-4 w-4 transition-transform duration-150 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transform-none motion-reduce:transition-none"
-                    strokeWidth={1.8}
-                  />
+                  <ActionMark />
                 </Link>
               </div>
             </div>

@@ -585,3 +585,11 @@ Implementata.
 - 36 immagini operative convertite in WebP e collegate ai componenti: 27,1 → 3,4 MB complessivi (-87%), originali conservati. Video desktop 15,7 → 10,8 MB; variante mobile 5,8 MB con source media e faststart, senza tagliare la sequenza.
 - Zoom mobile alleggerito animando la superficie della foto anziché l’intera viewport; rimosse grandi ombre e prospettiva 3D mobile. Titoli credits più grandi e Anton locale WOFF2 con licenza OFL, 18,6 KB.
 - Test unitari della logica swipe (4 casi) passati; asset WebP decodificati. Dettagli API, metriche, limiti e comandi in `docs/MOBILE_SWIPE_MEDIA_2026-09-17.md`. Nessuna QA visuale/touch automatica o deploy.
+
+
+## Control box system — 2026-09-19
+
+- Unificato il linguaggio visivo di CTA e controlli: le azioni non usano più frecce diagonali come firma grafica; le CTA di esplorazione usano un piccolo segnale tipografico `+` o solo testo quando l'azione è già esplicita.
+- Previous/next usano chevron corti dentro control box squadrati; le stringhe tastiera `ArrowLeft`/`ArrowRight` restano invariate. Disclosure di card e pannelli usa `+ / −`.
+- Home e Gamma restano neutral/pastel senza nuovi accenti rossi. Servizi e Contatti mantengono bianco/nero/rosso con rosso riservato agli stati e alle CTA già previste.
+- Preservati layout di sezione, dati, immagini, routing, telefono, SEO, GSAP, snap, sticky, scrolling, drag pointer e logica dei caroselli.

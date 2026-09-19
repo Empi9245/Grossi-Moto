@@ -1,9 +1,10 @@
 "use client";
 
+import { ActionMark } from "@/components/ui/control-glyphs";
 import { useRef, useState } from "react";
 import Image from "next/image";
 import { useReducedMotion } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
+
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
@@ -117,10 +118,10 @@ function ShowroomCard({
           scooterId={scooter.id}
           tabIndex={active ? 0 : -1}
           aria-label={`Scopri di più su ${scooter.name}`}
-          className="font-ui mt-5 inline-flex min-h-11 items-center gap-2 rounded-full bg-white px-5 py-2.5 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-black outline-none transition-transform duration-200 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-3 focus-visible:ring-offset-black/60"
+          className="font-ui mt-5 inline-flex min-h-11 items-center gap-2 rounded-[0.9rem] bg-white px-5 py-2.5 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-black outline-none transition-transform duration-200 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-3 focus-visible:ring-offset-black/60"
         >
           Scopri di più
-          <ArrowUpRight aria-hidden="true" className="h-4 w-4" strokeWidth={1.8} />
+          <ActionMark />
         </TransitionLink>
       </div>
     </article>

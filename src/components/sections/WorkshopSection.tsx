@@ -1,4 +1,4 @@
-import { ArrowUpRight, ClipboardCheck, Settings2, Wrench } from "lucide-react";
+import { ClipboardCheck, Settings2, Wrench } from "lucide-react";
 
 const workshopItems = [
   "Tagliandi",
@@ -33,10 +33,10 @@ export function WorkshopSection() {
             </p>
             <a
               href="tel:+393289185029"
-              className="font-ui mt-8 inline-flex min-h-12 lg:mt-6 items-center justify-center gap-2 rounded-full bg-[var(--gm-black)] px-6 py-3 text-sm font-bold uppercase tracking-[0.08em] text-white transition-[opacity,transform] duration-200 hover:opacity-88 active:translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/35 focus-visible:ring-offset-4 focus-visible:ring-offset-[var(--home-workshop-surface)]"
+              className="font-ui mt-8 inline-flex min-h-12 lg:mt-6 items-center justify-center gap-2 rounded-[0.9rem] bg-[var(--gm-black)] px-6 py-3 text-sm font-bold uppercase tracking-[0.08em] text-white transition-[opacity,transform] duration-200 hover:opacity-88 active:translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/35 focus-visible:ring-offset-4 focus-visible:ring-offset-[var(--home-workshop-surface)]"
             >
               Chiama l’officina
-              <ArrowUpRight aria-hidden="true" className="h-4 w-4" strokeWidth={1.8} />
+              
             </a>
           </div>
 

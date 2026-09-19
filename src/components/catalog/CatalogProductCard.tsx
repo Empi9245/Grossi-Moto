@@ -1,3 +1,4 @@
+import { DisclosureMark } from "@/components/ui/control-glyphs";
 import {
   memo,
   type ComponentType,
@@ -5,16 +6,7 @@ import {
 } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  ArrowRight,
-  Gauge,
-  Layers2,
-  MapPinned,
-  Minimize2,
-  PhoneCall,
-  Route,
-  ShieldCheck,
-} from "lucide-react";
+import { Gauge, Layers2, MapPinned, PhoneCall, Route, ShieldCheck } from "lucide-react";
 import { motion } from "framer-motion";
 import { clsx } from "clsx";
 
@@ -107,7 +99,7 @@ function ProductContactActions({ scooter }: { scooter: CatalogScooter }) {
       <a
         href="tel:+393289185029"
         aria-label={`Chiama per disponibilità per ${scooter.name}: chiama Grossi Moto`}
-        className="font-ui inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-[oklch(18%_0.014_56)] px-5 py-3 text-[0.72rem] font-bold uppercase tracking-[0.1em] text-[oklch(94%_0.01_78)] outline-none transition-[background,transform] duration-200 hover:bg-[oklch(23%_0.016_56)] active:translate-y-px focus-visible:ring-2 focus-visible:ring-[var(--product-accent)] focus-visible:ring-offset-4 focus-visible:ring-offset-[oklch(88%_0.015_78)] sm:w-fit"
+        className="font-ui inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-[0.9rem] bg-[oklch(18%_0.014_56)] px-5 py-3 text-[0.72rem] font-bold uppercase tracking-[0.1em] text-[oklch(94%_0.01_78)] outline-none transition-[background,transform] duration-200 hover:bg-[oklch(23%_0.016_56)] active:translate-y-px focus-visible:ring-2 focus-visible:ring-[var(--product-accent)] focus-visible:ring-offset-4 focus-visible:ring-offset-[oklch(88%_0.015_78)] sm:w-fit"
       >
         <PhoneCall
           aria-hidden="true"
@@ -118,7 +110,7 @@ function ProductContactActions({ scooter }: { scooter: CatalogScooter }) {
       </a>
       <Link
         href={`/contatti?modello=${encodeURIComponent(scooter.id)}#richiesta`}
-        className="font-ui inline-flex min-h-11 items-center justify-center rounded-full px-5 py-3 text-sm font-bold underline underline-offset-4 focus-visible:outline focus-visible:outline-2"
+        className="font-ui inline-flex min-h-11 items-center justify-center rounded-[0.9rem] px-5 py-3 text-sm font-bold underline underline-offset-4 focus-visible:outline focus-visible:outline-2"
         aria-label={`Scrivi per questo modello: ${scooter.name}`}
       >
         Scrivi per questo modello
@@ -278,13 +270,9 @@ export const CatalogProductCard = memo(function CatalogProductCard({
                   event.stopPropagation();
                   handleCompactCollapse();
                 }}
-                className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-[oklch(96%_0.006_78/0.46)] text-current shadow-[inset_0_0_0_1px_oklch(18%_0.014_56/0.12)] outline-none transition-[background,transform] duration-200 hover:bg-[oklch(98%_0.004_78/0.64)] active:translate-y-px focus-visible:ring-2 focus-visible:ring-[var(--product-accent)]"
+                className="grid h-11 w-11 shrink-0 place-items-center rounded-[0.8rem] bg-[oklch(96%_0.006_78/0.46)] text-current shadow-[inset_0_0_0_1px_oklch(18%_0.014_56/0.12)] outline-none transition-[background,transform] duration-200 hover:bg-[oklch(98%_0.004_78/0.64)] active:translate-y-px focus-visible:ring-2 focus-visible:ring-[var(--product-accent)]"
               >
-                <Minimize2
-                  aria-hidden="true"
-                  className="h-4 w-4"
-                  strokeWidth={1.8}
-                />
+                <DisclosureMark expanded />
               </button>
             ) : null}
           </div>
@@ -363,23 +351,15 @@ export const CatalogProductCard = memo(function CatalogProductCard({
                   aria-expanded={isSelected}
                   aria-label={`Apri la scheda di ${scooter.name}`}
                   onClick={() => onExpandScooter(scooter.id)}
-                  className="font-ui inline-flex min-h-11 shrink-0 items-center gap-3 rounded-full px-2 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-current outline-none transition-[background,color] duration-200 hover:bg-[oklch(96%_0.006_78/0.38)] group-hover:text-[var(--product-accent)] focus-visible:ring-2 focus-visible:ring-[var(--product-accent)] focus-visible:ring-offset-2"
+                  className="font-ui inline-flex min-h-11 shrink-0 items-center gap-3 rounded-[0.9rem] border border-current/12 px-3 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-current outline-none transition-[background,color] duration-200 hover:bg-[oklch(96%_0.006_78/0.38)] group-hover:text-[var(--product-accent)] focus-visible:ring-2 focus-visible:ring-[var(--product-accent)] focus-visible:ring-offset-2"
                 >
                   Apri la scheda
-                  <ArrowRight
-                    aria-hidden="true"
-                    className="h-4 w-4"
-                    strokeWidth={1.8}
-                  />
+                  <DisclosureMark expanded={false} />
                 </button>
               ) : (
                 <span className="font-ui inline-flex min-h-11 shrink-0 items-center gap-3 rounded-full px-2 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-current">
                   Apri la scheda
-                  <ArrowRight
-                    aria-hidden="true"
-                    className="h-4 w-4"
-                    strokeWidth={1.8}
-                  />
+                  <DisclosureMark expanded={false} />
                 </span>
               )}
             </div>

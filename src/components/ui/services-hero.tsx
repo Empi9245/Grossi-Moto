@@ -1,8 +1,9 @@
 "use client";
 
+import { ActionMark } from "@/components/ui/control-glyphs";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight, Globe2, MapPin, PhoneCall } from "lucide-react";
+import { Globe2, MapPin, PhoneCall } from "lucide-react";
 import {
   motion,
   useReducedMotion,
@@ -113,10 +114,10 @@ export function ServicesHero() {
                 >
                   <Link
                     href="/contatti?argomento=officina#richiesta"
-                    className="font-ui inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-[#C72A09] px-5 py-2.5 text-[0.78rem] font-bold text-white shadow-[0_14px_38px_rgba(91,13,0,0.34)] transition-[background-color,transform] duration-200 hover:bg-[#B92508] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/85 focus-visible:ring-offset-4 focus-visible:ring-offset-black/60 motion-reduce:transform-none motion-reduce:transition-none"
+                    className="font-ui inline-flex min-h-11 items-center justify-center gap-2 rounded-[0.9rem] bg-[#C72A09] px-5 py-2.5 text-[0.78rem] font-bold text-white shadow-[0_14px_38px_rgba(91,13,0,0.34)] transition-[background-color,transform] duration-200 hover:bg-[#B92508] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/85 focus-visible:ring-offset-4 focus-visible:ring-offset-black/60 motion-reduce:transform-none motion-reduce:transition-none"
                   >
                     Scrivi all’officina
-                    <ArrowUpRight aria-hidden="true" className="h-4 w-4" strokeWidth={1.8} />
+                    <ActionMark />
                   </Link>
                 </motion.div>
 
@@ -318,15 +319,11 @@ export function ServicesHero() {
           <div className="absolute right-4 top-4 z-20 flex items-center justify-end xl:right-5 xl:top-5">
             <a
               href="tel:+393289185029"
-              className="font-ui group inline-flex min-h-12 items-center gap-3 rounded-full bg-white py-1.5 pl-5 pr-1.5 text-sm font-bold text-[#0A0A0A] shadow-lg shadow-black/[0.08] transition-[background-color,color,transform] duration-200 hover:bg-[#0A0A0A] hover:text-white active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/35 focus-visible:ring-offset-4 focus-visible:ring-offset-[#F4F4F2] motion-reduce:transform-none motion-reduce:transition-none"
+              className="font-ui group inline-flex min-h-12 items-center gap-3 rounded-[0.9rem] bg-white py-1.5 pl-5 pr-1.5 text-sm font-bold text-[#0A0A0A] shadow-lg shadow-black/[0.08] transition-[background-color,color,transform] duration-200 hover:bg-[#0A0A0A] hover:text-white active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/35 focus-visible:ring-offset-4 focus-visible:ring-offset-[#F4F4F2] motion-reduce:transform-none motion-reduce:transition-none"
             >
               Chiama ora
-              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#0A0A0A] text-white transition-[background-color,color,transform] duration-200 group-hover:scale-105 group-hover:bg-white group-hover:text-[#0A0A0A] motion-reduce:transform-none motion-reduce:transition-none">
-                <ArrowUpRight
-                  aria-hidden="true"
-                  className="h-4 w-4"
-                  strokeWidth={1.9}
-                />
+              <span className="flex h-9 w-9 items-center justify-center rounded-[0.8rem] bg-[#0A0A0A] text-white transition-[background-color,color,transform] duration-200 group-hover:bg-white group-hover:text-[#0A0A0A] motion-reduce:transform-none motion-reduce:transition-none">
+                <PhoneCall aria-hidden="true" className="h-4 w-4" strokeWidth={1.9} />
               </span>
             </a>
           </div>

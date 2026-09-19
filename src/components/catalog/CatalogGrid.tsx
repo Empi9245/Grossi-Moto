@@ -1,6 +1,7 @@
 "use client";
 
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { DirectionMark } from "@/components/ui/control-glyphs";
+
 import {
   useCallback,
   useEffect,
@@ -111,7 +112,7 @@ function EmptyCatalogState({
           <button
             type="button"
             onClick={onClearSearch}
-            className="font-ui min-h-11 rounded-full bg-black px-5 text-[0.68rem] font-bold uppercase tracking-[0.1em] text-white outline-none transition-colors hover:bg-black/80 focus-visible:ring-2 focus-visible:ring-black/35 focus-visible:ring-offset-2"
+            className="font-ui min-h-11 rounded-[0.9rem] bg-black px-5 text-[0.68rem] font-bold uppercase tracking-[0.1em] text-white outline-none transition-colors hover:bg-black/80 focus-visible:ring-2 focus-visible:ring-black/35 focus-visible:ring-offset-2"
           >
             Cancella ricerca
           </button>
@@ -120,7 +121,7 @@ function EmptyCatalogState({
           <button
             type="button"
             onClick={onResetFilter}
-            className="font-ui min-h-11 rounded-full border border-black/10 bg-white px-5 text-[0.68rem] font-bold uppercase tracking-[0.1em] text-black outline-none transition-colors hover:bg-black/[0.04] focus-visible:ring-2 focus-visible:ring-black/35 focus-visible:ring-offset-2"
+            className="font-ui min-h-11 rounded-[0.9rem] border border-black/10 bg-white px-5 text-[0.68rem] font-bold uppercase tracking-[0.1em] text-black outline-none transition-colors hover:bg-black/[0.04] focus-visible:ring-2 focus-visible:ring-black/35 focus-visible:ring-offset-2"
           >
             Mostra tutti
           </button>
@@ -591,7 +592,7 @@ function ProductShowroomChapter({
   }, []);
 
   const controlClass =
-    "inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-black/18 bg-white text-black transition-[background-color,border-color,transform] duration-150 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] hover:border-black/34 hover:bg-black/[0.04] active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-3 aria-disabled:pointer-events-none aria-disabled:opacity-30 motion-reduce:transform-none motion-reduce:transition-none";
+    "group inline-flex min-h-11 min-w-11 items-center justify-center rounded-[0.8rem] border border-black/18 bg-white text-black transition-[background-color,border-color,transform] duration-150 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] hover:border-black/34 hover:bg-black/[0.04] active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-3 aria-disabled:pointer-events-none aria-disabled:opacity-30 motion-reduce:transform-none motion-reduce:transition-none";
 
   return (
     <section
@@ -767,7 +768,7 @@ function ProductShowroomChapter({
                 }
               }}
             >
-              <ArrowLeft aria-hidden="true" size={18} strokeWidth={1.8} />
+              <DirectionMark direction="previous" />
             </button>
             <button
               type="button"
@@ -780,7 +781,7 @@ function ProductShowroomChapter({
                 }
               }}
             >
-              <ArrowRight aria-hidden="true" size={18} strokeWidth={1.8} />
+              <DirectionMark direction="next" />
             </button>
           </>
         ) : null}

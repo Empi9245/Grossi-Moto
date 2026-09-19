@@ -1,6 +1,7 @@
 "use client";
 
-import { ArrowUpRight, CalendarCheck, Phone } from "lucide-react";
+import { ActionMark } from "@/components/ui/control-glyphs";
+import { CalendarCheck, Phone } from "lucide-react";
 import { motion, type MotionProps } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 
@@ -78,7 +79,7 @@ export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
         <motion.a
           href="tel:+393289185029"
           {...subtleHover(shouldReduceMotion)}
-          className="font-ui fixed right-4 top-[calc(1rem+env(safe-area-inset-top))] z-[60] inline-flex min-h-10 shrink-0 items-center gap-2 rounded-full bg-[oklch(92%_0.014_78)] px-3.5 py-2.5 text-sm font-medium text-[oklch(17%_0.012_40)] shadow-[0_14px_38px_rgba(20,14,11,0.22)] transition-opacity duration-200 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(84%_0.04_72)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
+          className="font-ui fixed right-4 top-[calc(1rem+env(safe-area-inset-top))] z-[60] inline-flex min-h-10 shrink-0 items-center gap-2 rounded-[0.9rem] bg-[oklch(92%_0.014_78)] px-3.5 py-2.5 text-sm font-medium text-[oklch(17%_0.012_40)] shadow-[0_14px_38px_rgba(20,14,11,0.22)] transition-opacity duration-200 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(84%_0.04_72)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
         >
           <Phone aria-hidden="true" className="h-4 w-4" strokeWidth={1.8} />
           <span>Chiama</span>
@@ -204,20 +205,16 @@ export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
                 <motion.a
                   href="/scooters"
                   {...subtleHover(shouldReduceMotion)}
-                  className="font-ui inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[oklch(93%_0.012_78)] px-4 py-3 text-sm leading-normal font-medium sm:px-6 text-[oklch(17%_0.012_40)] shadow-[0_16px_48px_rgba(13,9,7,0.24)] transition-opacity duration-200 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(84%_0.04_72)] focus-visible:ring-offset-4 focus-visible:ring-offset-[oklch(14%_0.012_40)] sm:text-base"
+                  className="font-ui inline-flex min-h-12 items-center justify-center gap-2 rounded-[0.9rem] bg-[oklch(93%_0.012_78)] px-4 py-3 text-sm leading-normal font-medium sm:px-6 text-[oklch(17%_0.012_40)] shadow-[0_16px_48px_rgba(13,9,7,0.24)] transition-opacity duration-200 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(84%_0.04_72)] focus-visible:ring-offset-4 focus-visible:ring-offset-[oklch(14%_0.012_40)] sm:text-base"
                 >
                   Confronta la gamma
-                  <ArrowUpRight
-                    aria-hidden="true"
-                    className="h-4 w-4"
-                    strokeWidth={1.8}
-                  />
+                  <ActionMark />
                 </motion.a>
 
                 <motion.a
                   href="tel:+393289185029"
                   {...subtleHover(shouldReduceMotion)}
-                  className="font-ui inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[oklch(11%_0.012_40/0.78)] px-4 py-3 text-sm leading-normal font-medium sm:px-6 text-[oklch(94%_0.01_80)] shadow-[inset_0_0_0_1px_oklch(94%_0.01_80/0.16)] transition-colors duration-200 hover:bg-[oklch(15%_0.012_40/0.84)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(84%_0.04_72)] focus-visible:ring-offset-4 focus-visible:ring-offset-[oklch(14%_0.012_40)] sm:text-base"
+                  className="font-ui inline-flex min-h-12 items-center justify-center gap-2 rounded-[0.9rem] bg-[oklch(11%_0.012_40/0.78)] px-4 py-3 text-sm leading-normal font-medium sm:px-6 text-[oklch(94%_0.01_80)] shadow-[inset_0_0_0_1px_oklch(94%_0.01_80/0.16)] transition-colors duration-200 hover:bg-[oklch(15%_0.012_40/0.84)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(84%_0.04_72)] focus-visible:ring-offset-4 focus-visible:ring-offset-[oklch(14%_0.012_40)] sm:text-base"
                 >
                   Chiamaci per scegliere
                   <CalendarCheck
