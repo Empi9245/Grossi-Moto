@@ -83,7 +83,7 @@ export function ServicesHero() {
                 variants={containerVariants}
               >
                 <motion.p
-                  className="font-ui inline-flex min-h-7 items-center rounded-full bg-[#C72A09] px-3 py-1.5 text-[0.61rem] font-bold uppercase tracking-[0.13em] text-white shadow-[0_12px_34px_rgba(91,13,0,0.3)]"
+                  className="font-ui inline-flex min-h-6 w-fit self-center items-center rounded-full bg-[#C72A09] px-2.5 py-1 text-[0.56rem] font-bold uppercase tracking-[0.12em] text-white shadow-[0_10px_26px_rgba(91,13,0,0.26)]"
                   variants={itemVariants}
                 >
                   OFFICINA · ASSISTENZA · ROMA
@@ -122,51 +122,51 @@ export function ServicesHero() {
                 </motion.div>
 
                 <motion.div
-                  className="relative mt-[clamp(1.5rem,4svh,2.75rem)] w-full overflow-hidden rounded-[1.35rem] bg-[#C72A09] p-4 text-white shadow-[0_20px_56px_rgba(74,10,0,0.38)] [@media(max-height:700px)]:mt-4 [@media(max-height:700px)]:p-3"
+                  className="relative mt-[clamp(1.5rem,4svh,2.75rem)] w-full overflow-hidden rounded-[1.35rem] bg-[#F7F4EF] p-4 text-[#0A0A0A] shadow-[0_20px_56px_rgba(10,10,10,0.18)] [@media(max-height:700px)]:mt-4 [@media(max-height:700px)]:p-3"
                   variants={itemVariants}
                 >
                   <span
                     aria-hidden="true"
-                    className="font-numeric pointer-events-none absolute -right-1 -top-2 text-[5.75rem] font-bold leading-none tracking-[-0.08em] text-white/[0.09] [@media(max-height:700px)]:text-[4.8rem]"
+                    className="font-numeric pointer-events-none absolute -right-1 -top-2 text-[5.75rem] font-bold leading-none tracking-[-0.08em] text-[#C72A09]/[0.07] [@media(max-height:700px)]:text-[4.8rem]"
                   >
                     01
                   </span>
 
                   <div className="relative z-10 flex items-start justify-between gap-4">
                     <div>
-                      <p className="font-ui text-[0.58rem] font-bold uppercase tracking-[0.18em] text-white/70">
+                      <p className="font-ui text-[0.58rem] font-bold uppercase tracking-[0.18em] text-[#C72A09]">
                         Servizi
                       </p>
-                      <p className="font-display mt-1 text-[1.55rem] font-bold uppercase leading-[0.9] tracking-[-0.035em] [@media(max-height:700px)]:text-[1.35rem]">
+                      <p className="font-display mt-1 text-[1.55rem] font-bold uppercase leading-[0.9] tracking-[-0.035em] text-[#0A0A0A] [@media(max-height:700px)]:text-[1.35rem]">
                         Officina in sede.
                       </p>
                     </div>
-                    <span className="font-numeric flex h-8 min-w-8 items-center justify-center rounded-full bg-[#0A0A0A] px-2 text-[0.67rem] font-semibold text-white shadow-[0_8px_24px_rgba(0,0,0,0.2)]">
+                    <span className="font-numeric flex h-8 min-w-8 items-center justify-center rounded-full bg-[#0A0A0A] px-2 text-[0.67rem] font-semibold text-white shadow-[0_8px_24px_rgba(0,0,0,0.16)]">
                       01
                     </span>
                   </div>
 
-                  <div className="relative z-10 mt-4 grid grid-cols-2 border-y border-white/24 [@media(max-height:700px)]:mt-3">
-                    <div className="border-r border-white/24 py-3 pr-3 [@media(max-height:700px)]:py-2.5">
-                      <span className="font-numeric block text-[0.55rem] font-semibold text-white/55">01</span>
-                      <p className="font-ui mt-1 text-[0.78rem] font-bold leading-tight">Tagliandi</p>
+                  <div className="relative z-10 mt-4 grid grid-cols-2 gap-2 [@media(max-height:700px)]:mt-3">
+                    <div className="rounded-[1rem] bg-white/82 px-3 py-3 shadow-[inset_0_0_0_1px_rgba(10,10,10,0.06),0_8px_22px_rgba(10,10,10,0.05)] [@media(max-height:700px)]:py-2.5">
+                      <span className="font-numeric block text-[0.55rem] font-semibold text-[#C72A09]">01</span>
+                      <p className="font-ui mt-1 text-[0.78rem] font-bold leading-tight text-[#0A0A0A]">Tagliandi</p>
                     </div>
-                    <div className="py-3 pl-3 [@media(max-height:700px)]:py-2.5">
-                      <span className="font-numeric block text-[0.55rem] font-semibold text-white/55">02</span>
-                      <p className="font-ui mt-1 text-[0.78rem] font-bold leading-tight">Diagnosi</p>
+                    <div className="rounded-[1rem] bg-white/82 px-3 py-3 shadow-[inset_0_0_0_1px_rgba(10,10,10,0.06),0_8px_22px_rgba(10,10,10,0.05)] [@media(max-height:700px)]:py-2.5">
+                      <span className="font-numeric block text-[0.55rem] font-semibold text-[#C72A09]">02</span>
+                      <p className="font-ui mt-1 text-[0.78rem] font-bold leading-tight text-[#0A0A0A]">Diagnosi</p>
                     </div>
-                    <div className="col-span-2 flex items-end justify-between gap-3 border-t border-white/24 py-3 [@media(max-height:700px)]:py-2.5">
+                    <div className="col-span-2 flex items-end justify-between gap-3 rounded-[1rem] bg-white/82 px-3 py-3 shadow-[inset_0_0_0_1px_rgba(10,10,10,0.06),0_8px_22px_rgba(10,10,10,0.05)] [@media(max-height:700px)]:py-2.5">
                       <div>
-                        <span className="font-numeric block text-[0.55rem] font-semibold text-white/55">03</span>
-                        <p className="font-ui mt-1 text-[0.78rem] font-bold leading-tight">Montaggio accessori</p>
+                        <span className="font-numeric block text-[0.55rem] font-semibold text-[#C72A09]">03</span>
+                        <p className="font-ui mt-1 text-[0.78rem] font-bold leading-tight text-[#0A0A0A]">Montaggio accessori</p>
                       </div>
-                      <span className="font-ui text-[0.55rem] font-bold uppercase tracking-[0.14em] text-white/58">
+                      <span className="font-ui text-[0.55rem] font-bold uppercase tracking-[0.14em] text-black/42">
                         Moto · Scooter
                       </span>
                     </div>
                   </div>
 
-                  <div className="relative z-10 mt-3 flex items-center justify-between gap-3 rounded-[0.9rem] bg-[#0A0A0A]/88 px-3 py-2.5 text-white shadow-[0_10px_24px_rgba(0,0,0,0.16)] [@media(max-height:700px)]:mt-2.5 [@media(max-height:700px)]:py-2">
+                  <div className="relative z-10 mt-2.5 flex items-center justify-between gap-3 rounded-[1rem] bg-[#0A0A0A] px-3 py-2.5 text-white shadow-[0_10px_24px_rgba(0,0,0,0.14)] [@media(max-height:700px)]:py-2">
                     <div className="font-ui flex min-w-0 items-center gap-2 text-[0.68rem] font-semibold leading-[1.2]">
                       <MapPin
                         aria-hidden="true"
