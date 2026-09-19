@@ -315,7 +315,7 @@ export default function ScrollExpansionHero({
   ]);
 
   const mediaWidth = `calc(${300 * (1 - scrollProgress)}px + ${100 * scrollProgress}vw)`;
-  const mediaHeight = `calc(${400 * (1 - scrollProgress)}px + ${100 * scrollProgress}dvh)`;
+  const mediaHeight = `calc(${400 * (1 - scrollProgress)}px + ${100 * scrollProgress}svh)`;
   const textTranslateX = scrollProgress * 180;
   const initialCopyOpacity = clamp(1 - scrollProgress * 1.45, 0, 1);
   const endOverlayProgress = reducedMotion
@@ -327,8 +327,8 @@ export default function ScrollExpansionHero({
       ref={rootRef}
       className="overflow-x-hidden transition-colors duration-700 ease-in-out"
     >
-      <section className="relative flex min-h-[100dvh] flex-col items-center justify-start">
-        <div className="relative flex min-h-[100dvh] w-full flex-col items-center">
+      <section className="relative flex min-h-[100svh] flex-col items-center justify-start">
+        <div className="relative flex min-h-[100svh] w-full flex-col items-center">
           <motion.div
             className="absolute inset-0 z-0 h-full"
             initial={{ opacity: reducedMotion ? 0 : 1 }}
@@ -340,21 +340,21 @@ export default function ScrollExpansionHero({
               alt=""
               width={1920}
               height={1080}
-              className="h-screen w-screen object-cover object-center"
+              className="h-[100svh] w-screen object-cover object-center"
               priority
             />
             <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(5,8,11,0.62)_0%,rgba(8,11,15,0.2)_38%,rgba(4,6,9,0.58)_100%)]" />
           </motion.div>
 
           <div className="relative z-10 flex w-full flex-col items-center justify-start">
-            <div className="relative flex h-[100dvh] w-full flex-col items-center justify-center">
+            <div className="relative flex h-[100svh] w-full flex-col items-center justify-center">
               <div
                 className="absolute left-1/2 top-1/2 z-0 -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-2xl transition-none"
                 style={{
                   width: reducedMotion ? "100vw" : mediaWidth,
-                  height: reducedMotion ? "100dvh" : mediaHeight,
+                  height: reducedMotion ? "100svh" : mediaHeight,
                   maxWidth: "100vw",
-                  maxHeight: "100dvh",
+                  maxHeight: "100svh",
                   borderRadius: reducedMotion
                     ? 0
                     : `${16 * (1 - scrollProgress)}px`,
