@@ -66,7 +66,7 @@ function getProductStyle(
 
 function ProductSpecs({ scooter }: { scooter: CatalogScooter }) {
   return (
-    <div className="mt-4 grid grid-cols-3 gap-2 sm:mt-5">
+    <div className="mt-4 grid grid-cols-1 gap-2.5 min-[390px]:grid-cols-2 sm:mt-5 sm:grid-cols-3">
       {scooter.specs.slice(0, 3).map((spec) => {
         const Icon = specIcons[spec.icon];
 
@@ -80,10 +80,10 @@ function ProductSpecs({ scooter }: { scooter: CatalogScooter }) {
               className="h-4 w-4 text-[var(--product-accent)]"
               strokeWidth={1.7}
             />
-            <p className="font-display mt-2.5 truncate text-base font-bold leading-none text-current sm:mt-3 sm:text-xl">
+            <p className="font-display mt-2.5 break-words text-base font-bold leading-tight text-current sm:mt-3 sm:text-xl">
               {spec.value}
             </p>
-            <p className="font-ui mt-1.5 truncate text-[0.54rem] font-bold uppercase tracking-[0.09em] text-[var(--product-muted)] sm:mt-2 sm:text-[0.61rem] sm:tracking-[0.13em]">
+            <p className="font-ui mt-1.5 break-words text-[0.54rem] font-bold uppercase leading-[1.35] tracking-[0.09em] text-[var(--product-muted)] sm:mt-2 sm:text-[0.61rem] sm:tracking-[0.13em]">
               {spec.label}
             </p>
           </div>
@@ -227,7 +227,12 @@ export const CatalogProductCard = memo(function CatalogProductCard({
                 <span className="font-ui inline-flex min-h-7 items-center rounded-full bg-[oklch(96%_0.006_78/0.42)] px-2.5 text-[0.58rem] font-bold uppercase tracking-[0.14em] text-current shadow-[inset_0_0_0_1px_oklch(18%_0.014_56/0.1)]">
                   {brand}
                 </span>
-                <span className="font-ui truncate text-[0.58rem] font-bold uppercase tracking-[0.14em] text-[var(--product-muted)]">
+                <span
+                  className={clsx(
+                    "font-ui text-[0.58rem] font-bold uppercase tracking-[0.14em] text-[var(--product-muted)]",
+                    isExpanded ? "break-words" : "truncate",
+                  )}
+                >
                   {scooter.family}
                 </span>
                 {isSemanticInstance ? (
