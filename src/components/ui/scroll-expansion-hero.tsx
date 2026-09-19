@@ -45,6 +45,8 @@ export default function ScrollExpansionHero({
   const scrollProgressRef = useRef(0);
   const mediaFullyExpandedRef = useRef(false);
   const touchStartYRef = useRef<number | null>(null);
+  const lastTouchMoveAtRef = useRef<number | null>(null);
+  const touchVelocityRef = useRef(0);
   const isScrollTransitioningRef = useRef(false);
 
   const [scrollProgress, setScrollProgress] = useState(0);
@@ -73,7 +75,7 @@ export default function ScrollExpansionHero({
     syncProgress(reducedMotion ? 1 : 0);
   }, [mediaType, reducedMotion, syncProgress]);
 
-  const scrollToShowroom = useCallback(() => {
+  const scrollToShowroom = useCallback((gestureVelocity = 0) => {
     if (isScrollTransitioningRef.current) {
       return;
     }
@@ -87,11 +89,13 @@ export default function ScrollExpansionHero({
 
     const targetTop =
       window.scrollY + showroom.getBoundingClientRect().top;
+    const normalizedVelocity = clamp(Math.abs(gestureVelocity), 0, 2.4);
+    const duration = clamp(0.68 - normalizedVelocity * 0.14, 0.36, 0.68);
 
     isScrollTransitioningRef.current = true;
 
     void animate(window.scrollY, targetTop, {
-      duration: 0.72,
+      duration,
       ease: [0.22, 1, 0.36, 1],
       onUpdate: (latest) => {
         window.scrollTo({
@@ -132,7 +136,7 @@ export default function ScrollExpansionHero({
       if (mediaFullyExpandedRef.current) {
         if (event.deltaY > 0) {
           event.preventDefault();
-          scrollToShowroom();
+          scrollToShowroom(Math.abs(event.deltaY) / 24);
         }
         return;
       }
@@ -145,12 +149,14 @@ export default function ScrollExpansionHero({
       syncProgress(nextProgress);
 
       if (event.deltaY > 0 && nextProgress >= 1) {
-        scrollToShowroom();
+        scrollToShowroom(Math.abs(event.deltaY) / 24);
       }
     };
 
     const handleTouchStart = (event: TouchEvent) => {
       touchStartYRef.current = event.touches[0]?.clientY ?? null;
+      lastTouchMoveAtRef.current = performance.now();
+      touchVelocityRef.current = 0;
     };
 
     const handleTouchMove = (event: TouchEvent) => {
@@ -162,6 +168,17 @@ export default function ScrollExpansionHero({
       }
 
       const deltaY = startY - touchY;
+      const now = performance.now();
+      const previousMoveAt = lastTouchMoveAtRef.current ?? now;
+      const elapsedMs = Math.max(now - previousMoveAt, 1);
+
+      if (deltaY > 0) {
+        const instantVelocity = deltaY / elapsedMs;
+        touchVelocityRef.current =
+          touchVelocityRef.current * 0.45 + instantVelocity * 0.55;
+      }
+
+      lastTouchMoveAtRef.current = now;
 
       if (
         mediaFullyExpandedRef.current &&
@@ -177,7 +194,7 @@ export default function ScrollExpansionHero({
       if (mediaFullyExpandedRef.current) {
         if (deltaY > 0) {
           event.preventDefault();
-          scrollToShowroom();
+          scrollToShowroom(touchVelocityRef.current);
         }
         touchStartYRef.current = touchY;
         return;
@@ -192,12 +209,14 @@ export default function ScrollExpansionHero({
       touchStartYRef.current = touchY;
 
       if (deltaY > 0 && nextProgress >= 1) {
-        scrollToShowroom();
+        scrollToShowroom(touchVelocityRef.current);
       }
     };
 
     const handleTouchEnd = () => {
       touchStartYRef.current = null;
+      lastTouchMoveAtRef.current = null;
+      touchVelocityRef.current = 0;
     };
 
     const handleScroll = () => {
