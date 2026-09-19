@@ -95,7 +95,7 @@ export function AccessoryRail() {
         className="mt-6 grid overflow-hidden rounded-[1.5rem] border border-black/[0.055] transition-colors duration-150 motion-reduce:transition-none md:border-0 lg:grid-cols-2 lg:rounded-[2rem]"
         style={{ backgroundColor: currentColor }}
       >
-        <div className="relative aspect-[1.08/1] shrink-0 md:aspect-[4/3] lg:aspect-auto lg:min-h-[27rem]">
+        <div className="relative h-[clamp(17.8rem,40svh,20.8rem)] shrink-0 md:h-auto md:aspect-[4/3] lg:aspect-auto lg:min-h-[27rem]">
           <AnimatePresence initial={false}>
             <motion.div
               key={current.image}
@@ -103,7 +103,7 @@ export function AccessoryRail() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: reduceMotion ? 0 : 0.18 }}
-              className="absolute inset-x-2 bottom-0 top-2 overflow-hidden rounded-t-[1.3rem] rounded-b-[1.8rem] bg-white/30 md:inset-0 md:rounded-none"
+              className="absolute inset-x-2 bottom-2 top-2 overflow-hidden rounded-t-[1.3rem] rounded-b-[1.8rem] bg-white/30 ring-1 ring-black/[0.035] md:inset-0 md:rounded-none md:ring-0"
             >
               <Image
                 src={current.image}
@@ -120,7 +120,7 @@ export function AccessoryRail() {
           </span>
         </div>
 
-        <div className="px-4 pb-5 pt-4 sm:px-5 sm:pb-6 sm:pt-5 md:p-8 lg:flex lg:flex-col lg:justify-center lg:p-10">
+        <div className="px-4 pb-5 pt-2.5 sm:px-5 sm:pb-6 sm:pt-3 md:p-8 lg:flex lg:flex-col lg:justify-center lg:p-10">
           {accessories.map((item, index) => (
             <div
               key={item.id}
