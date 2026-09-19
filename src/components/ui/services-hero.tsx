@@ -78,63 +78,73 @@ export function ServicesHero() {
               <Navbar />
 
               <motion.main
-                className="mx-auto flex w-full max-w-[32rem] flex-1 flex-col items-center px-5 pt-[clamp(1rem,3svh,2.5rem)] pb-[calc(2rem+env(safe-area-inset-bottom))] text-center"
+                className="mx-auto flex w-full max-w-[32rem] flex-1 flex-col items-start px-4 pt-[clamp(0.5rem,1.8svh,1.25rem)] pb-[calc(5.75rem+env(safe-area-inset-bottom))] text-left sm:px-5 [@media(max-height:700px)]:pt-1.5 [@media(max-height:700px)]:pb-[calc(5.25rem+env(safe-area-inset-bottom))]"
                 variants={containerVariants}
               >
                 <motion.p
-                  className="font-ui inline-flex min-h-9 items-center rounded-full bg-white/92 px-4 py-2 text-[0.65rem] font-bold uppercase tracking-[0.16em] text-[#0A0A0A] shadow-[0_12px_36px_rgba(20,14,11,0.18)]"
+                  className="font-ui inline-flex min-h-7 items-center rounded-full bg-[oklch(94%_0.012_78/0.96)] px-3 py-1.5 text-[0.61rem] font-semibold uppercase tracking-[0.13em] text-[oklch(18%_0.014_42)] shadow-[0_10px_30px_rgba(20,14,11,0.16)]"
                   variants={itemVariants}
                 >
-                  Assistenza moto e scooter
+                  OFFICINA · ASSISTENZA · ROMA
                 </motion.p>
 
                 <motion.h1
-                  className="font-display mt-4 w-full max-w-[20rem] text-[clamp(2.85rem,12vw,4.35rem)] font-normal leading-[0.96] tracking-normal text-white [overflow-wrap:break-word] [@media(max-height:700px)]:mt-3 [@media(max-height:700px)]:text-[2.45rem]"
+                  className="font-display mt-3 w-full max-w-[18.5rem] text-[clamp(2.75rem,12.5vw,3.35rem)] font-normal leading-[0.96] tracking-normal text-white [overflow-wrap:normal] [word-break:normal] [@media(max-height:700px)]:mt-2 [@media(max-height:700px)]:text-[2.5rem]"
                   variants={itemVariants}
                 >
-                  Assistenza.
+                  Il tuo mezzo,
                   <br />
-                  <span className="text-[#F04424]">Officina.</span>
-                  <br />
-                  Esperienza.
+                  seguito bene.
                 </motion.h1>
 
                 <motion.p
-                  className="mt-5 w-full max-w-[22rem] text-sm leading-[1.8] text-white/78 [overflow-wrap:break-word] [@media(max-height:700px)]:mt-3 [@media(max-height:700px)]:text-[0.78rem] [@media(max-height:700px)]:leading-[1.55]"
+                  className="mt-3 w-full max-w-[20rem] text-[clamp(0.78rem,3.35vw,0.875rem)] leading-[1.55] text-white/82 [overflow-wrap:break-word] [@media(max-height:700px)]:mt-2 [@media(max-height:700px)]:text-[0.74rem] [@media(max-height:700px)]:leading-[1.45]"
                   variants={itemVariants}
                 >
-                  Tagliandi, diagnosi e accessori per moto e scooter KYMCO e Voge.
-                  Raccontaci cosa ti serve: ti aiutiamo a capire da dove partire.
+                  Tagliandi, diagnosi e assistenza per moto e scooter KYMCO e Voge.
+                  <span className="mt-1 block text-white/68">
+                    Ti aiutiamo a capire da dove partire.
+                  </span>
                 </motion.p>
 
                 <motion.div
-                  className="mt-7 flex w-full max-w-[22rem] flex-col items-stretch gap-3 [@media(max-height:700px)]:mt-5"
+                  className="mt-4 [@media(max-height:700px)]:mt-3"
                   variants={itemVariants}
                 >
                   <Link
                     href="/contatti?argomento=officina#richiesta"
-                    className="font-ui inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-bold text-[#0A0A0A] shadow-[0_16px_48px_rgba(13,9,7,0.24)] transition-opacity duration-150 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-4 focus-visible:ring-offset-black/60 motion-reduce:transition-none"
+                    className="font-ui inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-[oklch(94%_0.012_78)] px-5 py-2.5 text-[0.78rem] font-medium text-[oklch(17%_0.012_40)] shadow-[0_14px_40px_rgba(13,9,7,0.22)] transition-opacity duration-200 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-4 focus-visible:ring-offset-black/60 motion-reduce:transition-none"
                   >
                     Scrivi all’officina
                     <ArrowUpRight aria-hidden="true" className="h-4 w-4" strokeWidth={1.8} />
                   </Link>
-
-                  <a
-                    href="tel:+393289185029"
-                    className="font-ui inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-black/64 px-5 py-3 text-sm font-bold text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.18)] transition-colors duration-150 hover:bg-black/76 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-4 focus-visible:ring-offset-black/60 motion-reduce:transition-none"
-                  >
-                    Chiama l’officina
-                    <PhoneCall aria-hidden="true" className="h-4 w-4" strokeWidth={1.8} />
-                  </a>
                 </motion.div>
 
                 <motion.div
-                  className="mt-auto w-full max-w-[22rem] pt-6 text-left text-[0.7rem] font-medium text-white/72"
+                  className="mt-auto flex w-full items-end justify-between gap-2 pt-4 [@media(max-height:700px)]:pt-2"
                   variants={itemVariants}
                 >
-                  <div className="flex min-w-0 items-center">
-                    <MapPin aria-hidden="true" className="mr-2 h-4 w-4 shrink-0 text-white" strokeWidth={1.8} />
-                    <span>Via Festo Porzio, 22, Roma</span>
+                  <div className="relative w-[9.5rem] rounded-[1rem] bg-[oklch(94%_0.012_78/0.97)] p-3 text-[oklch(18%_0.014_42)] shadow-[0_18px_50px_rgba(13,9,7,0.24)] min-[375px]:w-[10.25rem] [@media(max-height:700px)]:p-2.5">
+                    <span className="font-numeric absolute right-3 top-2.5 text-[0.65rem] font-semibold text-[#C72A09] [@media(max-height:700px)]:right-2.5 [@media(max-height:700px)]:top-2">
+                      01
+                    </span>
+                    <p className="font-ui pr-7 text-[0.61rem] font-bold uppercase tracking-[0.12em] text-[oklch(25%_0.016_45)]">
+                      Officina in sede
+                    </p>
+                    <div className="mt-2.5 space-y-1 text-[0.69rem] font-medium leading-[1.3] text-[oklch(29%_0.016_48)] [@media(max-height:700px)]:mt-2 [@media(max-height:700px)]:text-[0.65rem]">
+                      <p>Tagliandi</p>
+                      <p>Diagnosi</p>
+                      <p>Montaggio accessori</p>
+                    </div>
+                  </div>
+
+                  <div className="font-ui flex max-w-[7.25rem] items-center gap-1.5 rounded-full bg-black/58 px-2.5 py-2 text-[0.61rem] font-medium leading-[1.25] text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.16)] backdrop-blur-sm min-[375px]:max-w-[8.25rem] min-[375px]:px-3">
+                    <MapPin
+                      aria-hidden="true"
+                      className="h-3.5 w-3.5 shrink-0 text-white/88"
+                      strokeWidth={1.8}
+                    />
+                    <span>Via Festo Porzio 22</span>
                   </div>
                 </motion.div>
               </motion.main>
