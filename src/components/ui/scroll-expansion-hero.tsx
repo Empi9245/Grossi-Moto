@@ -320,19 +320,29 @@ export default function ScrollExpansionHero({
               >
                 {mediaType === "video" ? (
                   <div className="pointer-events-none relative h-full w-full">
-                    <video
-                      src={mediaSrc}
-                      poster={posterSrc}
-                      autoPlay={!reducedMotion}
-                      muted
-                      loop
-                      playsInline
-                      preload="auto"
-                      className="h-full w-full scale-[1.08] object-cover object-center"
-                      controls={false}
-                      disablePictureInPicture
-                      disableRemotePlayback
-                    />
+                    {reducedMotion && posterSrc ? (
+                      <Image
+                        src={posterSrc}
+                        alt=""
+                        width={1280}
+                        height={720}
+                        className="h-full w-full object-cover object-center"
+                        priority
+                      />
+                    ) : (
+                      <video
+                        src={mediaSrc}
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
+                        preload="auto"
+                        className="h-full w-full scale-[1.16] object-cover object-center"
+                        controls={false}
+                        disablePictureInPicture
+                        disableRemotePlayback
+                      />
+                    )}
                     <motion.div
                       className="absolute inset-0 bg-black/30"
                       initial={{ opacity: 0.7 }}
