@@ -47,6 +47,8 @@ export default function ScrollExpansionHero({
   const touchStartYRef = useRef<number | null>(null);
   const lastTouchMoveAtRef = useRef<number | null>(null);
   const touchVelocityRef = useRef(0);
+  const touchExitArmedRef = useRef(false);
+  const heroSettleUntilRef = useRef(0);
   const isScrollTransitioningRef = useRef(false);
 
   const [scrollProgress, setScrollProgress] = useState(0);
@@ -64,19 +66,36 @@ export default function ScrollExpansionHero({
   const syncProgress = useCallback((nextProgress: number) => {
     const normalized = clamp(nextProgress, 0, 1);
     const expanded = normalized >= 1;
+    const wasExpanded = mediaFullyExpandedRef.current;
 
     scrollProgressRef.current = normalized;
     mediaFullyExpandedRef.current = expanded;
+
+    if (expanded && !wasExpanded) {
+      heroSettleUntilRef.current = performance.now() + 280;
+      touchExitArmedRef.current = false;
+    } else if (!expanded) {
+      heroSettleUntilRef.current = 0;
+      touchExitArmedRef.current = false;
+    }
+
     setScrollProgress(normalized);
     setShowContent(normalized >= 0.82);
-  }, []);
+  }, [canExitHero]);
 
   useEffect(() => {
     syncProgress(reducedMotion ? 1 : 0);
   }, [mediaType, reducedMotion, syncProgress]);
 
+  const canExitHero = useCallback(
+    () =>
+      mediaFullyExpandedRef.current &&
+      performance.now() >= heroSettleUntilRef.current,
+    [],
+  );
+
   const scrollToShowroom = useCallback((gestureVelocity = 0) => {
-    if (isScrollTransitioningRef.current) {
+    if (isScrollTransitioningRef.current || !canExitHero()) {
       return;
     }
 
@@ -89,8 +108,8 @@ export default function ScrollExpansionHero({
 
     const targetTop =
       window.scrollY + showroom.getBoundingClientRect().top;
-    const normalizedVelocity = clamp(Math.abs(gestureVelocity), 0, 2.4);
-    const duration = clamp(0.68 - normalizedVelocity * 0.14, 0.36, 0.68);
+    const normalizedVelocity = clamp(Math.abs(gestureVelocity), 0, 1.6);
+    const duration = clamp(0.72 - normalizedVelocity * 0.07, 0.58, 0.72);
 
     isScrollTransitioningRef.current = true;
 
@@ -136,7 +155,10 @@ export default function ScrollExpansionHero({
       if (mediaFullyExpandedRef.current) {
         if (event.deltaY > 0) {
           event.preventDefault();
-          scrollToShowroom(Math.abs(event.deltaY) / 24);
+
+          if (canExitHero()) {
+            scrollToShowroom(Math.abs(event.deltaY) / 24);
+          }
         }
         return;
       }
@@ -149,7 +171,9 @@ export default function ScrollExpansionHero({
       syncProgress(nextProgress);
 
       if (event.deltaY > 0 && nextProgress >= 1) {
-        scrollToShowroom(Math.abs(event.deltaY) / 24);
+        // Finish the zoom first. The showroom handoff requires a later gesture,
+        // so the fully expanded hero gets a short, intentional resting beat.
+        return;
       }
     };
 
@@ -157,6 +181,7 @@ export default function ScrollExpansionHero({
       touchStartYRef.current = event.touches[0]?.clientY ?? null;
       lastTouchMoveAtRef.current = performance.now();
       touchVelocityRef.current = 0;
+      touchExitArmedRef.current = mediaFullyExpandedRef.current;
     };
 
     const handleTouchMove = (event: TouchEvent) => {
@@ -194,7 +219,10 @@ export default function ScrollExpansionHero({
       if (mediaFullyExpandedRef.current) {
         if (deltaY > 0) {
           event.preventDefault();
-          scrollToShowroom(touchVelocityRef.current);
+
+          if (touchExitArmedRef.current && canExitHero()) {
+            scrollToShowroom(touchVelocityRef.current);
+          }
         }
         touchStartYRef.current = touchY;
         return;
@@ -209,7 +237,9 @@ export default function ScrollExpansionHero({
       touchStartYRef.current = touchY;
 
       if (deltaY > 0 && nextProgress >= 1) {
-        scrollToShowroom(touchVelocityRef.current);
+        // Do not reuse the swipe that completed the zoom to leave the hero.
+        // A fresh swipe keeps the final frame readable and removes the snap.
+        touchExitArmedRef.current = false;
       }
     };
 
@@ -217,6 +247,7 @@ export default function ScrollExpansionHero({
       touchStartYRef.current = null;
       lastTouchMoveAtRef.current = null;
       touchVelocityRef.current = 0;
+      touchExitArmedRef.current = false;
     };
 
     const handleScroll = () => {
@@ -238,7 +269,7 @@ export default function ScrollExpansionHero({
       window.removeEventListener("touchmove", handleTouchMove);
       window.removeEventListener("touchend", handleTouchEnd);
     };
-  }, [reducedMotion, scrollToShowroom, syncProgress]);
+  }, [canExitHero, reducedMotion, scrollToShowroom, syncProgress]);
 
   const mediaWidth = 300 + scrollProgress * 650;
   const mediaHeight = 400 + scrollProgress * 200;
