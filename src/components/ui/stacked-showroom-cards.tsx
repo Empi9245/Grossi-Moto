@@ -20,6 +20,8 @@ gsap.registerPlugin(ScrollTrigger, useGSAP);
 const stackOffset = 18;
 const stackScaleStep = 0.024;
 const maxVisibleDepth = 5;
+const touchStepThreshold = 14;
+const touchStepDuration = 0.86;
 
 function stackDepth(index: number) {
   return Math.min(index, maxVisibleDepth);
@@ -131,6 +133,9 @@ function ShowroomCard({
 export function StackedShowroomCards() {
   const containerRef = useRef<HTMLDivElement>(null);
   const activeIndexRef = useRef(0);
+  const touchStartYRef = useRef<number | null>(null);
+  const touchGestureConsumedRef = useRef(false);
+  const isStepScrollAnimatingRef = useRef(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const shouldReduceMotion = useReducedMotion();
   const totalCards = showcaseScooters.length;
@@ -227,7 +232,160 @@ export function StackedShowroomCards() {
         timeline.to({}, { duration: 0.16 }, position + 0.84);
       }
 
+      const scrollTrigger = timeline.scrollTrigger;
+      let stepScrollTween: ReturnType<typeof gsap.to> | null = null;
+      let refreshRaf = 0;
+
+      const isInsideShowroomScroll = () =>
+        Boolean(
+          scrollTrigger &&
+            window.scrollY >= scrollTrigger.start - 2 &&
+            window.scrollY <= scrollTrigger.end + 2,
+        );
+
+      const scrollToCard = (index: number) => {
+        if (!scrollTrigger || isStepScrollAnimatingRef.current) {
+          return false;
+        }
+
+        const targetIndex = Math.min(totalCards - 1, Math.max(0, index));
+
+        if (targetIndex === activeIndexRef.current) {
+          return false;
+        }
+
+        const targetProgress = targetIndex / transitionCount;
+        const targetTop =
+          scrollTrigger.start +
+          (scrollTrigger.end - scrollTrigger.start) * targetProgress;
+        const scrollState = { value: window.scrollY };
+
+        isStepScrollAnimatingRef.current = true;
+        stepScrollTween?.kill();
+
+        stepScrollTween = gsap.to(scrollState, {
+          value: targetTop,
+          duration: touchStepDuration,
+          ease: "power2.inOut",
+          overwrite: true,
+          onUpdate: () => {
+            window.scrollTo({
+              top: scrollState.value,
+              left: 0,
+              behavior: "auto",
+            });
+          },
+          onComplete: () => {
+            window.scrollTo({
+              top: targetTop,
+              left: 0,
+              behavior: "auto",
+            });
+            ScrollTrigger.update();
+            isStepScrollAnimatingRef.current = false;
+          },
+          onInterrupt: () => {
+            isStepScrollAnimatingRef.current = false;
+          },
+        });
+
+        return true;
+      };
+
+      const onTouchStart = (event: TouchEvent) => {
+        if (!isInsideShowroomScroll() || event.touches.length !== 1) {
+          touchStartYRef.current = null;
+          touchGestureConsumedRef.current = false;
+          return;
+        }
+
+        touchStartYRef.current = event.touches[0]?.clientY ?? null;
+        touchGestureConsumedRef.current = false;
+      };
+
+      const onTouchMove = (event: TouchEvent) => {
+        if (!isInsideShowroomScroll()) {
+          return;
+        }
+
+        if (
+          isStepScrollAnimatingRef.current ||
+          touchGestureConsumedRef.current
+        ) {
+          event.preventDefault();
+          return;
+        }
+
+        const startY = touchStartYRef.current;
+        const currentY = event.touches[0]?.clientY;
+
+        if (startY == null || currentY == null) {
+          return;
+        }
+
+        const deltaY = startY - currentY;
+        const direction = deltaY > 0 ? 1 : -1;
+        const currentIndex = activeIndexRef.current;
+        const canStep =
+          (direction > 0 && currentIndex < totalCards - 1) ||
+          (direction < 0 && currentIndex > 0);
+
+        if (!canStep) {
+          return;
+        }
+
+        event.preventDefault();
+
+        if (Math.abs(deltaY) < touchStepThreshold) {
+          return;
+        }
+
+        if (scrollToCard(currentIndex + direction)) {
+          touchGestureConsumedRef.current = true;
+          touchStartYRef.current = currentY;
+        }
+      };
+
+      const resetTouchGesture = () => {
+        touchStartYRef.current = null;
+        touchGestureConsumedRef.current = false;
+      };
+
+      const refreshOnShowroomEntry = () => {
+        cancelAnimationFrame(refreshRaf);
+        refreshRaf = requestAnimationFrame(() => {
+          refreshRaf = requestAnimationFrame(() => {
+            ScrollTrigger.refresh();
+            ScrollTrigger.update();
+          });
+        });
+      };
+
+      container.addEventListener("touchstart", onTouchStart, { passive: true });
+      container.addEventListener("touchmove", onTouchMove, { passive: false });
+      container.addEventListener("touchend", resetTouchGesture, {
+        passive: true,
+      });
+      container.addEventListener("touchcancel", resetTouchGesture, {
+        passive: true,
+      });
+      window.addEventListener(
+        "grossimoto:showroom-entry",
+        refreshOnShowroomEntry,
+      );
+
       return () => {
+        cancelAnimationFrame(refreshRaf);
+        stepScrollTween?.kill();
+        isStepScrollAnimatingRef.current = false;
+        container.removeEventListener("touchstart", onTouchStart);
+        container.removeEventListener("touchmove", onTouchMove);
+        container.removeEventListener("touchend", resetTouchGesture);
+        container.removeEventListener("touchcancel", resetTouchGesture);
+        window.removeEventListener(
+          "grossimoto:showroom-entry",
+          refreshOnShowroomEntry,
+        );
         timeline.scrollTrigger?.kill();
         timeline.kill();
       };
