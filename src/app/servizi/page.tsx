@@ -17,7 +17,7 @@ const navItems = [
 
 function ServicesNav() {
   return (
-    <header className="bg-white px-2 sm:px-4 lg:absolute lg:left-2 lg:top-0 lg:z-30 lg:w-fit lg:rounded-br-[28px] lg:px-5">
+    <header className="hidden bg-white px-2 sm:px-4 md:block lg:absolute lg:left-2 lg:top-0 lg:z-30 lg:w-fit lg:rounded-br-[28px] lg:px-5">
       <nav
         aria-label="Navigazione Grossimoto"
         className="mx-auto flex min-h-[5.6rem] max-w-[122rem] items-center justify-between gap-3 px-3 py-3 text-[#0A0A0A] sm:px-4 lg:w-fit lg:max-w-none lg:justify-start lg:gap-8 lg:px-5"
