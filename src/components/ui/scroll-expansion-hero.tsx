@@ -81,7 +81,7 @@ export default function ScrollExpansionHero({
 
     setScrollProgress(normalized);
     setShowContent(normalized >= 0.82);
-  }, [canExitHero]);
+  }, []);
 
   useEffect(() => {
     syncProgress(reducedMotion ? 1 : 0);
@@ -132,7 +132,7 @@ export default function ScrollExpansionHero({
         isScrollTransitioningRef.current = false;
       },
     });
-  }, []);
+  }, [canExitHero]);
 
   useEffect(() => {
     if (reducedMotion) {
