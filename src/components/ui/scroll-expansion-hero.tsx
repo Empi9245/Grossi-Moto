@@ -167,7 +167,7 @@ export default function ScrollExpansionHero({
     touchCollapseArmedRef.current = false;
 
     void animate(startProgress, 0, {
-      duration: clamp(0.95 * startProgress, 0.24, 0.95),
+      duration: clamp(1.15 * startProgress, 0.24, 1.15),
       ease: [0.16, 1, 0.3, 1],
       onUpdate: syncProgress,
       onComplete: () => {
@@ -236,24 +236,22 @@ export default function ScrollExpansionHero({
         return;
       }
 
-      if (!eventTargetsHero(event) || !isHeroInteractionActive()) {
+      if (!isHeroInteractionActive()) {
         return;
       }
-
-      const isAtPageTop = window.scrollY <= 5;
 
       if (isExpansionTransitioningRef.current) {
         event.preventDefault();
         return;
       }
 
-      if (
-        mediaFullyExpandedRef.current &&
-        event.deltaY < 0 &&
-        isAtPageTop
-      ) {
+      if (mediaFullyExpandedRef.current && event.deltaY < 0) {
         event.preventDefault();
         collapseHero();
+        return;
+      }
+
+      if (!eventTargetsHero(event)) {
         return;
       }
 
@@ -275,11 +273,13 @@ export default function ScrollExpansionHero({
     };
 
     const handleTouchStart = (event: TouchEvent) => {
+      const isExpanded = mediaFullyExpandedRef.current;
+
       if (
         isScrollTransitioningRef.current ||
-        !eventTargetsHero(event) ||
         !isHeroInteractionActive() ||
-        event.touches.length !== 1
+        event.touches.length !== 1 ||
+        (!isExpanded && !eventTargetsHero(event))
       ) {
         touchStartYRef.current = null;
         lastTouchMoveAtRef.current = null;
@@ -297,8 +297,7 @@ export default function ScrollExpansionHero({
         !isExpansionTransitioningRef.current;
       touchCollapseArmedRef.current =
         mediaFullyExpandedRef.current &&
-        !isExpansionTransitioningRef.current &&
-        window.scrollY <= 5;
+        !isExpansionTransitioningRef.current;
     };
 
     const handleTouchMove = (event: TouchEvent) => {
@@ -307,7 +306,10 @@ export default function ScrollExpansionHero({
         return;
       }
 
-      if (!eventTargetsHero(event) || !isHeroInteractionActive()) {
+      if (
+        !isHeroInteractionActive() ||
+        (!mediaFullyExpandedRef.current && !eventTargetsHero(event))
+      ) {
         touchStartYRef.current = null;
         touchExitArmedRef.current = false;
         touchCollapseArmedRef.current = false;
