@@ -141,8 +141,10 @@ export default function ScrollExpansionHero({
       return;
     }
 
+    const showroomEntry =
+      showroom.querySelector<HTMLElement>("[data-showroom-entry]") ?? showroom;
     const targetTop =
-      window.scrollY + showroom.getBoundingClientRect().top;
+      window.scrollY + showroomEntry.getBoundingClientRect().top;
     const normalizedVelocity = clamp(Math.abs(gestureVelocity), 0, 1.6);
     const duration = clamp(0.72 - normalizedVelocity * 0.07, 0.58, 0.72);
 
