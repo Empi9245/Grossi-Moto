@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowUpRight, CalendarCheck } from "lucide-react";
-import { motion, type MotionProps } from "framer-motion";
+import { motion, type MotionProps, useScroll, useTransform } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 
 import { useMediaQuery } from "@/hooks/useMediaQuery";
@@ -19,6 +19,19 @@ type HeroProps = {
 
 export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
   const shouldReduceMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
+  const isMobileViewport = useMediaQuery("(max-width: 767px)");
+  const heroRootRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress: mobileOpenProgress } = useScroll({
+    target: heroRootRef,
+    offset: ["start start", "end end"],
+  });
+  const mobileInsetX = useTransform(mobileOpenProgress, [0, 1], [16, 0]);
+  const mobileInsetY = useTransform(mobileOpenProgress, [0, 1], [24, 0]);
+  const mobileRadius = useTransform(
+    mobileOpenProgress,
+    [0, 0.9, 1],
+    [28, 6, 0],
+  );
   const { style: cardMotionStyle, ...cardMotionProps } = cardMotion ?? {};
   const videoRef = useRef<HTMLVideoElement>(null);
   const [videoPlaying, setVideoPlaying] = useState(false);
@@ -49,10 +62,149 @@ export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
       active = false;
       video.pause();
     };
-  }, [shouldReduceMotion]);
+  }, [isMobileViewport, shouldReduceMotion]);
+
+  if (isMobileViewport) {
+    return (
+      <div
+        ref={heroRootRef}
+        data-qa="hero-viewport"
+        className={`${shouldReduceMotion ? "h-[100svh]" : "h-[165svh]"} relative w-full overflow-clip bg-[#EDF7FC]`}
+      >
+        <div className="sticky top-0 h-[100svh] w-full overflow-hidden bg-[#EDF7FC]">
+          <motion.section
+            style={{
+              top: shouldReduceMotion ? 12 : mobileInsetY,
+              right: shouldReduceMotion ? 10 : mobileInsetX,
+              bottom: shouldReduceMotion ? 12 : mobileInsetY,
+              left: shouldReduceMotion ? 10 : mobileInsetX,
+              borderRadius: shouldReduceMotion ? 24 : mobileRadius,
+            }}
+            className="absolute overflow-hidden bg-[oklch(14%_0.012_40)] shadow-[0_24px_70px_rgba(15,22,27,0.18)]"
+          >
+            <div className="relative flex h-full min-h-0 w-full min-w-0 flex-col">
+              <div
+                aria-hidden="true"
+                data-qa="hero-video-fallback"
+                className="absolute inset-0 z-0 bg-cover bg-[position:58%_center]"
+                style={{
+                  backgroundImage:
+                    "url('/grossimoto/home-scroll/01-people-s-125-abs-lago.webp')",
+                }}
+              />
+              <video
+                ref={videoRef}
+                className="absolute inset-0 z-0 h-full w-full scale-[1.04] object-cover object-[58%_center]"
+                style={{ opacity: videoPlaying && !shouldReduceMotion ? 1 : 0 }}
+                autoPlay={!shouldReduceMotion}
+                muted
+                loop
+                playsInline
+                poster="/grossimoto/home-scroll/01-people-s-125-abs-lago.webp"
+                preload="metadata"
+                aria-hidden="true"
+                onPlaying={() => setVideoPlaying(true)}
+                onError={() => setVideoPlaying(false)}
+                onEmptied={() => setVideoPlaying(false)}
+              >
+                <source src="/hero-video-mobile.mp4" type="video/mp4" />
+              </video>
+
+              <div
+                aria-hidden="true"
+                className="absolute inset-0 z-[1] bg-[linear-gradient(180deg,oklch(9%_0.012_40/0.74)_0%,oklch(12%_0.014_40/0.42)_38%,oklch(10%_0.012_40/0.72)_100%)]"
+              />
+              <div
+                aria-hidden="true"
+                className="absolute inset-x-0 top-0 z-[2] h-36 bg-[linear-gradient(180deg,oklch(7%_0.012_40/0.6),transparent)]"
+              />
+
+              <div className="relative z-10 flex h-full min-h-0 w-full flex-col">
+                <Navbar />
+
+                <div
+                  data-qa="hero-copy"
+                  className="mx-auto flex min-h-0 w-full max-w-[32rem] flex-1 flex-col items-center px-4 pt-[clamp(0.25rem,1.2svh,0.75rem)] pb-[calc(6.75rem+env(safe-area-inset-bottom))] text-center"
+                >
+                  <HeroBadge />
+
+                  <motion.h1
+                    {...revealMotion(shouldReduceMotion, {
+                      delay: 0.12,
+                      duration: 0.72,
+                      scale: 0.975,
+                      y: 22,
+                    })}
+                    className="font-display mt-3 w-full max-w-[19rem] [overflow-wrap:break-word] text-[clamp(2.35rem,10.5vw,3.25rem)] leading-[0.95] font-normal tracking-normal text-[oklch(95%_0.01_80)] [@media(max-height:700px)]:mt-2 [@media(max-height:700px)]:text-[2.15rem]"
+                  >
+                    Trova il mezzo giusto per Roma
+                  </motion.h1>
+
+                  <motion.p
+                    {...revealMotion(shouldReduceMotion, {
+                      delay: 0.2,
+                      duration: 0.6,
+                      scale: 0.99,
+                      y: 16,
+                    })}
+                    className="mt-3 w-full max-w-[20.5rem] [overflow-wrap:break-word] text-[clamp(0.72rem,3.25vw,0.86rem)] leading-[1.55] text-[oklch(86%_0.012_78)] [@media(max-height:700px)]:mt-2 [@media(max-height:700px)]:text-[0.7rem] [@media(max-height:700px)]:leading-[1.4]"
+                  >
+                    Confronta KYMCO e Voge con chi ti segue anche in officina. Ti
+                    aspettiamo a Roma, in Via Festo Porzio 22.
+                  </motion.p>
+
+                  <motion.div
+                    data-qa="hero-actions"
+                    {...revealMotion(shouldReduceMotion, {
+                      delay: 0.28,
+                      duration: 0.58,
+                      scale: 0.99,
+                      y: 14,
+                    })}
+                    className="mt-4 flex w-full max-w-[20.5rem] flex-col items-stretch gap-2 [@media(max-height:700px)]:mt-3"
+                  >
+                    <motion.a
+                      href="/scooters"
+                      {...subtleHover(shouldReduceMotion)}
+                      className="font-ui inline-flex min-h-10 items-center justify-center gap-2 rounded-full bg-[oklch(93%_0.012_78)] px-4 py-2.5 text-xs leading-normal font-medium text-[oklch(17%_0.012_40)] shadow-[0_14px_40px_rgba(13,9,7,0.22)] transition-opacity duration-200 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(84%_0.04_72)] focus-visible:ring-offset-4 focus-visible:ring-offset-[oklch(14%_0.012_40)]"
+                    >
+                      Confronta la gamma
+                      <ArrowUpRight
+                        aria-hidden="true"
+                        className="h-4 w-4"
+                        strokeWidth={1.8}
+                      />
+                    </motion.a>
+
+                    <motion.a
+                      href="tel:+393289185029"
+                      {...subtleHover(shouldReduceMotion)}
+                      className="font-ui inline-flex min-h-10 items-center justify-center gap-2 rounded-full bg-[oklch(11%_0.012_40/0.82)] px-4 py-2.5 text-xs leading-normal font-medium text-[oklch(94%_0.01_80)] shadow-[inset_0_0_0_1px_oklch(94%_0.01_80/0.16)] transition-colors duration-200 hover:bg-[oklch(15%_0.012_40/0.88)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(84%_0.04_72)] focus-visible:ring-offset-4 focus-visible:ring-offset-[oklch(14%_0.012_40)]"
+                    >
+                      Chiamaci per scegliere
+                      <CalendarCheck
+                        aria-hidden="true"
+                        className="h-4 w-4"
+                        strokeWidth={1.8}
+                      />
+                    </motion.a>
+                  </motion.div>
+                </div>
+
+                <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 [&>[data-qa=bottom-left-card]]:!mb-[calc(0.75rem+env(safe-area-inset-bottom))] [&>[data-qa=bottom-left-card]]:!ml-3 [&>[data-qa=bottom-left-card]]:!w-[10rem] [&>[data-qa=bottom-left-card]]:!rounded-[1rem] [&>[data-qa=bottom-left-card]]:!p-2.5 [&>[data-qa=bottom-left-card]]:pointer-events-auto">
+                  <BottomLeftCard />
+                </div>
+              </div>
+            </div>
+          </motion.section>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
+      ref={heroRootRef}
       data-qa="hero-viewport"
       className={`${cardMotion ? "h-full" : "min-h-[100svh]"} w-full bg-[var(--page-background)] p-2 sm:p-3 lg:p-4 2xl:p-5`}
     >
