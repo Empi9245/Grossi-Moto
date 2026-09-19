@@ -549,7 +549,7 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
                     >
                       <div
                         className={`relative shrink-0 overflow-hidden rounded-t-[1.45rem] bg-gray-50 transition-[height] duration-300 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none ${
-                          isOpen ? "h-[24%]" : "h-[61%]"
+                          isOpen ? "h-[28%]" : "h-[66%]"
                         }`}
                       >
                         <Image
@@ -562,7 +562,7 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
                         />
                       </div>
 
-                      <div className="relative z-10 flex min-h-0 flex-1 flex-col px-4 pb-3.5 pt-3">
+                      <div className="relative z-10 flex min-h-0 flex-1 flex-col px-4 pb-3 pt-2.5">
                         <div className="font-ui flex items-center justify-between gap-3 text-[0.61rem] font-bold uppercase tracking-[0.14em]">
                           <span className="text-[#C72A09]">
                             {serviceNumber}
@@ -573,8 +573,8 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
                         <h3
                           className={`font-display mt-2 max-w-[15ch] font-bold uppercase leading-[0.92] tracking-[-0.03em] text-[#0A0A0A] ${
                             isOpen
-                              ? "text-[clamp(1.35rem,5.4vw,1.8rem)]"
-                              : "text-[clamp(1.55rem,6.1vw,2.1rem)]"
+                              ? "text-[clamp(1.5rem,5.8vw,1.95rem)]"
+                              : "text-[clamp(1.6rem,6.25vw,2.15rem)]"
                           }`}
                         >
                           {service.title}
@@ -583,8 +583,8 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
                         <p
                           className={`max-w-[29ch] font-medium leading-[1.18] text-black/72 ${
                             isOpen
-                              ? "mt-1.5 text-[0.78rem]"
-                              : "mt-2 text-[clamp(0.82rem,3.5vw,0.96rem)]"
+                              ? "mt-2 text-[0.84rem]"
+                              : "mt-1.5 text-[clamp(0.84rem,3.55vw,0.98rem)]"
                           }`}
                         >
                           {service.statement}
@@ -596,7 +596,7 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
                               id={detailsId}
                               role="region"
                               aria-label={`Dettagli: ${service.title}`}
-                              className="mt-2.5 min-h-0"
+                              className="mt-3 flex min-h-0 flex-1 flex-col"
                               initial={{ opacity: 0, y: 5 }}
                               animate={{ opacity: 1, y: 0 }}
                               exit={{ opacity: 0, y: 3 }}
@@ -605,19 +605,19 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
                                 ease: [0.22, 1, 0.36, 1],
                               }}
                             >
-                              <p className="text-[0.7rem] leading-[1.38] text-black/60">
+                              <p className="text-[0.76rem] leading-[1.45] text-black/62">
                                 {service.description}
                               </p>
 
-                              <ul className="font-ui mt-2.5 grid gap-1.5">
+                              <ul className="font-ui mt-auto grid gap-2 pt-3">
                                 {service.features.map((feature, featureIndex) => (
                                   <li
                                     key={feature}
-                                    className="flex items-start gap-2 text-[0.65rem] font-medium leading-[1.25] text-black/76"
+                                    className="flex items-start gap-2.5 text-[0.71rem] font-medium leading-[1.3] text-black/78"
                                   >
                                     <span
                                       aria-hidden="true"
-                                      className="w-4 shrink-0 pt-px text-[0.58rem] font-bold tabular-nums text-[#C72A09]"
+                                      className="w-4 shrink-0 pt-px text-[0.62rem] font-bold tabular-nums text-[#C72A09]"
                                     >
                                       {String(featureIndex + 1).padStart(2, "0")}
                                     </span>
@@ -631,7 +631,7 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
 
                         <div
                           aria-hidden="true"
-                          className="font-ui mt-auto flex items-center justify-end gap-1.5 pt-2 text-[0.61rem] font-semibold uppercase tracking-[0.1em] text-black/46"
+                          className="font-ui mt-auto flex items-center justify-end gap-1.5 pt-1.5 text-[0.63rem] font-semibold uppercase tracking-[0.1em] text-black/46"
                         >
                           {isOpen ? (
                             <>
