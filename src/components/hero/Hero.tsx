@@ -93,6 +93,15 @@ export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
           title="ROMA, OGNI GIORNO."
           date="KYMCO · VOGE · GROSSIMOTO"
           scrollToExpand="Scorri per entrare"
+          endOverlay={
+            <a
+              href="/scooters"
+              className="group font-ui inline-flex min-h-11 items-center gap-2 rounded-[0.9rem] border border-white/25 bg-white/88 px-4 py-2.5 text-[0.72rem] font-semibold uppercase tracking-[0.12em] text-[oklch(17%_0.012_40)] shadow-[0_14px_36px_rgba(0,0,0,0.18)] backdrop-blur-md transition-[background-color,transform] duration-200 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-4 focus-visible:ring-offset-transparent active:scale-[0.98] motion-reduce:transition-none"
+            >
+              <span>Scopri la gamma</span>
+              <ActionMark />
+            </a>
+          }
           reducedMotion={shouldReduceMotion}
         />
       </div>

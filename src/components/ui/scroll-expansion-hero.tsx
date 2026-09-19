@@ -21,6 +21,7 @@ interface ScrollExpansionHeroProps {
   scrollToExpand?: string;
   textBlend?: boolean;
   children?: ReactNode;
+  endOverlay?: ReactNode;
   reducedMotion?: boolean;
 }
 
@@ -37,6 +38,7 @@ export default function ScrollExpansionHero({
   scrollToExpand,
   textBlend = false,
   children,
+  endOverlay,
   reducedMotion = false,
 }: ScrollExpansionHeroProps) {
   const rootRef = useRef<HTMLDivElement | null>(null);
@@ -223,6 +225,9 @@ export default function ScrollExpansionHero({
   const mediaHeight = 400 + scrollProgress * 200;
   const textTranslateX = scrollProgress * 180;
   const initialCopyOpacity = clamp(1 - scrollProgress * 1.45, 0, 1);
+  const endOverlayProgress = reducedMotion
+    ? 1
+    : clamp((scrollProgress - 0.9) / 0.1, 0, 1);
 
   return (
     <div
@@ -361,6 +366,28 @@ export default function ScrollExpansionHero({
                     </p>
                   ) : null}
                 </div>
+              ) : null}
+
+              {endOverlay ? (
+                <motion.div
+                  className="absolute inset-x-0 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-20 flex justify-center px-4"
+                  initial={false}
+                  animate={{
+                    opacity: endOverlayProgress,
+                    y: 14 * (1 - endOverlayProgress),
+                    scale: 0.985 + endOverlayProgress * 0.015,
+                  }}
+                  transition={{
+                    duration: reducedMotion ? 0 : 0.24,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
+                  style={{
+                    pointerEvents:
+                      endOverlayProgress >= 0.94 ? "auto" : "none",
+                  }}
+                >
+                  {endOverlay}
+                </motion.div>
               ) : null}
             </div>
 
