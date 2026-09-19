@@ -95,7 +95,11 @@ export default function ScrollExpansionHero({
   }, []);
 
   useEffect(() => {
-    syncProgress(reducedMotion ? 1 : 0);
+    const frame = window.requestAnimationFrame(() => {
+      syncProgress(reducedMotion ? 1 : 0);
+    });
+
+    return () => window.cancelAnimationFrame(frame);
   }, [mediaType, reducedMotion, syncProgress]);
 
   const canExitHero = useCallback(
