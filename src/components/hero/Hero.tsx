@@ -95,12 +95,14 @@ export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
           scrollToExpand="Scorri per entrare"
           endOverlay={
             <div className="flex w-full max-w-[21rem] flex-col items-center text-center text-white">
-              <p className="font-ui text-[0.58rem] font-semibold uppercase tracking-[0.24em] text-white/70">
-                Roma · Scooter · Moto · Officina
-              </p>
-              <p className="font-display mt-1.5 text-[clamp(1.9rem,9vw,2.65rem)] leading-[0.9] font-normal tracking-normal text-white drop-shadow-[0_8px_22px_rgba(0,0,0,0.28)]">
-                Grossi Moto
-              </p>
+              <div className="-translate-y-12">
+                <p className="font-ui text-[0.58rem] font-semibold uppercase tracking-[0.24em] text-white/70">
+                  Roma · Scooter · Moto · Officina
+                </p>
+                <p className="font-display mt-1.5 text-[clamp(1.9rem,9vw,2.65rem)] leading-[0.9] font-normal tracking-normal text-white drop-shadow-[0_8px_22px_rgba(0,0,0,0.28)]">
+                  Grossi Moto
+                </p>
+              </div>
               <a
                 href="/scooters"
                 className="group font-ui mt-4 inline-flex min-h-11 items-center gap-2 rounded-[0.9rem] border border-white/25 bg-white/88 px-4 py-2.5 text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-[oklch(17%_0.012_40)] shadow-[0_14px_36px_rgba(0,0,0,0.18)] backdrop-blur-md transition-[background-color,transform] duration-200 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-4 focus-visible:ring-offset-transparent active:scale-[0.98] motion-reduce:transition-none"
