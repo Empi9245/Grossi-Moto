@@ -559,21 +559,23 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
                       data-service-virtual-index={virtualIndex}
                       aria-hidden={!isSemanticCard}
                       inert={!isSemanticCard ? true : undefined}
-                      className="absolute left-1/2 top-0 flex h-full w-[80%] max-w-[31rem] flex-col overflow-hidden rounded-[1.5rem] border border-gray-200 bg-white opacity-0 shadow-sm will-change-transform"
+                      className="absolute left-1/2 top-0 flex h-full w-[80%] max-w-[31rem] flex-col overflow-hidden rounded-[1.5rem] border border-black/[0.055] bg-[#F5F5F7] opacity-0 shadow-[0_12px_32px_rgba(0,0,0,0.07)] will-change-transform"
                     >
                       <div
-                        className={`relative shrink-0 overflow-hidden rounded-t-[1.45rem] bg-gray-50 transition-[height] duration-300 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none ${
+                        className={`relative shrink-0 transition-[height] duration-300 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none ${
                           isOpen ? "h-[28%]" : "h-[66%]"
                         }`}
                       >
-                        <Image
-                          src={service.image}
-                          alt={isSemanticCard ? service.alt : ""}
-                          fill
-                          draggable={false}
-                          sizes="(max-width: 767px) calc(100vw - 1.75rem), 1px"
-                          className="object-cover"
-                        />
+                        <div className="absolute inset-x-2 bottom-0 top-2 overflow-hidden rounded-t-[1.3rem] rounded-b-[1.8rem] bg-[#ECEDEF] ring-1 ring-black/[0.035]">
+                          <Image
+                            src={service.image}
+                            alt={isSemanticCard ? service.alt : ""}
+                            fill
+                            draggable={false}
+                            sizes="(max-width: 767px) calc(100vw - 1.75rem), 1px"
+                            className="object-cover"
+                          />
+                        </div>
                       </div>
 
                       <div className="relative z-10 flex min-h-0 flex-1 flex-col px-4 pb-3 pt-2.5">
