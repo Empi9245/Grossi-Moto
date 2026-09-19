@@ -104,6 +104,17 @@ export default function ScrollExpansionHero({
     [],
   );
 
+  const isHeroInteractionActive = useCallback(() => {
+    const root = rootRef.current;
+
+    if (!root) {
+      return false;
+    }
+
+    const rect = root.getBoundingClientRect();
+    return rect.bottom > 1 && rect.top < window.innerHeight - 1;
+  }, []);
+
   const expandHero = useCallback(() => {
     if (
       isExpansionTransitioningRef.current ||
@@ -166,7 +177,12 @@ export default function ScrollExpansionHero({
           left: 0,
           behavior: "auto",
         });
+        touchStartYRef.current = null;
+        lastTouchMoveAtRef.current = null;
+        touchVelocityRef.current = 0;
+        touchExitArmedRef.current = false;
         isScrollTransitioningRef.current = false;
+        window.dispatchEvent(new Event("grossimoto:showroom-entry"));
       },
     });
   }, [canExitHero]);
@@ -177,6 +193,15 @@ export default function ScrollExpansionHero({
     }
 
     const handleWheel = (event: WheelEvent) => {
+      if (isScrollTransitioningRef.current) {
+        event.preventDefault();
+        return;
+      }
+
+      if (!isHeroInteractionActive()) {
+        return;
+      }
+
       const isAtPageTop = window.scrollY <= 5;
 
       if (isExpansionTransitioningRef.current) {
@@ -212,6 +237,18 @@ export default function ScrollExpansionHero({
     };
 
     const handleTouchStart = (event: TouchEvent) => {
+      if (
+        isScrollTransitioningRef.current ||
+        !isHeroInteractionActive() ||
+        event.touches.length !== 1
+      ) {
+        touchStartYRef.current = null;
+        lastTouchMoveAtRef.current = null;
+        touchVelocityRef.current = 0;
+        touchExitArmedRef.current = false;
+        return;
+      }
+
       touchStartYRef.current = event.touches[0]?.clientY ?? null;
       lastTouchMoveAtRef.current = performance.now();
       touchVelocityRef.current = 0;
@@ -221,6 +258,16 @@ export default function ScrollExpansionHero({
     };
 
     const handleTouchMove = (event: TouchEvent) => {
+      if (isScrollTransitioningRef.current) {
+        event.preventDefault();
+        return;
+      }
+
+      if (!isHeroInteractionActive()) {
+        touchStartYRef.current = null;
+        return;
+      }
+
       const startY = touchStartYRef.current;
       const touchY = event.touches[0]?.clientY;
 
@@ -309,6 +356,7 @@ export default function ScrollExpansionHero({
   }, [
     canExitHero,
     expandHero,
+    isHeroInteractionActive,
     reducedMotion,
     scrollToShowroom,
     syncProgress,
