@@ -695,7 +695,7 @@ function ProductShowroomChapter({
       >
         <div
           ref={stackContainerRef}
-          className="relative h-[17.75rem] sm:h-[19.5rem]"
+          className="relative h-[20rem] sm:h-[21rem]"
         >
           {copyIndexes.flatMap((copyIndex) =>
             scooters.map((scooter, index) => {
