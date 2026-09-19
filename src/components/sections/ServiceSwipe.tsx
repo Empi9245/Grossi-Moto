@@ -58,6 +58,12 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
     y: number;
     pointerId: number;
   } | null>(null);
+  const railMouseDragRef = useRef<{
+    x: number;
+    scrollLeft: number;
+    pointerId: number;
+    moved: boolean;
+  } | null>(null);
   const suppressMobileTapRef = useRef(false);
   const activeRef = useRef(0);
   const [active, setActive] = useState(0);
@@ -458,14 +464,21 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
           role="region"
           aria-label="Servizi Grossi Moto, carosello orizzontale infinito"
           tabIndex={0}
-          className="relative -mx-5 overflow-hidden focus-visible:outline-2 focus-visible:outline-offset-4 sm:-mx-7"
+          className="relative -mx-5 cursor-grab overflow-hidden focus-visible:outline-2 focus-visible:outline-offset-4 active:cursor-grabbing sm:-mx-7"
           style={{ touchAction: "pan-y" }}
           onPointerDown={(event) => {
-            if (!event.isPrimary) return;
+            if (
+              !event.isPrimary ||
+              (event.pointerType === "mouse" && event.button !== 0)
+            ) {
+              return;
+            }
 
             suppressMobileTapRef.current = false;
 
-            if (event.pointerType === "mouse") return;
+            if (event.pointerType === "mouse") {
+              event.currentTarget.setPointerCapture(event.pointerId);
+            }
 
             swipeStartRef.current = {
               x: event.clientX,
@@ -703,7 +716,88 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
         role="region"
         aria-label="Servizi Grossi Moto da sfogliare"
         tabIndex={0}
-        className="hide-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain pb-1 [--service-width:84%] after:block after:w-[max(0px,calc(100%-var(--service-width)-16px))] after:shrink-0 after:content-[''] focus-visible:outline-2 focus-visible:outline-offset-4 md:[--service-width:46%]"
+        className="hide-scrollbar flex cursor-grab snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain pb-1 [--service-width:84%] after:block after:w-[max(0px,calc(100%-var(--service-width)-16px))] after:shrink-0 after:content-[''] active:cursor-grabbing focus-visible:outline-2 focus-visible:outline-offset-4 md:[--service-width:46%]"
+        onPointerDown={(event) => {
+          if (
+            event.pointerType !== "mouse" ||
+            !event.isPrimary ||
+            event.button !== 0
+          ) {
+            return;
+          }
+
+          event.currentTarget.setPointerCapture(event.pointerId);
+          event.currentTarget.style.scrollSnapType = "none";
+          event.currentTarget.style.userSelect = "none";
+          railMouseDragRef.current = {
+            x: event.clientX,
+            scrollLeft: event.currentTarget.scrollLeft,
+            pointerId: event.pointerId,
+            moved: false,
+          };
+        }}
+        onPointerMove={(event) => {
+          const drag = railMouseDragRef.current;
+
+          if (
+            event.pointerType !== "mouse" ||
+            !drag ||
+            drag.pointerId !== event.pointerId
+          ) {
+            return;
+          }
+
+          const deltaX = event.clientX - drag.x;
+
+          if (!drag.moved && Math.abs(deltaX) > mobileTapTolerance) {
+            drag.moved = true;
+          }
+
+          if (drag.moved) {
+            event.preventDefault();
+            event.currentTarget.scrollLeft = drag.scrollLeft - deltaX;
+          }
+        }}
+        onPointerUp={(event) => {
+          const drag = railMouseDragRef.current;
+
+          if (!drag || drag.pointerId !== event.pointerId) {
+            return;
+          }
+
+          railMouseDragRef.current = null;
+          event.currentTarget.style.scrollSnapType = "";
+          event.currentTarget.style.userSelect = "";
+
+          const cards = Array.from(
+            event.currentTarget.querySelectorAll<HTMLElement>(
+              "[data-service-card]",
+            ),
+          );
+
+          if (!drag.moved || cards.length === 0) {
+            return;
+          }
+
+          const railStart = event.currentTarget.getBoundingClientRect().left;
+          const distances = cards.map((card) =>
+            Math.abs(card.getBoundingClientRect().left - railStart),
+          );
+          const nearest = distances.indexOf(Math.min(...distances));
+
+          goTo(nearest);
+        }}
+        onPointerCancel={(event) => {
+          const drag = railMouseDragRef.current;
+
+          if (!drag || drag.pointerId !== event.pointerId) {
+            return;
+          }
+
+          railMouseDragRef.current = null;
+          event.currentTarget.style.scrollSnapType = "";
+          event.currentTarget.style.userSelect = "";
+        }}
         onKeyDown={(event) => {
           if (event.key === "ArrowLeft") {
             event.preventDefault();
