@@ -87,7 +87,7 @@ export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
 
         <ScrollExpansionHero
           mediaType="video"
-          mediaSrc="/hero-video-mobile.mp4"
+          mediaSrc="/hero-video.mp4"
           posterSrc="/grossimoto/home-scroll/01-people-s-125-abs-lago.webp"
           bgImageSrc="/grossimoto/home-scroll/01-people-s-125-abs-lago.webp"
           title="ROMA, OGNI GIORNO."
@@ -137,7 +137,7 @@ export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
             onError={() => setVideoPlaying(false)}
             onEmptied={() => setVideoPlaying(false)}
           >
-            <source src="/hero-video-mobile.mp4" media="(max-width: 767px)" type="video/mp4" />
+            <source src="/hero-video.mp4" media="(max-width: 767px)" type="video/mp4" />
             <source
               src="/hero-video.mp4"
               type="video/mp4"

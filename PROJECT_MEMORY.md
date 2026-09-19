@@ -593,3 +593,9 @@ Implementata.
 - Previous/next usano chevron corti dentro control box squadrati; le stringhe tastiera `ArrowLeft`/`ArrowRight` restano invariate. Disclosure di card e pannelli usa `+ / −`.
 - Home e Gamma restano neutral/pastel senza nuovi accenti rossi. Servizi e Contatti mantengono bianco/nero/rosso con rosso riservato agli stati e alle CTA già previste.
 - Preservati layout di sezione, dati, immagini, routing, telefono, SEO, GSAP, snap, sticky, scrolling, drag pointer e logica dei caroselli.
+
+## Ripristino qualità video hero — 2026-09-19
+
+- Ripristinato `public/hero-video.mp4` alla versione precedente all'ottimizzazione del 17 settembre (circa 15,7 MB invece della ricodifica da circa 10,8 MB).
+- La hero home mobile usa ora lo stesso master video di qualità superiore del desktop; la variante `hero-video-mobile.mp4` resta nel repository ma non viene più selezionata dalla hero.
+- Preservati poster, autoplay muted, loop, playsInline, reduced motion, cover, animazioni, scroll handoff, CTA e layout responsive.
