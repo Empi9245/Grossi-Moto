@@ -59,6 +59,7 @@ export default function ScrollExpansionHero({
   const touchExitArmedRef = useRef(false);
   const heroSettleUntilRef = useRef(0);
   const isScrollTransitioningRef = useRef(false);
+  const isExpansionTransitioningRef = useRef(false);
 
   const [scrollProgress, setScrollProgress] = useState(0);
   const [showContent, setShowContent] = useState(false);
@@ -102,6 +103,31 @@ export default function ScrollExpansionHero({
       performance.now() >= heroSettleUntilRef.current,
     [],
   );
+
+  const expandHero = useCallback(() => {
+    if (
+      isExpansionTransitioningRef.current ||
+      mediaFullyExpandedRef.current
+    ) {
+      return;
+    }
+
+    const startProgress = scrollProgressRef.current;
+    const remainingProgress = 1 - startProgress;
+
+    isExpansionTransitioningRef.current = true;
+    touchExitArmedRef.current = false;
+
+    void animate(startProgress, 1, {
+      duration: clamp(1.15 * remainingProgress, 0.24, 1.15),
+      ease: [0.16, 1, 0.3, 1],
+      onUpdate: syncProgress,
+      onComplete: () => {
+        syncProgress(1);
+        isExpansionTransitioningRef.current = false;
+      },
+    });
+  }, [syncProgress]);
 
   const scrollToShowroom = useCallback((gestureVelocity = 0) => {
     if (isScrollTransitioningRef.current || !canExitHero()) {
@@ -151,6 +177,11 @@ export default function ScrollExpansionHero({
     const handleWheel = (event: WheelEvent) => {
       const isAtPageTop = window.scrollY <= 5;
 
+      if (isExpansionTransitioningRef.current) {
+        event.preventDefault();
+        return;
+      }
+
       if (
         mediaFullyExpandedRef.current &&
         event.deltaY < 0 &&
@@ -172,17 +203,9 @@ export default function ScrollExpansionHero({
         return;
       }
 
-      const scrollFactor = 0.0009;
-      const currentProgress = scrollProgressRef.current;
-      const nextProgress = currentProgress + event.deltaY * scrollFactor;
-
-      event.preventDefault();
-      syncProgress(nextProgress);
-
-      if (event.deltaY > 0 && nextProgress >= 1) {
-        // Finish the zoom first. The showroom handoff requires a later gesture,
-        // so the fully expanded hero gets a short, intentional resting beat.
-        return;
+      if (event.deltaY > 0) {
+        event.preventDefault();
+        expandHero();
       }
     };
 
@@ -190,7 +213,9 @@ export default function ScrollExpansionHero({
       touchStartYRef.current = event.touches[0]?.clientY ?? null;
       lastTouchMoveAtRef.current = performance.now();
       touchVelocityRef.current = 0;
-      touchExitArmedRef.current = mediaFullyExpandedRef.current;
+      touchExitArmedRef.current =
+        mediaFullyExpandedRef.current &&
+        !isExpansionTransitioningRef.current;
     };
 
     const handleTouchMove = (event: TouchEvent) => {
@@ -213,6 +238,12 @@ export default function ScrollExpansionHero({
       }
 
       lastTouchMoveAtRef.current = now;
+
+      if (isExpansionTransitioningRef.current) {
+        event.preventDefault();
+        touchStartYRef.current = touchY;
+        return;
+      }
 
       if (
         mediaFullyExpandedRef.current &&
@@ -237,18 +268,13 @@ export default function ScrollExpansionHero({
         return;
       }
 
-      const scrollFactor = deltaY < 0 ? 0.008 : 0.005;
-      const currentProgress = scrollProgressRef.current;
-      const nextProgress = currentProgress + deltaY * scrollFactor;
+      if (deltaY > 0) {
+        event.preventDefault();
 
-      event.preventDefault();
-      syncProgress(nextProgress);
-      touchStartYRef.current = touchY;
-
-      if (deltaY > 0 && nextProgress >= 1) {
-        // Do not reuse the swipe that completed the zoom to leave the hero.
-        // A fresh swipe keeps the final frame readable and removes the snap.
-        touchExitArmedRef.current = false;
+        if (deltaY >= 10) {
+          expandHero();
+          touchStartYRef.current = touchY;
+        }
       }
     };
 
@@ -278,10 +304,16 @@ export default function ScrollExpansionHero({
       window.removeEventListener("touchmove", handleTouchMove);
       window.removeEventListener("touchend", handleTouchEnd);
     };
-  }, [canExitHero, reducedMotion, scrollToShowroom, syncProgress]);
+  }, [
+    canExitHero,
+    expandHero,
+    reducedMotion,
+    scrollToShowroom,
+    syncProgress,
+  ]);
 
-  const mediaWidth = 300 + scrollProgress * 650;
-  const mediaHeight = 400 + scrollProgress * 200;
+  const mediaWidth = `calc(300px + (100vw - 300px) * ${scrollProgress})`;
+  const mediaHeight = `calc(400px + (100dvh - 400px) * ${scrollProgress})`;
   const textTranslateX = scrollProgress * 180;
   const initialCopyOpacity = clamp(1 - scrollProgress * 1.45, 0, 1);
   const endOverlayProgress = reducedMotion
@@ -319,14 +351,17 @@ export default function ScrollExpansionHero({
               <div
                 className="absolute left-1/2 top-1/2 z-0 -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-2xl transition-none"
                 style={{
-                  width: reducedMotion ? "100vw" : `${mediaWidth}px`,
-                  height: reducedMotion ? "100dvh" : `${mediaHeight}px`,
-                  maxWidth: reducedMotion ? "100vw" : "95vw",
-                  maxHeight: reducedMotion ? "100dvh" : "85vh",
-                  borderRadius: reducedMotion ? 0 : undefined,
-                  boxShadow: reducedMotion
-                    ? "none"
-                    : "0 24px 70px rgba(0, 0, 0, 0.3)",
+                  width: reducedMotion ? "100vw" : mediaWidth,
+                  height: reducedMotion ? "100dvh" : mediaHeight,
+                  maxWidth: "100vw",
+                  maxHeight: "100dvh",
+                  borderRadius: reducedMotion
+                    ? 0
+                    : `${16 * (1 - scrollProgress)}px`,
+                  boxShadow:
+                    reducedMotion || scrollProgress >= 0.98
+                      ? "none"
+                      : "0 24px 70px rgba(0, 0, 0, 0.3)",
                 }}
               >
                 {mediaType === "video" ? (
@@ -449,7 +484,7 @@ export default function ScrollExpansionHero({
                     scale: 0.985 + endOverlayProgress * 0.015,
                   }}
                   transition={{
-                    duration: reducedMotion ? 0 : 0.24,
+                    duration: reducedMotion ? 0 : 0.42,
                     ease: [0.22, 1, 0.36, 1],
                   }}
                   style={{
