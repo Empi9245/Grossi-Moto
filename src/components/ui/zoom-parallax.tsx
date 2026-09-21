@@ -1102,10 +1102,10 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
         <div className="pointer-events-none absolute inset-0 z-30 text-black">
           <motion.div
             style={{ x: introLeftX, opacity: introOpacity }}
-            className="absolute left-[8vw] top-[7svh] max-w-[76vw] will-change-transform [@media(max-height:700px)]:top-[5.5svh] md:left-[6vw] md:top-[9svh] md:max-w-[82vw] lg:left-[4vw] lg:top-[4svh] lg:max-w-[30vw]"
+            className="absolute left-[8vw] top-[12svh] max-w-[76vw] will-change-transform [@media(max-height:700px)]:top-[9svh] md:left-[6vw] md:top-[9svh] md:max-w-[82vw] lg:left-[4vw] lg:top-[4svh] lg:max-w-[30vw]"
           >
             <p className="font-ui mb-2 text-[0.62rem] font-semibold uppercase tracking-[0.16em] text-black/58 sm:text-[0.66rem]">Grossi Moto · Roma</p>
-            <p className="font-display text-[clamp(1.9rem,7.4vw,3.15rem)] font-semibold leading-[0.99] tracking-[-0.025em] lg:text-[clamp(2.15rem,3vw,3.85rem)]">
+            <p className="font-display text-[clamp(1.9rem,7.4vw,3.15rem)] font-semibold uppercase leading-[0.97] tracking-[-0.015em] lg:text-[clamp(2.15rem,3vw,3.85rem)]">
               La tua prossima strada.
             </p>
           </motion.div>
@@ -1113,7 +1113,7 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
             style={{ x: introRightX, opacity: introOpacity }}
             className="absolute bottom-[calc(6rem+env(safe-area-inset-bottom))] right-[8vw] max-w-[76vw] text-right will-change-transform [@media(max-height:700px)]:bottom-[calc(5.25rem+env(safe-area-inset-bottom))] md:bottom-[calc(7rem+env(safe-area-inset-bottom))] md:right-[6vw] md:max-w-[82vw] lg:bottom-[5svh] lg:right-[4vw] lg:max-w-[29vw]"
           >
-            <p className="font-display text-[clamp(1.95rem,7.6vw,3.25rem)] font-semibold leading-[0.99] tracking-[-0.025em] lg:text-[clamp(2.2rem,3.35vw,4.15rem)]">Parte da qui.</p>
+            <p className="font-display text-[clamp(1.95rem,7.6vw,3.25rem)] font-semibold uppercase leading-[0.97] tracking-[-0.015em] lg:text-[clamp(2.2rem,3.35vw,4.15rem)]">Parte da qui.</p>
             <p className="font-ui mt-3 max-w-[30rem] text-[0.78rem] leading-[1.45] tracking-normal text-black/62 lg:ml-auto lg:text-sm">Dalla scelta del mezzo, a ogni nuovo viaggio.</p>
           </motion.div>
         </div>
