@@ -149,12 +149,12 @@ const steppedScrollEntryEase: [number, number, number, number] = [0.22, 1, 0.36,
 const steppedScrollEntryDuration = 0.68;
 const steppedScrollFocusTolerancePx = 0.75;
 const steppedScrollFocusSettleFrames = 2;
-const creditsLockSettleFrames = 2;
+const creditsLockSettleFrames = 3;
 const creditsLockStepDuration = 2.04;
 const creditsExitStepDuration = 0.92;
 const creditsReverseStepDuration = 1.18;
 const creditsReverseToIntroDuration = 1.42;
-const wheelGestureResetMs = 160;
+const wheelGestureResetMs = 280;
 const idleFloatEase: [number, number, number, number] = [0.45, 0, 0.55, 1];
 const idleFloatPatterns = [
   { x: 4, y: -7, rotate: -0.18, duration: 5.8 },
@@ -168,28 +168,29 @@ const idleFloatPatterns = [
   { x: -9, y: 8, rotate: -0.46, duration: 6.9 },
 ] as const;
 
-type CreditLine =
-  | { kind: "eyebrow"; text: string }
-  | { kind: "title"; text: string; headingLevel: 2 | 3 }
-  | { kind: "detail"; text: string };
+type CreditBlock = {
+  eyebrow?: string;
+  title: string;
+  detail: string;
+  headingLevel: 2 | 3;
+};
 
-const creditLines: CreditLine[] = [
-  { kind: "eyebrow", text: "Dallo showroom all’officina" },
-  ...story.flatMap(({ title, detail }, index) => [
-    { kind: "title" as const, text: title, headingLevel: index === 0 ? 2 as const : 3 as const },
-    { kind: "detail" as const, text: detail },
-  ]),
-];
+const creditBlocks: CreditBlock[] = story.map(({ title, detail }, index) => ({
+  eyebrow: index === 0 ? "Dallo showroom all’officina" : undefined,
+  title,
+  detail,
+  headingLevel: index === 0 ? 2 : 3,
+}));
 
-function AlternatingCreditLine({
-  line,
+function AlternatingCreditBlock({
+  block,
   index,
   progress,
   zoomEnd,
   centerProgress,
   holdEndProgress,
 }: {
-  line: CreditLine;
+  block: CreditBlock;
   index: number;
   progress: MotionValue<number>;
   zoomEnd: number;
@@ -197,10 +198,9 @@ function AlternatingCreditLine({
   holdEndProgress: number;
 }) {
   const entersFromRight = index % 2 === 0;
-  const lineDelay = line.kind === "title" ? 0.018 : 0.024;
   const entryStart = Math.min(
-    zoomEnd + index * lineDelay,
-    centerProgress - 0.1,
+    zoomEnd + index * 0.035,
+    centerProgress - 0.12,
   );
   const x = useTransform(
     progress,
@@ -215,17 +215,12 @@ function AlternatingCreditLine({
   const y = useTransform(
     progress,
     [entryStart, centerProgress, holdEndProgress, 1],
-    [entersFromRight ? 18 : -18, 0, 0, entersFromRight ? -10 : 10],
+    [entersFromRight ? 14 : -14, 0, 0, entersFromRight ? -10 : 10],
   );
   const scale = useTransform(
     progress,
     [entryStart, centerProgress, holdEndProgress, 1],
-    [
-      line.kind === "title" ? 0.92 : 0.98,
-      1,
-      1,
-      line.kind === "title" ? 1.03 : 1.015,
-    ],
+    [0.95, 1, 1, 1.025],
   );
   const rotateY = useTransform(
     progress,
@@ -241,7 +236,7 @@ function AlternatingCreditLine({
     progress,
     [
       entryStart,
-      Math.min(entryStart + 0.06, centerProgress),
+      Math.min(entryStart + 0.065, centerProgress),
       centerProgress,
       holdEndProgress,
       0.965,
@@ -250,31 +245,28 @@ function AlternatingCreditLine({
     [0, 1, 1, 1, 1, 0],
   );
 
-  const className =
-    line.kind === "title"
-      ? `${creditsFont.className} max-w-[18ch] text-[clamp(2rem,min(8vw,7svh),5.6rem)] uppercase leading-[0.94] tracking-[-0.015em] lg:text-[clamp(3rem,5.1vw,6.5rem)]`
-      : line.kind === "detail"
-        ? "max-w-[44rem] text-[clamp(0.78rem,1.7vw,1.1rem)] leading-[1.45] text-white/82 lg:text-[clamp(0.9rem,1.2vw,1.15rem)]"
-        : "font-ui text-[0.58rem] font-bold uppercase tracking-[0.24em] text-white/82 sm:text-xs";
+  const titleClassName = `${creditsFont.className} max-w-[18ch] text-[clamp(2rem,min(8vw,7svh),5.6rem)] uppercase leading-[0.94] tracking-[-0.015em] lg:text-[clamp(3rem,5.1vw,6.5rem)]`;
+  const detailClassName =
+    "mt-3 max-w-[44rem] text-[clamp(0.78rem,1.7vw,1.1rem)] font-normal leading-[1.45] text-white/82 lg:text-[clamp(0.9rem,1.2vw,1.15rem)]";
 
-  const content = (
+  return (
     <motion.div
       style={{ x, y, scale, rotateY, transformPerspective: 1200, opacity }}
-      className="flex w-full justify-center px-5 text-center will-change-transform transform-gpu sm:px-8 lg:px-10"
+      className="flex w-full flex-col items-center justify-center px-5 text-center will-change-transform transform-gpu sm:px-8 lg:px-10"
     >
-      {line.kind === "title" ? (
-        line.headingLevel === 2 ? (
-          <h2 className={className}>{line.text}</h2>
-        ) : (
-          <h3 className={className}>{line.text}</h3>
-        )
+      {block.eyebrow ? (
+        <p className="font-ui mb-2 text-[0.58rem] font-bold uppercase tracking-[0.24em] text-white/82 sm:text-xs">
+          {block.eyebrow}
+        </p>
+      ) : null}
+      {block.headingLevel === 2 ? (
+        <h2 className={titleClassName}>{block.title}</h2>
       ) : (
-        <p className={className}>{line.text}</p>
+        <h3 className={titleClassName}>{block.title}</h3>
       )}
+      <p className={detailClassName}>{block.detail}</p>
     </motion.div>
   );
-
-  return content;
 }
 
 function CinematicCredits({
@@ -294,13 +286,13 @@ function CinematicCredits({
     <div className="pointer-events-none absolute inset-0 z-30 overflow-hidden">
       <div
         className={`absolute inset-0 flex flex-col items-center justify-center text-[#f4f0e8] [perspective:1200px] [text-shadow:0_4px_28px_rgba(0,0,0,0.45)] ${
-          compact ? "gap-[clamp(0.5rem,1.4svh,0.85rem)] py-12" : "gap-[clamp(0.65rem,1.4svh,1.15rem)] py-10"
+          compact ? "gap-[clamp(1rem,2.4svh,1.5rem)] py-12" : "gap-[clamp(1.3rem,2.8svh,2rem)] py-10"
         }`}
       >
-        {creditLines.map((line, index) => (
-          <AlternatingCreditLine
-            key={`${line.kind}-${line.text}`}
-            line={line}
+        {creditBlocks.map((block, index) => (
+          <AlternatingCreditBlock
+            key={block.title}
+            block={block}
             index={index}
             progress={progress}
             zoomEnd={zoomEnd}
@@ -354,6 +346,7 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
     let wheelResetTimer: number | null = null;
     let focusSettleFrame: number | null = null;
     let stepSettleFrame: number | null = null;
+    let creditsLockGuardActive = false;
 
     const setIntroAssembly = (next: boolean) => {
       if (introAssembledRef.current === next) {
@@ -562,6 +555,7 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
         cooldownUntil = performance.now() + steppedScrollCooldownMs;
       };
 
+      creditsLockGuardActive = false;
       isAnimating = true;
       activeAnimation = animate(window.scrollY, targetY, {
         duration,
@@ -619,6 +613,7 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
             }
 
             stepSettleFrame = null;
+            creditsLockGuardActive = true;
             finishStep();
           };
 
@@ -832,6 +827,25 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
       }
 
       const state = getSectionState();
+
+      if (creditsLockGuardActive && !isAnimating) {
+        const lockedY =
+          state.sectionTop +
+          state.scrollDistance * creditsLockTarget;
+
+        if (
+          Math.abs(window.scrollY - lockedY) >
+          steppedScrollFocusTolerancePx
+        ) {
+          window.scrollTo({
+            top: lockedY,
+            left: 0,
+            behavior: "auto",
+          });
+        }
+
+        return;
+      }
 
       if (state.rectTop > 12) {
         setIntroAssembly(false);
