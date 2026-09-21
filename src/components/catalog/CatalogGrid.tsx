@@ -9,14 +9,11 @@ import {
   useRef,
   useState,
 } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 
-import {
-  CatalogProductCard,
-  CatalogProductDetailsPanel,
-} from "@/components/catalog/CatalogProductCard";
+import { CatalogProductCard } from "@/components/catalog/CatalogProductCard";
 import type { CatalogScooter } from "@/data/catalog-scooters";
 import {
   getCatalogCardToneAssignments,
@@ -217,33 +214,22 @@ function ReducedMotionCompactCatalogGrid({
     >
       {scooters.map((scooter) => {
         const isExpanded = expandedId === scooter.id;
-        const detailsPanelId = `catalog-product-details-${scooter.id}`;
 
         return (
-          <div key={scooter.id} className="grid gap-3 sm:gap-4">
-            <CatalogProductCard
-              scooter={scooter}
-              shouldReduceMotion={shouldReduceMotion}
-              isExpanded={false}
-              isSelected={isExpanded}
-              transitionImageId={null}
-              cardToneAssignment={cardToneAssignments[scooter.id]}
-              isPriority={scooter.id === scooters[0]?.id}
-              detailsControlId={detailsPanelId}
-              onExpandScooter={onExpandScooter}
-              onCollapseScooter={onCollapseScooter}
-            />
-            {isExpanded ? (
-              <CatalogProductDetailsPanel
-                scooter={scooter}
-                shouldReduceMotion
-                cardToneAssignment={cardToneAssignments[scooter.id]}
-                id={detailsPanelId}
-                collapseFocusTargetId={`catalog-card-trigger-${scooter.id}`}
-                onCollapseScooter={onCollapseScooter}
-              />
-            ) : null}
-          </div>
+          <CatalogProductCard
+            key={scooter.id}
+            scooter={scooter}
+            shouldReduceMotion={shouldReduceMotion}
+            isExpanded={false}
+            isCompactExpanded={isExpanded}
+            compactMode
+            isSelected={isExpanded}
+            transitionImageId={null}
+            cardToneAssignment={cardToneAssignments[scooter.id]}
+            isPriority={scooter.id === scooters[0]?.id}
+            onExpandScooter={onExpandScooter}
+            onCollapseScooter={onCollapseScooter}
+          />
         );
       })}
     </div>
@@ -356,12 +342,6 @@ function ProductShowroomChapter({
   const copyIndexes = looping ? [0, 1, 2] : [0];
   const semanticCopyIndex = looping ? 1 : 0;
   const activeScooter = scooters[active] ?? scooters[0];
-  const expandedScooter = expandedId
-    ? scooters.find((scooter) => scooter.id === expandedId)
-    : undefined;
-  const expandedIndex = expandedScooter
-    ? scooters.findIndex((scooter) => scooter.id === expandedScooter.id)
-    : -1;
   const scooterSignature = scooters.map((scooter) => scooter.id).join("|");
 
   const getStackInstanceId = (copyIndex: number, index: number) =>
@@ -755,8 +735,6 @@ function ProductShowroomChapter({
                 ? copyIndex * totalCards + index
                 : index;
               const instanceId = getStackInstanceId(copyIndex, index);
-              const detailsPanelId =
-                `catalog-product-details-${chapterId}-${scooter.id}`;
 
               return (
                 <div
@@ -774,6 +752,10 @@ function ProductShowroomChapter({
                     scooter={scooter}
                     shouldReduceMotion={false}
                     isExpanded={false}
+                    isCompactExpanded={
+                      isSemanticCard && expandedId === scooter.id
+                    }
+                    compactMode
                     isSelected={
                       isSemanticCard && expandedId === scooter.id
                     }
@@ -784,7 +766,6 @@ function ProductShowroomChapter({
                     }
                     instanceId={instanceId}
                     isSemanticInstance={isSemanticCard}
-                    detailsControlId={detailsPanelId}
                     onExpandScooter={onExpandScooter}
                     onCollapseScooter={onCollapseScooter}
                   />
@@ -840,25 +821,7 @@ function ProductShowroomChapter({
         ) : null}
       </div>
 
-      <AnimatePresence initial={false}>
-        {expandedScooter && expandedIndex >= 0 ? (
-          <CatalogProductDetailsPanel
-            key={expandedScooter.id}
-            scooter={expandedScooter}
-            shouldReduceMotion={false}
-            cardToneAssignment={cardToneAssignments[expandedScooter.id]}
-            id={`catalog-product-details-${chapterId}-${expandedScooter.id}`}
-            className="mt-5 sm:mt-6"
-            collapseFocusTargetId={
-              "catalog-card-trigger-" +
-              expandedScooter.id +
-              "-" +
-              getStackInstanceId(semanticCopyIndex, expandedIndex)
-            }
-            onCollapseScooter={onCollapseScooter}
-          />
-        ) : null}
-      </AnimatePresence>
+
     </section>
   );
 }

@@ -610,9 +610,9 @@ Implementata.
 - Preservati poster, autoplay muted, loop, playsInline, reduced motion, cover, animazioni, scroll handoff, CTA e layout responsive.
 
 
-## Gamma mobile: pannello dettagli dedicato — 2026-09-21
+## Gamma mobile: espansione in-place della card — 2026-09-21
 
-- Su mobile/tablet la card attiva della Gamma resta sempre compatta nello stack GSAP; l'apertura mostra ora un pannello dettagli dedicato sotto lo stack, senza duplicare immagine, brand, modello, family, subtitle o struttura della card.
-- Il pannello riusa positioning, le prime tre specifiche e le CTA esistenti, mantiene il tone pastel assegnato al modello, usa DisclosureMark e una transizione Framer Motion breve; con reduced motion viene mostrato senza animazione.
-- Triple-copy, infinite swipe, peeks, profondita, ResizeObserver, controlli e desktop restano invariati. Il cambio modello via swipe, tastiera o controlli chiude i dettagli del modello precedente; la chiusura riporta il focus al trigger semantico.
-- Il deep link `/scooters?focus=<id>` continua a usare `data-scooter-detail-id`, ora sul pannello dettagli mobile invece che su una seconda CatalogProductCard.
+- Su mobile/tablet la card semantica attiva della Gamma si espande direttamente nello stack: mantiene header, modello e tone pastel, riduce leggermente la moto e rivela positioning, prime tre specifiche e CTA all'interno della stessa superficie.
+- Le copie laterali GSAP restano sempre compatte e non interattive. Triple-copy, infinite swipe, peeks, profondita, virtual indexes, ResizeObserver, recenter e controlli restano invariati; il ResizeObserver adegua l'altezza dello stack alla card centrale aperta.
+- L'espansione usa Framer Motion solo per size/layout e contenuto interno, senza bounce; con reduced motion il cambio e immediato. Swipe, tastiera e previous/next chiudono i dettagli del modello precedente.
+- Desktop continua a usare l'espansione originale della griglia. Il deep link `/scooters?focus=<id>` resta compatibile tramite `data-scooter-detail-id` sulla card aperta.
