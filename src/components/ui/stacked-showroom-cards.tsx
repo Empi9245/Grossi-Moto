@@ -279,7 +279,7 @@ export function StackedShowroomCards() {
           role="status"
           aria-live="polite"
           aria-atomic="true"
-          className="font-ui absolute right-5 top-[calc(1.4rem+env(safe-area-inset-top))] z-50 flex items-center gap-2 rounded-full bg-black/78 px-3 py-2 text-[0.62rem] font-bold uppercase tracking-[0.14em] text-white backdrop-blur-sm"
+          className="font-ui absolute right-5 top-[calc(4.25rem+env(safe-area-inset-top))] z-50 flex items-center gap-2 rounded-full bg-black/78 px-3 py-2 text-[0.62rem] font-bold uppercase tracking-[0.14em] text-white backdrop-blur-sm"
         >
           <span className="font-numeric tabular-nums">
             {String(activeIndex + 1).padStart(2, "0")}
