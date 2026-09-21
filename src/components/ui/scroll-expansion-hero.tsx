@@ -177,15 +177,14 @@ export default function ScrollExpansionHero({
       return;
     }
 
-    const heroViewport = rootRef.current?.parentElement;
-    const showroom = heroViewport?.nextElementSibling as HTMLElement | null;
+    const showroomEntry = rootRef.current
+      ?.closest("main")
+      ?.querySelector<HTMLElement>("[data-showroom-entry]");
 
-    if (!showroom) {
+    if (!showroomEntry) {
       return;
     }
 
-    const showroomEntry =
-      showroom.querySelector<HTMLElement>("[data-showroom-entry]") ?? showroom;
     const targetTop =
       window.scrollY + showroomEntry.getBoundingClientRect().top;
     const normalizedVelocity = clamp(Math.abs(gestureVelocity), 0, 1.6);
@@ -394,6 +393,7 @@ export default function ScrollExpansionHero({
     window.addEventListener("touchstart", handleTouchStart, { passive: true });
     window.addEventListener("touchmove", handleTouchMove, { passive: false });
     window.addEventListener("touchend", handleTouchEnd, { passive: true });
+    window.addEventListener("touchcancel", handleTouchEnd, { passive: true });
 
     return () => {
       window.removeEventListener("wheel", handleWheel);
@@ -401,6 +401,7 @@ export default function ScrollExpansionHero({
       window.removeEventListener("touchstart", handleTouchStart);
       window.removeEventListener("touchmove", handleTouchMove);
       window.removeEventListener("touchend", handleTouchEnd);
+      window.removeEventListener("touchcancel", handleTouchEnd);
     };
   }, [
     canExitHero,
