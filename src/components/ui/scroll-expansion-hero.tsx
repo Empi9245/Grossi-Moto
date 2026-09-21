@@ -322,11 +322,13 @@ export default function ScrollExpansionHero({
     };
 
     const handleTouchStart = (event: TouchEvent) => {
+      const isExpanded = mediaFullyExpandedRef.current;
+      const startsInHero = eventTargetsHero(event);
+
       if (
         isScrollTransitioningRef.current ||
-        !isHeroInteractionActive() ||
-        !eventTargetsHero(event) ||
-        event.touches.length !== 1
+        event.touches.length !== 1 ||
+        (!isExpanded && (!isHeroInteractionActive() || !startsInHero))
       ) {
         touchStartYRef.current = null;
         lastTouchMoveAtRef.current = null;
@@ -340,13 +342,12 @@ export default function ScrollExpansionHero({
       lastTouchMoveAtRef.current = performance.now();
       touchVelocityRef.current = 0;
       touchExitArmedRef.current =
-        mediaFullyExpandedRef.current &&
+        isExpanded &&
         !isExpansionTransitioningRef.current &&
-        isHeroAtTop();
+        isHeroAtTop() &&
+        startsInHero;
       touchCollapseArmedRef.current =
-        mediaFullyExpandedRef.current &&
-        !isExpansionTransitioningRef.current &&
-        isHeroAtTop();
+        isExpanded && !isExpansionTransitioningRef.current;
     };
 
     const handleTouchMove = (event: TouchEvent) => {
@@ -355,21 +356,19 @@ export default function ScrollExpansionHero({
         return;
       }
 
-      if (
-        !isHeroInteractionActive() ||
-        !eventTargetsHero(event) ||
-        (mediaFullyExpandedRef.current && !isHeroAtTop())
-      ) {
-        touchStartYRef.current = null;
-        touchExitArmedRef.current = false;
-        touchCollapseArmedRef.current = false;
-        return;
-      }
-
+      const isExpanded = mediaFullyExpandedRef.current;
+      const startsInHero = eventTargetsHero(event);
       const startY = touchStartYRef.current;
       const touchY = event.touches[0]?.clientY;
 
       if (startY == null || touchY == null) {
+        return;
+      }
+
+      if (!isExpanded && (!isHeroInteractionActive() || !startsInHero)) {
+        touchStartYRef.current = null;
+        touchExitArmedRef.current = false;
+        touchCollapseArmedRef.current = false;
         return;
       }
 
@@ -392,10 +391,17 @@ export default function ScrollExpansionHero({
         return;
       }
 
+      if (isExpanded && !isHeroAtTop()) {
+        touchExitArmedRef.current = false;
+        touchStartYRef.current = touchY;
+        return;
+      }
+
       if (
-        mediaFullyExpandedRef.current &&
+        isExpanded &&
+        isHeroInteractionActive() &&
         touchCollapseArmedRef.current &&
-        deltaY < -20
+        deltaY < -12
       ) {
         event.preventDefault();
         touchStartYRef.current = touchY;
@@ -403,8 +409,8 @@ export default function ScrollExpansionHero({
         return;
       }
 
-      if (mediaFullyExpandedRef.current) {
-        if (deltaY > 0) {
+      if (isExpanded) {
+        if (startsInHero && deltaY > 0) {
           event.preventDefault();
 
           if (touchExitArmedRef.current) {
