@@ -397,7 +397,7 @@ export function CatalogFilterBar({
       <div
         aria-hidden={!compactToolbarVisible}
         inert={!compactToolbarVisible}
-        className="sticky z-40 h-0 px-3 lg:hidden"
+        className="sticky z-[1100] h-0 px-3 lg:hidden"
         style={{ top: "max(0.5rem, env(safe-area-inset-top))" }}
       >
         <div
