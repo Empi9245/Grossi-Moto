@@ -50,21 +50,11 @@ function ShowroomCard({
     <article
       className="relative h-full w-full overflow-hidden rounded-[1.5rem] shadow-[0_-10px_36px_rgba(0,0,0,0.14),0_22px_56px_rgba(0,0,0,0.16)]"
       data-source-asset={scooter.sourceAsset}
-      style={{ background: scooter.backgroundSurface }}
+      style={{
+        background: scooter.mobileBackgroundSurface ?? scooter.backgroundSurface,
+      }}
     >
       <div className="absolute inset-x-0 top-[3%] z-10 aspect-[4/3]">
-        <div
-          aria-hidden="true"
-          className="absolute left-1/2 bottom-[9%] z-0 rounded-[50%] blur-[12px]"
-          style={{
-            width: scooter.shadowWidth,
-            height: scooter.shadowHeight,
-            opacity: scooter.shadowOpacity,
-            background: `radial-gradient(ellipse at center, ${scooter.shadowTone} 0%, ${scooter.shadowTone} 42%, transparent 74%)`,
-            transform: `translate(calc(-50% + ${scooter.shadowX}), ${scooter.shadowY})`,
-          }}
-        />
-
         <div
           className="relative z-10 h-full w-full px-2"
           style={{
