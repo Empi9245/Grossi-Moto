@@ -392,6 +392,7 @@ function ProductShowroomChapter({
       let disposed = false;
 
       const expectedCardCount = totalCards * copyIndexes.length;
+      const lateralScale = 0.9;
 
       const syncContainerHeight = () => {
         if (heightCards.length === 0) return;
@@ -415,7 +416,6 @@ function ProductShowroomChapter({
         const containerWidth = container.clientWidth;
         if (cardWidth === 0 || containerWidth === 0) return false;
 
-        const lateralScale = 0.9;
         const cardGap = gsap.utils.clamp(12, 16, containerWidth * 0.035);
         cardSpacing = cardWidth * ((1 + lateralScale) / 2) + cardGap;
         measuredContainerWidth = containerWidth;
