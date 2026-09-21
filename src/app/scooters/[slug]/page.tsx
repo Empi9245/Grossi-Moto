@@ -7,16 +7,54 @@ import { PhoneCall } from "lucide-react";
 
 import { CatalogNavbar } from "@/components/catalog/CatalogNavbar";
 import { SiteFooter } from "@/components/layout/SiteFooter";
+import { ProductGallery } from "@/components/product/ProductGallery";
 import {
   catalogScooters,
   getCatalogScooterBrand,
   getCatalogScooterById,
+  type CatalogScooter,
 } from "@/data/catalog-scooters";
+import { getProductGalleryImages } from "@/lib/product-assets";
 import { pageMetadata, siteUrl } from "@/lib/seo";
 
 type ModelPageProps = {
   params: Promise<{ slug: string }>;
 };
+
+function lowercaseLeading(value: string) {
+  return value ? value.charAt(0).toLocaleLowerCase("it-IT") + value.slice(1) : value;
+}
+
+function buildModelMetaDescription(scooter: CatalogScooter) {
+  const brand = getCatalogScooterBrand(scooter);
+  const useCase = lowercaseLeading(scooter.idealUse);
+
+  return `Scopri ${brand} ${scooter.name} ${scooter.displacement} a Roma: ${scooter.family}, pensato per ${useCase}. Caratteristiche e contatti Grossi Moto per prezzo e disponibilità.`;
+}
+
+function getRelatedScooters(scooter: CatalogScooter) {
+  const brand = getCatalogScooterBrand(scooter);
+
+  return catalogScooters
+    .filter(
+      (item) =>
+        item.id !== scooter.id && getCatalogScooterBrand(item) === brand,
+    )
+    .map((item) => ({
+      item,
+      score:
+        (item.family === scooter.family ? 4 : 0) +
+        (item.filterCategory === scooter.filterCategory ? 2 : 0) +
+        (item.displacement === scooter.displacement ? 1 : 0),
+    }))
+    .sort(
+      (left, right) =>
+        right.score - left.score ||
+        left.item.name.localeCompare(right.item.name, "it"),
+    )
+    .slice(0, 4)
+    .map(({ item }) => item);
+}
 
 export const dynamicParams = false;
 
@@ -38,9 +76,8 @@ export async function generateMetadata({
   }
 
   const brand = getCatalogScooterBrand(scooter);
-  const description = `${brand} ${scooter.name} ${scooter.displacement} a Roma: ${scooter.family}, uso ideale ${scooter.idealUse}. Chiedi prezzo e disponibilità a Grossi Moto.`;
-
-  return pageMetadata(
+  const description = buildModelMetaDescription(scooter);
+  const metadata = pageMetadata(
     `${brand} ${scooter.name} a Roma`,
     description,
     `/scooters/${scooter.id}`,
@@ -49,6 +86,11 @@ export async function generateMetadata({
       imageAlt: scooter.imageAlt,
     },
   );
+
+  return {
+    ...metadata,
+    robots: { index: true, follow: true },
+  };
 }
 
 export default async function ScooterModelPage({ params }: ModelPageProps) {
@@ -61,12 +103,8 @@ export default async function ScooterModelPage({ params }: ModelPageProps) {
 
   const brand = getCatalogScooterBrand(scooter);
   const modelUrl = `${siteUrl}/scooters/${scooter.id}`;
-  const relatedScooters = catalogScooters
-    .filter(
-      (item) =>
-        item.id !== scooter.id && getCatalogScooterBrand(item) === brand,
-    )
-    .slice(0, 3);
+  const relatedScooters = getRelatedScooters(scooter);
+  const galleryImages = await getProductGalleryImages(scooter);
 
   const productJsonLd = {
     "@context": "https://schema.org",
@@ -134,6 +172,13 @@ export default async function ScooterModelPage({ params }: ModelPageProps) {
           <CatalogNavbar />
 
           <div className="px-5 pb-8 pt-6 sm:px-7 sm:pb-10 sm:pt-8 lg:px-10 lg:pb-12">
+            <Link
+              href={`/scooters?focus=${encodeURIComponent(scooter.id)}`}
+              className="font-ui inline-flex min-h-11 items-center rounded-[0.9rem] px-2 text-[0.68rem] font-bold uppercase tracking-[0.1em] text-black/62 transition-colors hover:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/35"
+            >
+              Torna al catalogo
+            </Link>
+
             <nav
               aria-label="Breadcrumb"
               className="font-ui flex flex-wrap items-center gap-2 text-[0.68rem] font-bold uppercase tracking-[0.11em] text-black/52"
@@ -223,7 +268,7 @@ export default async function ScooterModelPage({ params }: ModelPageProps) {
             >
               <div className="rounded-[1.2rem] border border-black/8 bg-[#F7F7F7] p-6 sm:p-8">
                 <p className="font-ui text-[0.65rem] font-bold uppercase tracking-[0.16em] text-black/50">
-                  Uso ideale
+                  Pensato per
                 </p>
                 <h2
                   id="model-details-title"
@@ -232,7 +277,12 @@ export default async function ScooterModelPage({ params }: ModelPageProps) {
                   {scooter.idealUse}
                 </h2>
                 <p className="mt-5 max-w-[32rem] text-sm leading-6 text-black/62 sm:text-base sm:leading-7">
-                  Per dotazioni, prezzo e disponibilità del modello, chiedi
+                  {brand} {scooter.name} è un modello {lowercaseLeading(scooter.family)} da{" "}
+                  {scooter.displacement}, indicato nel catalogo per{" "}
+                  {lowercaseLeading(scooter.idealUse)}.
+                </p>
+                <p className="mt-3 max-w-[32rem] text-sm leading-6 text-black/52 sm:text-base sm:leading-7">
+                  Per dotazioni, allestimenti, prezzo e disponibilità, chiedi
                   conferma direttamente a Grossi Moto.
                 </p>
               </div>
@@ -253,6 +303,11 @@ export default async function ScooterModelPage({ params }: ModelPageProps) {
                 ))}
               </div>
             </section>
+
+            <ProductGallery
+              modelName={`${brand} ${scooter.name}`}
+              images={galleryImages}
+            />
 
             <div className="mt-8 flex flex-wrap items-center gap-3 border-t border-black/10 pt-7">
               <Link
@@ -277,15 +332,15 @@ export default async function ScooterModelPage({ params }: ModelPageProps) {
                 className="mt-12 border-t border-black/10 pt-10"
               >
                 <p className="font-ui text-[0.65rem] font-bold uppercase tracking-[0.16em] text-black/50">
-                  Gamma {brand}
+                  Da confrontare · {brand}
                 </p>
                 <h2
                   id="related-models-title"
                   className="font-display mt-3 text-[clamp(2.2rem,5vw,4.4rem)] font-bold leading-[0.92] text-black"
                 >
-                  Altri modelli
+                  Modelli simili
                 </h2>
-                <div className="mt-6 grid gap-3 md:grid-cols-3">
+                <div className="mt-6 grid gap-3 md:grid-cols-2 lg:grid-cols-4">
                   {relatedScooters.map((related) => (
                     <Link
                       key={related.id}

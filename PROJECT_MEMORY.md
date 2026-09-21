@@ -1,5 +1,16 @@
 # Project Memory
 
+## Pagine modello SEO /scooters/[slug] — audit copy e gallery 2026-09-21
+
+- Le 27 pagine modello restano generate staticamente da `catalogScooters` con `generateStaticParams()` e `dynamicParams = false`; `/scooters?focus=<id>` resta il deep link alla quick preview e non viene rediretto.
+- Metadata modello resi più naturali e coerenti con l'intento locale: title breve `<brand> <modello> a Roma`, description specifica con cilindrata/famiglia/uso e CTA prudente a prezzo/disponibilità; robots esplicito `index, follow`.
+- Structured data mantiene `ProductModel` + `BreadcrumbList` senza inventare prezzi, `InStock`, rating o recensioni di prodotto.
+- Aggiunta gallery server-side usando solo asset già presenti: Voge legge il manifest `index.json` del modello e preferisce `gallery` con fallback limitato a `spin360`; KYMCO usa `public/kymco-all/manifest.json`, filtrando per `modelSlug` e immagini gallery, con fallback colori.
+- Related products ordinati per pertinenza: stessa famiglia, poi stessa fascia filtro/cilindrata, sempre all'interno dello stesso brand; massimo quattro.
+- Le card catalogo aperte mantengono quick preview, CTA telefono/contatto e ora aggiungono `Scopri tutti i dettagli` verso `/scooters/<id>`.
+- `src/app/sitemap.ts` non è stato modificato perché includeva già automaticamente tutte le route modello dal dataset.
+
+
 ## Hero Home mobile — handoff zoom/showroom 2026-09-19
 
 - Le scritte finali dell'overlay mobile (`Roma · Scooter · Moto · Officina` e `Grossi Moto`) sono state alzate di 3rem senza spostare la CTA `Scopri la gamma`.

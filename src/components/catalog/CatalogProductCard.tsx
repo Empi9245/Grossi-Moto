@@ -127,7 +127,7 @@ function ProductSpecs({
 
 function ProductContactActions({ scooter }: { scooter: CatalogScooter }) {
   return (
-    <div className="mt-4 flex flex-col gap-3 sm:mt-5 sm:flex-row">
+    <div className="mt-4 flex flex-col gap-3 sm:mt-5 sm:flex-row sm:flex-wrap">
       <a
         href="tel:+393289185029"
         aria-label={`Chiama per disponibilità per ${scooter.name}: chiama Grossi Moto`}
@@ -146,6 +146,13 @@ function ProductContactActions({ scooter }: { scooter: CatalogScooter }) {
         aria-label={`Scrivi per questo modello: ${scooter.name}`}
       >
         Scrivi per questo modello
+      </Link>
+      <Link
+        href={`/scooters/${scooter.id}`}
+        className="font-ui inline-flex min-h-11 items-center justify-center rounded-[0.9rem] px-5 py-3 text-sm font-bold underline underline-offset-4 focus-visible:outline focus-visible:outline-2"
+        aria-label={`Scopri tutti i dettagli di ${scooter.name}`}
+      >
+        Scopri tutti i dettagli
       </Link>
     </div>
   );
