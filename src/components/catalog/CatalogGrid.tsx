@@ -1086,37 +1086,37 @@ function DesktopCatalogGrid({
         className="grid grid-cols-12 items-start gap-4"
       >
         {orderedScooters.map((scooter) => {
-        const isExpanded = expandedId === scooter.id;
+          const isExpanded = expandedId === scooter.id;
 
-        return (
-          <motion.div
-            key={scooter.id}
-            layout={shouldReduceMotion ? false : true}
-            layoutDependency={expandedId ?? "collapsed"}
-            transition={{
-              layout: {
-                duration: shouldReduceMotion ? 0.01 : cardLayoutDuration,
-                ease: productEase,
-              },
-            }}
-            className={
-              isExpanded
-                ? "relative z-20 col-span-12 min-w-0"
-                : "relative z-0 col-span-3 min-w-0"
-            }
-          >
-            <CatalogProductCard
-              scooter={scooter}
-              shouldReduceMotion={shouldReduceMotion}
-              isExpanded={isExpanded}
-              isSelected={isExpanded}
-              transitionImageId={isExpanded ? transitionImageId : null}
-              cardToneAssignment={cardToneAssignments[scooter.id]}
-              isPriority={scooter.id === scooters[0]?.id}
-              onExpandScooter={onExpandScooter}
-              onCollapseScooter={onCollapseScooter}
-            />
-          </motion.div>
+          return (
+            <motion.div
+              key={scooter.id}
+              layout={shouldReduceMotion ? false : true}
+              layoutDependency={expandedId ?? "collapsed"}
+              transition={{
+                layout: {
+                  duration: shouldReduceMotion ? 0.01 : cardLayoutDuration,
+                  ease: productEase,
+                },
+              }}
+              className={
+                isExpanded
+                  ? "relative z-20 col-span-12 min-w-0"
+                  : "relative z-0 col-span-3 min-w-0"
+              }
+            >
+              <CatalogProductCard
+                scooter={scooter}
+                shouldReduceMotion={shouldReduceMotion}
+                isExpanded={isExpanded}
+                isSelected={isExpanded}
+                transitionImageId={isExpanded ? transitionImageId : null}
+                cardToneAssignment={cardToneAssignments[scooter.id]}
+                isPriority={scooter.id === scooters[0]?.id}
+                onExpandScooter={onExpandScooter}
+                onCollapseScooter={onCollapseScooter}
+              />
+            </motion.div>
           );
         })}
       </div>
