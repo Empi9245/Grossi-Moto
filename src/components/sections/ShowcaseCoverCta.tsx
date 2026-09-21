@@ -20,7 +20,7 @@ export function ShowcaseCoverCta() {
             <p className="font-ui text-xs font-bold uppercase tracking-[0.18em] text-black/60">
               Grossi Moto, Roma
             </p>
-            <h2 className="font-display mt-4 max-w-[12ch] text-[clamp(3.5rem,12vw,8.5rem)] font-bold leading-[0.88] tracking-normal">
+            <h2 className="font-display font-editorial mt-4 max-w-[12ch] text-[clamp(3.5rem,12vw,8.5rem)] font-bold leading-[0.88] tracking-normal">
               Scegli la taglia giusta, dal vivo.
             </h2>
           </div>

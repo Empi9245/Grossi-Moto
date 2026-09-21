@@ -85,7 +85,7 @@ export default function ServiziPage() {
             <p className="font-ui text-[0.65rem] font-bold uppercase tracking-[0.22em] opacity-50 sm:text-xs">
               Come funziona
             </p>
-            <h2 className="font-display mt-4 text-[clamp(2.4rem,6vw,5rem)] font-bold leading-[0.9] tracking-tight">
+            <h2 className="font-display font-editorial mt-4 text-[clamp(2.4rem,6vw,5rem)] font-bold leading-[0.9] tracking-tight">
               Dal contatto
               <br />
               alla riconsegna.
@@ -100,7 +100,7 @@ export default function ServiziPage() {
         <div className="overflow-hidden rounded-[32px] bg-[#A34A3E] px-5 py-16 text-white sm:rounded-[40px] sm:px-7 sm:py-20 md:px-10 lg:rounded-[56px] lg:px-14 lg:py-28 xl:px-16">
           <div className="mx-auto grid max-w-[92rem] gap-12 lg:grid-cols-[minmax(0,1.2fr)_minmax(24rem,0.8fr)] lg:items-end lg:gap-16">
             <div>
-              <h2 className="font-display max-w-[10ch] text-[clamp(3.4rem,10vw,8.5rem)] font-bold uppercase leading-[0.84] tracking-[-0.04em]">
+              <h2 className="font-display font-editorial max-w-[10ch] text-[clamp(3.4rem,10vw,8.5rem)] font-bold uppercase leading-[0.84] tracking-[-0.04em]">
                 Prenota un intervento.
               </h2>
             </div>

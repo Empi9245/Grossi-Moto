@@ -16,7 +16,7 @@ export function ContactBriefSection() {
           <p className="font-ui text-[0.68rem] font-bold uppercase tracking-[0.18em] text-black/55">
             Contatti e orari
           </p>
-          <h2 className="font-display mt-4 text-[clamp(2.3rem,6vw,4.8rem)] font-bold leading-[0.92] tracking-normal">
+          <h2 className="font-display font-editorial mt-4 text-[clamp(2.3rem,6vw,4.8rem)] font-bold leading-[0.92] tracking-normal">
             Grossi Moto di Angelo Grossi
           </h2>
           <div className="mt-6 grid gap-4 text-sm leading-6 text-black/68 sm:grid-cols-2">

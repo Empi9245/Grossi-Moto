@@ -137,7 +137,7 @@ export default async function ContattiPage({
             <p className="font-ui text-[0.68rem] font-bold uppercase tracking-[0.2em] text-[#A34A3E] sm:text-xs">
               Contatti
             </p>
-            <h1 className="font-display mt-5 max-w-[10ch] text-[clamp(3.1rem,16vw,9rem)] font-bold uppercase leading-[0.84] tracking-[-0.045em]">
+            <h1 className="font-display font-editorial mt-5 max-w-[10ch] text-[clamp(3.1rem,16vw,9rem)] font-bold uppercase leading-[0.84] tracking-[-0.045em]">
               Parliamone.
             </h1>
           </div>
@@ -220,7 +220,7 @@ export default async function ContattiPage({
               <p className="font-ui text-[0.68rem] font-bold uppercase tracking-[0.2em] text-white/70 sm:text-xs">
                 Invia una richiesta
               </p>
-              <h2 className="font-display mt-4 max-w-[8ch] text-[clamp(3.2rem,8vw,7rem)] font-bold uppercase leading-[0.86] tracking-[-0.04em]">
+              <h2 className="font-display font-editorial mt-4 max-w-[8ch] text-[clamp(3.2rem,8vw,7rem)] font-bold uppercase leading-[0.86] tracking-[-0.04em]">
                 Raccontaci cosa ti serve.
               </h2>
               <p className="mt-6 max-w-[30rem] text-base leading-7 text-white/78 sm:text-lg sm:leading-8">
@@ -258,7 +258,7 @@ export default async function ContattiPage({
                   Showroom e officina
                 </p>
               </div>
-              <h2 className="font-display mt-5 max-w-[10ch] text-[clamp(3rem,8vw,6.5rem)] font-bold uppercase leading-[0.87] tracking-[-0.04em]">
+              <h2 className="font-display font-editorial mt-5 max-w-[10ch] text-[clamp(3rem,8vw,6.5rem)] font-bold uppercase leading-[0.87] tracking-[-0.04em]">
                 Via Festo Porzio, 22.
               </h2>
               <p className="mt-4 text-base text-white/60 sm:text-lg">
@@ -306,7 +306,7 @@ export default async function ContattiPage({
             <p className="font-ui text-[0.68rem] font-bold uppercase tracking-[0.2em] text-[#A34A3E] sm:text-xs">
               Un ultimo dubbio?
             </p>
-            <h2 className="font-display mt-3 text-[clamp(3rem,7vw,6rem)] font-bold uppercase leading-[0.88] tracking-[-0.04em]">
+            <h2 className="font-display font-editorial mt-3 text-[clamp(3rem,7vw,6rem)] font-bold uppercase leading-[0.88] tracking-[-0.04em]">
               Chiedi pure.
             </h2>
           </div>

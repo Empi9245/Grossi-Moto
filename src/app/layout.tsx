@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { IBM_Plex_Mono, Instrument_Sans } from "next/font/google";
+import { Instrument_Sans } from "next/font/google";
 
 import { MobileAppNav } from "@/components/layout/MobileAppNav";
 import { PageTransitionProvider } from "@/components/transitions/PageTransitionProvider";
@@ -14,13 +14,6 @@ const instrumentSans = Instrument_Sans({
   display: "swap",
 });
 
-const ibmPlexMono = IBM_Plex_Mono({
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
-  variable: "--font-ibm-plex-mono",
-  display: "swap",
-  preload: false,
-});
 
 export const metadata: Metadata = {
   title: {
@@ -67,7 +60,7 @@ export default function RootLayout({
   return (
     <html
       lang="it"
-      className={`${instrumentSans.variable} ${ibmPlexMono.variable}`}
+      className={instrumentSans.variable}
     >
       <body suppressHydrationWarning>
         <a

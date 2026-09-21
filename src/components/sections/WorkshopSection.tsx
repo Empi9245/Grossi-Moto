@@ -34,7 +34,7 @@ export function WorkshopSection() {
             <p className="font-ui text-[0.68rem] font-bold uppercase tracking-[0.22em] text-black/60">
               Officina in sede
             </p>
-            <h2 className="font-display mt-5 max-w-[12ch] text-[clamp(4rem,10vw,10rem)] font-bold uppercase leading-[0.8] lg:mt-4 lg:text-[clamp(4rem,7.2vw,7.25rem)] lg:leading-[0.9]">
+            <h2 className="font-display font-editorial mt-5 max-w-[12ch] text-[clamp(4rem,10vw,10rem)] font-bold uppercase leading-[0.8] lg:mt-4 lg:text-[clamp(4rem,7.2vw,7.25rem)] lg:leading-[0.9]">
               Il tuo mezzo, seguito nel tempo.
             </h2>
             <p className="mt-8 max-w-[44rem] text-[clamp(1.45rem,2.4vw,2.9rem)] font-semibold leading-[1] text-black/76 lg:mt-6 lg:text-[clamp(1.35rem,1.8vw,2.1rem)] lg:leading-[1.08]">

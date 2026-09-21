@@ -104,7 +104,7 @@ export function StickyScrollShowcase() {
         <div className="lg:px-2">
           <h2
             id="services-showcase-heading"
-            className="font-display text-[clamp(3rem,6vw,5.8rem)] font-bold uppercase leading-[0.9] tracking-[-0.04em]"
+            className="font-display font-editorial text-[clamp(3rem,6vw,5.8rem)] font-bold uppercase leading-[0.9] tracking-[-0.04em]"
           >
             Cosa possiamo fare per te.
           </h2>

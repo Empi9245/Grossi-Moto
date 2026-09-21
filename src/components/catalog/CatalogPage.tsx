@@ -368,7 +368,7 @@ export function CatalogPage({ initialFocusId }: { initialFocusId?: string }) {
                 <p className="font-ui text-[0.68rem] font-bold uppercase tracking-[0.18em] text-black/55">
                   Moto e scooter
                 </p>
-                <h1 className="font-display mt-3 max-w-[10ch] text-[clamp(2.85rem,11vw,6.8rem)] font-bold leading-[0.88] tracking-normal text-black sm:max-w-[12ch]">
+                <h1 className="font-display font-editorial mt-3 max-w-[10ch] text-[clamp(2.85rem,11vw,6.8rem)] font-bold leading-[0.88] tracking-normal text-black sm:max-w-[12ch]">
                   Tutta la gamma
                 </h1>
                 <p className="mt-5 max-w-[39rem] text-sm leading-6 text-black/65 sm:text-base">

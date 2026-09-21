@@ -90,7 +90,7 @@ export function ServicesHero() {
                 </motion.p>
 
                 <motion.h1
-                  className="font-display mt-3 w-full max-w-[20rem] text-[clamp(2.95rem,13.2vw,3.55rem)] font-bold uppercase leading-[0.86] tracking-[-0.045em] text-white [overflow-wrap:normal] [word-break:normal] [@media(max-height:700px)]:mt-2 [@media(max-height:700px)]:text-[2.45rem]"
+                  className="font-display font-editorial mt-3 w-full max-w-[20rem] text-[clamp(2.95rem,13.2vw,3.55rem)] font-bold uppercase leading-[0.86] tracking-[-0.045em] text-white [overflow-wrap:normal] [word-break:normal] [@media(max-height:700px)]:mt-2 [@media(max-height:700px)]:text-[2.45rem]"
                   variants={itemVariants}
                 >
                   Il tuo mezzo,

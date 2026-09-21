@@ -15,7 +15,7 @@ export function AccessoriesSection() {
             </p>
             <h2
               id="accessories-heading"
-              className="font-display mt-4 text-[clamp(2.4rem,6vw,5rem)] font-bold leading-[0.9] tracking-tight"
+              className="font-display font-editorial mt-4 text-[clamp(2.4rem,6vw,5rem)] font-bold leading-[0.9] tracking-tight"
             >
               Accessori che fanno
               <br />
