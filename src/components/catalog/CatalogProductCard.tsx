@@ -276,7 +276,9 @@ export const CatalogProductCard = memo(function CatalogProductCard({
               ? "grid h-full min-h-0 gap-4 sm:min-h-[28rem] sm:gap-5 md:grid-cols-[minmax(0,0.88fr)_minmax(0,1.12fr)] md:grid-rows-[auto_minmax(12rem,1fr)_auto]"
               : compactMode
                 ? clsx(
-                    "grid-rows-[auto_auto_auto] transition-[gap,min-height] duration-300 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)]",
+                    "grid-rows-[auto_auto_auto]",
+                    !shouldReduceMotion &&
+                      "transition-[gap,min-height] duration-300 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)]",
                     isCompactExpanded
                       ? "min-h-0 gap-4 sm:gap-5"
                       : "min-h-[15.75rem] gap-5 sm:min-h-[17rem]",
@@ -439,7 +441,7 @@ export const CatalogProductCard = memo(function CatalogProductCard({
 
                   {isSemanticInstance ? (
                     <button
-                      id={cardTriggerId}
+                      id={!isCompactExpanded ? cardTriggerId : undefined}
                       type="button"
                       aria-expanded={false}
                       aria-controls={expandedContentId}
