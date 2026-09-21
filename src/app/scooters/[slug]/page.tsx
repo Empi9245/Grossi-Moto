@@ -29,7 +29,7 @@ function buildModelMetaDescription(scooter: CatalogScooter) {
   const brand = getCatalogScooterBrand(scooter);
   const useCase = lowercaseLeading(scooter.idealUse);
 
-  return `Scopri ${brand} ${scooter.name} ${scooter.displacement} a Roma: ${scooter.family}, pensato per ${useCase}. Caratteristiche e contatti Grossi Moto per prezzo e disponibilità.`;
+  return `Scopri ${brand} ${scooter.name} a Roma: ${lowercaseLeading(scooter.subtitle)}, pensato per ${useCase}. Caratteristiche e contatti Grossi Moto per prezzo e disponibilità.`;
 }
 
 function getRelatedScooters(scooter: CatalogScooter) {
@@ -277,8 +277,8 @@ export default async function ScooterModelPage({ params }: ModelPageProps) {
                   {scooter.idealUse}
                 </h2>
                 <p className="mt-5 max-w-[32rem] text-sm leading-6 text-black/62 sm:text-base sm:leading-7">
-                  {brand} {scooter.name} è un modello {lowercaseLeading(scooter.family)} da{" "}
-                  {scooter.displacement}, indicato nel catalogo per{" "}
+                  Nel catalogo Grossi Moto, {brand} {scooter.name} si colloca come{" "}
+                  {lowercaseLeading(scooter.subtitle)}, pensato per{" "}
                   {lowercaseLeading(scooter.idealUse)}.
                 </p>
                 <p className="mt-3 max-w-[32rem] text-sm leading-6 text-black/52 sm:text-base sm:leading-7">

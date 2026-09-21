@@ -3,7 +3,7 @@
 ## Pagine modello SEO /scooters/[slug] — audit copy e gallery 2026-09-21
 
 - Le 27 pagine modello restano generate staticamente da `catalogScooters` con `generateStaticParams()` e `dynamicParams = false`; `/scooters?focus=<id>` resta il deep link alla quick preview e non viene rediretto.
-- Metadata modello resi più naturali e coerenti con l'intento locale: title breve `<brand> <modello> a Roma`, description specifica con cilindrata/famiglia/uso e CTA prudente a prezzo/disponibilità; robots esplicito `index, follow`.
+- Metadata modello resi più naturali e coerenti con l'intento locale: title breve `<brand> <modello> a Roma`, description specifica con profilo/uso del modello e CTA prudente a prezzo/disponibilità; robots esplicito `index, follow`.
 - Structured data mantiene `ProductModel` + `BreadcrumbList` senza inventare prezzi, `InStock`, rating o recensioni di prodotto.
 - Aggiunta gallery server-side usando solo asset già presenti: Voge legge il manifest `index.json` del modello e preferisce `gallery` con fallback limitato a `spin360`; KYMCO usa `public/kymco-all/manifest.json`, filtrando per `modelSlug` e immagini gallery, con fallback colori.
 - Related products ordinati per pertinenza: stessa famiglia, poi stessa fascia filtro/cilindrata, sempre all'interno dello stesso brand; massimo quattro.
