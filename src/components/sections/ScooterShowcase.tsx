@@ -325,6 +325,7 @@ export function ScooterShowcase({
         aria-hidden="true"
         className="relative h-[100svh] overflow-hidden"
         data-showcase-mode="reveal"
+        data-call-cta-theme="black"
         style={{ background: showcaseScooters[0]?.backgroundSurface }}
       >
         <ShowcaseFrame activeIndex={0} disableMotion />
@@ -338,6 +339,7 @@ export function ScooterShowcase({
       aria-label="Showcase scooter Grossimoto"
       className="relative z-10 bg-[var(--page-background)]"
       data-showcase-mode="pinned"
+      data-call-cta-theme="black"
       style={{
         height: `calc(100svh * ${showcaseScooters.length})`,
       }}
@@ -768,6 +770,7 @@ function StaticShowcase() {
           : "px-4 py-14 sm:px-6 sm:py-16 lg:px-10 lg:py-24",
       )}
       data-showcase-mode="static"
+      data-call-cta-theme="black"
     >
       <div className="mx-auto max-w-[92rem]">
         {!smartphone ? (

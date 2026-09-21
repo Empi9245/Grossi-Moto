@@ -20,7 +20,7 @@ const workshopItemIcons = [
 
 export function WorkshopSection() {
   return (
-    <section className="relative bg-white text-[var(--gm-ink)]">
+    <section data-call-cta-theme="black" className="relative bg-white text-[var(--gm-ink)]">
       <div className="relative overflow-hidden rounded-[32px] bg-[var(--home-workshop-surface)] px-4 py-20 sm:rounded-[40px] sm:px-6 sm:py-24 lg:rounded-[56px] lg:px-10 lg:py-14">
         <div
           aria-hidden="true"

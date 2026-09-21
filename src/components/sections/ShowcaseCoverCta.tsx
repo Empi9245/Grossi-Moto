@@ -4,7 +4,7 @@ import { PhoneCall } from "lucide-react";
 
 export function ShowcaseCoverCta() {
   return (
-    <section className="relative z-30 bg-white text-[var(--gm-ink)]">
+    <section data-call-cta-theme="black" className="relative z-30 bg-white text-[var(--gm-ink)]">
       <div
         aria-hidden="true"
         className="absolute inset-x-0 top-0 h-8 bg-white sm:h-10 lg:hidden"

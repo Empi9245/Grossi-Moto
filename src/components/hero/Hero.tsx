@@ -36,7 +36,7 @@ export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const callCtaRef = useRef<HTMLAnchorElement>(null);
   const [videoPlaying, setVideoPlaying] = useState(false);
-  const [callCtaOnLightSurface, setCallCtaOnLightSurface] = useState(false);
+  const [callCtaTheme, setCallCtaTheme] = useState<"white" | "black">("white");
 
   useEffect(() => {
     const video = videoRef.current;
@@ -76,40 +76,6 @@ export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
 
     let frameId = 0;
 
-    const getSurfaceLightness = (color: string) => {
-      if (!color || color === "transparent") return null;
-
-      const oklch = color.match(/^oklch\(\s*([\d.]+)(%?)/i);
-      if (oklch) {
-        const value = Number.parseFloat(oklch[1]);
-        return oklch[2] === "%" ? value / 100 : value;
-      }
-
-      const rgb = color.match(/^rgba?\((.+)\)$/i);
-      if (!rgb) return null;
-
-      const parts = rgb[1]
-        .replace(/,/g, " ")
-        .replace(/\//g, " ")
-        .trim()
-        .split(/\s+/);
-
-      if (parts.length < 3) return null;
-
-      const alpha = parts[3] ? Number.parseFloat(parts[3]) : 1;
-      if (Number.isFinite(alpha) && alpha <= 0.08) return null;
-
-      const toChannel = (value: string) =>
-        value.endsWith("%")
-          ? Number.parseFloat(value) / 100
-          : Number.parseFloat(value) / 255;
-
-      const [red, green, blue] = parts.slice(0, 3).map(toChannel);
-      if (![red, green, blue].every(Number.isFinite)) return null;
-
-      return 0.2126 * red + 0.7152 * green + 0.0722 * blue;
-    };
-
     const updateCallCtaTheme = () => {
       frameId = 0;
       const cta = callCtaRef.current;
@@ -121,31 +87,26 @@ export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
         rect.top + rect.height / 2,
       );
 
-      let nextOnLightSurface = false;
+      let nextTheme: "white" | "black" | null = null;
 
       for (const element of elements) {
         if (element === cta || cta.contains(element)) continue;
 
-        if (
-          element instanceof HTMLImageElement ||
-          element instanceof HTMLVideoElement
-        ) {
-          nextOnLightSurface = false;
+        const themeOwner = element.closest<HTMLElement>(
+          "[data-call-cta-theme]",
+        );
+        const theme = themeOwner?.dataset.callCtaTheme;
+
+        if (theme === "white" || theme === "black") {
+          nextTheme = theme;
           break;
         }
-
-        const lightness = getSurfaceLightness(
-          window.getComputedStyle(element).backgroundColor,
-        );
-
-        if (lightness === null) continue;
-
-        nextOnLightSurface = lightness >= 0.72;
-        break;
       }
 
-      setCallCtaOnLightSurface((current) =>
-        current === nextOnLightSurface ? current : nextOnLightSurface,
+      if (!nextTheme) return;
+
+      setCallCtaTheme((current) =>
+        current === nextTheme ? current : nextTheme,
       );
     };
 
@@ -170,6 +131,7 @@ export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
       <div
         ref={heroRootRef}
         data-qa="hero-viewport"
+        data-call-cta-theme="white"
         className="relative w-full overflow-x-clip bg-white md:hidden"
       >
         <Link
@@ -190,8 +152,8 @@ export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
           href="tel:+393289185029"
           {...subtleHover(shouldReduceMotion)}
           className={[
-            "font-ui fixed right-4 top-[calc(1rem+env(safe-area-inset-top))] z-[60] inline-flex min-h-10 shrink-0 items-center gap-2 rounded-[0.9rem] px-3.5 py-2.5 text-sm font-medium transition-[background-color,color,box-shadow,opacity] duration-300 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-4 focus-visible:ring-offset-transparent motion-reduce:transition-none",
-            callCtaOnLightSurface
+            "font-ui fixed right-4 top-[calc(1rem+env(safe-area-inset-top))] z-[60] inline-flex min-h-10 shrink-0 items-center gap-2 rounded-[0.9rem] px-3.5 py-2.5 text-sm font-medium transition-[background-color,color,box-shadow,opacity] duration-200 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-4 focus-visible:ring-offset-transparent motion-reduce:transition-none",
+            callCtaTheme === "black"
               ? "bg-[#0A0A0A] text-white shadow-[0_14px_38px_rgba(10,10,10,0.2)] focus-visible:ring-black/45"
               : "bg-white text-[#0A0A0A] shadow-[0_14px_38px_rgba(20,14,11,0.22)] focus-visible:ring-white/85",
           ].join(" ")}
