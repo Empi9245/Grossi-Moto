@@ -133,7 +133,6 @@ function EmptyCatalogState({
 
 function ReducedMotionCompactCatalogGrid({
   scooters,
-  toneSourceScooters = scooters,
   expandedId,
   shouldReduceMotion,
   onActiveScooterChange,
@@ -141,8 +140,8 @@ function ReducedMotionCompactCatalogGrid({
   onCollapseScooter,
 }: CatalogGridVariantProps) {
   const cardToneAssignments = useMemo(
-    () => getCatalogCardToneAssignments(toneSourceScooters, 1),
-    [toneSourceScooters],
+    () => getCatalogCardToneAssignments(scooters, 1),
+    [scooters],
   );
 
   useEffect(() => {
@@ -886,7 +885,6 @@ function ProductShowroomChapter({
 
 function CompactCatalogGrid({
   scooters,
-  toneSourceScooters = scooters,
   expandedId,
   shouldReduceMotion,
   onActiveScooterChange,
@@ -895,10 +893,6 @@ function CompactCatalogGrid({
 }: CatalogGridVariantProps) {
   const activeChapterRef = useRef<CatalogChapterId | null>(null);
   const activeScooterRef = useRef<string | null>(null);
-  const cardToneAssignments = useMemo(
-    () => getCatalogCardToneAssignments(toneSourceScooters, 1),
-    [toneSourceScooters],
-  );
   const chapters = useMemo(
     () =>
       catalogChapterDefinitions
@@ -911,6 +905,18 @@ function CompactCatalogGrid({
         }))
         .filter((chapter) => chapter.scooters.length > 0),
     [scooters],
+  );
+  const cardToneAssignments = useMemo(
+    () =>
+      chapters.reduce<Record<string, ProductCardToneAssignment>>(
+        (assignments, chapter) =>
+          Object.assign(
+            assignments,
+            getCatalogCardToneAssignments(chapter.scooters, 1),
+          ),
+        {},
+      ),
+    [chapters],
   );
 
   const handleChapterActiveChange = useCallback(
@@ -1013,7 +1019,6 @@ function CompactCatalogGrid({
     return (
       <ReducedMotionCompactCatalogGrid
         scooters={scooters}
-        toneSourceScooters={toneSourceScooters}
         expandedId={expandedId}
         shouldReduceMotion={shouldReduceMotion}
         transitionImageId={null}
@@ -1055,7 +1060,6 @@ function CompactCatalogGrid({
 
 function DesktopCatalogGrid({
   scooters,
-  toneSourceScooters = scooters,
   expandedId,
   shouldReduceMotion,
   transitionImageId,
@@ -1063,12 +1067,8 @@ function DesktopCatalogGrid({
   onCollapseScooter,
 }: CatalogGridVariantProps) {
   const cardToneAssignments = useMemo(
-    () =>
-      getCatalogCardToneAssignments(
-        toneSourceScooters,
-        desktopCatalogColumnCount,
-      ),
-    [toneSourceScooters],
+    () => getCatalogCardToneAssignments(scooters, desktopCatalogColumnCount),
+    [scooters],
   );
   const orderedScooters = useMemo(
     () => getDesktopCatalogOrder(scooters, expandedId),
