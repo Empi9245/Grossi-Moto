@@ -254,7 +254,7 @@ export const CatalogProductCard = memo(function CatalogProductCard({
         aria-labelledby={cardTitleId}
         onClick={isSemanticInstance ? handleCardClick : undefined}
         className={clsx(
-          "group relative overflow-hidden rounded-[1.35rem] p-4 shadow-[0_0_0_1px_oklch(18%_0.014_56/0.052),0_18px_46px_oklch(18%_0.014_56/0.09)] sm:p-5",
+          "group relative overflow-hidden rounded-[1.35rem] border border-[oklch(18%_0.014_56/0.052)] p-4 sm:p-5",
           isExpanded
             ? "h-full min-h-0 sm:min-h-[32rem]"
             : isCompactExpanded
@@ -262,7 +262,7 @@ export const CatalogProductCard = memo(function CatalogProductCard({
               : "min-h-[17.75rem] sm:min-h-[19.5rem]",
           !isOpen &&
             isSemanticInstance &&
-            "cursor-pointer transition-[box-shadow,transform] duration-200 hover:shadow-[0_0_0_1px_oklch(18%_0.014_56/0.075),0_22px_56px_oklch(18%_0.014_56/0.12)]",
+            "cursor-pointer transition-transform duration-200",
           isSelected &&
             !isOpen &&
             "ring-2 ring-[var(--product-accent)] ring-offset-2 ring-offset-white",
