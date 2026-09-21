@@ -27,17 +27,6 @@ type ZoomParallaxProps = {
   images?: ParallaxImage[];
 };
 
-type CreditAnimationVariant = 1 | 2 | 3;
-
-type AnimatedCreditCharacterProps = {
-  char: string;
-  index: number;
-  centerIndex: number;
-  progress: MotionValue<number>;
-  range: [number, number];
-  intensity: number;
-};
-
 const defaultImages: ParallaxImage[] = [
   {
     src: "/kymco-all/sections/agility-125-r16-power-up-kymco-agility125-esterne-003-scaled-kymco-agility125-esterne-003-scaled.jpg",
@@ -146,125 +135,8 @@ function ExperienceContact() {
   );
 }
 
-function CreditCharacterV1({
-  char,
-  index,
-  centerIndex,
-  progress,
-  range,
-  intensity,
-}: AnimatedCreditCharacterProps) {
-  const distanceFromCenter = index - centerIndex;
-  const x = useTransform(progress, range, [distanceFromCenter * intensity, 0]);
-  const rotateX = useTransform(progress, range, [distanceFromCenter * intensity, 0]);
-
-  return (
-    <motion.span
-      className="inline-block will-change-transform"
-      style={{ x, rotateX, transformOrigin: "center" }}
-    >
-      {char}
-    </motion.span>
-  );
-}
-
-function CreditCharacterV2({
-  char,
-  index,
-  centerIndex,
-  progress,
-  range,
-  intensity,
-}: AnimatedCreditCharacterProps) {
-  const distanceFromCenter = index - centerIndex;
-  const x = useTransform(progress, range, [distanceFromCenter * intensity, 0]);
-  const y = useTransform(progress, range, [Math.abs(distanceFromCenter) * intensity, 0]);
-  const scale = useTransform(progress, range, [0.75, 1]);
-
-  return (
-    <motion.span
-      className="inline-block will-change-transform"
-      style={{ x, y, scale, transformOrigin: "center" }}
-    >
-      {char}
-    </motion.span>
-  );
-}
-
-function CreditCharacterV3({
-  char,
-  index,
-  centerIndex,
-  progress,
-  range,
-  intensity,
-}: AnimatedCreditCharacterProps) {
-  const distanceFromCenter = index - centerIndex;
-  const x = useTransform(progress, range, [distanceFromCenter * intensity * 1.8, 0]);
-  const rotate = useTransform(progress, range, [distanceFromCenter * intensity, 0]);
-  const y = useTransform(progress, range, [-Math.abs(distanceFromCenter) * intensity * 0.4, 0]);
-  const scale = useTransform(progress, range, [0.75, 1]);
-
-  return (
-    <motion.span
-      className="inline-block will-change-transform"
-      style={{ x, rotate, y, scale, transformOrigin: "center" }}
-    >
-      {char}
-    </motion.span>
-  );
-}
-
-function AnimatedCreditText({
-  text,
-  progress,
-  range,
-  intensity,
-  variant,
-}: {
-  text: string;
-  progress: MotionValue<number>;
-  range: [number, number];
-  intensity: number;
-  variant: CreditAnimationVariant;
-}) {
-  const words = text.split(" ");
-  const centerIndex = Math.floor(text.length / 2);
-  const CharacterComponent =
-    variant === 1 ? CreditCharacterV1 : variant === 2 ? CreditCharacterV2 : CreditCharacterV3;
-
-  return (
-    <span aria-hidden="true">
-      {words.map((word, wordIndex) => {
-        const wordStartIndex = words
-          .slice(0, wordIndex)
-          .reduce((total, previousWord) => total + previousWord.length + 1, 0);
-
-        return (
-          <span key={`${word}-${wordIndex}`}>
-            <span className="inline-block whitespace-nowrap">
-              {word.split("").map((char, charIndex) => (
-                <CharacterComponent
-                  key={`${char}-${charIndex}`}
-                  char={char}
-                  index={wordStartIndex + charIndex}
-                  centerIndex={centerIndex}
-                  progress={progress}
-                  range={range}
-                  intensity={intensity}
-                />
-              ))}
-            </span>
-            {wordIndex < words.length - 1 ? " " : null}
-          </span>
-        );
-      })}
-    </span>
-  );
-}
-
-const desktopStepProgress = [0, 0.44, 0.64, 0.84, 1] as const;
-const compactStepProgress = [0, 0.54, 0.7, 0.86, 1] as const;
+const desktopStepProgress = [0, 0.54, 0.78, 1] as const;
+const compactStepProgress = [0, 0.58, 0.8, 1] as const;
 const steppedScrollEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
 const steppedScrollTriggerDelta = 6;
 const steppedScrollCooldownMs = 260;
@@ -287,193 +159,101 @@ const idleFloatPatterns = [
   { x: -9, y: 8, rotate: -0.46, duration: 6.9 },
 ] as const;
 
-function getCreditRevealRange(index: number, compact: boolean): [number, number] {
-  if (compact) {
-    return [0.3 + index * 0.16, 0.54 + index * 0.16];
-  }
+type CreditLine =
+  | { kind: "eyebrow"; text: string }
+  | { kind: "title"; text: string; headingLevel: 2 | 3 }
+  | { kind: "detail"; text: string };
 
-  return [0.2 + index * 0.2, 0.44 + index * 0.2];
-}
+const creditLines: CreditLine[] = [
+  { kind: "eyebrow", text: "Dallo showroom all’officina" },
+  ...story.flatMap(({ title, detail }, index) => [
+    { kind: "title" as const, text: title, headingLevel: index === 0 ? 2 as const : 3 as const },
+    { kind: "detail" as const, text: detail },
+  ]),
+];
 
-function getCreditVisibilityRange(
-  index: number,
-  compact: boolean,
-): [number, number, number, number] {
-  if (compact) {
-    const ranges: [number, number, number, number][] = [
-      [0.28, 0.44, 0.55, 0.6],
-      [0.58, 0.65, 0.71, 0.76],
-      [0.74, 0.82, 0.88, 0.96],
-    ];
-
-    return ranges[index] ?? ranges[ranges.length - 1];
-  }
-
-  const ranges: [number, number, number, number][] = [
-    [0.18, 0.36, 0.45, 0.51],
-    [0.49, 0.58, 0.65, 0.71],
-    [0.69, 0.78, 0.86, 0.94],
-  ];
-
-  return ranges[index] ?? ranges[ranges.length - 1];
-}
-
-function DesktopCinematicCreditStory({
-  title,
-  detail,
+function AlternatingCreditLine({
+  line,
   index,
   progress,
+  zoomEnd,
+  centerProgress,
 }: {
-  title: string;
-  detail: string;
+  line: CreditLine;
   index: number;
   progress: MotionValue<number>;
+  zoomEnd: number;
+  centerProgress: number;
 }) {
-  const revealRange = getCreditRevealRange(index, false);
-  const visibilityRange = getCreditVisibilityRange(index, false);
-  const opacity = useTransform(progress, visibilityRange, [0, 1, 1, 0]);
-  const variant = (index + 1) as CreditAnimationVariant;
-
-  return (
-    <motion.div
-      style={{ opacity }}
-      className="flex h-[70svh] flex-col items-center justify-center px-10 text-center text-[#f4f0e8] [text-shadow:0_4px_28px_rgba(0,0,0,0.45)]"
-    >
-      {index === 0 && (
-        <p
-          aria-label="Dallo showroom all’officina"
-          className="font-ui mb-7 text-xs font-bold uppercase tracking-[0.24em]"
-        >
-          <AnimatedCreditText
-            text="Dallo showroom all’officina"
-            progress={progress}
-            range={revealRange}
-            intensity={24}
-            variant={1}
-          />
-        </p>
-      )}
-      {index === 0 ? (
-        <h2
-          aria-label={title}
-          className={`${creditsFont.className} max-w-[15ch] text-[clamp(4.5rem,9.2vw,11rem)] uppercase leading-[1.02] tracking-[-0.015em]`}
-        >
-          <AnimatedCreditText
-            text={title}
-            progress={progress}
-            range={revealRange}
-            intensity={50}
-            variant={1}
-          />
-        </h2>
-      ) : (
-        <h3
-          aria-label={title}
-          className={`${creditsFont.className} max-w-[15ch] text-[clamp(4.5rem,9.2vw,11rem)] uppercase leading-[1.02] tracking-[-0.015em]`}
-        >
-          <AnimatedCreditText
-            text={title}
-            progress={progress}
-            range={revealRange}
-            intensity={50}
-            variant={variant}
-          />
-        </h3>
-      )}
-      <p
-        aria-label={detail}
-        className="mt-7 max-w-[38rem] text-[clamp(1rem,1.5vw,1.35rem)] leading-relaxed text-white/85"
-      >
-        <AnimatedCreditText
-          text={detail}
-          progress={progress}
-          range={revealRange}
-          intensity={18}
-          variant={variant}
-        />
-      </p>
-    </motion.div>
-  );
-}
-
-function MobileCinematicCreditStory({
-  title,
-  detail,
-  index,
-  progress,
-}: {
-  title: string;
-  detail: string;
-  index: number;
-  progress: MotionValue<number>;
-}) {
-  const visibilityRange = getCreditVisibilityRange(index, true);
-  const opacity = useTransform(progress, visibilityRange, [0, 1, 1, 0]);
-  const y = useTransform(progress, visibilityRange, [28, 0, 0, -22]);
-  const scale = useTransform(progress, visibilityRange, [0.97, 1, 1, 0.985]);
-
-  return (
-    <motion.div
-      style={{ opacity, y, scale }}
-      className="flex h-[48svh] flex-col items-center justify-center px-5 text-center text-[#f4f0e8] will-change-transform sm:px-8"
-    >
-      {index === 0 && (
-        <p className="font-ui mb-4 text-[0.6rem] font-bold uppercase tracking-[0.24em] sm:text-xs">
-          Dallo showroom all’officina
-        </p>
-      )}
-      {index === 0 ? (
-        <h2
-          className={`${creditsFont.className} max-w-[15ch] text-[clamp(2.25rem,min(12vw,10svh),5.25rem)] uppercase leading-[1.02] tracking-[-0.015em]`}
-        >
-          {title}
-        </h2>
-      ) : (
-        <h3
-          className={`${creditsFont.className} max-w-[15ch] text-[clamp(2.25rem,min(12vw,10svh),5.25rem)] uppercase leading-[1.02] tracking-[-0.015em]`}
-        >
-          {title}
-        </h3>
-      )}
-      <p className="mt-5 max-w-[38rem] text-[clamp(1rem,1.5vw,1.35rem)] leading-relaxed text-white/85">
-        {detail}
-      </p>
-    </motion.div>
-  );
-}
-
-function CinematicCredits({ progress, compact }: { progress: MotionValue<number>; compact: boolean }) {
-  const y = useTransform(
+  const entersFromRight = index % 2 === 0;
+  const entryStart = Math.min(zoomEnd + index * 0.012, centerProgress - 0.08);
+  const x = useTransform(
     progress,
-    [compact ? 0.3 : 0.2, compact ? 0.86 : 0.84],
-    ["100svh", compact ? "-70svh" : "-125svh"],
+    [entryStart, centerProgress, 1],
+    [entersFromRight ? "115vw" : "-115vw", "0vw", entersFromRight ? "-115vw" : "115vw"],
+  );
+  const opacity = useTransform(
+    progress,
+    [entryStart, Math.min(entryStart + 0.055, centerProgress), centerProgress, 0.96, 1],
+    [0, 1, 1, 1, 0],
   );
 
+  const className =
+    line.kind === "title"
+      ? `${creditsFont.className} max-w-[18ch] text-[clamp(2rem,min(8vw,7svh),5.6rem)] uppercase leading-[0.94] tracking-[-0.015em] lg:text-[clamp(3rem,5.1vw,6.5rem)]`
+      : line.kind === "detail"
+        ? "max-w-[44rem] text-[clamp(0.78rem,1.7vw,1.1rem)] leading-[1.45] text-white/82 lg:text-[clamp(0.9rem,1.2vw,1.15rem)]"
+        : "font-ui text-[0.58rem] font-bold uppercase tracking-[0.24em] text-white/82 sm:text-xs";
+
+  const content = (
+    <motion.div
+      style={{ x, opacity }}
+      className="flex w-full justify-center px-5 text-center will-change-transform sm:px-8 lg:px-10"
+    >
+      {line.kind === "title" ? (
+        line.headingLevel === 2 ? (
+          <h2 className={className}>{line.text}</h2>
+        ) : (
+          <h3 className={className}>{line.text}</h3>
+        )
+      ) : (
+        <p className={className}>{line.text}</p>
+      )}
+    </motion.div>
+  );
+
+  return content;
+}
+
+function CinematicCredits({
+  progress,
+  compact,
+  zoomEnd,
+  centerProgress,
+}: {
+  progress: MotionValue<number>;
+  compact: boolean;
+  zoomEnd: number;
+  centerProgress: number;
+}) {
   return (
-    <div className="pointer-events-none absolute inset-0 z-30 lg:[perspective:1400px]">
-      <motion.div style={{ y }} className="absolute inset-x-0 top-0 will-change-transform">
-        <div className="origin-center lg:[transform:rotateX(8deg)]">
-          {story.map(({ title, detail }, index) =>
-            compact ? (
-              <MobileCinematicCreditStory
-                key={title}
-                title={title}
-                detail={detail}
-                index={index}
-                progress={progress}
-              />
-            ) : (
-              <DesktopCinematicCreditStory
-                key={title}
-                title={title}
-                detail={detail}
-                index={index}
-                progress={progress}
-              />
-            ),
-          )}
-        </div>
-      </motion.div>
+    <div className="pointer-events-none absolute inset-0 z-30 overflow-hidden">
+      <div
+        className={`absolute inset-0 flex flex-col items-center justify-center text-[#f4f0e8] [text-shadow:0_4px_28px_rgba(0,0,0,0.45)] ${
+          compact ? "gap-[clamp(0.5rem,1.4svh,0.85rem)] py-12" : "gap-[clamp(0.65rem,1.4svh,1.15rem)] py-10"
+        }`}
+      >
+        {creditLines.map((line, index) => (
+          <AlternatingCreditLine
+            key={`${line.kind}-${line.text}`}
+            line={line}
+            index={index}
+            progress={progress}
+            zoomEnd={zoomEnd}
+            centerProgress={centerProgress}
+          />
+        ))}
+      </div>
     </div>
   );
 }
@@ -549,34 +329,26 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
       progress: number,
       direction: 1 | -1,
     ): number | null => {
-      const [, first, second, third] = stepProgress;
+      const [, zoom, credits] = stepProgress;
 
       if (direction === 1) {
-        if (progress < first - steppedScrollProgressTolerance) {
-          return first;
+        if (progress < zoom - steppedScrollProgressTolerance) {
+          return zoom;
         }
 
-        if (progress < second - steppedScrollProgressTolerance) {
-          return second;
-        }
-
-        if (progress < third - steppedScrollProgressTolerance) {
-          return third;
+        if (progress < credits - steppedScrollProgressTolerance) {
+          return credits;
         }
 
         return 1;
       }
 
-      if (progress > third + steppedScrollProgressTolerance) {
-        return third;
+      if (progress > credits + steppedScrollProgressTolerance) {
+        return credits;
       }
 
-      if (progress > second + steppedScrollProgressTolerance) {
-        return second;
-      }
-
-      if (progress > first + steppedScrollProgressTolerance) {
-        return first;
+      if (progress > zoom + steppedScrollProgressTolerance) {
+        return zoom;
       }
 
       if (progress > steppedScrollProgressTolerance) {
@@ -1046,7 +818,7 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
   const scale9 = useTransform(zoomProgress, [0, 1], [1, 9]);
   const copyScrimOpacity = useTransform(
     scrollYProgress,
-    isDesktopViewport ? [0.28, 0.44] : [0.38, 0.54],
+    isDesktopViewport ? [0.4, zoomEnd] : [0.44, zoomEnd],
     [0, 0.9],
   );
 
@@ -1065,7 +837,7 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
     <>
     <div
       ref={container}
-      className="relative h-[400svh] lg:h-[600svh] bg-[var(--home-experience-surface)]"
+      className="relative h-[300svh] lg:h-[400svh] bg-[var(--home-experience-surface)]"
     >
       <div className="sticky top-0 h-[100svh] overflow-hidden">
         {parallaxImages.map(({ src, alt }, index) => {
@@ -1222,7 +994,14 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
           </motion.div>
         </div>
 
-        <CinematicCredits progress={scrollYProgress} compact={!isDesktopViewport} />
+        <CinematicCredits
+          progress={scrollYProgress}
+          compact={!isDesktopViewport}
+          zoomEnd={zoomEnd}
+          centerProgress={
+            isDesktopViewport ? desktopStepProgress[2] : compactStepProgress[2]
+          }
+        />
       </div>
     </div>
     <ExperienceContact />
