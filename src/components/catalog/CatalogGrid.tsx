@@ -780,7 +780,7 @@ function ProductShowroomChapter({
       >
         <div
           ref={stackContainerRef}
-          className="relative min-h-[20rem] sm:min-h-[21rem]"
+          className="relative min-h-[20rem] transition-[height] duration-[340ms] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none sm:min-h-[21rem]"
         >
           {copyIndexes.flatMap((copyIndex) =>
             scooters.map((scooter, index) => {
