@@ -1,5 +1,8 @@
 import { catalogScooters } from "./catalog-scooters";
-import { showroomSurfaceTone } from "./scooter-color-system";
+import {
+  catalogSurfaceTone,
+  showroomSurfaceTone,
+} from "./scooter-color-system";
 
 export type ShowcaseSpec = {
   label: string;
@@ -18,6 +21,7 @@ export type ShowcaseScooter = {
   statement: string;
   watermark: string;
   backgroundSurface: string;
+  mobileBackgroundSurface?: string;
   textTone: string;
   mutedTone: string;
   inactiveTone: string;
@@ -87,6 +91,7 @@ export const showcaseScooters: ShowcaseScooter[] = [
     statement: peopleS.positioning,
     watermark: "125",
     ...showroomSurfaceTone("heroWarmIvory"),
+    mobileBackgroundSurface: catalogSurfaceTone("dustyBlush").cardSurface,
     shadowX: "6%",
     shadowY: "8%",
     shadowWidth: "72%",
