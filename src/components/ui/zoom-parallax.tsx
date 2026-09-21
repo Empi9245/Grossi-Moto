@@ -139,6 +139,8 @@ const desktopZoomEnd = 0.54;
 const compactZoomEnd = 0.58;
 const desktopCreditsLockProgress = 0.78;
 const compactCreditsLockProgress = 0.8;
+const desktopCreditsHoldEndProgress = 0.84;
+const compactCreditsHoldEndProgress = 0.875;
 const steppedScrollEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
 const steppedScrollTriggerDelta = 6;
 const steppedScrollCooldownMs = 260;
@@ -147,6 +149,7 @@ const steppedScrollEntryEase: [number, number, number, number] = [0.22, 1, 0.36,
 const steppedScrollEntryDuration = 0.68;
 const steppedScrollFocusTolerancePx = 0.75;
 const steppedScrollFocusSettleFrames = 2;
+const creditsLockSettleFrames = 2;
 const creditsLockStepDuration = 2.04;
 const creditsExitStepDuration = 0.92;
 const creditsReverseStepDuration = 1.18;
@@ -184,12 +187,14 @@ function AlternatingCreditLine({
   progress,
   zoomEnd,
   centerProgress,
+  holdEndProgress,
 }: {
   line: CreditLine;
   index: number;
   progress: MotionValue<number>;
   zoomEnd: number;
   centerProgress: number;
+  holdEndProgress: number;
 }) {
   const entersFromRight = index % 2 === 0;
   const lineDelay = line.kind === "title" ? 0.018 : 0.024;
@@ -199,31 +204,38 @@ function AlternatingCreditLine({
   );
   const x = useTransform(
     progress,
-    [entryStart, centerProgress, 1],
+    [entryStart, centerProgress, holdEndProgress, 1],
     [
       entersFromRight ? "115vw" : "-115vw",
+      "0vw",
       "0vw",
       entersFromRight ? "-115vw" : "115vw",
     ],
   );
   const y = useTransform(
     progress,
-    [entryStart, centerProgress, 1],
-    [entersFromRight ? 18 : -18, 0, entersFromRight ? -10 : 10],
+    [entryStart, centerProgress, holdEndProgress, 1],
+    [entersFromRight ? 18 : -18, 0, 0, entersFromRight ? -10 : 10],
   );
   const scale = useTransform(
     progress,
-    [entryStart, centerProgress, 1],
+    [entryStart, centerProgress, holdEndProgress, 1],
     [
       line.kind === "title" ? 0.92 : 0.98,
+      1,
       1,
       line.kind === "title" ? 1.03 : 1.015,
     ],
   );
   const rotateY = useTransform(
     progress,
-    [entryStart, centerProgress, 1],
-    [entersFromRight ? 2.4 : -2.4, 0, entersFromRight ? -1.8 : 1.8],
+    [entryStart, centerProgress, holdEndProgress, 1],
+    [
+      entersFromRight ? 2.4 : -2.4,
+      0,
+      0,
+      entersFromRight ? -1.8 : 1.8,
+    ],
   );
   const opacity = useTransform(
     progress,
@@ -231,10 +243,11 @@ function AlternatingCreditLine({
       entryStart,
       Math.min(entryStart + 0.06, centerProgress),
       centerProgress,
+      holdEndProgress,
       0.965,
       1,
     ],
-    [0, 1, 1, 1, 0],
+    [0, 1, 1, 1, 1, 0],
   );
 
   const className =
@@ -269,11 +282,13 @@ function CinematicCredits({
   compact,
   zoomEnd,
   centerProgress,
+  holdEndProgress,
 }: {
   progress: MotionValue<number>;
   compact: boolean;
   zoomEnd: number;
   centerProgress: number;
+  holdEndProgress: number;
 }) {
   return (
     <div className="pointer-events-none absolute inset-0 z-30 overflow-hidden">
@@ -290,6 +305,7 @@ function CinematicCredits({
             progress={progress}
             zoomEnd={zoomEnd}
             centerProgress={centerProgress}
+            holdEndProgress={holdEndProgress}
           />
         ))}
       </div>
@@ -308,6 +324,9 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
   const creditsLockProgress = isDesktopViewport
     ? desktopCreditsLockProgress
     : compactCreditsLockProgress;
+  const creditsHoldEndProgress = isDesktopViewport
+    ? desktopCreditsHoldEndProgress
+    : compactCreditsHoldEndProgress;
 
   const { scrollYProgress } = useScroll({
     target: container,
@@ -334,6 +353,7 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
     let wheelGestureConsumed = false;
     let wheelResetTimer: number | null = null;
     let focusSettleFrame: number | null = null;
+    let stepSettleFrame: number | null = null;
 
     const setIntroAssembly = (next: boolean) => {
       if (introAssembledRef.current === next) {
@@ -536,6 +556,12 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
               ? creditsLockStepDuration
               : creditsExitStepDuration;
 
+      const finishStep = () => {
+        isAnimating = false;
+        activeAnimation = null;
+        cooldownUntil = performance.now() + steppedScrollCooldownMs;
+      };
+
       isAnimating = true;
       activeAnimation = animate(window.scrollY, targetY, {
         duration,
@@ -548,14 +574,57 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
           });
         },
         onComplete: () => {
-          window.scrollTo({
-            top: targetY,
-            left: 0,
-            behavior: "auto",
-          });
-          isAnimating = false;
-          activeAnimation = null;
-          cooldownUntil = performance.now() + steppedScrollCooldownMs;
+          if (targetProgress !== creditsLockTarget) {
+            window.scrollTo({
+              top: targetY,
+              left: 0,
+              behavior: "auto",
+            });
+            finishStep();
+            return;
+          }
+
+          wheelGestureConsumed = true;
+
+          if (wheelResetTimer != null) {
+            window.clearTimeout(wheelResetTimer);
+          }
+
+          wheelResetTimer = window.setTimeout(() => {
+            wheelGestureConsumed = false;
+            wheelResetTimer = null;
+          }, wheelGestureResetMs);
+
+          let settleFramesRemaining = creditsLockSettleFrames;
+
+          const settleCreditsLock = () => {
+            const liveState = getSectionState();
+            const lockedY =
+              liveState.sectionTop +
+              liveState.scrollDistance * creditsLockTarget;
+
+            window.scrollTo({
+              top: lockedY,
+              left: 0,
+              behavior: "auto",
+            });
+
+            settleFramesRemaining -= 1;
+
+            if (settleFramesRemaining > 0) {
+              stepSettleFrame = window.requestAnimationFrame(
+                settleCreditsLock,
+              );
+              return;
+            }
+
+            stepSettleFrame = null;
+            finishStep();
+          };
+
+          stepSettleFrame = window.requestAnimationFrame(
+            settleCreditsLock,
+          );
         },
       });
 
@@ -808,6 +877,10 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
         window.cancelAnimationFrame(focusSettleFrame);
       }
 
+      if (stepSettleFrame != null) {
+        window.cancelAnimationFrame(stepSettleFrame);
+      }
+
       window.removeEventListener("scroll", syncIntroAssembly);
       section.removeEventListener("wheel", onWheel, { capture: true });
       section.removeEventListener("touchstart", onTouchStart, {
@@ -1036,6 +1109,7 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
           compact={!isDesktopViewport}
           zoomEnd={zoomEnd}
           centerProgress={creditsLockProgress}
+          holdEndProgress={creditsHoldEndProgress}
         />
       </div>
     </div>
