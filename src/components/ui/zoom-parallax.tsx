@@ -135,8 +135,10 @@ function ExperienceContact() {
   );
 }
 
-const desktopStepProgress = [0, 0.54, 0.78, 1] as const;
-const compactStepProgress = [0, 0.58, 0.8, 1] as const;
+const desktopZoomEnd = 0.54;
+const compactZoomEnd = 0.58;
+const desktopCreditsLockProgress = 0.78;
+const compactCreditsLockProgress = 0.8;
 const steppedScrollEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
 const steppedScrollTriggerDelta = 6;
 const steppedScrollCooldownMs = 260;
@@ -145,6 +147,10 @@ const steppedScrollEntryEase: [number, number, number, number] = [0.22, 1, 0.36,
 const steppedScrollEntryDuration = 0.68;
 const steppedScrollFocusTolerancePx = 0.75;
 const steppedScrollFocusSettleFrames = 2;
+const creditsLockStepDuration = 2.04;
+const creditsExitStepDuration = 0.92;
+const creditsReverseStepDuration = 1.18;
+const creditsReverseToIntroDuration = 1.42;
 const wheelGestureResetMs = 160;
 const idleFloatEase: [number, number, number, number] = [0.45, 0, 0.55, 1];
 const idleFloatPatterns = [
@@ -186,15 +192,48 @@ function AlternatingCreditLine({
   centerProgress: number;
 }) {
   const entersFromRight = index % 2 === 0;
-  const entryStart = Math.min(zoomEnd + index * 0.012, centerProgress - 0.08);
+  const lineDelay = line.kind === "title" ? 0.018 : 0.024;
+  const entryStart = Math.min(
+    zoomEnd + index * lineDelay,
+    centerProgress - 0.1,
+  );
   const x = useTransform(
     progress,
     [entryStart, centerProgress, 1],
-    [entersFromRight ? "115vw" : "-115vw", "0vw", entersFromRight ? "-115vw" : "115vw"],
+    [
+      entersFromRight ? "115vw" : "-115vw",
+      "0vw",
+      entersFromRight ? "-115vw" : "115vw",
+    ],
+  );
+  const y = useTransform(
+    progress,
+    [entryStart, centerProgress, 1],
+    [entersFromRight ? 18 : -18, 0, entersFromRight ? -10 : 10],
+  );
+  const scale = useTransform(
+    progress,
+    [entryStart, centerProgress, 1],
+    [
+      line.kind === "title" ? 0.92 : 0.98,
+      1,
+      line.kind === "title" ? 1.03 : 1.015,
+    ],
+  );
+  const rotateY = useTransform(
+    progress,
+    [entryStart, centerProgress, 1],
+    [entersFromRight ? 2.4 : -2.4, 0, entersFromRight ? -1.8 : 1.8],
   );
   const opacity = useTransform(
     progress,
-    [entryStart, Math.min(entryStart + 0.055, centerProgress), centerProgress, 0.96, 1],
+    [
+      entryStart,
+      Math.min(entryStart + 0.06, centerProgress),
+      centerProgress,
+      0.965,
+      1,
+    ],
     [0, 1, 1, 1, 0],
   );
 
@@ -207,8 +246,8 @@ function AlternatingCreditLine({
 
   const content = (
     <motion.div
-      style={{ x, opacity }}
-      className="flex w-full justify-center px-5 text-center will-change-transform sm:px-8 lg:px-10"
+      style={{ x, y, scale, rotateY, transformPerspective: 1200, opacity }}
+      className="flex w-full justify-center px-5 text-center will-change-transform transform-gpu sm:px-8 lg:px-10"
     >
       {line.kind === "title" ? (
         line.headingLevel === 2 ? (
@@ -239,7 +278,7 @@ function CinematicCredits({
   return (
     <div className="pointer-events-none absolute inset-0 z-30 overflow-hidden">
       <div
-        className={`absolute inset-0 flex flex-col items-center justify-center text-[#f4f0e8] [text-shadow:0_4px_28px_rgba(0,0,0,0.45)] ${
+        className={`absolute inset-0 flex flex-col items-center justify-center text-[#f4f0e8] [perspective:1200px] [text-shadow:0_4px_28px_rgba(0,0,0,0.45)] ${
           compact ? "gap-[clamp(0.5rem,1.4svh,0.85rem)] py-12" : "gap-[clamp(0.65rem,1.4svh,1.15rem)] py-10"
         }`}
       >
@@ -265,9 +304,10 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
   const introAssembledRef = useRef(false);
   const [isIntroAssembled, setIsIntroAssembled] = useState(false);
   const parallaxImages = images.slice(0, isDesktopViewport ? 9 : 1);
-  const zoomEnd = isDesktopViewport
-    ? desktopStepProgress[1]
-    : compactStepProgress[1];
+  const zoomEnd = isDesktopViewport ? desktopZoomEnd : compactZoomEnd;
+  const creditsLockProgress = isDesktopViewport
+    ? desktopCreditsLockProgress
+    : compactCreditsLockProgress;
 
   const { scrollYProgress } = useScroll({
     target: container,
@@ -281,9 +321,9 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
       return;
     }
 
-    const stepProgress = isDesktopViewport
-      ? desktopStepProgress
-      : compactStepProgress;
+    const creditsLockTarget = isDesktopViewport
+      ? desktopCreditsLockProgress
+      : compactCreditsLockProgress;
     let activeAnimation: ReturnType<typeof animate> | null = null;
     let isAnimating = false;
     let cooldownUntil = 0;
@@ -329,26 +369,22 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
       progress: number,
       direction: 1 | -1,
     ): number | null => {
-      const [, zoom, credits] = stepProgress;
-
       if (direction === 1) {
-        if (progress < zoom - steppedScrollProgressTolerance) {
-          return zoom;
-        }
-
-        if (progress < credits - steppedScrollProgressTolerance) {
-          return credits;
+        if (
+          progress <
+          creditsLockTarget - steppedScrollProgressTolerance
+        ) {
+          return creditsLockTarget;
         }
 
         return 1;
       }
 
-      if (progress > credits + steppedScrollProgressTolerance) {
-        return credits;
-      }
-
-      if (progress > zoom + steppedScrollProgressTolerance) {
-        return zoom;
+      if (
+        progress >
+        creditsLockTarget + steppedScrollProgressTolerance
+      ) {
+        return creditsLockTarget;
       }
 
       if (progress > steppedScrollProgressTolerance) {
@@ -486,18 +522,19 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
       const targetY = Math.min(unclampedTarget, maxScrollY);
       const isFirstForwardStep =
         direction === 1 &&
-        targetProgress === stepProgress[1] &&
-        state.progress < stepProgress[1] - steppedScrollProgressTolerance;
+        targetProgress === creditsLockTarget &&
+        state.progress <
+          creditsLockTarget - steppedScrollProgressTolerance;
       const duration =
         direction === -1
           ? targetProgress === 0
-            ? 1.45
-            : 1.22
+            ? creditsReverseToIntroDuration
+            : creditsReverseStepDuration
           : targetProgress === 1
-            ? 0.86
+            ? creditsExitStepDuration
             : isFirstForwardStep
-              ? 1.8
-              : 1.08;
+              ? creditsLockStepDuration
+              : creditsExitStepDuration;
 
       isAnimating = true;
       activeAnimation = animate(window.scrollY, targetY, {
@@ -790,7 +827,7 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
       });
     };
   }, [isDesktopViewport, shouldReduceMotion]);
-  // Preserve the original 86svh zoom distance; reserve the rest for the credits.
+  // The zoom completes first; the same controlled step then carries the credits into their centered lock.
   const zoomProgress = useTransform(scrollYProgress, [0, zoomEnd], [0, 1]);
   const introExitEnd = isDesktopViewport ? 0.28 : 0.15;
 
@@ -998,9 +1035,7 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
           progress={scrollYProgress}
           compact={!isDesktopViewport}
           zoomEnd={zoomEnd}
-          centerProgress={
-            isDesktopViewport ? desktopStepProgress[2] : compactStepProgress[2]
-          }
+          centerProgress={creditsLockProgress}
         />
       </div>
     </div>
