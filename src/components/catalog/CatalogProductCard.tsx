@@ -125,7 +125,13 @@ function ProductSpecs({
   );
 }
 
-function ProductContactActions({ scooter }: { scooter: CatalogScooter }) {
+function ProductContactActions({
+  scooter,
+  onOpenDetails,
+}: {
+  scooter: CatalogScooter;
+  onOpenDetails: () => void;
+}) {
   return (
     <div className="mt-4 flex flex-col gap-3 sm:mt-5 sm:flex-row sm:flex-wrap">
       <a
@@ -149,6 +155,7 @@ function ProductContactActions({ scooter }: { scooter: CatalogScooter }) {
       </Link>
       <Link
         href={`/scooters/${scooter.id}`}
+        onClick={onOpenDetails}
         className="font-ui inline-flex min-h-11 items-center justify-center rounded-[0.9rem] px-5 py-3 text-sm font-bold underline underline-offset-4 focus-visible:outline focus-visible:outline-2"
         aria-label={`Scopri tutti i dettagli di ${scooter.name}`}
       >
@@ -303,6 +310,7 @@ export const CatalogProductCard = memo(function CatalogProductCard({
                 {isSemanticInstance ? (
                   <Link
                     href={`/scooters/${scooter.id}`}
+                    onClick={onCollapseScooter}
                     aria-label={`Vai alla pagina di ${scooter.name}`}
                     className="font-ui inline-flex min-h-7 items-center rounded-full px-1 text-[0.58rem] font-bold uppercase tracking-[0.1em] text-[var(--product-muted)] underline decoration-current/40 underline-offset-4 transition-colors hover:text-current focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--product-accent)]"
                   >
@@ -413,7 +421,10 @@ export const CatalogProductCard = memo(function CatalogProductCard({
                 {scooter.positioning}
               </p>
               <ProductSpecs scooter={scooter} />
-              <ProductContactActions scooter={scooter} />
+              <ProductContactActions
+                scooter={scooter}
+                onOpenDetails={onCollapseScooter}
+              />
             </motion.div>
           ) : compactMode ? (
             <div className="min-w-0">
@@ -481,7 +492,10 @@ export const CatalogProductCard = memo(function CatalogProductCard({
                   {scooter.positioning}
                 </p>
                 <ProductSpecs scooter={scooter} compact />
-                <ProductContactActions scooter={scooter} />
+                <ProductContactActions
+                scooter={scooter}
+                onOpenDetails={onCollapseScooter}
+              />
               </motion.div>
             </div>
           ) : (
