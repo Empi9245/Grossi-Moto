@@ -7,7 +7,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { Gauge, Layers2, MapPinned, PhoneCall, Route, ShieldCheck } from "lucide-react";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { clsx } from "clsx";
 
 import {
@@ -23,7 +23,6 @@ type CatalogProductCardProps = {
   isExpanded: boolean;
   isCompactExpanded?: boolean;
   compactMode?: boolean;
-  shouldAnimateCompactLayout?: boolean;
   isSelected?: boolean;
   transitionImageId: string | null;
   cardToneAssignment?: ProductCardToneAssignment;
@@ -165,7 +164,6 @@ export const CatalogProductCard = memo(function CatalogProductCard({
   isExpanded,
   isCompactExpanded = false,
   compactMode = false,
-  shouldAnimateCompactLayout = false,
   isSelected = isExpanded || isCompactExpanded,
   transitionImageId,
   cardToneAssignment,
@@ -194,6 +192,9 @@ export const CatalogProductCard = memo(function CatalogProductCard({
     : "(max-width: 767px) 82vw, (max-width: 1023px) 42vw, 22vw";
   const imageClassName = clsx(
     "relative z-10 w-full object-contain object-center",
+    compactMode &&
+      !shouldReduceMotion &&
+      "transition-[height,max-height] duration-300 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)]",
     isExpanded
       ? "h-[12.5rem] max-h-[20rem] sm:h-[15.5rem] md:h-full md:max-h-[26rem]"
       : isCompactExpanded
@@ -207,18 +208,10 @@ export const CatalogProductCard = memo(function CatalogProductCard({
         animate: { opacity: 1, y: 0 },
         transition: { duration: expandedContentDuration, ease: productEase },
       };
-  const compactContentMotion = shouldReduceMotion
-    ? { initial: false as const }
-    : {
-        initial: { opacity: 0, y: 6 },
-        animate: { opacity: 1, y: 0 },
-        exit: {
-          opacity: 0,
-          y: 4,
-          transition: { duration: 0.16, ease: productEase },
-        },
-        transition: { duration: 0.3, ease: productEase },
-      };
+  const compactPanelTransition = {
+    duration: shouldReduceMotion ? 0 : 0.28,
+    ease: productEase,
+  };
 
   const handleCompactCollapse = () => {
     onCollapseScooter();
@@ -257,19 +250,7 @@ export const CatalogProductCard = memo(function CatalogProductCard({
       }
       data-card-tone={cardToneAssignment?.toneId ?? scooter.cardToneId}
     >
-      <motion.article
-        layout={
-          compactMode && shouldAnimateCompactLayout && !shouldReduceMotion
-            ? "size"
-            : false
-        }
-        layoutDependency={compactMode ? isCompactExpanded : undefined}
-        transition={{
-          layout: {
-            duration: 0.34,
-            ease: productEase,
-          },
-        }}
+      <article
         aria-labelledby={cardTitleId}
         onClick={isSemanticInstance ? handleCardClick : undefined}
         className={clsx(
@@ -293,8 +274,13 @@ export const CatalogProductCard = memo(function CatalogProductCard({
             "relative z-10 grid gap-5",
             isExpanded
               ? "grid h-full min-h-0 gap-4 sm:min-h-[28rem] sm:gap-5 md:grid-cols-[minmax(0,0.88fr)_minmax(0,1.12fr)] md:grid-rows-[auto_minmax(12rem,1fr)_auto]"
-              : isCompactExpanded
-                ? "min-h-0 grid-rows-[auto_auto_auto] gap-4 sm:gap-5"
+              : compactMode
+                ? clsx(
+                    "grid-rows-[auto_auto_auto] transition-[gap,min-height] duration-300 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)]",
+                    isCompactExpanded
+                      ? "min-h-0 gap-4 sm:gap-5"
+                      : "min-h-[15.75rem] gap-5 sm:min-h-[17rem]",
+                  )
                 : "min-h-[15.75rem] grid-rows-[auto_minmax(10rem,1fr)_auto] sm:min-h-[17rem] sm:grid-rows-[auto_minmax(11.25rem,1fr)_auto]",
           )}
         >
@@ -367,6 +353,9 @@ export const CatalogProductCard = memo(function CatalogProductCard({
           <div
             className={clsx(
               "relative flex min-h-0 items-center justify-center",
+              compactMode &&
+                !shouldReduceMotion &&
+                "transition-[min-height] duration-300 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)]",
               isExpanded
                 ? "min-h-[13rem] md:col-start-2 md:row-span-2 md:row-start-1 md:min-h-0"
                 : isCompactExpanded
@@ -424,40 +413,21 @@ export const CatalogProductCard = memo(function CatalogProductCard({
               <ProductSpecs scooter={scooter} />
               <ProductContactActions scooter={scooter} />
             </motion.div>
-          ) : (
-            <AnimatePresence initial={false} mode="popLayout">
-              {isCompactExpanded ? (
-                <motion.div
-                  key="compact-details"
-                  {...compactContentMotion}
-                  id={expandedContentId}
-                  className="min-w-0"
-                >
-                  <p className="font-ui text-[0.58rem] font-bold uppercase tracking-[0.14em] text-[var(--product-muted)]">
-                    Dettagli modello
-                  </p>
-                  <p className="mt-2.5 text-[0.9rem] leading-6 text-[var(--product-muted)] sm:text-base sm:leading-7">
-                    {scooter.positioning}
-                  </p>
-                  <ProductSpecs scooter={scooter} compact />
-                  <ProductContactActions scooter={scooter} />
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="compact-summary"
-                  initial={false}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={
-                    shouldReduceMotion
-                      ? undefined
-                      : { opacity: 0, y: -4 }
-                  }
-                  transition={{
-                    duration: shouldReduceMotion ? 0 : 0.16,
-                    ease: productEase,
-                  }}
-                  className="flex items-end justify-between gap-4"
-                >
+          ) : compactMode ? (
+            <div className="min-w-0">
+              <motion.div
+                initial={false}
+                animate={
+                  isCompactExpanded
+                    ? { height: 0, opacity: 0, y: -3 }
+                    : { height: "auto", opacity: 1, y: 0 }
+                }
+                transition={compactPanelTransition}
+                aria-hidden={isCompactExpanded}
+                inert={isCompactExpanded ? true : undefined}
+                className="overflow-hidden"
+              >
+                <div className="flex items-end justify-between gap-4">
                   <div className="min-w-0">
                     <p className="font-ui text-[0.62rem] font-bold uppercase tracking-[0.13em] text-[var(--product-muted)]">
                       {scooter.displacement}
@@ -486,12 +456,66 @@ export const CatalogProductCard = memo(function CatalogProductCard({
                       <DisclosureMark expanded={false} />
                     </span>
                   )}
-                </motion.div>
+                </div>
+              </motion.div>
+
+              <motion.div
+                initial={false}
+                animate={
+                  isCompactExpanded
+                    ? { height: "auto", opacity: 1, y: 0 }
+                    : { height: 0, opacity: 0, y: 4 }
+                }
+                transition={compactPanelTransition}
+                id={expandedContentId}
+                aria-hidden={!isCompactExpanded}
+                inert={!isCompactExpanded ? true : undefined}
+                className="min-w-0 overflow-hidden"
+              >
+                <p className="font-ui text-[0.58rem] font-bold uppercase tracking-[0.14em] text-[var(--product-muted)]">
+                  Dettagli modello
+                </p>
+                <p className="mt-2.5 text-[0.9rem] leading-6 text-[var(--product-muted)] sm:text-base sm:leading-7">
+                  {scooter.positioning}
+                </p>
+                <ProductSpecs scooter={scooter} compact />
+                <ProductContactActions scooter={scooter} />
+              </motion.div>
+            </div>
+          ) : (
+            <div className="flex items-end justify-between gap-4">
+              <div className="min-w-0">
+                <p className="font-ui text-[0.62rem] font-bold uppercase tracking-[0.13em] text-[var(--product-muted)]">
+                  {scooter.displacement}
+                </p>
+                <p className="mt-1 truncate text-sm leading-5 text-[var(--product-muted)]">
+                  {scooter.idealUse}
+                </p>
+              </div>
+
+              {isSemanticInstance ? (
+                <button
+                  id={cardTriggerId}
+                  type="button"
+                  aria-expanded={false}
+                  aria-controls={expandedContentId}
+                  aria-label={`Apri la scheda di ${scooter.name}`}
+                  onClick={() => onExpandScooter(scooter.id)}
+                  className="font-ui inline-flex min-h-11 shrink-0 items-center gap-3 rounded-[0.9rem] border border-current/12 px-3 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-current outline-none transition-[background,color] duration-200 hover:bg-[oklch(96%_0.006_78/0.38)] group-hover:text-[var(--product-accent)] focus-visible:ring-2 focus-visible:ring-[var(--product-accent)] focus-visible:ring-offset-2"
+                >
+                  Apri la scheda
+                  <DisclosureMark expanded={false} />
+                </button>
+              ) : (
+                <span className="font-ui inline-flex min-h-11 shrink-0 items-center gap-3 rounded-full px-2 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-current">
+                  Apri la scheda
+                  <DisclosureMark expanded={false} />
+                </span>
               )}
-            </AnimatePresence>
+            </div>
           )}
         </div>
-      </motion.article>
+      </article>
     </div>
   );
 });
