@@ -801,7 +801,7 @@ function ProductShowroomChapter({
                   aria-hidden={!isSemanticCard}
                   inert={!isSemanticCard ? true : undefined}
                   className={[
-                    "absolute left-1/2 top-0 w-[80%] max-w-[31rem] opacity-0 will-change-transform [backface-visibility:hidden]",
+                    "absolute left-1/2 top-0 w-[80%] max-w-[31rem] opacity-0 will-change-transform [backface-visibility:hidden] md:w-[64%] md:max-w-[36rem]",
                     isSemanticCard ? "" : "pointer-events-none select-none",
                   ].join(" ")}
                 >

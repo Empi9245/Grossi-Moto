@@ -7,7 +7,6 @@ import {
   useMemo,
   useRef,
   useState,
-  useSyncExternalStore,
 } from "react";
 import {
   animate,
@@ -18,6 +17,7 @@ import {
 import { Hero } from "@/components/hero/Hero";
 import { ScooterShowcase } from "@/components/sections/ScooterShowcase";
 import { showcaseScooters } from "@/data/showcase-scooters";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 const premiumEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
 const heroRevealDuration = 0.86;
@@ -49,22 +49,6 @@ const heroCardRevealedState = {
 const useBrowserLayoutEffect =
   typeof window === "undefined" ? useEffect : useLayoutEffect;
 
-function useDesktopViewport() {
-  const subscribe = useCallback((onStoreChange: () => void) => {
-    const mediaQuery = window.matchMedia("(min-width: 1024px)");
-    mediaQuery.addEventListener("change", onStoreChange);
-
-    return () => mediaQuery.removeEventListener("change", onStoreChange);
-  }, []);
-
-  const getSnapshot = useCallback(
-    () => window.matchMedia("(min-width: 1024px)").matches,
-    [],
-  );
-
-  return useSyncExternalStore(subscribe, getSnapshot, () => false);
-}
-
 export function HeroRevealStage() {
   const stageRef = useRef<HTMLElement | null>(null);
   const showcaseRef = useRef<HTMLDivElement | null>(null);
@@ -76,7 +60,12 @@ export function HeroRevealStage() {
   const isHeroAnimatingRef = useRef(false);
   const heroControls = useAnimationControls();
   const shouldReduceMotion = useReducedMotion();
-  const isDesktopViewport = useDesktopViewport();
+  const isWideViewport = useMediaQuery("(min-width: 1024px)");
+  const canHover = useMediaQuery("(hover: hover)");
+  const hasFinePointer = useMediaQuery("(pointer: fine)");
+  const hasCoarsePointer = useMediaQuery("(any-pointer: coarse)");
+  const isDesktopViewport =
+    isWideViewport && canHover && hasFinePointer && !hasCoarsePointer;
   const [hasHeroRevealed, setHasHeroRevealed] = useState(false);
 
   const cardMotion = useMemo(

@@ -224,13 +224,19 @@ function useCompactViewport() {
   const [isCompact, setIsCompact] = useState(false);
 
   useEffect(() => {
-    const media = window.matchMedia("(max-width: 1023px)");
-    const update = () => setIsCompact(media.matches);
+    const widthMedia = window.matchMedia("(max-width: 1023px)");
+    const coarseMedia = window.matchMedia("(any-pointer: coarse)");
+    const update = () =>
+      setIsCompact(widthMedia.matches || coarseMedia.matches);
 
     update();
-    media.addEventListener("change", update);
+    widthMedia.addEventListener("change", update);
+    coarseMedia.addEventListener("change", update);
 
-    return () => media.removeEventListener("change", update);
+    return () => {
+      widthMedia.removeEventListener("change", update);
+      coarseMedia.removeEventListener("change", update);
+    };
   }, []);
 
   return isCompact;

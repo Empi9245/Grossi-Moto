@@ -189,6 +189,8 @@ function AlternatingCreditBlock({
   zoomEnd,
   centerProgress,
   holdEndProgress,
+  compact,
+  tablet,
 }: {
   block: CreditBlock;
   index: number;
@@ -196,6 +198,8 @@ function AlternatingCreditBlock({
   zoomEnd: number;
   centerProgress: number;
   holdEndProgress: number;
+  compact: boolean;
+  tablet: boolean;
 }) {
   const entersFromRight = index % 2 === 0;
   const entryStart = Math.min(
@@ -245,14 +249,27 @@ function AlternatingCreditBlock({
     [0, 1, 1, 1, 1, 0],
   );
 
-  const titleClassName = `${creditsFont.className} max-w-[18ch] text-[clamp(2rem,min(8vw,7svh),5.6rem)] uppercase leading-[0.94] tracking-[-0.015em] lg:text-[clamp(3rem,5.1vw,6.5rem)]`;
-  const detailClassName =
-    "mt-3 max-w-[44rem] text-[clamp(0.78rem,1.7vw,1.1rem)] font-normal leading-[1.45] text-white/82 lg:text-[clamp(0.9rem,1.2vw,1.15rem)]";
+  const titleClassName = `${creditsFont.className} max-w-[18ch] uppercase leading-[0.94] tracking-[-0.015em] ${
+    compact
+      ? tablet
+        ? "text-[clamp(2.6rem,min(6vw,7svh),4.8rem)]"
+        : "text-[clamp(2rem,min(8vw,7svh),5.6rem)]"
+      : "text-[clamp(3rem,5.1vw,6.5rem)]"
+  }`;
+  const detailClassName = `mt-3 max-w-[44rem] font-normal leading-[1.45] text-white/82 ${
+    compact
+      ? tablet
+        ? "text-[clamp(0.9rem,1.6vw,1.05rem)]"
+        : "text-[clamp(0.78rem,1.7vw,1.1rem)]"
+      : "text-[clamp(0.9rem,1.2vw,1.15rem)]"
+  }`;
 
   return (
     <motion.div
       style={{ x, y, scale, rotateY, transformPerspective: 1200, opacity }}
-      className="flex w-full flex-col items-center justify-center px-5 text-center will-change-transform transform-gpu sm:px-8 lg:px-10"
+      className={`flex w-full flex-col items-center justify-center text-center will-change-transform transform-gpu ${
+        tablet ? "px-10" : compact ? "px-5 sm:px-8" : "px-10"
+      }`}
     >
       {block.eyebrow ? (
         <p className="font-ui mb-2 text-[0.58rem] font-bold uppercase tracking-[0.24em] text-white/82 sm:text-xs">
@@ -275,18 +292,24 @@ function CinematicCredits({
   zoomEnd,
   centerProgress,
   holdEndProgress,
+  tablet,
 }: {
   progress: MotionValue<number>;
   compact: boolean;
   zoomEnd: number;
   centerProgress: number;
   holdEndProgress: number;
+  tablet: boolean;
 }) {
   return (
     <div className="pointer-events-none absolute inset-0 z-30 overflow-hidden">
       <div
         className={`absolute inset-0 flex flex-col items-center justify-center text-[#f4f0e8] [perspective:1200px] [text-shadow:0_4px_28px_rgba(0,0,0,0.45)] ${
-          compact ? "gap-[clamp(1rem,2.4svh,1.5rem)] py-12" : "gap-[clamp(1.3rem,2.8svh,2rem)] py-10"
+          compact
+            ? tablet
+              ? "gap-[clamp(1.2rem,2.8svh,1.9rem)] px-6 py-14"
+              : "gap-[clamp(1rem,2.4svh,1.5rem)] py-12"
+            : "gap-[clamp(1.3rem,2.8svh,2rem)] py-10"
         }`}
       >
         {creditBlocks.map((block, index) => (
@@ -298,6 +321,8 @@ function CinematicCredits({
             zoomEnd={zoomEnd}
             centerProgress={centerProgress}
             holdEndProgress={holdEndProgress}
+            compact={compact}
+            tablet={tablet}
           />
         ))}
       </div>
@@ -308,7 +333,14 @@ function CinematicCredits({
 export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
   const container = useRef<HTMLDivElement | null>(null);
   const shouldReduceMotion = useReducedMotion();
-  const isDesktopViewport = useMediaQuery("(min-width: 1024px)");
+  const isTabletViewport = useMediaQuery("(min-width: 768px)");
+  const isWideViewport = useMediaQuery("(min-width: 1024px)");
+  const canHover = useMediaQuery("(hover: hover)");
+  const hasFinePointer = useMediaQuery("(pointer: fine)");
+  const hasCoarsePointer = useMediaQuery("(any-pointer: coarse)");
+  const isDesktopViewport =
+    isWideViewport && canHover && hasFinePointer && !hasCoarsePointer;
+  const useTabletLayout = isTabletViewport && !isDesktopViewport;
   const introAssembledRef = useRef(false);
   const [isIntroAssembled, setIsIntroAssembled] = useState(false);
   const parallaxImages = images.slice(0, isDesktopViewport ? 9 : 1);
@@ -935,6 +967,8 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
   );
 
   const mobileScale = useTransform(zoomProgress, [0, 1], [1, 2.4]);
+  const tabletScale = useTransform(zoomProgress, [0, 1], [1, 2.15]);
+  const compactScale = useTabletLayout ? tabletScale : mobileScale;
   const scale4 = useTransform(zoomProgress, [0, 1], [1, 4.08]);
   const scale5 = useTransform(zoomProgress, [0, 1], [1, 5]);
   const scale6 = useTransform(zoomProgress, [0, 1], [1, 6]);
@@ -965,10 +999,10 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
     >
       <div className="sticky top-0 h-[100svh] overflow-hidden">
         {parallaxImages.map(({ src, alt }, index) => {
-          const scale = isDesktopViewport ? scales[index % scales.length] : mobileScale;
+          const scale = isDesktopViewport ? scales[index % scales.length] : compactScale;
           const idlePattern =
             idleFloatPatterns[index % idleFloatPatterns.length];
-          const idleStrength = isDesktopViewport ? 1 : 0.42;
+          const idleStrength = isDesktopViewport ? 1 : useTabletLayout ? 0.34 : 0.42;
           const settleDelay = isDesktopViewport ? index * 0.025 : 0;
 
           return (
@@ -1069,13 +1103,19 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
                       }
                 }
                 style={{
-                  scale: isDesktopViewport ? 1 : mobileScale,
+                  scale: isDesktopViewport ? 1 : compactScale,
                   borderRadius:
                     isDesktopViewport && index === 0
                       ? desktopLeadImageBorderRadius
                       : undefined,
                 }}
-                className="relative h-[48svh] w-[84vw] overflow-hidden rounded-[1.25rem] bg-[oklch(18%_0.014_56)] [@media(max-height:700px)]:h-[44svh] [@media(max-height:700px)]:w-[82vw] md:h-[44svh] md:w-[76vw] lg:h-[25vh] lg:w-[25vw] lg:shadow-[0_24px_70px_oklch(18%_0.014_56/0.18)]"
+                className={`relative overflow-hidden rounded-[1.25rem] bg-[oklch(18%_0.014_56)] ${
+                  isDesktopViewport
+                    ? "h-[25vh] w-[25vw] shadow-[0_24px_70px_oklch(18%_0.014_56/0.18)]"
+                    : useTabletLayout
+                      ? "h-[44svh] w-[72vw] max-w-[46rem]"
+                      : "h-[48svh] w-[84vw] [@media(max-height:700px)]:h-[44svh] [@media(max-height:700px)]:w-[82vw]"
+                }`}
               >
                 <Image
                   src={src}
@@ -1102,19 +1142,61 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
         <div className="pointer-events-none absolute inset-0 z-30 text-black">
           <motion.div
             style={{ x: introLeftX, opacity: introOpacity }}
-            className="absolute left-[8vw] top-[12svh] max-w-[76vw] will-change-transform [@media(max-height:700px)]:top-[9svh] md:left-[6vw] md:top-[9svh] md:max-w-[82vw] lg:left-[4vw] lg:top-[4svh] lg:max-w-[30vw]"
+            className={`absolute will-change-transform ${
+              isDesktopViewport
+                ? "left-[4vw] top-[4svh] max-w-[30vw]"
+                : useTabletLayout
+                  ? "left-[6vw] top-[8svh] max-w-[58vw]"
+                  : "left-[8vw] top-[12svh] max-w-[76vw] [@media(max-height:700px)]:top-[9svh]"
+            }`}
           >
             <p className="font-ui mb-2 text-[0.62rem] font-semibold uppercase tracking-[0.16em] text-black/58 sm:text-[0.66rem]">Grossi Moto · Roma</p>
-            <p className="font-display text-[clamp(1.9rem,7.4vw,3.15rem)] font-semibold uppercase leading-[0.97] tracking-[-0.015em] lg:text-[clamp(2.15rem,3vw,3.85rem)]">
+            <p
+              className={`font-display font-semibold uppercase leading-[0.97] tracking-[-0.015em] ${
+                isDesktopViewport
+                  ? "text-[clamp(2.15rem,3vw,3.85rem)]"
+                  : useTabletLayout
+                    ? "text-[clamp(2.5rem,5.2vw,4rem)]"
+                    : "text-[clamp(1.9rem,7.4vw,3.15rem)]"
+              }`}
+            >
               La tua prossima strada.
             </p>
           </motion.div>
           <motion.div
             style={{ x: introRightX, opacity: introOpacity }}
-            className="absolute bottom-[calc(6rem+env(safe-area-inset-bottom))] right-[8vw] max-w-[76vw] text-right will-change-transform [@media(max-height:700px)]:bottom-[calc(5.25rem+env(safe-area-inset-bottom))] md:bottom-[calc(7rem+env(safe-area-inset-bottom))] md:right-[6vw] md:max-w-[82vw] lg:bottom-[5svh] lg:right-[4vw] lg:max-w-[29vw]"
+            className={`absolute text-right will-change-transform ${
+              isDesktopViewport
+                ? "bottom-[5svh] right-[4vw] max-w-[29vw]"
+                : useTabletLayout
+                  ? isWideViewport
+                    ? "bottom-[6svh] right-[6vw] max-w-[58vw]"
+                    : "bottom-[calc(7rem+env(safe-area-inset-bottom))] right-[6vw] max-w-[58vw]"
+                  : "bottom-[calc(6rem+env(safe-area-inset-bottom))] right-[8vw] max-w-[76vw] [@media(max-height:700px)]:bottom-[calc(5.25rem+env(safe-area-inset-bottom))]"
+            }`}
           >
-            <p className="font-display text-[clamp(1.95rem,7.6vw,3.25rem)] font-semibold uppercase leading-[0.97] tracking-[-0.015em] lg:text-[clamp(2.2rem,3.35vw,4.15rem)]">Parte da qui.</p>
-            <p className="font-ui mt-3 max-w-[30rem] text-[0.78rem] leading-[1.45] tracking-normal text-black/62 lg:ml-auto lg:text-sm">Dalla scelta del mezzo, a ogni nuovo viaggio.</p>
+            <p
+              className={`font-display font-semibold uppercase leading-[0.97] tracking-[-0.015em] ${
+                isDesktopViewport
+                  ? "text-[clamp(2.2rem,3.35vw,4.15rem)]"
+                  : useTabletLayout
+                    ? "text-[clamp(2.55rem,5.35vw,4.1rem)]"
+                    : "text-[clamp(1.95rem,7.6vw,3.25rem)]"
+              }`}
+            >
+              Parte da qui.
+            </p>
+            <p
+              className={`font-ui mt-3 max-w-[30rem] leading-[1.45] tracking-normal text-black/62 ${
+                isDesktopViewport
+                  ? "ml-auto text-sm"
+                  : useTabletLayout
+                    ? "ml-auto text-[0.9rem]"
+                    : "text-[0.78rem]"
+              }`}
+            >
+              Dalla scelta del mezzo, a ogni nuovo viaggio.
+            </p>
           </motion.div>
         </div>
 
@@ -1124,6 +1206,7 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
           zoomEnd={zoomEnd}
           centerProgress={creditsLockProgress}
           holdEndProgress={creditsHoldEndProgress}
+          tablet={useTabletLayout}
         />
       </div>
     </div>
