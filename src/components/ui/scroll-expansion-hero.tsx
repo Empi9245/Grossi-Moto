@@ -401,11 +401,15 @@ export default function ScrollExpansionHero({
         isExpanded &&
         isHeroInteractionActive() &&
         touchCollapseArmedRef.current &&
-        deltaY < -12
+        deltaY < 0
       ) {
         event.preventDefault();
-        touchStartYRef.current = touchY;
-        collapseHero();
+
+        if (deltaY <= -12) {
+          touchStartYRef.current = touchY;
+          collapseHero();
+        }
+
         return;
       }
 
@@ -500,9 +504,8 @@ export default function ScrollExpansionHero({
         <div className="relative flex min-h-[100lvh] w-full flex-col items-center">
           <motion.div
             className="absolute inset-0 z-0 h-full"
-            initial={{ opacity: reducedMotion ? 0 : 1 }}
-            animate={{ opacity: reducedMotion ? 0 : 1 - scrollProgress }}
-            transition={{ duration: 0.1 }}
+            initial={false}
+            style={{ opacity: reducedMotion ? 0 : 1 - scrollProgress }}
           >
             <Image
               src={bgImageSrc}
@@ -565,13 +568,12 @@ export default function ScrollExpansionHero({
                     )}
                     <motion.div
                       className="absolute inset-0 bg-black/30"
-                      initial={{ opacity: 0.7 }}
-                      animate={{
+                      initial={false}
+                      style={{
                         opacity: reducedMotion
                           ? 0.28
                           : 0.5 - scrollProgress * 0.3,
                       }}
-                      transition={{ duration: 0.2 }}
                     />
                   </div>
                 ) : (
@@ -585,13 +587,12 @@ export default function ScrollExpansionHero({
                     />
                     <motion.div
                       className="absolute inset-0 bg-black/50"
-                      initial={{ opacity: 0.7 }}
-                      animate={{
+                      initial={false}
+                      style={{
                         opacity: reducedMotion
                           ? 0.3
                           : 0.7 - scrollProgress * 0.3,
                       }}
-                      transition={{ duration: 0.2 }}
                     />
                   </div>
                 )}
@@ -652,16 +653,10 @@ export default function ScrollExpansionHero({
                 <motion.div
                   className="absolute inset-x-0 bottom-[calc(4.25rem+env(safe-area-inset-bottom))] z-20 flex justify-center px-4"
                   initial={false}
-                  animate={{
+                  style={{
                     opacity: endOverlayProgress,
                     y: 14 * (1 - endOverlayProgress),
                     scale: 0.985 + endOverlayProgress * 0.015,
-                  }}
-                  transition={{
-                    duration: reducedMotion ? 0 : 0.42,
-                    ease: [0.22, 1, 0.36, 1],
-                  }}
-                  style={{
                     pointerEvents:
                       endOverlayProgress >= 0.94 ? "auto" : "none",
                   }}
