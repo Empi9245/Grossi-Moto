@@ -3,6 +3,7 @@
 import { ActionMark } from "@/components/ui/control-glyphs";
 import { CalendarCheck, Phone } from "lucide-react";
 import { motion, type MotionProps } from "framer-motion";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { preload } from "react-dom";
 
@@ -43,7 +44,6 @@ export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
 
     if (isMobileViewport) {
       video.pause();
-      setVideoPlaying(false);
       return;
     }
 
@@ -172,7 +172,7 @@ export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
         data-qa="hero-viewport"
         className="relative w-full overflow-x-clip bg-white md:hidden"
       >
-        <a
+        <Link
           href="/"
           aria-label="Grossimoto, pagina iniziale"
           className="font-ui fixed left-4 top-[calc(1rem+env(safe-area-inset-top))] z-50 flex min-w-0 flex-col rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
@@ -183,7 +183,7 @@ export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
           <span className="text-[0.6rem] font-medium uppercase tracking-[0.18em] text-white/75 drop-shadow-[0_6px_18px_rgba(0,0,0,0.4)]">
             Moto e scooter a Roma
           </span>
-        </a>
+        </Link>
 
         <motion.a
           ref={callCtaRef}
@@ -218,13 +218,13 @@ export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
                   Grossi Moto
                 </p>
               </div>
-              <a
+              <Link
                 href="/scooters"
                 className="group font-ui mt-4 inline-flex min-h-11 items-center gap-2 rounded-[0.9rem] border border-white/25 bg-white px-4 py-2.5 text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-[oklch(17%_0.012_40)] shadow-[0_14px_36px_rgba(0,0,0,0.18)] backdrop-blur-md transition-[background-color,transform] duration-200 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-4 focus-visible:ring-offset-transparent active:scale-[0.98] motion-reduce:transition-none"
               >
                 <span>Scopri la gamma</span>
                 <ActionMark />
-              </a>
+              </Link>
             </div>
           }
           reducedMotion={shouldReduceMotion}

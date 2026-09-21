@@ -27,9 +27,17 @@ export function MobileAppNav() {
   }));
 
   useEffect(() => {
+    let frameId = 0;
+
+    const scheduleVisibilityUpdate = (visible: boolean) => {
+      frameId = window.requestAnimationFrame(() => {
+        setHomeHeroVisibility({ pathname, visible });
+      });
+    };
+
     if (pathname !== "/") {
-      setHomeHeroVisibility({ pathname, visible: false });
-      return;
+      scheduleVisibilityUpdate(false);
+      return () => window.cancelAnimationFrame(frameId);
     }
 
     const hero = document.querySelector<HTMLElement>(
@@ -37,14 +45,16 @@ export function MobileAppNav() {
     );
 
     if (!hero) {
-      setHomeHeroVisibility({ pathname, visible: false });
-      return;
+      scheduleVisibilityUpdate(false);
+      return () => window.cancelAnimationFrame(frameId);
     }
 
-    const heroRect = hero.getBoundingClientRect();
-    setHomeHeroVisibility({
-      pathname,
-      visible: heroRect.bottom > 0 && heroRect.top < window.innerHeight,
+    frameId = window.requestAnimationFrame(() => {
+      const heroRect = hero.getBoundingClientRect();
+      setHomeHeroVisibility({
+        pathname,
+        visible: heroRect.bottom > 0 && heroRect.top < window.innerHeight,
+      });
     });
 
     const observer = new IntersectionObserver(([entry]) => {
@@ -56,7 +66,10 @@ export function MobileAppNav() {
 
     observer.observe(hero);
 
-    return () => observer.disconnect();
+    return () => {
+      window.cancelAnimationFrame(frameId);
+      observer.disconnect();
+    };
   }, [pathname]);
 
   const isHomeHeroVisible =
