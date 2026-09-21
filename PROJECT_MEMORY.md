@@ -608,3 +608,11 @@ Implementata.
 - Ripristinato `public/hero-video.mp4` alla versione precedente all'ottimizzazione del 17 settembre (circa 15,7 MB invece della ricodifica da circa 10,8 MB).
 - La hero home mobile usa ora lo stesso master video di qualità superiore del desktop; la variante `hero-video-mobile.mp4` resta nel repository ma non viene più selezionata dalla hero.
 - Preservati poster, autoplay muted, loop, playsInline, reduced motion, cover, animazioni, scroll handoff, CTA e layout responsive.
+
+
+## Gamma mobile: pannello dettagli dedicato — 2026-09-21
+
+- Su mobile/tablet la card attiva della Gamma resta sempre compatta nello stack GSAP; l'apertura mostra ora un pannello dettagli dedicato sotto lo stack, senza duplicare immagine, brand, modello, family, subtitle o struttura della card.
+- Il pannello riusa positioning, le prime tre specifiche e le CTA esistenti, mantiene il tone pastel assegnato al modello, usa DisclosureMark e una transizione Framer Motion breve; con reduced motion viene mostrato senza animazione.
+- Triple-copy, infinite swipe, peeks, profondita, ResizeObserver, controlli e desktop restano invariati. Il cambio modello via swipe, tastiera o controlli chiude i dettagli del modello precedente; la chiusura riporta il focus al trigger semantico.
+- Il deep link `/scooters?focus=<id>` continua a usare `data-scooter-detail-id`, ora sul pannello dettagli mobile invece che su una seconda CatalogProductCard.

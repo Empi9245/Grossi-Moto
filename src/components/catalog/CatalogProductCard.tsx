@@ -28,6 +28,7 @@ type CatalogProductCardProps = {
   instanceId?: string;
   isSemanticInstance?: boolean;
   collapseFocusTargetId?: string;
+  detailsControlId?: string;
   onExpandScooter: (scooterId: string) => void;
   onCollapseScooter: () => void;
 };
@@ -119,6 +120,77 @@ function ProductContactActions({ scooter }: { scooter: CatalogScooter }) {
   );
 }
 
+type CatalogProductDetailsPanelProps = {
+  scooter: CatalogScooter;
+  shouldReduceMotion: boolean;
+  cardToneAssignment?: ProductCardToneAssignment;
+  id: string;
+  className?: string;
+  collapseFocusTargetId: string;
+  onCollapseScooter: () => void;
+};
+
+export function CatalogProductDetailsPanel({
+  scooter,
+  shouldReduceMotion,
+  cardToneAssignment,
+  id,
+  className,
+  collapseFocusTargetId,
+  onCollapseScooter,
+}: CatalogProductDetailsPanelProps) {
+  const style = getProductStyle(scooter, cardToneAssignment);
+
+  const handleCollapse = () => {
+    onCollapseScooter();
+    requestAnimationFrame(() => {
+      document.getElementById(collapseFocusTargetId)?.focus();
+    });
+  };
+
+  return (
+    <motion.section
+      id={id}
+      data-scooter-detail-id={scooter.id}
+      aria-label={`Dettagli modello ${scooter.name}`}
+      initial={shouldReduceMotion ? false : { opacity: 0, y: 7 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={shouldReduceMotion ? undefined : { opacity: 0, y: 7 }}
+      transition={{
+        duration: shouldReduceMotion ? 0 : 0.28,
+        ease: productEase,
+      }}
+      className={clsx(
+        "min-w-0 overflow-hidden rounded-[1.35rem] p-4 shadow-[inset_0_0_0_1px_oklch(18%_0.014_56/0.07)] sm:p-5",
+        className,
+      )}
+      style={style}
+    >
+      <div className="flex items-center justify-between gap-4">
+        <h3 className="font-ui text-[0.62rem] font-bold uppercase tracking-[0.14em] text-[var(--product-muted)]">
+          Dettagli modello
+        </h3>
+        <button
+          type="button"
+          aria-controls={id}
+          aria-expanded={true}
+          aria-label={`Chiudi i dettagli di ${scooter.name}`}
+          onClick={handleCollapse}
+          className="grid h-11 w-11 shrink-0 place-items-center rounded-[0.8rem] bg-[oklch(96%_0.006_78/0.46)] text-current shadow-[inset_0_0_0_1px_oklch(18%_0.014_56/0.12)] outline-none transition-[background,transform] duration-200 hover:bg-[oklch(98%_0.004_78/0.64)] active:translate-y-px focus-visible:ring-2 focus-visible:ring-[var(--product-accent)] focus-visible:ring-offset-2"
+        >
+          <DisclosureMark expanded />
+        </button>
+      </div>
+
+      <p className="mt-3 max-w-[46rem] text-[0.95rem] leading-6 text-[var(--product-muted)] sm:mt-4 sm:text-base sm:leading-7">
+        {scooter.positioning}
+      </p>
+      <ProductSpecs scooter={scooter} />
+      <ProductContactActions scooter={scooter} />
+    </motion.section>
+  );
+}
+
 export const CatalogProductCard = memo(function CatalogProductCard({
   scooter,
   shouldReduceMotion,
@@ -130,6 +202,7 @@ export const CatalogProductCard = memo(function CatalogProductCard({
   instanceId,
   isSemanticInstance = true,
   collapseFocusTargetId,
+  detailsControlId,
   onExpandScooter,
   onCollapseScooter,
 }: CatalogProductCardProps) {
@@ -354,12 +427,21 @@ export const CatalogProductCard = memo(function CatalogProductCard({
                   id={cardTriggerId}
                   type="button"
                   aria-expanded={isSelected}
-                  aria-label={`Apri la scheda di ${scooter.name}`}
-                  onClick={() => onExpandScooter(scooter.id)}
+                  aria-controls={detailsControlId}
+                  aria-label={
+                    isSelected
+                      ? `Chiudi i dettagli di ${scooter.name}`
+                      : `Apri la scheda di ${scooter.name}`
+                  }
+                  onClick={() =>
+                    isSelected
+                      ? onCollapseScooter()
+                      : onExpandScooter(scooter.id)
+                  }
                   className="font-ui inline-flex min-h-11 shrink-0 items-center gap-3 rounded-[0.9rem] border border-current/12 px-3 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-current outline-none transition-[background,color] duration-200 hover:bg-[oklch(96%_0.006_78/0.38)] group-hover:text-[var(--product-accent)] focus-visible:ring-2 focus-visible:ring-[var(--product-accent)] focus-visible:ring-offset-2"
                 >
-                  Apri la scheda
-                  <DisclosureMark expanded={false} />
+                  {isSelected ? "Dettagli aperti" : "Apri la scheda"}
+                  <DisclosureMark expanded={isSelected} />
                 </button>
               ) : (
                 <span className="font-ui inline-flex min-h-11 shrink-0 items-center gap-3 rounded-full px-2 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-current">

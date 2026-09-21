@@ -9,11 +9,14 @@ import {
   useRef,
   useState,
 } from "react";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 
-import { CatalogProductCard } from "@/components/catalog/CatalogProductCard";
+import {
+  CatalogProductCard,
+  CatalogProductDetailsPanel,
+} from "@/components/catalog/CatalogProductCard";
 import type { CatalogScooter } from "@/data/catalog-scooters";
 import {
   getCatalogCardToneAssignments,
@@ -136,7 +139,6 @@ function ReducedMotionCompactCatalogGrid({
   toneSourceScooters = scooters,
   expandedId,
   shouldReduceMotion,
-  transitionImageId,
   onActiveScooterChange,
   onExpandScooter,
   onCollapseScooter,
@@ -215,20 +217,33 @@ function ReducedMotionCompactCatalogGrid({
     >
       {scooters.map((scooter) => {
         const isExpanded = expandedId === scooter.id;
+        const detailsPanelId = `catalog-product-details-${scooter.id}`;
 
         return (
-          <CatalogProductCard
-            key={scooter.id}
-            scooter={scooter}
-            shouldReduceMotion={shouldReduceMotion}
-            isExpanded={isExpanded}
-            isSelected={isExpanded}
-            transitionImageId={transitionImageId}
-            cardToneAssignment={cardToneAssignments[scooter.id]}
-            isPriority={scooter.id === scooters[0]?.id}
-            onExpandScooter={onExpandScooter}
-            onCollapseScooter={onCollapseScooter}
-          />
+          <div key={scooter.id} className="grid gap-3 sm:gap-4">
+            <CatalogProductCard
+              scooter={scooter}
+              shouldReduceMotion={shouldReduceMotion}
+              isExpanded={false}
+              isSelected={isExpanded}
+              transitionImageId={null}
+              cardToneAssignment={cardToneAssignments[scooter.id]}
+              isPriority={scooter.id === scooters[0]?.id}
+              detailsControlId={detailsPanelId}
+              onExpandScooter={onExpandScooter}
+              onCollapseScooter={onCollapseScooter}
+            />
+            {isExpanded ? (
+              <CatalogProductDetailsPanel
+                scooter={scooter}
+                shouldReduceMotion
+                cardToneAssignment={cardToneAssignments[scooter.id]}
+                id={detailsPanelId}
+                collapseFocusTargetId={`catalog-card-trigger-${scooter.id}`}
+                onCollapseScooter={onCollapseScooter}
+              />
+            ) : null}
+          </div>
         );
       })}
     </div>
@@ -299,7 +314,6 @@ type ProductShowroomChapterProps = {
   scooters: CatalogScooter[];
   cardToneAssignments: Record<string, ProductCardToneAssignment>;
   expandedId: string | null;
-  transitionImageId: string | null;
   isFirstChapter: boolean;
   onChapterActiveChange: (
     chapterId: CatalogChapterId,
@@ -315,7 +329,6 @@ function ProductShowroomChapter({
   scooters,
   cardToneAssignments,
   expandedId,
-  transitionImageId,
   isFirstChapter,
   onChapterActiveChange,
   onExpandScooter,
@@ -488,6 +501,14 @@ function ProductShowroomChapter({
           currentPosition.value = targetPosition;
           renderPosition();
           onChapterActiveChange(chapterId, scooters[nextIndex].id);
+
+          if (
+            expandedIdRef.current &&
+            expandedIdRef.current !== scooters[nextIndex].id
+          ) {
+            collapseRef.current();
+          }
+
           return;
         }
 
@@ -734,6 +755,8 @@ function ProductShowroomChapter({
                 ? copyIndex * totalCards + index
                 : index;
               const instanceId = getStackInstanceId(copyIndex, index);
+              const detailsPanelId =
+                `catalog-product-details-${chapterId}-${scooter.id}`;
 
               return (
                 <div
@@ -761,6 +784,7 @@ function ProductShowroomChapter({
                     }
                     instanceId={instanceId}
                     isSemanticInstance={isSemanticCard}
+                    detailsControlId={detailsPanelId}
                     onExpandScooter={onExpandScooter}
                     onCollapseScooter={onCollapseScooter}
                   />
@@ -816,33 +840,25 @@ function ProductShowroomChapter({
         ) : null}
       </div>
 
-      {expandedScooter && expandedIndex >= 0 ? (
-        <div
-          data-scooter-detail-id={expandedScooter.id}
-          className="mt-5 sm:mt-6"
-        >
-          <CatalogProductCard
+      <AnimatePresence initial={false}>
+        {expandedScooter && expandedIndex >= 0 ? (
+          <CatalogProductDetailsPanel
+            key={expandedScooter.id}
             scooter={expandedScooter}
             shouldReduceMotion={false}
-            isExpanded={true}
-            isSelected={true}
-            transitionImageId={
-              transitionImageId === expandedScooter.id
-                ? transitionImageId
-                : null
-            }
             cardToneAssignment={cardToneAssignments[expandedScooter.id]}
+            id={`catalog-product-details-${chapterId}-${expandedScooter.id}`}
+            className="mt-5 sm:mt-6"
             collapseFocusTargetId={
               "catalog-card-trigger-" +
               expandedScooter.id +
               "-" +
               getStackInstanceId(semanticCopyIndex, expandedIndex)
             }
-            onExpandScooter={onExpandScooter}
             onCollapseScooter={onCollapseScooter}
           />
-        </div>
-      ) : null}
+        ) : null}
+      </AnimatePresence>
     </section>
   );
 }
@@ -852,7 +868,6 @@ function CompactCatalogGrid({
   toneSourceScooters = scooters,
   expandedId,
   shouldReduceMotion,
-  transitionImageId,
   onActiveScooterChange,
   onExpandScooter,
   onCollapseScooter,
@@ -980,7 +995,7 @@ function CompactCatalogGrid({
         toneSourceScooters={toneSourceScooters}
         expandedId={expandedId}
         shouldReduceMotion={shouldReduceMotion}
-        transitionImageId={transitionImageId}
+        transitionImageId={null}
         onActiveScooterChange={onActiveScooterChange}
         onExpandScooter={onExpandScooter}
         onCollapseScooter={onCollapseScooter}
@@ -1006,7 +1021,6 @@ function CompactCatalogGrid({
           scooters={chapter.scooters}
           cardToneAssignments={cardToneAssignments}
           expandedId={expandedId}
-          transitionImageId={transitionImageId}
           isFirstChapter={chapterIndex === 0}
           onChapterActiveChange={handleChapterActiveChange}
           onExpandScooter={onExpandScooter}
