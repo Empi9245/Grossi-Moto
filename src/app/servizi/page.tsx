@@ -97,7 +97,7 @@ export default function ServiziPage() {
       </section>
 
       <section className="bg-white px-2 pt-2 sm:px-4 sm:pt-4 lg:px-5 lg:pt-5">
-        <div className="overflow-hidden rounded-[32px] bg-[#B12B14] px-5 py-16 text-white sm:rounded-[40px] sm:px-7 sm:py-20 md:px-10 lg:rounded-[56px] lg:px-14 lg:py-28 xl:px-16">
+        <div className="overflow-hidden rounded-[32px] bg-[#A34A3E] px-5 py-16 text-white sm:rounded-[40px] sm:px-7 sm:py-20 md:px-10 lg:rounded-[56px] lg:px-14 lg:py-28 xl:px-16">
           <div className="mx-auto grid max-w-[92rem] gap-12 lg:grid-cols-[minmax(0,1.2fr)_minmax(24rem,0.8fr)] lg:items-end lg:gap-16">
             <div>
               <h2 className="font-display max-w-[10ch] text-[clamp(3.4rem,10vw,8.5rem)] font-bold uppercase leading-[0.84] tracking-[-0.04em]">
@@ -112,14 +112,14 @@ export default function ServiziPage() {
               <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
                 <a
                   href="tel:+393289185029"
-                  className="font-ui inline-flex min-h-12 items-center justify-center gap-2 rounded-[0.9rem] bg-[#0A0A0A] px-6 py-3 text-sm font-bold uppercase tracking-[0.08em] text-white transition-[opacity,transform] duration-150 hover:opacity-[0.88] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-4 focus-visible:ring-offset-[#B12B14] motion-reduce:transform-none motion-reduce:transition-none"
+                  className="font-ui inline-flex min-h-12 items-center justify-center gap-2 rounded-[0.9rem] bg-[#0A0A0A] px-6 py-3 text-sm font-bold uppercase tracking-[0.08em] text-white transition-[opacity,transform] duration-150 hover:opacity-[0.88] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-4 focus-visible:ring-offset-[#A34A3E] motion-reduce:transform-none motion-reduce:transition-none"
                 >
                   Chiama ora
                   <PhoneCall aria-hidden="true" className="h-4 w-4" strokeWidth={1.8} />
                 </a>
                 <Link
                   href="/contatti?argomento=officina#richiesta"
-                  className="font-ui group inline-flex min-h-12 items-center justify-center gap-2 rounded-[0.9rem] border border-white/58 bg-white/[0.04] px-6 py-3 text-sm font-bold uppercase tracking-[0.08em] text-white transition-[background-color,transform] duration-150 hover:bg-white/10 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-4 focus-visible:ring-offset-[#B12B14] motion-reduce:transform-none motion-reduce:transition-none"
+                  className="font-ui group inline-flex min-h-12 items-center justify-center gap-2 rounded-[0.9rem] border border-white/58 bg-white/[0.04] px-6 py-3 text-sm font-bold uppercase tracking-[0.08em] text-white transition-[background-color,transform] duration-150 hover:bg-white/10 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-4 focus-visible:ring-offset-[#A34A3E] motion-reduce:transform-none motion-reduce:transition-none"
                 >
                   Scrivi all’officina
                   <ActionMark />

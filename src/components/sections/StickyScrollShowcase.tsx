@@ -125,7 +125,7 @@ export function StickyScrollShowcase() {
               return (
                 <motion.article
                   key={service.title}
-                  className="group relative min-h-[410px] overflow-hidden rounded-3xl bg-[#B12B14] p-6 xl:min-h-[440px] xl:p-7"
+                  className="group relative min-h-[410px] overflow-hidden rounded-3xl bg-[#A34A3E] p-6 xl:min-h-[440px] xl:p-7"
                   initial={
                     reduceMotion
                       ? false
@@ -175,7 +175,7 @@ export function StickyScrollShowcase() {
                     aria-hidden="true"
                     className="pointer-events-none absolute bottom-0 right-0 z-30 h-20 w-20 rounded-tl-2xl border-l border-t border-black/5 bg-white"
                   >
-                    <span className="absolute bottom-3 right-3 flex h-12 w-12 items-center justify-center rounded-[0.8rem] bg-[#0A0A0A] text-white shadow-sm transition-[background-color,transform] duration-300 group-hover:bg-[#B12B14] motion-reduce:transform-none motion-reduce:transition-none">
+                    <span className="absolute bottom-3 right-3 flex h-12 w-12 items-center justify-center rounded-[0.8rem] bg-[#0A0A0A] text-white shadow-sm transition-[background-color,transform] duration-300 group-hover:bg-[#A34A3E] motion-reduce:transform-none motion-reduce:transition-none">
                       <DisclosureMark expanded={false} />
                     </span>
                   </div>
@@ -186,7 +186,7 @@ export function StickyScrollShowcase() {
                         id={detailsId}
                         role="region"
                         aria-label={`Dettagli: ${service.title}`}
-                        className="absolute inset-0 z-40 flex flex-col bg-[#B12B14] p-7 xl:p-8"
+                        className="absolute inset-0 z-40 flex flex-col bg-[#A34A3E] p-7 xl:p-8"
                         initial={
                           reduceMotion
                             ? { opacity: 1 }
@@ -241,7 +241,7 @@ export function StickyScrollShowcase() {
                           type="button"
                           aria-label={`Chiudi i dettagli di ${service.title}`}
                           onClick={() => setOpenService(null)}
-                          className="absolute bottom-3 right-3 z-10 flex h-12 w-12 items-center justify-center rounded-[0.8rem] bg-[#0A0A0A] text-white shadow-sm transition-[background-color,transform] duration-200 hover:bg-[#B12B14] active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/40 focus-visible:ring-offset-3 focus-visible:ring-offset-white motion-reduce:transform-none motion-reduce:transition-none"
+                          className="absolute bottom-3 right-3 z-10 flex h-12 w-12 items-center justify-center rounded-[0.8rem] bg-[#0A0A0A] text-white shadow-sm transition-[background-color,transform] duration-200 hover:bg-[#A34A3E] active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/40 focus-visible:ring-offset-3 focus-visible:ring-offset-white motion-reduce:transform-none motion-reduce:transition-none"
                         >
                           <DisclosureMark expanded />
                         </button>

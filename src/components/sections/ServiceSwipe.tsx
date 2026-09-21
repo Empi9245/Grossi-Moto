@@ -393,7 +393,7 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
       <div className="flex items-center justify-between gap-4">
         <div className="flex min-w-0 flex-1 items-center gap-3">
           <span
-            className="text-[0.68rem] font-bold tabular-nums tracking-[0.08em] text-[#B12B14]"
+            className="text-[0.68rem] font-bold tabular-nums tracking-[0.08em] text-[#A34A3E]"
             aria-hidden="true"
           >
             {String(active + 1).padStart(2, "0")}
@@ -407,7 +407,7 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
                 key={service.title}
                 className={`h-1 rounded-full transition-[width,background-color] duration-200 motion-reduce:transition-none ${
                   index === active
-                    ? "w-7 bg-[#B12B14]"
+                    ? "w-7 bg-[#A34A3E]"
                     : "w-1 bg-black/20"
                 }`}
               />
@@ -559,7 +559,7 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
                       data-service-virtual-index={virtualIndex}
                       aria-hidden={!isSemanticCard}
                       inert={!isSemanticCard ? true : undefined}
-                      className="absolute left-1/2 top-0 flex h-full w-[80%] max-w-[31rem] flex-col overflow-hidden rounded-[1.5rem] border border-white/20 bg-[#B12B14] opacity-0 will-change-transform"
+                      className="absolute left-1/2 top-0 flex h-full w-[80%] max-w-[31rem] flex-col overflow-hidden rounded-[1.5rem] border border-white/20 bg-[#A34A3E] opacity-0 will-change-transform"
                     >
                       <div
                         className={`relative shrink-0 transition-[height] duration-300 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none ${
@@ -835,7 +835,7 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
               <h3 className="font-display max-w-[14ch] text-[clamp(2rem,7vw,3rem)] font-bold uppercase leading-[0.9] tracking-[-0.035em] text-[#0A0A0A]">
                 {service.title}
               </h3>
-              <p className="mt-4 max-w-[24ch] text-[clamp(1.2rem,4.5vw,1.7rem)] font-semibold leading-[1.05] text-[#B12B14] md:text-black/82">
+              <p className="mt-4 max-w-[24ch] text-[clamp(1.2rem,4.5vw,1.7rem)] font-semibold leading-[1.05] text-[#A34A3E] md:text-black/82">
                 {service.statement}
               </p>
               <p className="mt-4 max-w-[44ch] text-sm leading-6 text-black/72 sm:text-base sm:leading-7 md:text-black/64">
@@ -849,7 +849,7 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
                   >
                     <span
                       aria-hidden="true"
-                      className="mt-[0.46rem] h-1.5 w-1.5 shrink-0 rounded-full bg-[#B12B14] md:hidden"
+                      className="mt-[0.46rem] h-1.5 w-1.5 shrink-0 rounded-full bg-[#A34A3E] md:hidden"
                     />
                     <span>{feature}</span>
                   </li>
