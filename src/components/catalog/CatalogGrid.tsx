@@ -9,7 +9,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { motion } from "framer-motion";
+import { LayoutGroup, motion } from "framer-motion";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 
@@ -47,7 +47,7 @@ type CatalogGridVariantProps = Omit<
 
 const desktopCatalogColumnCount = 4;
 const productEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
-const cardLayoutDuration = 0.28;
+const cardLayoutDuration = 0.34;
 
 function getDesktopCatalogOrder(
   scooters: CatalogScooter[],
@@ -380,6 +380,13 @@ function ProductShowroomChapter({
       let focusTween: gsap.core.Tween | null = null;
       let observer: ResizeObserver | null = null;
       let cardObserver: ResizeObserver | null = null;
+      let resizeFrame = 0;
+      let heightFrame = 0;
+      let cardSpacing = 0;
+      let measuredContainerWidth = 0;
+      let minimumStackHeight = 320;
+      let heightCards: HTMLElement[] = [];
+      const cardHeights = new Map<HTMLElement, number>();
       let initFrame = 0;
       let initAttempts = 0;
       let disposed = false;
@@ -387,17 +394,15 @@ function ProductShowroomChapter({
       const expectedCardCount = totalCards * copyIndexes.length;
 
       const syncContainerHeight = () => {
-        if (cards.length === 0) return;
+        if (heightCards.length === 0) return;
 
-        const tallestCard = cards.reduce(
-          (height, card) => Math.max(height, card.offsetHeight),
-          0,
-        );
-        const minimumHeight = window.matchMedia("(min-width: 640px)").matches
-          ? 336
-          : 320;
+        let tallestCard = 0;
+        cardHeights.forEach((height) => {
+          tallestCard = Math.max(tallestCard, height);
+        });
+
         const nextHeight = Math.ceil(
-          Math.max(minimumHeight, tallestCard + 12),
+          Math.max(minimumStackHeight, tallestCard + 12),
         );
 
         if (container.style.height !== `${nextHeight}px`) {
@@ -405,18 +410,31 @@ function ProductShowroomChapter({
         }
       };
 
-      const renderPosition = () => {
-        const currentPosition = position;
-        if (!currentPosition || cards.length === 0) return;
-
+      const refreshMetrics = () => {
         const cardWidth = cards[0]?.offsetWidth ?? 0;
         const containerWidth = container.clientWidth;
-        if (cardWidth === 0 || containerWidth === 0) return;
+        if (cardWidth === 0 || containerWidth === 0) return false;
 
         const lateralScale = 0.9;
         const cardGap = gsap.utils.clamp(12, 16, containerWidth * 0.035);
-        const cardSpacing =
-          cardWidth * ((1 + lateralScale) / 2) + cardGap;
+        cardSpacing = cardWidth * ((1 + lateralScale) / 2) + cardGap;
+        measuredContainerWidth = containerWidth;
+        minimumStackHeight = window.matchMedia("(min-width: 640px)").matches
+          ? 336
+          : 320;
+        return true;
+      };
+
+      const renderPosition = () => {
+        const currentPosition = position;
+        if (
+          !currentPosition ||
+          cards.length === 0 ||
+          cardSpacing === 0
+        ) {
+          return;
+        }
+
         const visibleLimit = 1.14;
 
         cards.forEach((card, cardIndex) => {
@@ -551,6 +569,13 @@ function ProductShowroomChapter({
         virtualIndexes = cards.map((card) =>
           Number(card.dataset.productVirtualIndex),
         );
+        heightCards = cards.filter(
+          (card) => card.dataset.productSemanticCopy === "true",
+        );
+
+        if (heightCards.length === 0) {
+          heightCards = cards;
+        }
 
         const isReady =
           cards.length === expectedCardCount &&
@@ -574,17 +599,45 @@ function ProductShowroomChapter({
         position = { value: startPosition };
         targetPosition = startPosition;
         focusRef.current = moveFocus;
+
+        heightCards.forEach((card) => {
+          cardHeights.set(card, card.offsetHeight);
+        });
+        refreshMetrics();
         syncContainerHeight();
         renderPosition();
 
-        observer = new ResizeObserver(renderPosition);
+        observer = new ResizeObserver((entries) => {
+          const nextWidth = entries[0]?.contentRect.width ?? 0;
+          if (
+            nextWidth === 0 ||
+            Math.abs(nextWidth - measuredContainerWidth) < 0.5
+          ) {
+            return;
+          }
+
+          cancelAnimationFrame(resizeFrame);
+          resizeFrame = requestAnimationFrame(() => {
+            if (refreshMetrics()) {
+              renderPosition();
+            }
+          });
+        });
         observer.observe(container);
 
-        cardObserver = new ResizeObserver(() => {
-          syncContainerHeight();
-          renderPosition();
+        cardObserver = new ResizeObserver((entries) => {
+          entries.forEach((entry) => {
+            cardHeights.set(
+              entry.target as HTMLElement,
+              entry.borderBoxSize?.[0]?.blockSize ??
+                entry.contentRect.height,
+            );
+          });
+
+          cancelAnimationFrame(heightFrame);
+          heightFrame = requestAnimationFrame(syncContainerHeight);
         });
-        cards.forEach((card) => cardObserver?.observe(card));
+        heightCards.forEach((card) => cardObserver?.observe(card));
       };
 
       initFrame = requestAnimationFrame(initializeStack);
@@ -592,6 +645,8 @@ function ProductShowroomChapter({
       return () => {
         disposed = true;
         cancelAnimationFrame(initFrame);
+        cancelAnimationFrame(resizeFrame);
+        cancelAnimationFrame(heightFrame);
         focusRef.current = () => {};
         observer?.disconnect();
         cardObserver?.disconnect();
@@ -741,10 +796,13 @@ function ProductShowroomChapter({
                   key={copyIndex + "-" + scooter.id}
                   data-product-stack-card
                   data-product-virtual-index={virtualIndex}
+                  data-product-semantic-copy={
+                    copyIndex === semanticCopyIndex ? "true" : undefined
+                  }
                   aria-hidden={!isSemanticCard}
                   inert={!isSemanticCard ? true : undefined}
                   className={[
-                    "absolute left-1/2 top-0 w-[80%] max-w-[31rem] opacity-0 will-change-transform",
+                    "absolute left-1/2 top-0 w-[80%] max-w-[31rem] opacity-0 will-change-transform [backface-visibility:hidden]",
                     isSemanticCard ? "" : "pointer-events-none select-none",
                   ].join(" ")}
                 >
@@ -756,6 +814,9 @@ function ProductShowroomChapter({
                       isSemanticCard && expandedId === scooter.id
                     }
                     compactMode
+                    shouldAnimateCompactLayout={
+                      copyIndex === semanticCopyIndex
+                    }
                     isSelected={
                       isSemanticCard && expandedId === scooter.id
                     }
@@ -1018,19 +1079,20 @@ function DesktopCatalogGrid({
   );
 
   return (
-    <div
-      id="catalog-list"
-      aria-label="Modelli in gamma"
-      className="grid grid-cols-12 items-start gap-4"
-    >
-      {orderedScooters.map((scooter) => {
+    <LayoutGroup>
+      <div
+        id="catalog-list"
+        aria-label="Modelli in gamma"
+        className="grid grid-cols-12 items-start gap-4"
+      >
+        {orderedScooters.map((scooter) => {
         const isExpanded = expandedId === scooter.id;
 
         return (
           <motion.div
             key={scooter.id}
             layout={shouldReduceMotion ? false : true}
-            layoutDependency={isExpanded ? `expanded-${scooter.id}` : "stable"}
+            layoutDependency={expandedId ?? "collapsed"}
             transition={{
               layout: {
                 duration: shouldReduceMotion ? 0.01 : cardLayoutDuration,
@@ -1055,9 +1117,10 @@ function DesktopCatalogGrid({
               onCollapseScooter={onCollapseScooter}
             />
           </motion.div>
-        );
-      })}
-    </div>
+          );
+        })}
+      </div>
+    </LayoutGroup>
   );
 }
 
