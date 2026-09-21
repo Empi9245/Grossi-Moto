@@ -54,6 +54,7 @@ export default function ScrollExpansionHero({
   const touchExitArmedRef = useRef(false);
   const touchCollapseArmedRef = useRef(false);
   const heroSettleUntilRef = useRef(0);
+  const pendingExitTimerRef = useRef<number | null>(null);
   const isScrollTransitioningRef = useRef(false);
   const isExpansionTransitioningRef = useRef(false);
 
@@ -122,6 +123,8 @@ export default function ScrollExpansionHero({
     return Boolean(root && target instanceof Node && root.contains(target));
   }, []);
 
+  const isHeroAtTop = useCallback(() => window.scrollY <= 2, []);
+
   const expandHero = useCallback(() => {
     if (
       isExpansionTransitioningRef.current ||
@@ -157,6 +160,11 @@ export default function ScrollExpansionHero({
 
     const startProgress = scrollProgressRef.current;
 
+    if (pendingExitTimerRef.current !== null) {
+      window.clearTimeout(pendingExitTimerRef.current);
+      pendingExitTimerRef.current = null;
+    }
+
     isExpansionTransitioningRef.current = true;
     touchExitArmedRef.current = false;
     touchCollapseArmedRef.current = false;
@@ -173,7 +181,11 @@ export default function ScrollExpansionHero({
   }, [syncProgress]);
 
   const scrollToShowroom = useCallback((gestureVelocity = 0) => {
-    if (isScrollTransitioningRef.current || !canExitHero()) {
+    if (
+      isScrollTransitioningRef.current ||
+      !canExitHero() ||
+      !isHeroAtTop()
+    ) {
       return;
     }
 
@@ -217,7 +229,46 @@ export default function ScrollExpansionHero({
         window.dispatchEvent(new Event("grossimoto:showroom-entry"));
       },
     });
-  }, [canExitHero]);
+  }, [canExitHero, isHeroAtTop]);
+
+  const requestShowroomExit = useCallback(
+    (gestureVelocity = 0) => {
+      if (
+        !mediaFullyExpandedRef.current ||
+        isScrollTransitioningRef.current ||
+        !isHeroAtTop()
+      ) {
+        return;
+      }
+
+      if (canExitHero()) {
+        scrollToShowroom(gestureVelocity);
+        return;
+      }
+
+      if (pendingExitTimerRef.current !== null) {
+        window.clearTimeout(pendingExitTimerRef.current);
+      }
+
+      const remainingSettleMs = Math.max(
+        heroSettleUntilRef.current - performance.now(),
+        0,
+      );
+
+      pendingExitTimerRef.current = window.setTimeout(() => {
+        pendingExitTimerRef.current = null;
+
+        if (
+          mediaFullyExpandedRef.current &&
+          !isExpansionTransitioningRef.current &&
+          isHeroAtTop()
+        ) {
+          scrollToShowroom(gestureVelocity);
+        }
+      }, remainingSettleMs + 16);
+    },
+    [canExitHero, isHeroAtTop, scrollToShowroom],
+  );
 
   useEffect(() => {
     if (reducedMotion || !interactionEnabled) {
@@ -239,6 +290,13 @@ export default function ScrollExpansionHero({
         return;
       }
 
+      if (
+        mediaFullyExpandedRef.current &&
+        (!isHeroAtTop() || !eventTargetsHero(event))
+      ) {
+        return;
+      }
+
       if (mediaFullyExpandedRef.current && event.deltaY < 0) {
         event.preventDefault();
         collapseHero();
@@ -252,10 +310,7 @@ export default function ScrollExpansionHero({
       if (mediaFullyExpandedRef.current) {
         if (event.deltaY > 0) {
           event.preventDefault();
-
-          if (canExitHero()) {
-            scrollToShowroom(Math.abs(event.deltaY) / 24);
-          }
+          requestShowroomExit(Math.abs(event.deltaY) / 24);
         }
         return;
       }
@@ -272,8 +327,8 @@ export default function ScrollExpansionHero({
       if (
         isScrollTransitioningRef.current ||
         !isHeroInteractionActive() ||
-        event.touches.length !== 1 ||
-        (!isExpanded && !eventTargetsHero(event))
+        !eventTargetsHero(event) ||
+        event.touches.length !== 1
       ) {
         touchStartYRef.current = null;
         lastTouchMoveAtRef.current = null;
@@ -288,10 +343,12 @@ export default function ScrollExpansionHero({
       touchVelocityRef.current = 0;
       touchExitArmedRef.current =
         mediaFullyExpandedRef.current &&
-        !isExpansionTransitioningRef.current;
+        !isExpansionTransitioningRef.current &&
+        isHeroAtTop();
       touchCollapseArmedRef.current =
         mediaFullyExpandedRef.current &&
-        !isExpansionTransitioningRef.current;
+        !isExpansionTransitioningRef.current &&
+        isHeroAtTop();
     };
 
     const handleTouchMove = (event: TouchEvent) => {
@@ -302,7 +359,8 @@ export default function ScrollExpansionHero({
 
       if (
         !isHeroInteractionActive() ||
-        (!mediaFullyExpandedRef.current && !eventTargetsHero(event))
+        !eventTargetsHero(event) ||
+        (mediaFullyExpandedRef.current && !isHeroAtTop())
       ) {
         touchStartYRef.current = null;
         touchExitArmedRef.current = false;
@@ -351,8 +409,8 @@ export default function ScrollExpansionHero({
         if (deltaY > 0) {
           event.preventDefault();
 
-          if (touchExitArmedRef.current && canExitHero()) {
-            scrollToShowroom(touchVelocityRef.current);
+          if (touchExitArmedRef.current) {
+            requestShowroomExit(touchVelocityRef.current);
           }
         }
         touchStartYRef.current = touchY;
@@ -402,21 +460,27 @@ export default function ScrollExpansionHero({
       window.removeEventListener("touchmove", handleTouchMove);
       window.removeEventListener("touchend", handleTouchEnd);
       window.removeEventListener("touchcancel", handleTouchEnd);
+
+      if (pendingExitTimerRef.current !== null) {
+        window.clearTimeout(pendingExitTimerRef.current);
+        pendingExitTimerRef.current = null;
+      }
     };
   }, [
-    canExitHero,
     collapseHero,
     eventTargetsHero,
     expandHero,
+    isHeroAtTop,
     isHeroInteractionActive,
     interactionEnabled,
     reducedMotion,
-    scrollToShowroom,
-    syncProgress,
+    requestShowroomExit,
   ]);
 
   const mediaWidth = `calc(${300 * (1 - scrollProgress)}px + ${100 * scrollProgress}vw)`;
   const mediaHeight = `calc(${400 * (1 - scrollProgress)}px + ${100 * scrollProgress}lvh)`;
+  const mediaTopRadius = 16 * (1 - scrollProgress);
+  const mediaBottomRadius = 16 * (1 - scrollProgress) + 24 * scrollProgress;
   const textTranslateX = scrollProgress * 180;
   const initialCopyOpacity = clamp(1 - scrollProgress * 1.45, 0, 1);
   const endOverlayProgress = reducedMotion
@@ -457,8 +521,8 @@ export default function ScrollExpansionHero({
                   maxWidth: "100vw",
                   maxHeight: "100lvh",
                   borderRadius: reducedMotion
-                    ? 0
-                    : `${16 * (1 - scrollProgress)}px`,
+                    ? "0 0 24px 24px"
+                    : `${mediaTopRadius}px ${mediaTopRadius}px ${mediaBottomRadius}px ${mediaBottomRadius}px`,
                   boxShadow:
                     reducedMotion || scrollProgress >= 0.98
                       ? "none"
@@ -582,7 +646,7 @@ export default function ScrollExpansionHero({
 
               {endOverlay ? (
                 <motion.div
-                  className="absolute inset-x-0 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-20 flex justify-center px-4"
+                  className="absolute inset-x-0 bottom-[calc(4.25rem+env(safe-area-inset-bottom))] z-20 flex justify-center px-4"
                   initial={false}
                   animate={{
                     opacity: endOverlayProgress,
