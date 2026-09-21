@@ -322,8 +322,6 @@ export default function ScrollExpansionHero({
     };
 
     const handleTouchStart = (event: TouchEvent) => {
-      const isExpanded = mediaFullyExpandedRef.current;
-
       if (
         isScrollTransitioningRef.current ||
         !isHeroInteractionActive() ||
