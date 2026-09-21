@@ -23,6 +23,7 @@ type CatalogProductCardProps = {
   isExpanded: boolean;
   isCompactExpanded?: boolean;
   compactMode?: boolean;
+  shouldAnimateCompactLayout?: boolean;
   isSelected?: boolean;
   transitionImageId: string | null;
   cardToneAssignment?: ProductCardToneAssignment;
@@ -164,6 +165,7 @@ export const CatalogProductCard = memo(function CatalogProductCard({
   isExpanded,
   isCompactExpanded = false,
   compactMode = false,
+  shouldAnimateCompactLayout = false,
   isSelected = isExpanded || isCompactExpanded,
   transitionImageId,
   cardToneAssignment,
@@ -208,10 +210,14 @@ export const CatalogProductCard = memo(function CatalogProductCard({
   const compactContentMotion = shouldReduceMotion
     ? { initial: false as const }
     : {
-        initial: { opacity: 0, y: 7 },
+        initial: { opacity: 0, y: 6 },
         animate: { opacity: 1, y: 0 },
-        exit: { opacity: 0, y: 5 },
-        transition: { duration: 0.28, ease: productEase },
+        exit: {
+          opacity: 0,
+          y: 4,
+          transition: { duration: 0.16, ease: productEase },
+        },
+        transition: { duration: 0.3, ease: productEase },
       };
 
   const handleCompactCollapse = () => {
@@ -219,7 +225,7 @@ export const CatalogProductCard = memo(function CatalogProductCard({
     requestAnimationFrame(() => {
       document
         .getElementById(collapseFocusTargetId ?? cardTriggerId)
-        ?.focus();
+        ?.focus({ preventScroll: true });
     });
   };
 
@@ -253,14 +259,14 @@ export const CatalogProductCard = memo(function CatalogProductCard({
     >
       <motion.article
         layout={
-          compactMode && isSemanticInstance && !shouldReduceMotion
+          compactMode && shouldAnimateCompactLayout && !shouldReduceMotion
             ? "size"
             : false
         }
         layoutDependency={compactMode ? isCompactExpanded : undefined}
         transition={{
           layout: {
-            duration: 0.3,
+            duration: 0.34,
             ease: productEase,
           },
         }}
