@@ -18,7 +18,7 @@ export function ProductGallery({
   return (
     <section
       aria-labelledby="product-gallery-title"
-      className="mt-12 border-t border-black/10 pt-10"
+      className="mt-10 pt-4"
     >
       <p className="font-ui text-[0.65rem] font-bold uppercase tracking-[0.16em] text-black/50">
         Immagini del modello
@@ -30,7 +30,7 @@ export function ProductGallery({
         {modelName}
       </h2>
 
-      <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 lg:gap-4">
         {images.map((image, index) => (
           <figure
             key={image.src}

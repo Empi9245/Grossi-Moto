@@ -77,7 +77,9 @@ function ProductSpecs({
     <div
       className={clsx(
         "mt-4 grid gap-2.5 sm:mt-5 sm:grid-cols-3",
-        compact ? "grid-cols-2" : "grid-cols-1 min-[390px]:grid-cols-2",
+        compact
+          ? "grid-cols-2"
+          : "grid-cols-1 rounded-[1rem] bg-[oklch(96%_0.006_78/0.22)] p-2 shadow-[inset_0_0_0_1px_oklch(18%_0.014_56/0.07)] min-[390px]:grid-cols-2",
       )}
     >
       {scooter.specs.slice(0, 3).map((spec) => {
@@ -87,9 +89,9 @@ function ProductSpecs({
           <div
             key={`${scooter.id}-${spec.label}`}
             className={clsx(
-              "min-w-0 rounded-[0.9rem] bg-[oklch(96%_0.006_78/0.36)] shadow-[inset_0_0_0_1px_oklch(18%_0.014_56/0.09)]",
+              "min-w-0",
               compact
-                ? "px-2 py-2.5 sm:px-3 sm:py-3"
+                ? "rounded-[0.9rem] bg-[oklch(96%_0.006_78/0.36)] px-2 py-2.5 shadow-[inset_0_0_0_1px_oklch(18%_0.014_56/0.09)] sm:px-3 sm:py-3"
                 : "px-2.5 py-2.5 sm:px-3.5 sm:py-3",
             )}
           >
@@ -203,7 +205,7 @@ export const CatalogProductCard = memo(function CatalogProductCard({
       !shouldReduceMotion &&
       "transition-[height,max-height] duration-300 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)]",
     isExpanded
-      ? "h-[12.5rem] max-h-[20rem] sm:h-[15.5rem] md:h-full md:max-h-[26rem]"
+      ? "h-[12.5rem] max-h-[20rem] sm:h-[15.5rem] md:h-full md:max-h-[28rem]"
       : isCompactExpanded
         ? "h-[9rem] max-h-[9rem] sm:h-[10.5rem] sm:max-h-[10.5rem]"
         : "h-[12.25rem] max-h-[12.25rem]",
@@ -263,7 +265,7 @@ export const CatalogProductCard = memo(function CatalogProductCard({
         className={clsx(
           "group relative overflow-hidden rounded-[1.35rem] border border-[oklch(18%_0.014_56/0.052)] p-4 sm:p-5",
           isExpanded
-            ? "h-full min-h-0 sm:min-h-[32rem]"
+            ? "h-full min-h-0 sm:min-h-[30rem] md:p-6 lg:min-h-[29rem] lg:p-7"
             : isCompactExpanded
               ? "min-h-0"
               : "min-h-[17.75rem] sm:min-h-[19.5rem]",
@@ -280,7 +282,7 @@ export const CatalogProductCard = memo(function CatalogProductCard({
           className={clsx(
             "relative z-10 grid gap-5",
             isExpanded
-              ? "grid h-full min-h-0 gap-4 sm:min-h-[28rem] sm:gap-5 md:grid-cols-[minmax(0,0.88fr)_minmax(0,1.12fr)] md:grid-rows-[auto_minmax(12rem,1fr)_auto]"
+              ? "grid h-full min-h-0 gap-4 sm:min-h-[26rem] sm:gap-5 md:grid-cols-[minmax(0,0.84fr)_minmax(0,1.16fr)] md:grid-rows-[auto_minmax(0,1fr)] md:gap-x-8 md:gap-y-5 lg:gap-x-10"
               : compactMode
                 ? clsx(
                     "grid-rows-[auto_auto_auto]",
@@ -327,7 +329,7 @@ export const CatalogProductCard = memo(function CatalogProductCard({
                 className={clsx(
                   "font-display font-bold tracking-normal text-current",
                   isExpanded
-                    ? "text-[clamp(2.1rem,9vw,3.7rem)] leading-[0.92] md:text-[clamp(2.4rem,4.4vw,4.7rem)]"
+                    ? "text-[clamp(2.1rem,9vw,3.7rem)] leading-[0.92] md:max-w-[10ch] md:text-[clamp(2.5rem,4vw,4.2rem)]"
                     : "text-[1.55rem] leading-none",
                 )}
               >
@@ -353,7 +355,10 @@ export const CatalogProductCard = memo(function CatalogProductCard({
                   event.stopPropagation();
                   handleCompactCollapse();
                 }}
-                className="grid h-11 w-11 shrink-0 place-items-center rounded-[0.8rem] bg-[oklch(96%_0.006_78/0.46)] text-current shadow-[inset_0_0_0_1px_oklch(18%_0.014_56/0.12)] outline-none transition-[background,transform] duration-200 hover:bg-[oklch(98%_0.004_78/0.64)] active:translate-y-px focus-visible:ring-2 focus-visible:ring-[var(--product-accent)]"
+                className={clsx(
+                  "grid h-11 w-11 shrink-0 place-items-center rounded-[0.8rem] bg-[oklch(96%_0.006_78/0.46)] text-current shadow-[inset_0_0_0_1px_oklch(18%_0.014_56/0.12)] outline-none transition-[background,transform] duration-200 hover:bg-[oklch(98%_0.004_78/0.64)] active:translate-y-px focus-visible:ring-2 focus-visible:ring-[var(--product-accent)]",
+                  isExpanded && "md:absolute md:right-0 md:top-0 md:z-20",
+                )}
               >
                 <DisclosureMark expanded />
               </button>
@@ -415,9 +420,9 @@ export const CatalogProductCard = memo(function CatalogProductCard({
               key="expanded-content"
               {...expandedContentMotion}
               id={expandedContentId}
-              className="min-w-0 md:col-span-2 md:row-start-3"
+              className="min-w-0 md:col-start-1 md:row-start-2 md:self-end"
             >
-              <p className="max-w-[46rem] text-[0.95rem] leading-6 text-[var(--product-muted)] sm:text-base sm:leading-7">
+              <p className="max-w-[34rem] text-[0.95rem] leading-6 text-[var(--product-muted)] sm:text-base sm:leading-7">
                 {scooter.positioning}
               </p>
               <ProductSpecs scooter={scooter} />
