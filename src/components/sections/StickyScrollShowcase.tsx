@@ -191,8 +191,11 @@ export function StickyScrollShowcase() {
                   return (
                     <motion.div
                       key={service.title}
-                      className="absolute left-0 top-1/2 flex -translate-y-1/2 items-center"
-                      style={{ height: desktopItemHeight }}
+                      className="absolute left-0 flex items-center"
+                      style={{
+                        height: desktopItemHeight,
+                        top: "calc(50% - 36px)",
+                      }}
                       animate={{
                         y: distance * desktopItemHeight,
                         opacity: Math.max(0.22, 1 - Math.abs(distance) * 0.25),
@@ -358,6 +361,22 @@ export function StickyScrollShowcase() {
                             <p className="mt-3 max-w-[46ch] text-sm leading-6 text-white/72 xl:text-[0.94rem] xl:leading-6">
                               {service.description}
                             </p>
+                            <ul className="font-ui mt-4 flex flex-wrap gap-x-4 gap-y-2 text-[0.6rem] font-semibold uppercase tracking-[0.055em] text-white/62 xl:text-[0.64rem]">
+                              {service.features.map((feature) => (
+                                <li
+                                  key={feature}
+                                  className="flex items-center gap-1.5"
+                                >
+                                  <span
+                                    aria-hidden="true"
+                                    className="text-white/38"
+                                  >
+                                    +
+                                  </span>
+                                  {feature}
+                                </li>
+                              ))}
+                            </ul>
                           </motion.div>
                         </>
                       ) : null}
