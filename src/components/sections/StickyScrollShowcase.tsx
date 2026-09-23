@@ -1,10 +1,9 @@
 "use client";
 
-import { DisclosureMark } from "@/components/ui/control-glyphs";
 import Image from "next/image";
 
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { useState } from "react";
+import { motion, useReducedMotion } from "framer-motion";
+import { useCallback, useEffect, useState } from "react";
 
 import { ServiceSwipe, type Service } from "./ServiceSwipe";
 
@@ -90,10 +89,59 @@ const services: Service[] = [
 ];
 
 const easeOut = [0.22, 1, 0.36, 1] as const;
+const desktopAutoplayInterval = 4200;
+const desktopItemHeight = 72;
+
+function wrap(min: number, max: number, value: number) {
+  const range = max - min;
+  return ((((value - min) % range) + range) % range) + min;
+}
 
 export function StickyScrollShowcase() {
   const reduceMotion = useReducedMotion();
-  const [openService, setOpenService] = useState<number | null>(null);
+  const [desktopStep, setDesktopStep] = useState(0);
+  const [desktopPaused, setDesktopPaused] = useState(false);
+
+  const currentDesktopIndex =
+    ((desktopStep % services.length) + services.length) % services.length;
+
+  const advanceDesktop = useCallback(() => {
+    setDesktopStep((current) => current + 1);
+  }, []);
+
+  useEffect(() => {
+    if (reduceMotion || desktopPaused) return;
+
+    const interval = window.setInterval(
+      advanceDesktop,
+      desktopAutoplayInterval,
+    );
+
+    return () => window.clearInterval(interval);
+  }, [advanceDesktop, desktopPaused, reduceMotion]);
+
+  const selectDesktopService = (index: number) => {
+    let distance = index - currentDesktopIndex;
+
+    if (distance > services.length / 2) distance -= services.length;
+    if (distance < -services.length / 2) distance += services.length;
+
+    if (distance !== 0) {
+      setDesktopStep((current) => current + distance);
+    }
+  };
+
+  const getDesktopCardState = (index: number) => {
+    let distance = index - currentDesktopIndex;
+
+    if (distance > services.length / 2) distance -= services.length;
+    if (distance < -services.length / 2) distance += services.length;
+
+    if (distance === 0) return "active";
+    if (distance === -1) return "previous";
+    if (distance === 1) return "next";
+    return "hidden";
+  };
 
   return (
     <section
@@ -117,140 +165,214 @@ export function StickyScrollShowcase() {
         <div className="mt-12">
           <ServiceSwipe services={services} />
 
-          <div className="hidden grid-cols-3 gap-4 lg:grid xl:gap-6">
-            {services.map((service, index) => {
-              const isOpen = openService === index;
-              const detailsId = `service-details-${index}`;
+          <div
+            className="relative hidden min-h-[610px] overflow-hidden rounded-[2.75rem] border border-black/10 bg-white lg:grid lg:grid-cols-[minmax(20rem,0.82fr)_minmax(0,1.18fr)] xl:min-h-[650px] xl:rounded-[3.5rem]"
+            onMouseEnter={() => setDesktopPaused(true)}
+            onMouseLeave={() => setDesktopPaused(false)}
+            onFocusCapture={() => setDesktopPaused(true)}
+            onBlurCapture={(event) => {
+              if (
+                !event.currentTarget.contains(event.relatedTarget as Node | null)
+              ) {
+                setDesktopPaused(false);
+              }
+            }}
+          >
+            <div className="relative z-20 flex min-h-[610px] items-center overflow-hidden bg-[#A34A3E] px-10 xl:min-h-[650px] xl:px-14">
+              <div className="relative h-[420px] w-full">
+                {services.map((service, index) => {
+                  const isActive = index === currentDesktopIndex;
+                  const distance = wrap(
+                    -(services.length / 2),
+                    services.length / 2,
+                    index - currentDesktopIndex,
+                  );
 
-              return (
-                <motion.article
-                  key={service.title}
-                  className="group relative min-h-[410px] overflow-hidden rounded-3xl bg-[#A34A3E] p-6 xl:min-h-[440px] xl:p-7"
-                  initial={
-                    reduceMotion
-                      ? false
-                      : {
-                          opacity: 0,
-                          y: 20,
-                        }
-                  }
-                  whileInView={{
-                    opacity: 1,
-                    y: 0,
-                  }}
-                  viewport={{ once: true, amount: 0.18 }}
-                  transition={{
-                    duration: reduceMotion ? 0 : 0.6,
-                    delay: reduceMotion ? 0 : (index % 3) * 0.1,
-                    ease: easeOut,
-                  }}
-                >
-                  <h3 className="font-display pointer-events-none relative z-10 mx-auto max-w-[12ch] text-center text-[clamp(2rem,2.7vw,3.35rem)] font-bold uppercase leading-[0.9] tracking-[-0.035em] text-white">
-                    {service.title}
-                  </h3>
+                  return (
+                    <motion.div
+                      key={service.title}
+                      className="absolute left-0 top-1/2 flex -translate-y-1/2 items-center"
+                      style={{ height: desktopItemHeight }}
+                      animate={{
+                        y: distance * desktopItemHeight,
+                        opacity: Math.max(0.22, 1 - Math.abs(distance) * 0.25),
+                      }}
+                      transition={
+                        reduceMotion
+                          ? { duration: 0 }
+                          : {
+                              type: "spring",
+                              stiffness: 92,
+                              damping: 23,
+                              mass: 0.95,
+                            }
+                      }
+                    >
+                      <button
+                        type="button"
+                        aria-current={isActive ? "true" : undefined}
+                        onClick={() => selectDesktopService(index)}
+                        className={[
+                          "font-ui group flex min-h-13 items-center gap-4 rounded-full border px-6 py-3 text-left text-[0.74rem] font-bold uppercase tracking-[0.09em] transition-[background-color,border-color,color,transform] duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-3 focus-visible:ring-offset-[#A34A3E] motion-reduce:transition-none xl:px-7 xl:text-[0.78rem]",
+                          isActive
+                            ? "border-white bg-white text-[#A34A3E]"
+                            : "border-white/20 bg-transparent text-white/58 hover:border-white/48 hover:text-white",
+                        ].join(" ")}
+                      >
+                        <span
+                          aria-hidden="true"
+                          className={[
+                            "flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-[0.62rem] tabular-nums transition-colors duration-300 motion-reduce:transition-none",
+                            isActive
+                              ? "border-[#A34A3E]/18 bg-[#A34A3E]/8 text-[#A34A3E]"
+                              : "border-white/18 text-white/46 group-hover:text-white/82",
+                          ].join(" ")}
+                        >
+                          {String(index + 1).padStart(2, "0")}
+                        </span>
+                        <span className="whitespace-nowrap">{service.title}</span>
+                        <span
+                          aria-hidden="true"
+                          className={[
+                            "ml-auto h-1.5 w-1.5 rounded-full transition-[opacity,transform] duration-300 motion-reduce:transition-none",
+                            isActive
+                              ? "scale-100 bg-[#A34A3E] opacity-100"
+                              : "scale-75 bg-white opacity-0",
+                          ].join(" ")}
+                        />
+                      </button>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            </div>
 
-                  <div className="pointer-events-none absolute inset-x-7 bottom-[4.75rem] top-[6.75rem] flex items-center justify-center xl:inset-x-8 xl:bottom-[5rem] xl:top-[7.2rem]">
-                    <div className="relative h-full w-full">
+            <div className="relative flex min-h-[610px] items-center justify-center overflow-hidden bg-[#F5F5F3] px-10 py-12 xl:min-h-[650px] xl:px-14">
+              <div className="relative aspect-[5/4] w-full max-w-[34rem]">
+                {services.map((service, index) => {
+                  const state = getDesktopCardState(index);
+                  const isActive = state === "active";
+                  const isPrevious = state === "previous";
+                  const isNext = state === "next";
+
+                  return (
+                    <motion.article
+                      key={service.title}
+                      aria-hidden={!isActive}
+                      initial={false}
+                      animate={{
+                        x: isActive
+                          ? 0
+                          : isPrevious
+                            ? -112
+                            : isNext
+                              ? 112
+                              : 0,
+                        y: isActive ? 0 : 8,
+                        scale: isActive
+                          ? 1
+                          : isPrevious || isNext
+                            ? 0.86
+                            : 0.72,
+                        opacity: isActive
+                          ? 1
+                          : isPrevious || isNext
+                            ? 0.3
+                            : 0,
+                        rotate: isPrevious ? -3.25 : isNext ? 3.25 : 0,
+                        zIndex: isActive ? 30 : isPrevious || isNext ? 20 : 0,
+                      }}
+                      transition={
+                        reduceMotion
+                          ? { duration: 0 }
+                          : {
+                              type: "spring",
+                              stiffness: 245,
+                              damping: 27,
+                              mass: 0.82,
+                            }
+                      }
+                      className="absolute inset-0 origin-center overflow-hidden rounded-[2.25rem] border-[6px] border-white bg-[#0A0A0A] shadow-[0_20px_55px_rgba(10,10,10,0.12)] xl:rounded-[2.75rem] xl:border-[8px]"
+                    >
                       <Image
                         src={service.image}
-                        alt={service.alt}
+                        alt={isActive ? service.alt : ""}
                         fill
-                        sizes="(min-width: 1280px) 360px, (min-width: 1024px) 30vw, 1px"
-                        className="object-contain opacity-95 transition-[transform,opacity] duration-500 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.06] group-hover:opacity-100 motion-reduce:transform-none motion-reduce:transition-none"
+                        sizes="(min-width: 1280px) 544px, (min-width: 1024px) 52vw, 1px"
+                        className={[
+                          "object-cover transition-[filter,transform] duration-700 motion-reduce:transition-none",
+                          isActive
+                            ? "scale-100 blur-0 grayscale-0"
+                            : "scale-[1.035] blur-[1.5px] grayscale",
+                        ].join(" ")}
                       />
-                    </div>
-                  </div>
 
-                  <button
-                    type="button"
-                    aria-expanded={isOpen}
-                    aria-controls={detailsId}
-                    aria-label={`Apri i dettagli di ${service.title}`}
-                    tabIndex={isOpen ? -1 : 0}
-                    onClick={() => setOpenService(index)}
-                    className="absolute inset-0 z-20 rounded-3xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-inset"
-                  />
+                      <div
+                        aria-hidden="true"
+                        className={[
+                          "absolute inset-0 bg-black transition-opacity duration-500 motion-reduce:transition-none",
+                          isActive ? "opacity-[0.08]" : "opacity-35",
+                        ].join(" ")}
+                      />
 
-                  <div
-                    aria-hidden="true"
-                    className="pointer-events-none absolute bottom-0 right-0 z-30 h-20 w-20 rounded-tl-2xl border-l border-t border-black/5 bg-white"
-                  >
-                    <span className="absolute bottom-3 right-3 flex h-12 w-12 items-center justify-center rounded-[0.8rem] bg-[#0A0A0A] text-white shadow-sm transition-[background-color,transform] duration-300 group-hover:bg-[#A34A3E] motion-reduce:transform-none motion-reduce:transition-none">
-                      <DisclosureMark expanded={false} />
-                    </span>
-                  </div>
+                      {isActive ? (
+                        <>
+                          <motion.div
+                            className="absolute left-7 top-7 flex items-center gap-2.5 xl:left-8 xl:top-8"
+                            initial={
+                              reduceMotion ? false : { opacity: 0, y: -8 }
+                            }
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{
+                              duration: reduceMotion ? 0 : 0.35,
+                              ease: easeOut,
+                            }}
+                          >
+                            <span
+                              aria-hidden="true"
+                              className="h-2 w-2 rounded-full bg-white"
+                            />
+                            <span className="font-ui text-[0.64rem] font-bold uppercase tracking-[0.2em] text-white/82">
+                              Servizio {String(index + 1).padStart(2, "0")} /{" "}
+                              {String(services.length).padStart(2, "0")}
+                            </span>
+                          </motion.div>
 
-                  <AnimatePresence initial={false}>
-                    {isOpen ? (
-                      <motion.div
-                        id={detailsId}
-                        role="region"
-                        aria-label={`Dettagli: ${service.title}`}
-                        className="absolute inset-0 z-40 flex flex-col bg-[#A34A3E] p-7 xl:p-8"
-                        initial={
-                          reduceMotion
-                            ? { opacity: 1 }
-                            : { opacity: 0, y: 8 }
-                        }
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={
-                          reduceMotion
-                            ? { opacity: 0 }
-                            : { opacity: 0, y: 8 }
-                        }
-                        transition={{
-                          duration: reduceMotion ? 0 : 0.24,
-                          ease: easeOut,
-                        }}
-                        onKeyDown={(event) => {
-                          if (event.key === "Escape") {
-                            event.preventDefault();
-                            setOpenService(null);
-                          }
-                        }}
-                      >
-                        <div className="pr-14">
-                          <p className="font-ui text-[0.68rem] font-bold uppercase tracking-[0.15em] text-white/55">
-                            {service.title}
-                          </p>
-                          <p className="font-display mt-5 max-w-[14ch] text-[clamp(2rem,2.4vw,3rem)] font-bold leading-[0.95] tracking-[-0.035em] text-white">
-                            {service.statement}
-                          </p>
-                          <p className="mt-5 max-w-[40ch] text-base leading-7 text-white/72">
-                            {service.description}
-                          </p>
-                        </div>
+                          <motion.div
+                            className="absolute inset-x-0 bottom-0 bg-black/82 px-7 pb-7 pt-6 text-white backdrop-blur-[2px] xl:px-9 xl:pb-9 xl:pt-7"
+                            initial={
+                              reduceMotion ? false : { opacity: 0, y: 18 }
+                            }
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{
+                              duration: reduceMotion ? 0 : 0.42,
+                              ease: easeOut,
+                            }}
+                          >
+                            <div className="font-ui inline-flex rounded-full bg-white px-3.5 py-1.5 text-[0.62rem] font-bold uppercase tracking-[0.14em] text-[#0A0A0A]">
+                              {service.title}
+                            </div>
+                            <p className="font-display mt-4 max-w-[19ch] text-[clamp(1.9rem,2.7vw,2.8rem)] font-bold leading-[0.94] tracking-[-0.03em] text-white">
+                              {service.statement}
+                            </p>
+                            <p className="mt-3 max-w-[46ch] text-sm leading-6 text-white/72 xl:text-[0.94rem] xl:leading-6">
+                              {service.description}
+                            </p>
+                          </motion.div>
+                        </>
+                      ) : null}
+                    </motion.article>
+                  );
+                })}
+              </div>
 
-                        <ul className="font-ui mt-auto grid pt-4 text-[0.72rem] font-semibold uppercase tracking-[0.04em] text-white/72">
-                          {service.features.map((feature) => (
-                            <li
-                              key={feature}
-                              className="py-2"
-                            >
-                              {feature}
-                            </li>
-                          ))}
-                        </ul>
-
-                        <div
-                          aria-hidden="true"
-                          className="pointer-events-none absolute bottom-0 right-0 h-20 w-20 rounded-tl-2xl border-l border-t border-black/5 bg-white"
-                        />
-
-                        <button
-                          type="button"
-                          aria-label={`Chiudi i dettagli di ${service.title}`}
-                          onClick={() => setOpenService(null)}
-                          className="absolute bottom-3 right-3 z-10 flex h-12 w-12 items-center justify-center rounded-[0.8rem] bg-[#0A0A0A] text-white shadow-sm transition-[background-color,transform] duration-200 hover:bg-[#A34A3E] active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/40 focus-visible:ring-offset-3 focus-visible:ring-offset-white motion-reduce:transform-none motion-reduce:transition-none"
-                        >
-                          <DisclosureMark expanded />
-                        </button>
-                      </motion.div>
-                    ) : null}
-                  </AnimatePresence>
-                </motion.article>
-              );
-            })}
+              <div
+                aria-hidden="true"
+                className="font-ui absolute bottom-7 right-8 text-[0.61rem] font-bold uppercase tracking-[0.16em] text-black/38"
+              >
+                Seleziona un servizio
+              </div>
+            </div>
           </div>
         </div>
       </div>
