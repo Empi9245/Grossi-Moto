@@ -132,12 +132,12 @@ export default async function ContattiPage({
       <ContactsNav />
 
       <section className="px-5 pb-16 pt-10 sm:px-7 sm:pb-20 sm:pt-14 md:px-10 lg:px-14 lg:pb-24 lg:pt-20 xl:px-20">
-        <div className="mx-auto grid max-w-[92rem] gap-10 xl:grid-cols-[minmax(0,1.15fr)_minmax(24rem,0.85fr)] xl:items-end xl:gap-16">
+        <div className="mx-auto grid max-w-[92rem] gap-10 xl:grid-cols-[minmax(0,1.15fr)_minmax(24rem,0.85fr)] xl:items-end xl:gap-12 2xl:gap-16">
           <div>
             <p className="font-ui text-[0.68rem] font-bold uppercase tracking-[0.2em] text-[#A34A3E] sm:text-xs">
               Contatti
             </p>
-            <h1 className="font-display font-editorial mt-5 max-w-[10ch] text-[clamp(3.1rem,16vw,9rem)] font-bold uppercase leading-[0.84] tracking-[-0.045em]">
+            <h1 className="font-display font-editorial mt-5 max-w-[10ch] text-[clamp(3.1rem,16vw,9rem)] font-bold uppercase leading-[0.84] tracking-[-0.045em] xl:text-[clamp(5.75rem,7.5vw,7.5rem)] 2xl:text-[clamp(6.75rem,7.5vw,9rem)]">
               Parliamone.
             </h1>
           </div>
@@ -215,12 +215,12 @@ export default async function ContattiPage({
 
       <section className="bg-white px-2 pb-2 sm:px-4 sm:pb-4 lg:px-5 lg:pb-5">
         <div className="overflow-hidden rounded-[32px] bg-[#A34A3E] px-5 py-12 text-white sm:rounded-[40px] sm:px-7 sm:py-16 md:px-10 lg:rounded-[56px] lg:px-14 lg:py-20 xl:px-16">
-          <div className="mx-auto grid max-w-[92rem] gap-10 lg:gap-12 xl:grid-cols-[minmax(0,0.72fr)_minmax(32rem,1.28fr)] xl:items-start xl:gap-20">
+          <div className="mx-auto grid max-w-[92rem] gap-10 lg:gap-12 xl:grid-cols-[minmax(0,0.82fr)_minmax(32rem,1.18fr)] xl:items-start xl:gap-14 2xl:grid-cols-[minmax(0,0.72fr)_minmax(32rem,1.28fr)] 2xl:gap-20">
             <div className="xl:sticky xl:top-10">
               <p className="font-ui text-[0.68rem] font-bold uppercase tracking-[0.2em] text-white/70 sm:text-xs">
                 Invia una richiesta
               </p>
-              <h2 className="font-display font-editorial mt-4 max-w-[8ch] text-[clamp(3.2rem,8vw,7rem)] font-bold uppercase leading-[0.86] tracking-[-0.04em]">
+              <h2 className="font-display font-editorial mt-4 max-w-[8ch] text-[clamp(3.2rem,8vw,7rem)] font-bold uppercase leading-[0.86] tracking-[-0.04em] xl:text-[clamp(4.6rem,5.7vw,5.8rem)] 2xl:text-[clamp(5.25rem,5.7vw,7rem)]">
                 Raccontaci cosa ti serve.
               </h2>
               <p className="mt-6 max-w-[30rem] text-base leading-7 text-white/78 sm:text-lg sm:leading-8">
@@ -275,7 +275,7 @@ export default async function ContattiPage({
               </a>
             </div>
 
-            <div className="pt-7 xl:pl-12 xl:pt-0">
+            <div className="pt-7 xl:pl-6 xl:pt-0 2xl:pl-12">
               <div className="flex items-center gap-3 text-[#A34A3E]">
                 <Clock aria-hidden="true" className="h-5 w-5" strokeWidth={1.8} />
                 <h2 className="font-ui text-[0.68rem] font-bold uppercase tracking-[0.2em] sm:text-xs">
