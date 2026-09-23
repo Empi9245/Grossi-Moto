@@ -132,7 +132,7 @@ export default async function ContattiPage({
       <ContactsNav />
 
       <section className="px-5 pb-16 pt-10 sm:px-7 sm:pb-20 sm:pt-14 md:px-10 lg:px-14 lg:pb-24 lg:pt-20 xl:px-20">
-        <div className="mx-auto grid max-w-[92rem] gap-10 lg:grid-cols-[minmax(0,1.15fr)_minmax(24rem,0.85fr)] lg:items-end lg:gap-16">
+        <div className="mx-auto grid max-w-[92rem] gap-10 xl:grid-cols-[minmax(0,1.15fr)_minmax(24rem,0.85fr)] xl:items-end xl:gap-16">
           <div>
             <p className="font-ui text-[0.68rem] font-bold uppercase tracking-[0.2em] text-[#A34A3E] sm:text-xs">
               Contatti
@@ -142,7 +142,7 @@ export default async function ContattiPage({
             </h1>
           </div>
 
-          <div className="max-w-[38rem] lg:pb-2">
+          <div className="max-w-[38rem] xl:pb-2">
             <p className="text-base leading-7 text-black/62 sm:text-lg sm:leading-8">
               Per scegliere moto o scooter, chiedere prezzo e disponibilità,
               parlare con l’officina o cercare ricambi e accessori: scegli il
@@ -215,8 +215,8 @@ export default async function ContattiPage({
 
       <section className="bg-white px-2 pb-2 sm:px-4 sm:pb-4 lg:px-5 lg:pb-5">
         <div className="overflow-hidden rounded-[32px] bg-[#A34A3E] px-5 py-12 text-white sm:rounded-[40px] sm:px-7 sm:py-16 md:px-10 lg:rounded-[56px] lg:px-14 lg:py-20 xl:px-16">
-          <div className="mx-auto grid max-w-[92rem] gap-10 lg:grid-cols-[minmax(0,0.72fr)_minmax(32rem,1.28fr)] lg:items-start lg:gap-16 xl:gap-20">
-            <div className="lg:sticky lg:top-10">
+          <div className="mx-auto grid max-w-[92rem] gap-10 lg:gap-12 xl:grid-cols-[minmax(0,0.72fr)_minmax(32rem,1.28fr)] xl:items-start xl:gap-20">
+            <div className="xl:sticky xl:top-10">
               <p className="font-ui text-[0.68rem] font-bold uppercase tracking-[0.2em] text-white/70 sm:text-xs">
                 Invia una richiesta
               </p>
@@ -250,7 +250,7 @@ export default async function ContattiPage({
 
       <section id="sede" className="scroll-mt-6 bg-white px-2 pb-2 pt-2 sm:px-4 sm:pb-4 sm:pt-4 lg:px-5 lg:pb-5 lg:pt-5">
         <div className="overflow-hidden rounded-[32px] bg-[#111111] px-5 py-14 text-white sm:rounded-[40px] sm:px-7 sm:py-16 md:px-10 lg:rounded-[56px] lg:px-14 lg:py-20 xl:px-16">
-          <div className="mx-auto grid max-w-[92rem] gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(24rem,0.72fr)] lg:items-start lg:gap-20">
+          <div className="mx-auto grid max-w-[92rem] gap-12 xl:grid-cols-[minmax(0,1fr)_minmax(24rem,0.72fr)] xl:items-start xl:gap-20">
             <div>
               <div className="flex items-center gap-3 text-[#A34A3E]">
                 <MapPin aria-hidden="true" className="h-5 w-5" strokeWidth={1.8} />
@@ -275,7 +275,7 @@ export default async function ContattiPage({
               </a>
             </div>
 
-            <div className="pt-7 lg:pl-12 lg:pt-0">
+            <div className="pt-7 xl:pl-12 xl:pt-0">
               <div className="flex items-center gap-3 text-[#A34A3E]">
                 <Clock aria-hidden="true" className="h-5 w-5" strokeWidth={1.8} />
                 <h2 className="font-ui text-[0.68rem] font-bold uppercase tracking-[0.2em] sm:text-xs">
@@ -301,7 +301,7 @@ export default async function ContattiPage({
       </section>
 
       <section className="px-5 py-20 sm:px-7 sm:py-24 md:px-10 lg:px-14 lg:py-28 xl:px-20">
-        <div className="mx-auto flex max-w-[92rem] flex-col gap-8 pt-10 lg:flex-row lg:items-end lg:justify-between lg:gap-14 lg:pt-14">
+        <div className="mx-auto flex max-w-[92rem] flex-col gap-8 pt-10 xl:flex-row xl:items-end xl:justify-between xl:gap-14 xl:pt-14">
           <div>
             <p className="font-ui text-[0.68rem] font-bold uppercase tracking-[0.2em] text-[#A34A3E] sm:text-xs">
               Un ultimo dubbio?
