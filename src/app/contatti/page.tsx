@@ -14,6 +14,7 @@ export const metadata = pageMetadata(
 );
 
 const navItems = [
+  { label: "Home", href: "/" },
   { label: "Gamma", href: "/scooters" },
   { label: "Servizi", href: "/servizi" },
   { label: "Contatti", href: "/contatti" },
@@ -57,7 +58,7 @@ function ContactsNav() {
     <header className="bg-white px-2 sm:px-4 lg:px-5">
       <nav
         aria-label="Navigazione Grossimoto"
-        className="mx-auto flex min-h-[5.6rem] max-w-[122rem] items-center justify-between gap-3 px-3 py-3 text-[#0A0A0A] sm:px-4 lg:justify-start lg:gap-8 lg:px-5"
+        className="mx-auto flex min-h-[5.6rem] max-w-[122rem] items-center justify-between gap-3 px-3 py-3 text-[#0A0A0A] sm:px-4 lg:grid lg:grid-cols-[1fr_auto_1fr] lg:px-5"
       >
         <Link
           href="/"
@@ -93,7 +94,7 @@ function ContactsNav() {
           })}
         </div>
 
-        <div className="ml-auto flex shrink-0 justify-end lg:hidden">
+        <div className="ml-auto flex shrink-0 justify-end lg:ml-0 lg:justify-self-end">
           <a
             href="tel:+393289185029"
             className="font-ui inline-flex min-h-11 items-center gap-2 rounded-[0.9rem] bg-[#0A0A0A] px-3.5 py-2 text-[0.72rem] font-bold uppercase tracking-[0.1em] text-white transition-[opacity,transform] duration-150 hover:opacity-[0.84] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/35 focus-visible:ring-offset-4 focus-visible:ring-offset-white motion-reduce:transform-none motion-reduce:transition-none sm:px-4"

@@ -316,17 +316,6 @@ export function ServicesHero() {
             </div>
           </motion.section>
 
-          <div className="absolute right-4 top-4 z-20 flex items-center justify-end xl:right-5 xl:top-5">
-            <a
-              href="tel:+393289185029"
-              className="font-ui group inline-flex min-h-12 items-center gap-3 rounded-[0.9rem] bg-white py-1.5 pl-5 pr-1.5 text-sm font-bold text-[#0A0A0A] shadow-lg shadow-black/[0.08] transition-[background-color,color,transform] duration-200 hover:bg-[#0A0A0A] hover:text-white active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/35 focus-visible:ring-offset-4 focus-visible:ring-offset-[#F4F4F2] motion-reduce:transform-none motion-reduce:transition-none"
-            >
-              Chiama ora
-              <span className="flex h-9 w-9 items-center justify-center rounded-[0.8rem] bg-[#0A0A0A] text-white transition-[background-color,color,transform] duration-200 group-hover:bg-white group-hover:text-[#0A0A0A] motion-reduce:transform-none motion-reduce:transition-none">
-                <PhoneCall aria-hidden="true" className="h-4 w-4" strokeWidth={1.9} />
-              </span>
-            </a>
-          </div>
         </motion.div>
       </section>
     </>
