@@ -60,7 +60,7 @@ const defaultImages: ParallaxImage[] = [
     src: "/kymco-all/sections/new/Smash/IMG_9489.png",
     alt: "Moto e scooter in una scena urbana",
   },
-]
+];
 
 function StaticParallaxFallback({ images }: { images: ParallaxImage[] }) {
   return (
@@ -244,6 +244,7 @@ function AlternatingCreditBlock({
     ],
     [0, 1, 1, 1, 1, 0],
   );
+
   const titleClassName = `${creditsFont.className} max-w-[18ch] uppercase leading-[0.94] tracking-[-0.015em] ${
     compact
       ? tablet
@@ -493,6 +494,7 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
           const nextY = isDesktopViewport
             ? entryStartY + (liveSectionTop - entryStartY) * latest
             : latest;
+
           window.scrollTo({
             top: nextY,
             left: 0,
@@ -741,7 +743,8 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
         touchControlsSection =
           rect.top <= entrySnapDistance &&
           rect.bottom >= window.innerHeight - 4;
-      } else {        touchControlsSection = false;
+      } else {
+        touchControlsSection = false;
       }
     };
 
@@ -990,7 +993,8 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
   const mobileScale = useTransform(zoomProgress, [0, 1], [1, 2.4]);
   const tabletScale = useTransform(zoomProgress, [0, 1], [1, 2.15]);
   const compactScale = useTabletLayout ? tabletScale : mobileScale;
-  const scale4 = useTransform(zoomProgress, [0, 1], [1, 4.08]);  const scale5 = useTransform(zoomProgress, [0, 1], [1, 5]);
+  const scale4 = useTransform(zoomProgress, [0, 1], [1, 4.08]);
+  const scale5 = useTransform(zoomProgress, [0, 1], [1, 5]);
   const scale6 = useTransform(zoomProgress, [0, 1], [1, 6]);
   const scale8 = useTransform(zoomProgress, [0, 1], [1, 8]);
   const scale9 = useTransform(zoomProgress, [0, 1], [1, 9]);
@@ -1239,5 +1243,6 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
       </div>
     </div>
     <ExperienceContact />
-    </>  );
+    </>
+  );
 }
