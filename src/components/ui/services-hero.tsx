@@ -63,7 +63,7 @@ export function ServicesHero() {
               fill
               priority
               sizes="100vw"
-              className="scale-[1.035] object-cover object-[53%_61%]"
+              className="object-cover object-center"
             />
 
             <div
@@ -288,7 +288,7 @@ export function ServicesHero() {
               fill
               priority
               sizes="100vw"
-              className="object-cover object-center"
+              className="scale-[1.035] object-cover object-[53%_61%]"
             />
             <div
               aria-hidden="true"
