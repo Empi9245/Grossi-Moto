@@ -1,8 +1,9 @@
 "use client";
 
+import { DirectionMark } from "@/components/ui/control-glyphs";
 import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import Image from "next/image";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+
 import { animate, motion, useDragControls, useMotionValue, useReducedMotion, useSpring, useTransform, type MotionValue, type PanInfo } from "framer-motion";
 
 import { advanceOrder, shouldAdvanceSwipe } from "@/lib/swipe-stack";
@@ -99,12 +100,12 @@ function Deck<T extends SwipeCard>({ cards, swipeThreshold = 100, velocityThresh
             </p>
             {active.title ? <p className="font-display mt-1.5 truncate text-lg font-bold leading-none text-black/88">{active.title}</p> : null}
           </div>
-          {showControls && <div className="flex shrink-0 gap-2.5"><button type="button" aria-label="Modello precedente" title="Modello precedente" disabled={!history.length || busy} onClick={undo} className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-black/12 bg-white text-black transition-[background-color,border-color,color,transform] duration-200 hover:border-black hover:bg-black hover:text-white active:scale-[0.97] disabled:pointer-events-none disabled:border-black/8 disabled:bg-white/50 disabled:text-black/25 focus-visible:outline-2 focus-visible:outline-offset-4"><ArrowLeft aria-hidden="true" size={17} strokeWidth={1.7} /></button><button type="button" aria-label="Modello successivo" title="Modello successivo" disabled={!canAdvance || busy} onClick={() => void next()} className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-black/12 bg-white text-black transition-[background-color,border-color,color,transform] duration-200 hover:border-black hover:bg-black hover:text-white active:scale-[0.97] disabled:pointer-events-none disabled:border-black/8 disabled:bg-white/50 disabled:text-black/25 focus-visible:outline-2 focus-visible:outline-offset-4"><ArrowRight aria-hidden="true" size={17} strokeWidth={1.7} /></button></div>}
+          {showControls && <div className="flex shrink-0 gap-2.5"><button type="button" aria-label="Modello precedente" title="Modello precedente" disabled={!history.length || busy} onClick={undo} className="inline-flex h-11 w-11 items-center justify-center group rounded-[0.8rem] border border-black/12 bg-white text-black transition-[background-color,border-color,color,transform] duration-200 hover:border-black hover:bg-black hover:text-white active:scale-[0.97] disabled:pointer-events-none disabled:border-black/8 disabled:bg-white/50 disabled:text-black/25 focus-visible:outline-2 focus-visible:outline-offset-4"><DirectionMark direction="previous" /></button><button type="button" aria-label="Modello successivo" title="Modello successivo" disabled={!canAdvance || busy} onClick={() => void next()} className="inline-flex h-11 w-11 items-center justify-center group rounded-[0.8rem] border border-black/12 bg-white text-black transition-[background-color,border-color,color,transform] duration-200 hover:border-black hover:bg-black hover:text-white active:scale-[0.97] disabled:pointer-events-none disabled:border-black/8 disabled:bg-white/50 disabled:text-black/25 focus-visible:outline-2 focus-visible:outline-offset-4"><DirectionMark direction="next" /></button></div>}
         </div>
       ) : (
         <div className="mt-7 flex flex-wrap items-center justify-between gap-3">
           <p role="status" aria-live="polite" aria-atomic="true" className="text-xs">{activePosition} / {cards.length} · {active.title}</p>
-          {showControls && <div className="flex gap-2"><button type="button" disabled={!history.length || busy} onClick={undo} className="min-h-11 rounded-full border border-current px-4 text-sm disabled:opacity-35 focus-visible:outline-2 focus-visible:outline-offset-4">Annulla</button><button type="button" disabled={!canAdvance || busy} onClick={() => void next()} className="min-h-11 rounded-full border border-current px-4 text-sm disabled:opacity-35 focus-visible:outline-2 focus-visible:outline-offset-4">Successiva</button></div>}
+          {showControls && <div className="flex gap-2"><button type="button" disabled={!history.length || busy} onClick={undo} className="min-h-11 rounded-[0.9rem] border border-current px-4 text-sm disabled:opacity-35 focus-visible:outline-2 focus-visible:outline-offset-4">Annulla</button><button type="button" disabled={!canAdvance || busy} onClick={() => void next()} className="min-h-11 rounded-[0.9rem] border border-current px-4 text-sm disabled:opacity-35 focus-visible:outline-2 focus-visible:outline-offset-4">Successiva</button></div>}
         </div>
       )}
     </div>

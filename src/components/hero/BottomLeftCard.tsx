@@ -1,6 +1,7 @@
 "use client";
 
-import { ArrowUpRight, Star } from "lucide-react";
+import { ActionMark } from "@/components/ui/control-glyphs";
+import { Star } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 
 import { revealMotion } from "./motion";
@@ -44,7 +45,7 @@ export function BottomLeftCard() {
           <Star aria-hidden="true" className="h-4 w-4" />
           Leggi le recensioni
         </span>
-        <ArrowUpRight aria-hidden="true" className="h-4 w-4" />
+        <ActionMark />
       </span>
       <span className="sr-only">Dati consultati il 16 settembre 2026.</span>
     </motion.a>

@@ -2,14 +2,7 @@
 
 import Image from "next/image";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import {
-  ArrowUpRight,
-  Check,
-  MessageCircle,
-  ScanLine,
-  Wrench,
-  KeyRound,
-} from "lucide-react";
+import { Check, MessageCircle, ScanLine, Wrench, KeyRound } from "lucide-react";
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 
 const steps = [
@@ -177,10 +170,10 @@ export function ServiceProcess() {
           ))}
           <a
             href="tel:+393289185029"
-            className="font-ui mt-6 inline-flex min-h-12 w-fit items-center gap-2 rounded-full bg-[#F7F4EF] px-5 py-3 text-sm font-semibold text-[#111111] transition-colors hover:bg-[#E7E3DC] active:bg-[#D5CFC6] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#F7F4EF]"
+            className="font-ui mt-6 inline-flex min-h-12 w-fit items-center gap-2 rounded-[0.9rem] bg-[#F7F4EF] px-5 py-3 text-sm font-semibold text-[#111111] transition-colors hover:bg-[#E7E3DC] active:bg-[#D5CFC6] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#F7F4EF]"
           >
             Parla del tuo scooter{" "}
-            <ArrowUpRight aria-hidden="true" className="h-4 w-4" />
+            
           </a>
         </div>
       </div>

@@ -230,7 +230,7 @@ export function CatalogFilterBar({
                 type="button"
                 onClick={() => onSearchChange("")}
                 aria-label="Cancella ricerca"
-                className="absolute right-2 top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full text-black/55 outline-none transition-colors duration-200 hover:bg-black/[0.06] hover:text-black focus-visible:ring-2 focus-visible:ring-black/35"
+                className="absolute right-2 top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-[0.8rem] text-black/55 outline-none transition-colors duration-200 hover:bg-black/[0.06] hover:text-black focus-visible:ring-2 focus-visible:ring-black/35"
               >
                 <X aria-hidden="true" className="h-4 w-4" strokeWidth={1.8} />
               </button>
@@ -321,7 +321,7 @@ export function CatalogFilterBar({
               aria-pressed={hasActiveFilter}
               onClick={(event) => openFilterDialog(event.currentTarget)}
               className={clsx(
-                "font-ui inline-flex min-h-12 items-center gap-2 rounded-full border px-4 text-[0.7rem] font-bold uppercase tracking-[0.08em] outline-none transition-colors focus-visible:ring-2 focus-visible:ring-black/35",
+                "font-ui inline-flex min-h-12 items-center gap-2 rounded-[0.9rem] border px-4 text-[0.7rem] font-bold uppercase tracking-[0.08em] outline-none transition-colors focus-visible:ring-2 focus-visible:ring-black/35",
                 hasActiveFilter
                   ? "border-black bg-black text-white"
                   : "border-black/10 bg-[#F3F3F3] text-black hover:bg-black/[0.07]",
@@ -373,7 +373,7 @@ export function CatalogFilterBar({
                   key={group.id}
                   type="button"
                   onClick={() => onFilterChange(group.id, "all")}
-                  className="font-ui inline-flex min-h-9 items-center gap-2 rounded-full border border-black/10 bg-white px-3 text-[0.65rem] font-bold uppercase tracking-[0.07em] text-black outline-none transition-colors hover:bg-[#F3F3F3] focus-visible:ring-2 focus-visible:ring-black/35"
+                  className="font-ui inline-flex min-h-9 items-center gap-2 rounded-[0.75rem] border border-black/10 bg-white px-3 text-[0.65rem] font-bold uppercase tracking-[0.07em] text-black outline-none transition-colors hover:bg-[#F3F3F3] focus-visible:ring-2 focus-visible:ring-black/35"
                   aria-label={`Rimuovi filtro ${group.label}: ${getFilterOptionLabel(group.id, activeValue)}`}
                 >
                   <span className="text-black/45">{group.label}</span>
@@ -386,7 +386,7 @@ export function CatalogFilterBar({
             <button
               type="button"
               onClick={onResetFilters}
-              className="font-ui min-h-9 rounded-full px-3 text-[0.62rem] font-bold uppercase tracking-[0.08em] text-black/45 outline-none transition-colors hover:bg-black/[0.05] hover:text-black focus-visible:ring-2 focus-visible:ring-black/35"
+              className="font-ui min-h-9 rounded-[0.75rem] px-3 text-[0.62rem] font-bold uppercase tracking-[0.08em] text-black/45 outline-none transition-colors hover:bg-black/[0.05] hover:text-black focus-visible:ring-2 focus-visible:ring-black/35"
             >
               Azzera
             </button>
@@ -397,7 +397,7 @@ export function CatalogFilterBar({
       <div
         aria-hidden={!compactToolbarVisible}
         inert={!compactToolbarVisible}
-        className="sticky z-40 h-0 px-3 lg:hidden"
+        className="sticky z-[1100] h-0 px-3 lg:hidden"
         style={{ top: "max(0.5rem, env(safe-area-inset-top))" }}
       >
         <div
@@ -437,7 +437,7 @@ export function CatalogFilterBar({
                     type="button"
                     onClick={() => onSearchChange("")}
                     aria-label="Cancella ricerca"
-                    className="absolute right-1 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full text-black/55 outline-none hover:bg-black/[0.06] focus-visible:ring-2 focus-visible:ring-black/35"
+                    className="absolute right-1 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-[0.8rem] text-black/55 outline-none hover:bg-black/[0.06] focus-visible:ring-2 focus-visible:ring-black/35"
                   >
                     <X
                       aria-hidden="true"
@@ -537,7 +537,7 @@ export function CatalogFilterBar({
               type="button"
               onClick={closeFilterDialog}
               aria-label="Chiudi filtri"
-              className="grid h-11 w-11 place-items-center rounded-full bg-[#F3F3F3] outline-none hover:bg-black/[0.08] focus-visible:ring-2 focus-visible:ring-black/35"
+              className="grid h-11 w-11 place-items-center rounded-[0.8rem] bg-[#F3F3F3] outline-none hover:bg-black/[0.08] focus-visible:ring-2 focus-visible:ring-black/35"
             >
               <X aria-hidden="true" className="h-4 w-4" strokeWidth={1.8} />
             </button>

@@ -27,17 +27,6 @@ type ZoomParallaxProps = {
   images?: ParallaxImage[];
 };
 
-type CreditAnimationVariant = 1 | 2 | 3;
-
-type AnimatedCreditCharacterProps = {
-  char: string;
-  index: number;
-  centerIndex: number;
-  progress: MotionValue<number>;
-  range: [number, number];
-  intensity: number;
-};
-
 const defaultImages: ParallaxImage[] = [
   {
     src: "/kymco-all/sections/agility-125-r16-power-up-kymco-agility125-esterne-003-scaled-kymco-agility125-esterne-003-scaled.jpg",
@@ -139,132 +128,19 @@ function ExperienceContact() {
     <div className="relative bg-[var(--home-experience-surface)] px-5 py-12 text-center text-[var(--gm-ink)] sm:py-16">
       <p className="font-ui text-sm">Il prossimo passo? Raccontaci cosa cerchi.</p>
       <div className="mt-6 flex flex-wrap justify-center gap-4">
-        <a href="tel:+393289185029" className="font-ui inline-flex min-h-12 items-center justify-center rounded-full bg-[var(--gm-black)] px-7 py-3 text-sm font-bold text-white transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black">Chiama Grossi Moto</a>
-        <Link href="/contatti#richiesta" className="font-ui inline-flex min-h-12 items-center justify-center rounded-full border border-black/25 px-7 py-3 text-sm font-bold text-black transition-colors hover:bg-black/5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black">Scrivici cosa cerchi</Link>
+        <a href="tel:+393289185029" className="font-ui inline-flex min-h-12 items-center justify-center rounded-[0.9rem] bg-[var(--gm-black)] px-7 py-3 text-sm font-bold text-white transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black">Chiama Grossi Moto</a>
+        <Link href="/contatti#richiesta" className="font-ui inline-flex min-h-12 items-center justify-center rounded-[0.9rem] border border-black/25 px-7 py-3 text-sm font-bold text-black transition-colors hover:bg-black/5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black">Scrivici cosa cerchi</Link>
       </div>
     </div>
   );
 }
 
-function CreditCharacterV1({
-  char,
-  index,
-  centerIndex,
-  progress,
-  range,
-  intensity,
-}: AnimatedCreditCharacterProps) {
-  const distanceFromCenter = index - centerIndex;
-  const x = useTransform(progress, range, [distanceFromCenter * intensity, 0]);
-  const rotateX = useTransform(progress, range, [distanceFromCenter * intensity, 0]);
-
-  return (
-    <motion.span
-      className="inline-block will-change-transform"
-      style={{ x, rotateX, transformOrigin: "center" }}
-    >
-      {char}
-    </motion.span>
-  );
-}
-
-function CreditCharacterV2({
-  char,
-  index,
-  centerIndex,
-  progress,
-  range,
-  intensity,
-}: AnimatedCreditCharacterProps) {
-  const distanceFromCenter = index - centerIndex;
-  const x = useTransform(progress, range, [distanceFromCenter * intensity, 0]);
-  const y = useTransform(progress, range, [Math.abs(distanceFromCenter) * intensity, 0]);
-  const scale = useTransform(progress, range, [0.75, 1]);
-
-  return (
-    <motion.span
-      className="inline-block will-change-transform"
-      style={{ x, y, scale, transformOrigin: "center" }}
-    >
-      {char}
-    </motion.span>
-  );
-}
-
-function CreditCharacterV3({
-  char,
-  index,
-  centerIndex,
-  progress,
-  range,
-  intensity,
-}: AnimatedCreditCharacterProps) {
-  const distanceFromCenter = index - centerIndex;
-  const x = useTransform(progress, range, [distanceFromCenter * intensity * 1.8, 0]);
-  const rotate = useTransform(progress, range, [distanceFromCenter * intensity, 0]);
-  const y = useTransform(progress, range, [-Math.abs(distanceFromCenter) * intensity * 0.4, 0]);
-  const scale = useTransform(progress, range, [0.75, 1]);
-
-  return (
-    <motion.span
-      className="inline-block will-change-transform"
-      style={{ x, rotate, y, scale, transformOrigin: "center" }}
-    >
-      {char}
-    </motion.span>
-  );
-}
-
-function AnimatedCreditText({
-  text,
-  progress,
-  range,
-  intensity,
-  variant,
-}: {
-  text: string;
-  progress: MotionValue<number>;
-  range: [number, number];
-  intensity: number;
-  variant: CreditAnimationVariant;
-}) {
-  const words = text.split(" ");
-  const centerIndex = Math.floor(text.length / 2);
-  const CharacterComponent =
-    variant === 1 ? CreditCharacterV1 : variant === 2 ? CreditCharacterV2 : CreditCharacterV3;
-
-  return (
-    <span aria-hidden="true">
-      {words.map((word, wordIndex) => {
-        const wordStartIndex = words
-          .slice(0, wordIndex)
-          .reduce((total, previousWord) => total + previousWord.length + 1, 0);
-
-        return (
-          <span key={`${word}-${wordIndex}`}>
-            <span className="inline-block whitespace-nowrap">
-              {word.split("").map((char, charIndex) => (
-                <CharacterComponent
-                  key={`${char}-${charIndex}`}
-                  char={char}
-                  index={wordStartIndex + charIndex}
-                  centerIndex={centerIndex}
-                  progress={progress}
-                  range={range}
-                  intensity={intensity}
-                />
-              ))}
-            </span>
-            {wordIndex < words.length - 1 ? " " : null}
-          </span>
-        );
-      })}
-    </span>
-  );
-}
-
-const desktopStepProgress = [0, 0.44, 0.64, 0.84, 1] as const;
-const compactStepProgress = [0, 0.54, 0.7, 0.86, 1] as const;
+const desktopZoomEnd = 0.54;
+const compactZoomEnd = 0.58;
+const desktopCreditsLockProgress = 0.78;
+const compactCreditsLockProgress = 0.8;
+const desktopCreditsHoldEndProgress = 0.84;
+const compactCreditsHoldEndProgress = 0.875;
 const steppedScrollEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
 const steppedScrollTriggerDelta = 6;
 const steppedScrollCooldownMs = 260;
@@ -273,7 +149,12 @@ const steppedScrollEntryEase: [number, number, number, number] = [0.22, 1, 0.36,
 const steppedScrollEntryDuration = 0.68;
 const steppedScrollFocusTolerancePx = 0.75;
 const steppedScrollFocusSettleFrames = 2;
-const wheelGestureResetMs = 160;
+const creditsLockSettleFrames = 3;
+const creditsLockStepDuration = 2.04;
+const creditsExitStepDuration = 0.92;
+const creditsReverseStepDuration = 1.18;
+const creditsReverseToIntroDuration = 1.42;
+const wheelGestureResetMs = 280;
 const idleFloatEase: [number, number, number, number] = [0.45, 0, 0.55, 1];
 const idleFloatPatterns = [
   { x: 4, y: -7, rotate: -0.18, duration: 5.8 },
@@ -287,193 +168,164 @@ const idleFloatPatterns = [
   { x: -9, y: 8, rotate: -0.46, duration: 6.9 },
 ] as const;
 
-function getCreditRevealRange(index: number, compact: boolean): [number, number] {
-  if (compact) {
-    return [0.3 + index * 0.16, 0.54 + index * 0.16];
-  }
-
-  return [0.2 + index * 0.2, 0.44 + index * 0.2];
-}
-
-function getCreditVisibilityRange(
-  index: number,
-  compact: boolean,
-): [number, number, number, number] {
-  if (compact) {
-    const ranges: [number, number, number, number][] = [
-      [0.28, 0.44, 0.55, 0.6],
-      [0.58, 0.65, 0.71, 0.76],
-      [0.74, 0.82, 0.88, 0.96],
-    ];
-
-    return ranges[index] ?? ranges[ranges.length - 1];
-  }
-
-  const ranges: [number, number, number, number][] = [
-    [0.18, 0.36, 0.45, 0.51],
-    [0.49, 0.58, 0.65, 0.71],
-    [0.69, 0.78, 0.86, 0.94],
-  ];
-
-  return ranges[index] ?? ranges[ranges.length - 1];
-}
-
-function DesktopCinematicCreditStory({
-  title,
-  detail,
-  index,
-  progress,
-}: {
+type CreditBlock = {
+  eyebrow?: string;
   title: string;
   detail: string;
-  index: number;
-  progress: MotionValue<number>;
-}) {
-  const revealRange = getCreditRevealRange(index, false);
-  const visibilityRange = getCreditVisibilityRange(index, false);
-  const opacity = useTransform(progress, visibilityRange, [0, 1, 1, 0]);
-  const variant = (index + 1) as CreditAnimationVariant;
+  headingLevel: 2 | 3;
+};
 
-  return (
-    <motion.div
-      style={{ opacity }}
-      className="flex h-[70svh] flex-col items-center justify-center px-10 text-center text-[#f4f0e8] [text-shadow:0_4px_28px_rgba(0,0,0,0.45)]"
-    >
-      {index === 0 && (
-        <p
-          aria-label="Dallo showroom all’officina"
-          className="font-ui mb-7 text-xs font-bold uppercase tracking-[0.24em]"
-        >
-          <AnimatedCreditText
-            text="Dallo showroom all’officina"
-            progress={progress}
-            range={revealRange}
-            intensity={24}
-            variant={1}
-          />
-        </p>
-      )}
-      {index === 0 ? (
-        <h2
-          aria-label={title}
-          className={`${creditsFont.className} max-w-[15ch] text-[clamp(4.5rem,9.2vw,11rem)] uppercase leading-[1.02] tracking-[-0.015em]`}
-        >
-          <AnimatedCreditText
-            text={title}
-            progress={progress}
-            range={revealRange}
-            intensity={50}
-            variant={1}
-          />
-        </h2>
-      ) : (
-        <h3
-          aria-label={title}
-          className={`${creditsFont.className} max-w-[15ch] text-[clamp(4.5rem,9.2vw,11rem)] uppercase leading-[1.02] tracking-[-0.015em]`}
-        >
-          <AnimatedCreditText
-            text={title}
-            progress={progress}
-            range={revealRange}
-            intensity={50}
-            variant={variant}
-          />
-        </h3>
-      )}
-      <p
-        aria-label={detail}
-        className="mt-7 max-w-[38rem] text-[clamp(1rem,1.5vw,1.35rem)] leading-relaxed text-white/85"
-      >
-        <AnimatedCreditText
-          text={detail}
-          progress={progress}
-          range={revealRange}
-          intensity={18}
-          variant={variant}
-        />
-      </p>
-    </motion.div>
-  );
-}
-
-function MobileCinematicCreditStory({
+const creditBlocks: CreditBlock[] = story.map(({ title, detail }, index) => ({
+  eyebrow: index === 0 ? "Dallo showroom all’officina" : undefined,
   title,
   detail,
+  headingLevel: index === 0 ? 2 : 3,
+}));
+
+function AlternatingCreditBlock({
+  block,
   index,
   progress,
+  zoomEnd,
+  centerProgress,
+  holdEndProgress,
+  compact,
+  tablet,
 }: {
-  title: string;
-  detail: string;
+  block: CreditBlock;
   index: number;
   progress: MotionValue<number>;
+  zoomEnd: number;
+  centerProgress: number;
+  holdEndProgress: number;
+  compact: boolean;
+  tablet: boolean;
 }) {
-  const visibilityRange = getCreditVisibilityRange(index, true);
-  const opacity = useTransform(progress, visibilityRange, [0, 1, 1, 0]);
-  const y = useTransform(progress, visibilityRange, [28, 0, 0, -22]);
-  const scale = useTransform(progress, visibilityRange, [0.97, 1, 1, 0.985]);
-
-  return (
-    <motion.div
-      style={{ opacity, y, scale }}
-      className="flex h-[48svh] flex-col items-center justify-center px-5 text-center text-[#f4f0e8] will-change-transform sm:px-8"
-    >
-      {index === 0 && (
-        <p className="font-ui mb-4 text-[0.6rem] font-bold uppercase tracking-[0.24em] sm:text-xs">
-          Dallo showroom all’officina
-        </p>
-      )}
-      {index === 0 ? (
-        <h2
-          className={`${creditsFont.className} max-w-[15ch] text-[clamp(2.25rem,min(12vw,10svh),5.25rem)] uppercase leading-[1.02] tracking-[-0.015em]`}
-        >
-          {title}
-        </h2>
-      ) : (
-        <h3
-          className={`${creditsFont.className} max-w-[15ch] text-[clamp(2.25rem,min(12vw,10svh),5.25rem)] uppercase leading-[1.02] tracking-[-0.015em]`}
-        >
-          {title}
-        </h3>
-      )}
-      <p className="mt-5 max-w-[38rem] text-[clamp(1rem,1.5vw,1.35rem)] leading-relaxed text-white/85">
-        {detail}
-      </p>
-    </motion.div>
+  const entersFromRight = index % 2 === 0;
+  const entryStart = Math.min(
+    zoomEnd + index * 0.035,
+    centerProgress - 0.12,
   );
-}
-
-function CinematicCredits({ progress, compact }: { progress: MotionValue<number>; compact: boolean }) {
+  const x = useTransform(
+    progress,
+    [entryStart, centerProgress, holdEndProgress, 1],
+    [
+      entersFromRight ? "115vw" : "-115vw",
+      "0vw",
+      "0vw",
+      entersFromRight ? "-115vw" : "115vw",
+    ],
+  );
   const y = useTransform(
     progress,
-    [compact ? 0.3 : 0.2, compact ? 0.86 : 0.84],
-    ["100svh", compact ? "-70svh" : "-125svh"],
+    [entryStart, centerProgress, holdEndProgress, 1],
+    [entersFromRight ? 14 : -14, 0, 0, entersFromRight ? -10 : 10],
+  );
+  const scale = useTransform(
+    progress,
+    [entryStart, centerProgress, holdEndProgress, 1],
+    [0.95, 1, 1, 1.025],
+  );
+  const rotateY = useTransform(
+    progress,
+    [entryStart, centerProgress, holdEndProgress, 1],
+    [
+      entersFromRight ? 2.4 : -2.4,
+      0,
+      0,
+      entersFromRight ? -1.8 : 1.8,
+    ],
+  );
+  const opacity = useTransform(
+    progress,
+    [
+      entryStart,
+      Math.min(entryStart + 0.065, centerProgress),
+      centerProgress,
+      holdEndProgress,
+      0.965,
+      1,
+    ],
+    [0, 1, 1, 1, 1, 0],
   );
 
+  const titleClassName = `${creditsFont.className} max-w-[18ch] uppercase leading-[0.94] tracking-[-0.015em] ${
+    compact
+      ? tablet
+        ? "text-[clamp(2.6rem,min(6vw,7svh),4.8rem)]"
+        : "text-[clamp(2rem,min(8vw,7svh),5.6rem)]"
+      : "text-[clamp(3rem,5.1vw,6.5rem)]"
+  }`;
+  const detailClassName = `mt-3 max-w-[44rem] font-normal leading-[1.45] text-white/82 ${
+    compact
+      ? tablet
+        ? "text-[clamp(0.9rem,1.6vw,1.05rem)]"
+        : "text-[clamp(0.78rem,1.7vw,1.1rem)]"
+      : "text-[clamp(0.9rem,1.2vw,1.15rem)]"
+  }`;
+
   return (
-    <div className="pointer-events-none absolute inset-0 z-30 lg:[perspective:1400px]">
-      <motion.div style={{ y }} className="absolute inset-x-0 top-0 will-change-transform">
-        <div className="origin-center lg:[transform:rotateX(8deg)]">
-          {story.map(({ title, detail }, index) =>
-            compact ? (
-              <MobileCinematicCreditStory
-                key={title}
-                title={title}
-                detail={detail}
-                index={index}
-                progress={progress}
-              />
-            ) : (
-              <DesktopCinematicCreditStory
-                key={title}
-                title={title}
-                detail={detail}
-                index={index}
-                progress={progress}
-              />
-            ),
-          )}
-        </div>
-      </motion.div>
+    <motion.div
+      style={{ x, y, scale, rotateY, transformPerspective: 1200, opacity }}
+      className={`flex w-full flex-col items-center justify-center text-center will-change-transform transform-gpu ${
+        tablet ? "px-10" : compact ? "px-5 sm:px-8" : "px-10"
+      }`}
+    >
+      {block.eyebrow ? (
+        <p className="font-ui mb-2 text-[0.58rem] font-bold uppercase tracking-[0.24em] text-white/82 sm:text-xs">
+          {block.eyebrow}
+        </p>
+      ) : null}
+      {block.headingLevel === 2 ? (
+        <h2 className={titleClassName}>{block.title}</h2>
+      ) : (
+        <h3 className={titleClassName}>{block.title}</h3>
+      )}
+      <p className={detailClassName}>{block.detail}</p>
+    </motion.div>
+  );
+}
+
+function CinematicCredits({
+  progress,
+  compact,
+  zoomEnd,
+  centerProgress,
+  holdEndProgress,
+  tablet,
+}: {
+  progress: MotionValue<number>;
+  compact: boolean;
+  zoomEnd: number;
+  centerProgress: number;
+  holdEndProgress: number;
+  tablet: boolean;
+}) {
+  return (
+    <div className="pointer-events-none absolute inset-0 z-30 overflow-hidden">
+      <div
+        className={`absolute inset-0 flex flex-col items-center justify-center text-[#f4f0e8] [perspective:1200px] [text-shadow:0_4px_28px_rgba(0,0,0,0.45)] ${
+          compact
+            ? tablet
+              ? "gap-[clamp(1.2rem,2.8svh,1.9rem)] px-6 py-14"
+              : "gap-[clamp(1rem,2.4svh,1.5rem)] py-12"
+            : "gap-[clamp(1.3rem,2.8svh,2rem)] py-10"
+        }`}
+      >
+        {creditBlocks.map((block, index) => (
+          <AlternatingCreditBlock
+            key={block.title}
+            block={block}
+            index={index}
+            progress={progress}
+            zoomEnd={zoomEnd}
+            centerProgress={centerProgress}
+            holdEndProgress={holdEndProgress}
+            compact={compact}
+            tablet={tablet}
+          />
+        ))}
+      </div>
     </div>
   );
 }
@@ -481,13 +333,24 @@ function CinematicCredits({ progress, compact }: { progress: MotionValue<number>
 export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
   const container = useRef<HTMLDivElement | null>(null);
   const shouldReduceMotion = useReducedMotion();
-  const isDesktopViewport = useMediaQuery("(min-width: 1024px)");
+  const isTabletViewport = useMediaQuery("(min-width: 768px)");
+  const isWideViewport = useMediaQuery("(min-width: 1024px)");
+  const canHover = useMediaQuery("(hover: hover)");
+  const hasFinePointer = useMediaQuery("(pointer: fine)");
+  const hasCoarsePointer = useMediaQuery("(any-pointer: coarse)");
+  const isDesktopViewport =
+    isWideViewport && canHover && hasFinePointer && !hasCoarsePointer;
+  const useTabletLayout = isTabletViewport && !isDesktopViewport;
   const introAssembledRef = useRef(false);
   const [isIntroAssembled, setIsIntroAssembled] = useState(false);
   const parallaxImages = images.slice(0, isDesktopViewport ? 9 : 1);
-  const zoomEnd = isDesktopViewport
-    ? desktopStepProgress[1]
-    : compactStepProgress[1];
+  const zoomEnd = isDesktopViewport ? desktopZoomEnd : compactZoomEnd;
+  const creditsLockProgress = isDesktopViewport
+    ? desktopCreditsLockProgress
+    : compactCreditsLockProgress;
+  const creditsHoldEndProgress = isDesktopViewport
+    ? desktopCreditsHoldEndProgress
+    : compactCreditsHoldEndProgress;
 
   const { scrollYProgress } = useScroll({
     target: container,
@@ -501,9 +364,9 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
       return;
     }
 
-    const stepProgress = isDesktopViewport
-      ? desktopStepProgress
-      : compactStepProgress;
+    const creditsLockTarget = isDesktopViewport
+      ? desktopCreditsLockProgress
+      : compactCreditsLockProgress;
     let activeAnimation: ReturnType<typeof animate> | null = null;
     let isAnimating = false;
     let cooldownUntil = 0;
@@ -514,6 +377,8 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
     let wheelGestureConsumed = false;
     let wheelResetTimer: number | null = null;
     let focusSettleFrame: number | null = null;
+    let stepSettleFrame: number | null = null;
+    let creditsLockGuardActive = false;
 
     const setIntroAssembly = (next: boolean) => {
       if (introAssembledRef.current === next) {
@@ -549,34 +414,22 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
       progress: number,
       direction: 1 | -1,
     ): number | null => {
-      const [, first, second, third] = stepProgress;
-
       if (direction === 1) {
-        if (progress < first - steppedScrollProgressTolerance) {
-          return first;
-        }
-
-        if (progress < second - steppedScrollProgressTolerance) {
-          return second;
-        }
-
-        if (progress < third - steppedScrollProgressTolerance) {
-          return third;
+        if (
+          progress <
+          creditsLockTarget - steppedScrollProgressTolerance
+        ) {
+          return creditsLockTarget;
         }
 
         return 1;
       }
 
-      if (progress > third + steppedScrollProgressTolerance) {
-        return third;
-      }
-
-      if (progress > second + steppedScrollProgressTolerance) {
-        return second;
-      }
-
-      if (progress > first + steppedScrollProgressTolerance) {
-        return first;
+      if (
+        progress >
+        creditsLockTarget + steppedScrollProgressTolerance
+      ) {
+        return creditsLockTarget;
       }
 
       if (progress > steppedScrollProgressTolerance) {
@@ -714,19 +567,27 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
       const targetY = Math.min(unclampedTarget, maxScrollY);
       const isFirstForwardStep =
         direction === 1 &&
-        targetProgress === stepProgress[1] &&
-        state.progress < stepProgress[1] - steppedScrollProgressTolerance;
+        targetProgress === creditsLockTarget &&
+        state.progress <
+          creditsLockTarget - steppedScrollProgressTolerance;
       const duration =
         direction === -1
           ? targetProgress === 0
-            ? 1.45
-            : 1.22
+            ? creditsReverseToIntroDuration
+            : creditsReverseStepDuration
           : targetProgress === 1
-            ? 0.86
+            ? creditsExitStepDuration
             : isFirstForwardStep
-              ? 1.8
-              : 1.08;
+              ? creditsLockStepDuration
+              : creditsExitStepDuration;
 
+      const finishStep = () => {
+        isAnimating = false;
+        activeAnimation = null;
+        cooldownUntil = performance.now() + steppedScrollCooldownMs;
+      };
+
+      creditsLockGuardActive = false;
       isAnimating = true;
       activeAnimation = animate(window.scrollY, targetY, {
         duration,
@@ -739,14 +600,58 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
           });
         },
         onComplete: () => {
-          window.scrollTo({
-            top: targetY,
-            left: 0,
-            behavior: "auto",
-          });
-          isAnimating = false;
-          activeAnimation = null;
-          cooldownUntil = performance.now() + steppedScrollCooldownMs;
+          if (targetProgress !== creditsLockTarget) {
+            window.scrollTo({
+              top: targetY,
+              left: 0,
+              behavior: "auto",
+            });
+            finishStep();
+            return;
+          }
+
+          wheelGestureConsumed = true;
+
+          if (wheelResetTimer != null) {
+            window.clearTimeout(wheelResetTimer);
+          }
+
+          wheelResetTimer = window.setTimeout(() => {
+            wheelGestureConsumed = false;
+            wheelResetTimer = null;
+          }, wheelGestureResetMs);
+
+          let settleFramesRemaining = creditsLockSettleFrames;
+
+          const settleCreditsLock = () => {
+            const liveState = getSectionState();
+            const lockedY =
+              liveState.sectionTop +
+              liveState.scrollDistance * creditsLockTarget;
+
+            window.scrollTo({
+              top: lockedY,
+              left: 0,
+              behavior: "auto",
+            });
+
+            settleFramesRemaining -= 1;
+
+            if (settleFramesRemaining > 0) {
+              stepSettleFrame = window.requestAnimationFrame(
+                settleCreditsLock,
+              );
+              return;
+            }
+
+            stepSettleFrame = null;
+            creditsLockGuardActive = true;
+            finishStep();
+          };
+
+          stepSettleFrame = window.requestAnimationFrame(
+            settleCreditsLock,
+          );
         },
       });
 
@@ -901,6 +806,15 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
         return;
       }
 
+      const activeElement = document.activeElement;
+      const ownsKeyboardGesture =
+        getSectionState().isPinned ||
+        (activeElement instanceof Node && section.contains(activeElement));
+
+      if (!ownsKeyboardGesture) {
+        return;
+      }
+
       const target = event.target;
 
       if (
@@ -946,6 +860,25 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
 
       const state = getSectionState();
 
+      if (creditsLockGuardActive && !isAnimating) {
+        const lockedY =
+          state.sectionTop +
+          state.scrollDistance * creditsLockTarget;
+
+        if (
+          Math.abs(window.scrollY - lockedY) >
+          steppedScrollFocusTolerancePx
+        ) {
+          window.scrollTo({
+            top: lockedY,
+            left: 0,
+            behavior: "auto",
+          });
+        }
+
+        return;
+      }
+
       if (state.rectTop > 12) {
         setIntroAssembly(false);
       } else if (state.isPinned) {
@@ -955,23 +888,23 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
 
     syncIntroAssembly();
     window.addEventListener("scroll", syncIntroAssembly, { passive: true });
-    window.addEventListener("wheel", onWheel, {
+    section.addEventListener("wheel", onWheel, {
       capture: true,
       passive: false,
     });
-    window.addEventListener("touchstart", onTouchStart, {
+    section.addEventListener("touchstart", onTouchStart, {
       capture: true,
       passive: true,
     });
-    window.addEventListener("touchmove", onTouchMove, {
+    section.addEventListener("touchmove", onTouchMove, {
       capture: true,
       passive: false,
     });
-    window.addEventListener("touchend", onTouchEnd, {
+    section.addEventListener("touchend", onTouchEnd, {
       capture: true,
       passive: true,
     });
-    window.addEventListener("touchcancel", onTouchEnd, {
+    section.addEventListener("touchcancel", onTouchEnd, {
       capture: true,
       passive: true,
     });
@@ -990,18 +923,22 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
         window.cancelAnimationFrame(focusSettleFrame);
       }
 
+      if (stepSettleFrame != null) {
+        window.cancelAnimationFrame(stepSettleFrame);
+      }
+
       window.removeEventListener("scroll", syncIntroAssembly);
-      window.removeEventListener("wheel", onWheel, { capture: true });
-      window.removeEventListener("touchstart", onTouchStart, {
+      section.removeEventListener("wheel", onWheel, { capture: true });
+      section.removeEventListener("touchstart", onTouchStart, {
         capture: true,
       });
-      window.removeEventListener("touchmove", onTouchMove, {
+      section.removeEventListener("touchmove", onTouchMove, {
         capture: true,
       });
-      window.removeEventListener("touchend", onTouchEnd, {
+      section.removeEventListener("touchend", onTouchEnd, {
         capture: true,
       });
-      window.removeEventListener("touchcancel", onTouchEnd, {
+      section.removeEventListener("touchcancel", onTouchEnd, {
         capture: true,
       });
       window.removeEventListener("keydown", onKeyDown, {
@@ -1009,7 +946,7 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
       });
     };
   }, [isDesktopViewport, shouldReduceMotion]);
-  // Preserve the original 86svh zoom distance; reserve the rest for the credits.
+  // The zoom completes first; the same controlled step then carries the credits into their centered lock.
   const zoomProgress = useTransform(scrollYProgress, [0, zoomEnd], [0, 1]);
   const introExitEnd = isDesktopViewport ? 0.28 : 0.15;
 
@@ -1030,6 +967,8 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
   );
 
   const mobileScale = useTransform(zoomProgress, [0, 1], [1, 2.4]);
+  const tabletScale = useTransform(zoomProgress, [0, 1], [1, 2.15]);
+  const compactScale = useTabletLayout ? tabletScale : mobileScale;
   const scale4 = useTransform(zoomProgress, [0, 1], [1, 4.08]);
   const scale5 = useTransform(zoomProgress, [0, 1], [1, 5]);
   const scale6 = useTransform(zoomProgress, [0, 1], [1, 6]);
@@ -1037,7 +976,7 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
   const scale9 = useTransform(zoomProgress, [0, 1], [1, 9]);
   const copyScrimOpacity = useTransform(
     scrollYProgress,
-    isDesktopViewport ? [0.28, 0.44] : [0.38, 0.54],
+    isDesktopViewport ? [0.4, zoomEnd] : [0.44, zoomEnd],
     [0, 0.9],
   );
 
@@ -1056,14 +995,14 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
     <>
     <div
       ref={container}
-      className="relative h-[400svh] lg:h-[600svh] bg-[var(--home-experience-surface)]"
+      className="relative h-[300svh] lg:h-[400svh] bg-[var(--home-experience-surface)]"
     >
       <div className="sticky top-0 h-[100svh] overflow-hidden">
         {parallaxImages.map(({ src, alt }, index) => {
-          const scale = isDesktopViewport ? scales[index % scales.length] : mobileScale;
+          const scale = isDesktopViewport ? scales[index % scales.length] : compactScale;
           const idlePattern =
             idleFloatPatterns[index % idleFloatPatterns.length];
-          const idleStrength = isDesktopViewport ? 1 : 0.42;
+          const idleStrength = isDesktopViewport ? 1 : useTabletLayout ? 0.34 : 0.42;
           const settleDelay = isDesktopViewport ? index * 0.025 : 0;
 
           return (
@@ -1164,13 +1103,19 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
                       }
                 }
                 style={{
-                  scale: isDesktopViewport ? 1 : mobileScale,
+                  scale: isDesktopViewport ? 1 : compactScale,
                   borderRadius:
                     isDesktopViewport && index === 0
                       ? desktopLeadImageBorderRadius
                       : undefined,
                 }}
-                className="relative h-[44svh] w-[76vw] overflow-hidden lg:h-[25vh] lg:w-[25vw] rounded-[1.25rem] bg-[oklch(18%_0.014_56)] lg:shadow-[0_24px_70px_oklch(18%_0.014_56/0.18)]"
+                className={`relative overflow-hidden rounded-[1.25rem] bg-[oklch(18%_0.014_56)] ${
+                  isDesktopViewport
+                    ? "h-[25vh] w-[25vw] shadow-[0_24px_70px_oklch(18%_0.014_56/0.18)]"
+                    : useTabletLayout
+                      ? "h-[44svh] w-[72vw] max-w-[46rem]"
+                      : "h-[48svh] w-[84vw] [@media(max-height:700px)]:h-[44svh] [@media(max-height:700px)]:w-[82vw]"
+                }`}
               >
                 <Image
                   src={src}
@@ -1197,23 +1142,72 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
         <div className="pointer-events-none absolute inset-0 z-30 text-black">
           <motion.div
             style={{ x: introLeftX, opacity: introOpacity }}
-            className="absolute left-[6vw] top-[10svh] max-w-[85vw] will-change-transform lg:left-[4vw] lg:top-[3svh] lg:max-w-[26vw]"
+            className={`absolute will-change-transform ${
+              isDesktopViewport
+                ? "left-[4vw] top-[4svh] max-w-[30vw]"
+                : useTabletLayout
+                  ? "left-[6vw] top-[8svh] max-w-[58vw]"
+                  : "left-[8vw] top-[12svh] max-w-[76vw] [@media(max-height:700px)]:top-[9svh]"
+            }`}
           >
-            <p className="font-ui mb-3 text-[0.65rem] font-bold uppercase tracking-[0.2em] text-black/65">Grossi Moto · Roma</p>
-            <p className="font-ui text-[clamp(1.75rem,7vw,3rem)] font-bold leading-[0.95] tracking-[-0.02em] lg:text-[clamp(2rem,3.1vw,4rem)]">
+            <p className="font-ui mb-2 text-[0.62rem] font-semibold uppercase tracking-[0.16em] text-black/58 sm:text-[0.66rem]">Grossi Moto · Roma</p>
+            <p
+              className={`font-display font-semibold uppercase leading-[0.97] tracking-[-0.015em] ${
+                isDesktopViewport
+                  ? "text-[clamp(2.15rem,3vw,3.85rem)]"
+                  : useTabletLayout
+                    ? "text-[clamp(2.5rem,5.2vw,4rem)]"
+                    : "text-[clamp(1.9rem,7.4vw,3.15rem)]"
+              }`}
+            >
               La tua prossima strada.
             </p>
           </motion.div>
           <motion.div
             style={{ x: introRightX, opacity: introOpacity }}
-            className="absolute bottom-[calc(6.5rem+env(safe-area-inset-bottom))] right-[6vw] max-w-[85vw] text-right will-change-transform lg:bottom-[5svh] lg:right-[4vw] lg:max-w-[25vw]"
+            className={`absolute text-right will-change-transform ${
+              isDesktopViewport
+                ? "bottom-[5svh] right-[4vw] max-w-[29vw]"
+                : useTabletLayout
+                  ? isWideViewport
+                    ? "bottom-[6svh] right-[6vw] max-w-[58vw]"
+                    : "bottom-[calc(7rem+env(safe-area-inset-bottom))] right-[6vw] max-w-[58vw]"
+                  : "bottom-[calc(6rem+env(safe-area-inset-bottom))] right-[8vw] max-w-[76vw] [@media(max-height:700px)]:bottom-[calc(5.25rem+env(safe-area-inset-bottom))]"
+            }`}
           >
-            <p className="font-ui text-[clamp(1.75rem,7vw,3rem)] font-bold leading-[0.95] tracking-[-0.02em] lg:text-[clamp(2rem,3.6vw,4.5rem)]">Parte da qui.</p>
-            <p className="font-ui mt-4 text-xs tracking-wide text-black/70">Dalla scelta del mezzo, a ogni nuovo viaggio.</p>
+            <p
+              className={`font-display font-semibold uppercase leading-[0.97] tracking-[-0.015em] ${
+                isDesktopViewport
+                  ? "text-[clamp(2.2rem,3.35vw,4.15rem)]"
+                  : useTabletLayout
+                    ? "text-[clamp(2.55rem,5.35vw,4.1rem)]"
+                    : "text-[clamp(1.95rem,7.6vw,3.25rem)]"
+              }`}
+            >
+              Parte da qui.
+            </p>
+            <p
+              className={`font-ui mt-3 max-w-[30rem] leading-[1.45] tracking-normal text-black/62 ${
+                isDesktopViewport
+                  ? "ml-auto text-sm"
+                  : useTabletLayout
+                    ? "ml-auto text-[0.9rem]"
+                    : "text-[0.78rem]"
+              }`}
+            >
+              Dalla scelta del mezzo, a ogni nuovo viaggio.
+            </p>
           </motion.div>
         </div>
 
-        <CinematicCredits progress={scrollYProgress} compact={!isDesktopViewport} />
+        <CinematicCredits
+          progress={scrollYProgress}
+          compact={!isDesktopViewport}
+          zoomEnd={zoomEnd}
+          centerProgress={creditsLockProgress}
+          holdEndProgress={creditsHoldEndProgress}
+          tablet={useTabletLayout}
+        />
       </div>
     </div>
     <ExperienceContact />

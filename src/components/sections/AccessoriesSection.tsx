@@ -1,11 +1,10 @@
-"use client";
-
 import { AccessoryRail } from "./AccessoryRail";
 
 export function AccessoriesSection() {
   return (
     <section
       aria-labelledby="accessories-heading"
+      data-call-cta-theme="black"
       className="relative bg-white text-[#111111]"
     >
       <div className="relative overflow-hidden rounded-[32px] bg-[var(--home-accessories-surface)] px-5 py-20 sm:rounded-[40px] sm:px-7 sm:py-28 md:px-10 lg:rounded-[56px] lg:px-14 lg:py-32 xl:px-20">
@@ -16,7 +15,7 @@ export function AccessoriesSection() {
             </p>
             <h2
               id="accessories-heading"
-              className="font-display mt-4 text-[clamp(2.4rem,6vw,5rem)] font-bold leading-[0.9] tracking-tight"
+              className="font-display font-editorial mt-4 text-[clamp(2.4rem,6vw,5rem)] font-bold leading-[0.9] tracking-tight"
             >
               Accessori che fanno
               <br />

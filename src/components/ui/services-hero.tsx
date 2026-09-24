@@ -1,15 +1,15 @@
 "use client";
 
-import { useRef } from "react";
+import { ActionMark } from "@/components/ui/control-glyphs";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight, Globe2, MapPin, PhoneCall } from "lucide-react";
+import { Globe2, MapPin, PhoneCall } from "lucide-react";
 import {
   motion,
   useReducedMotion,
-  useScroll,
-  useTransform,
 } from "framer-motion";
+
+import { Navbar } from "@/components/hero/Navbar";
 
 const HERO_IMAGE = {
   src: "/grossimoto/servizi-hero/agility-s-125-consulenza.jpg",
@@ -24,22 +24,6 @@ const imageClosedClipPath =
 
 export function ServicesHero() {
   const reduceMotion = useReducedMotion();
-  const mobileImageRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress: mobileImageScrollProgress } = useScroll({
-    target: mobileImageRef,
-    offset: ["start start", "end 35%"],
-  });
-  const mobileImageClipPath = useTransform(
-    mobileImageScrollProgress,
-    [0, 1],
-    [imageOpenClipPath, imageClosedClipPath],
-  );
-  const mobileImageX = useTransform(
-    mobileImageScrollProgress,
-    [0, 0.18, 1],
-    ["0%", "0%", "80%"],
-  );
-
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -66,113 +50,159 @@ export function ServicesHero() {
   return (
     <>
       <motion.section
-        className="relative flex min-h-[calc(100svh-5.6rem)] w-full flex-col overflow-hidden bg-white text-[#0A0A0A] md:flex-row lg:hidden"
+        className="relative w-full bg-white text-[#0A0A0A] lg:hidden"
         initial={reduceMotion ? false : "hidden"}
         animate="visible"
         variants={containerVariants}
       >
-        <div className="flex w-full flex-col justify-between md:w-1/2 md:p-12 lg:w-3/5 lg:p-16 xl:p-20">
-          <div className="hidden md:block">
-            <motion.main variants={containerVariants}>
-              <motion.p
-                className="font-ui mb-5 text-[0.68rem] font-bold uppercase tracking-[0.18em] text-black/48 sm:text-xs"
-                variants={itemVariants}
-              >
-                Assistenza moto e scooter
-              </motion.p>
-
-              <motion.h1
-                className="font-display max-w-[11ch] text-[clamp(3.3rem,11vw,6.5rem)] font-bold uppercase leading-[0.86] tracking-[-0.045em] text-[#0A0A0A] md:text-[clamp(4.4rem,7vw,7.5rem)] lg:text-[clamp(5.2rem,6vw,8.5rem)]"
-                variants={itemVariants}
-              >
-                Assistenza.
-                <br />
-                <span className="text-[#C72A09]">Officina.</span>
-                <br />
-                Esperienza.
-              </motion.h1>
-
-              <motion.div
-                className="my-7 h-1 w-20 bg-[#C72A09] sm:my-8"
-                variants={itemVariants}
-              />
-
-              <motion.p
-                className="mb-8 max-w-[34rem] text-base font-medium leading-7 text-black/58 sm:text-lg sm:leading-8"
-                variants={itemVariants}
-              >
-                Tagliandi, diagnosi e accessori per moto e scooter KYMCO e Voge.
-                Raccontaci cosa ti serve: ti aiutiamo a capire da dove partire.
-              </motion.p>
-
-              <motion.div variants={itemVariants}>
-                <Link
-                  href="/contatti?argomento=officina#richiesta"
-                  className="font-ui inline-flex min-h-11 items-center text-sm font-bold uppercase tracking-[0.14em] text-[#C72A09] transition-opacity duration-150 hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C72A09]/45 focus-visible:ring-offset-4 focus-visible:ring-offset-white motion-reduce:transition-none sm:text-base"
-                >
-                  Scrivi all’officina
-                </Link>
-              </motion.div>
-            </motion.main>
-          </div>
-
-          <div
-            ref={mobileImageRef}
-            className="relative min-h-[620px] w-full overflow-hidden md:hidden"
-          >
-            <motion.div
-              className="absolute inset-0 overflow-hidden"
-              style={{
-                clipPath: reduceMotion ? imageOpenClipPath : mobileImageClipPath,
-                x: reduceMotion ? "0%" : mobileImageX,
-              }}
-            >
-              <Image
-                src={HERO_IMAGE.src}
-                alt={HERO_IMAGE.alt}
-                fill
-                priority
-                sizes="100vw"
-                className="object-cover object-center"
-              />
-            </motion.div>
+        <div className="p-2 sm:p-3 md:hidden">
+          <div className="relative min-h-[calc(100svh-1rem)] overflow-hidden rounded-[1.35rem] bg-[#171514] text-white sm:min-h-[calc(100svh-1.5rem)] sm:rounded-[1.75rem]">
+            <Image
+              src={HERO_IMAGE.src}
+              alt={HERO_IMAGE.alt}
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover object-center"
+            />
 
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/78 via-black/26 to-black/12"
+              className="pointer-events-none absolute inset-0 z-[1] bg-[linear-gradient(180deg,rgba(10,10,10,0.72)_0%,rgba(10,10,10,0.35)_36%,rgba(10,10,10,0.72)_100%)]"
+            />
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-x-0 top-0 z-[2] h-40 bg-[linear-gradient(180deg,rgba(0,0,0,0.46),transparent)]"
             />
 
-            <motion.main
-              className="absolute inset-x-0 bottom-0 z-10 px-8 pb-10 pt-28 text-white sm:px-10 sm:pb-12"
-              variants={containerVariants}
-            >
-              <motion.p
-                className="font-ui mb-4 text-[0.68rem] font-bold uppercase tracking-[0.18em] text-white/68 sm:text-xs"
-                variants={itemVariants}
+            <div className="relative z-10 flex min-h-[calc(100svh-1rem)] flex-col sm:min-h-[calc(100svh-1.5rem)]">
+              <Navbar />
+
+              <motion.main
+                className="mx-auto flex w-full max-w-[32rem] flex-1 flex-col justify-center px-4 pt-[clamp(0.75rem,2.2svh,1.5rem)] pb-[calc(5.75rem+env(safe-area-inset-bottom))] text-left sm:px-5 [@media(max-height:700px)]:pt-1.5 [@media(max-height:700px)]:pb-[calc(5.25rem+env(safe-area-inset-bottom))]"
+                variants={containerVariants}
               >
+                <motion.p
+                  className="font-ui inline-flex min-h-6 w-fit self-center items-center rounded-full bg-[#A34A3E] px-2.5 py-1 text-[0.56rem] font-bold uppercase tracking-[0.12em] text-white shadow-[0_10px_26px_rgba(74,28,24,0.22)]"
+                  variants={itemVariants}
+                >
+                  OFFICINA · ASSISTENZA · ROMA
+                </motion.p>
+
+                <motion.h1
+                  className="font-display font-editorial mt-3 w-full max-w-[20rem] text-[clamp(2.95rem,13.2vw,3.55rem)] font-bold uppercase leading-[0.86] tracking-[-0.045em] text-white [overflow-wrap:normal] [word-break:normal] [@media(max-height:700px)]:mt-2 [@media(max-height:700px)]:text-[2.45rem]"
+                  variants={itemVariants}
+                >
+                  Il tuo mezzo,
+                  <br />
+                  <span className="text-[#A34A3E]">seguito bene.</span>
+                </motion.h1>
+
+                <motion.p
+                  className="mt-3 w-full max-w-[21rem] text-[clamp(0.8rem,3.45vw,0.9rem)] font-medium leading-[1.5] text-white/86 [overflow-wrap:break-word] [@media(max-height:700px)]:mt-2 [@media(max-height:700px)]:text-[0.73rem] [@media(max-height:700px)]:leading-[1.42]"
+                  variants={itemVariants}
+                >
+                  Tagliandi, diagnosi e assistenza per moto e scooter KYMCO e Voge.
+                  <span className="mt-1 block text-white/68">
+                    Ti aiutiamo a capire da dove partire.
+                  </span>
+                </motion.p>
+
+                <motion.div
+                  className="mt-4 [@media(max-height:700px)]:mt-3"
+                  variants={itemVariants}
+                >
+                  <Link
+                    href="/contatti?argomento=officina#richiesta"
+                    className="font-ui inline-flex min-h-11 items-center justify-center gap-2 rounded-[0.9rem] bg-[#A34A3E] px-5 py-2.5 text-[0.78rem] font-bold text-white shadow-[0_14px_38px_rgba(74,28,24,0.28)] transition-[background-color,transform] duration-200 hover:bg-[#8B3A31] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/85 focus-visible:ring-offset-4 focus-visible:ring-offset-black/60 motion-reduce:transform-none motion-reduce:transition-none"
+                  >
+                    Scrivi all’officina
+                    <ActionMark />
+                  </Link>
+                </motion.div>
+
+                <motion.div
+                  className="relative mt-[clamp(1.5rem,4svh,2.75rem)] w-full overflow-hidden rounded-[1.35rem] bg-[#F7F4EF] p-4 text-[#0A0A0A] shadow-[0_20px_56px_rgba(10,10,10,0.18)] [@media(max-height:700px)]:mt-4 [@media(max-height:700px)]:p-3"
+                  variants={itemVariants}
+                >
+                  <span
+                    aria-hidden="true"
+                    className="font-numeric pointer-events-none absolute -right-1 -top-2 text-[5.75rem] font-bold leading-none tracking-[-0.08em] text-[#A34A3E]/[0.07] [@media(max-height:700px)]:text-[4.8rem]"
+                  >
+                    01
+                  </span>
+
+                  <div className="relative z-10 flex items-start justify-between gap-4">
+                    <div>
+                      <p className="font-ui text-[0.58rem] font-bold uppercase tracking-[0.18em] text-[#A34A3E]">
+                        Servizi
+                      </p>
+                      <p className="font-display mt-1 text-[1.55rem] font-bold uppercase leading-[0.9] tracking-[-0.035em] text-[#0A0A0A] [@media(max-height:700px)]:text-[1.35rem]">
+                        Officina in sede.
+                      </p>
+                    </div>
+                    <span className="font-numeric flex h-8 min-w-8 items-center justify-center rounded-full bg-[#0A0A0A] px-2 text-[0.67rem] font-semibold text-white shadow-[0_8px_24px_rgba(0,0,0,0.16)]">
+                      01
+                    </span>
+                  </div>
+
+                  <div className="relative z-10 mt-4 grid grid-cols-2 gap-2 [@media(max-height:700px)]:mt-3">
+                    <div className="rounded-[1rem] bg-white/82 px-3 py-3 shadow-[inset_0_0_0_1px_rgba(10,10,10,0.06),0_8px_22px_rgba(10,10,10,0.05)] [@media(max-height:700px)]:py-2.5">
+                      <span className="font-numeric block text-[0.55rem] font-semibold text-[#A34A3E]">01</span>
+                      <p className="font-ui mt-1 text-[0.78rem] font-bold leading-tight text-[#0A0A0A]">Tagliandi</p>
+                    </div>
+                    <div className="rounded-[1rem] bg-white/82 px-3 py-3 shadow-[inset_0_0_0_1px_rgba(10,10,10,0.06),0_8px_22px_rgba(10,10,10,0.05)] [@media(max-height:700px)]:py-2.5">
+                      <span className="font-numeric block text-[0.55rem] font-semibold text-[#A34A3E]">02</span>
+                      <p className="font-ui mt-1 text-[0.78rem] font-bold leading-tight text-[#0A0A0A]">Diagnosi</p>
+                    </div>
+                    <div className="col-span-2 flex items-end justify-between gap-3 rounded-[1rem] bg-white/82 px-3 py-3 shadow-[inset_0_0_0_1px_rgba(10,10,10,0.06),0_8px_22px_rgba(10,10,10,0.05)] [@media(max-height:700px)]:py-2.5">
+                      <div>
+                        <span className="font-numeric block text-[0.55rem] font-semibold text-[#A34A3E]">03</span>
+                        <p className="font-ui mt-1 text-[0.78rem] font-bold leading-tight text-[#0A0A0A]">Montaggio accessori</p>
+                      </div>
+                      <span className="font-ui text-[0.55rem] font-bold uppercase tracking-[0.14em] text-black/42">
+                        Moto · Scooter
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="relative z-10 mt-2.5 flex items-center justify-between gap-3 rounded-[1rem] bg-[#0A0A0A] px-3 py-2.5 text-white shadow-[0_10px_24px_rgba(0,0,0,0.14)] [@media(max-height:700px)]:py-2">
+                    <div className="font-ui flex min-w-0 items-center gap-2 text-[0.68rem] font-semibold leading-[1.2]">
+                      <MapPin
+                        aria-hidden="true"
+                        className="h-3.5 w-3.5 shrink-0 text-white/78"
+                        strokeWidth={1.8}
+                      />
+                      <span className="truncate">Via Festo Porzio 22</span>
+                    </div>
+                    <span className="font-ui shrink-0 text-[0.54rem] font-bold uppercase tracking-[0.15em] text-white/48">
+                      Roma
+                    </span>
+                  </div>
+                </motion.div>
+              </motion.main>
+            </div>
+          </div>
+        </div>
+
+        <div className="hidden min-h-[calc(100svh-5.6rem)] w-full flex-col md:flex md:flex-row">
+          <div className="flex w-1/2 flex-col justify-between p-12">
+            <motion.main variants={containerVariants}>
+              <motion.p className="font-ui mb-5 text-xs font-bold uppercase tracking-[0.18em] text-black/48" variants={itemVariants}>
                 Assistenza moto e scooter
               </motion.p>
 
-              <motion.h1
-                className="font-display max-w-[11ch] text-[clamp(3.3rem,11vw,6.5rem)] font-bold uppercase leading-[0.86] tracking-[-0.045em] text-white"
-                variants={itemVariants}
-              >
+              <motion.h1 className="font-display max-w-[11ch] text-[clamp(4.4rem,7vw,7.5rem)] font-bold uppercase leading-[0.86] tracking-[-0.045em] text-[#0A0A0A]" variants={itemVariants}>
                 Assistenza.
                 <br />
-                <span className="text-[#C72A09]">Officina.</span>
+                <span className="text-[#A34A3E]">Officina.</span>
                 <br />
                 Esperienza.
               </motion.h1>
 
-              <motion.div
-                className="my-6 h-1 w-20 bg-[#C72A09]"
-                variants={itemVariants}
-              />
+              <motion.div className="my-8 h-1 w-20 bg-[#A34A3E]" variants={itemVariants} />
 
-              <motion.p
-                className="mb-7 max-w-[34rem] text-base font-medium leading-7 text-white/78"
-                variants={itemVariants}
-              >
+              <motion.p className="mb-8 max-w-[34rem] text-lg font-medium leading-8 text-black/58" variants={itemVariants}>
                 Tagliandi, diagnosi e accessori per moto e scooter KYMCO e Voge.
                 Raccontaci cosa ti serve: ti aiutiamo a capire da dove partire.
               </motion.p>
@@ -180,78 +210,52 @@ export function ServicesHero() {
               <motion.div variants={itemVariants}>
                 <Link
                   href="/contatti?argomento=officina#richiesta"
-                  className="font-ui inline-flex min-h-11 items-center text-sm font-bold uppercase tracking-[0.14em] text-white transition-opacity duration-150 hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-4 focus-visible:ring-offset-black/70 motion-reduce:transition-none sm:text-base"
+                  className="font-ui inline-flex min-h-11 items-center text-base font-bold uppercase tracking-[0.14em] text-[#A34A3E] transition-opacity duration-150 hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A34A3E]/45 focus-visible:ring-offset-4 focus-visible:ring-offset-white motion-reduce:transition-none"
                 >
                   Scrivi all’officina
                 </Link>
               </motion.div>
             </motion.main>
+
+            <motion.footer className="mt-14 mb-0" variants={itemVariants}>
+              <div className="grid grid-cols-1 gap-5 pt-6 text-xs font-medium text-black/58 sm:grid-cols-3 sm:gap-6">
+                <div className="flex min-w-0 items-center">
+                  <Globe2 aria-hidden="true" className="mr-2 h-5 w-5 shrink-0 text-[#A34A3E]" strokeWidth={1.8} />
+                  <span className="truncate">grossi-moto.vercel.app</span>
+                </div>
+
+                <a
+                  href="tel:+393289185029"
+                  className="flex min-w-0 items-center rounded-sm transition-colors duration-150 hover:text-[#0A0A0A] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A34A3E]/45 focus-visible:ring-offset-4 focus-visible:ring-offset-white motion-reduce:transition-none"
+                >
+                  <PhoneCall aria-hidden="true" className="mr-2 h-5 w-5 shrink-0 text-[#A34A3E]" strokeWidth={1.8} />
+                  <span>+39 328 918 5029</span>
+                </a>
+
+                <div className="flex min-w-0 items-center">
+                  <MapPin aria-hidden="true" className="mr-2 h-5 w-5 shrink-0 text-[#A34A3E]" strokeWidth={1.8} />
+                  <span>Via Festo Porzio, 22, Roma</span>
+                </div>
+              </div>
+            </motion.footer>
           </div>
 
-          <motion.footer
-            className="mx-8 mt-10 mb-8 sm:mx-10 sm:mb-10 md:mx-0 md:mt-14 md:mb-0 lg:mt-20"
-            variants={itemVariants}
+          <motion.div
+            className="relative min-h-full w-1/2 overflow-hidden"
+            initial={reduceMotion ? false : { clipPath: imageClosedClipPath }}
+            animate={{ clipPath: imageOpenClipPath }}
+            transition={{ duration: reduceMotion ? 0 : 1.2, ease: easeOut }}
           >
-            <div className="grid grid-cols-1 gap-5 pt-6 text-xs font-medium text-black/58 sm:grid-cols-3 sm:gap-6">
-              <div className="flex min-w-0 items-center">
-                <Globe2
-                  aria-hidden="true"
-                  className="mr-2 h-5 w-5 shrink-0 text-[#C72A09]"
-                  strokeWidth={1.8}
-                />
-                <span className="truncate">grossi-moto.vercel.app</span>
-              </div>
-
-              <a
-                href="tel:+393289185029"
-                className="flex min-w-0 items-center rounded-sm transition-colors duration-150 hover:text-[#0A0A0A] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C72A09]/45 focus-visible:ring-offset-4 focus-visible:ring-offset-white motion-reduce:transition-none"
-              >
-                <PhoneCall
-                  aria-hidden="true"
-                  className="mr-2 h-5 w-5 shrink-0 text-[#C72A09]"
-                  strokeWidth={1.8}
-                />
-                <span>+39 328 918 5029</span>
-              </a>
-
-              <div className="flex min-w-0 items-center">
-                <MapPin
-                  aria-hidden="true"
-                  className="mr-2 h-5 w-5 shrink-0 text-[#C72A09]"
-                  strokeWidth={1.8}
-                />
-                <span>Via Festo Porzio, 22, Roma</span>
-              </div>
-            </div>
-          </motion.footer>
+            <Image
+              src={HERO_IMAGE.src}
+              alt={HERO_IMAGE.alt}
+              fill
+              priority
+              sizes="50vw"
+              className="object-cover object-center"
+            />
+          </motion.div>
         </div>
-
-        <motion.div
-          className="relative hidden min-h-[340px] w-full overflow-hidden md:block md:min-h-full md:w-1/2"
-          initial={
-            reduceMotion
-              ? false
-              : {
-                  clipPath: imageClosedClipPath,
-                }
-          }
-          animate={{
-            clipPath: imageOpenClipPath,
-          }}
-          transition={{
-            duration: reduceMotion ? 0 : 1.2,
-            ease: easeOut,
-          }}
-        >
-          <Image
-            src={HERO_IMAGE.src}
-            alt={HERO_IMAGE.alt}
-            fill
-            priority
-            sizes="50vw"
-            className="object-cover object-center"
-          />
-        </motion.div>
       </motion.section>
 
       <section className="hidden bg-white px-2 pb-2 lg:block">
@@ -269,7 +273,7 @@ export function ServicesHero() {
           >
             <div className="mx-auto w-full max-w-6xl text-center">
               <motion.p
-                className="font-ui mb-5 text-xs font-bold uppercase tracking-[0.18em] text-[#C72A09]"
+                className="font-ui mb-5 text-xs font-bold uppercase tracking-[0.18em] text-[#A34A3E]"
                 initial={reduceMotion ? false : { opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{
@@ -291,7 +295,7 @@ export function ServicesHero() {
                   ease: easeOut,
                 }}
               >
-                <span className="text-[#C72A09]">Assistenza.</span>
+                <span className="text-[#A34A3E]">Assistenza.</span>
                 <br />
                 Officina. Esperienza.
               </motion.h1>
@@ -315,15 +319,11 @@ export function ServicesHero() {
           <div className="absolute right-4 top-4 z-20 flex items-center justify-end xl:right-5 xl:top-5">
             <a
               href="tel:+393289185029"
-              className="font-ui group inline-flex min-h-12 items-center gap-3 rounded-full bg-white py-1.5 pl-5 pr-1.5 text-sm font-bold text-[#0A0A0A] shadow-lg shadow-black/[0.08] transition-[background-color,color,transform] duration-200 hover:bg-[#0A0A0A] hover:text-white active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/35 focus-visible:ring-offset-4 focus-visible:ring-offset-[#F4F4F2] motion-reduce:transform-none motion-reduce:transition-none"
+              className="font-ui group inline-flex min-h-12 items-center gap-3 rounded-[0.9rem] bg-white py-1.5 pl-5 pr-1.5 text-sm font-bold text-[#0A0A0A] shadow-lg shadow-black/[0.08] transition-[background-color,color,transform] duration-200 hover:bg-[#0A0A0A] hover:text-white active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/35 focus-visible:ring-offset-4 focus-visible:ring-offset-[#F4F4F2] motion-reduce:transform-none motion-reduce:transition-none"
             >
               Chiama ora
-              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#0A0A0A] text-white transition-[background-color,color,transform] duration-200 group-hover:scale-105 group-hover:bg-white group-hover:text-[#0A0A0A] motion-reduce:transform-none motion-reduce:transition-none">
-                <ArrowUpRight
-                  aria-hidden="true"
-                  className="h-4 w-4"
-                  strokeWidth={1.9}
-                />
+              <span className="flex h-9 w-9 items-center justify-center rounded-[0.8rem] bg-[#0A0A0A] text-white transition-[background-color,color,transform] duration-200 group-hover:bg-white group-hover:text-[#0A0A0A] motion-reduce:transform-none motion-reduce:transition-none">
+                <PhoneCall aria-hidden="true" className="h-4 w-4" strokeWidth={1.9} />
               </span>
             </a>
           </div>

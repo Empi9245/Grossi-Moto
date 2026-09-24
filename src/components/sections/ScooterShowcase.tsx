@@ -1,5 +1,6 @@
 "use client";
 
+import { ActionMark } from "@/components/ui/control-glyphs";
 import type { CSSProperties } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
@@ -11,7 +12,7 @@ import {
   motion,
   useReducedMotion,
 } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
+
 import { clsx } from "clsx";
 
 import { usePageTransition } from "@/components/transitions/PageTransitionProvider";
@@ -324,6 +325,7 @@ export function ScooterShowcase({
         aria-hidden="true"
         className="relative h-[100svh] overflow-hidden"
         data-showcase-mode="reveal"
+        data-call-cta-theme="black"
         style={{ background: showcaseScooters[0]?.backgroundSurface }}
       >
         <ShowcaseFrame activeIndex={0} disableMotion />
@@ -337,6 +339,7 @@ export function ScooterShowcase({
       aria-label="Showcase scooter Grossimoto"
       className="relative z-10 bg-[var(--page-background)]"
       data-showcase-mode="pinned"
+      data-call-cta-theme="black"
       style={{
         height: `calc(100svh * ${showcaseScooters.length})`,
       }}
@@ -557,12 +560,12 @@ function ShowcaseFrame({
           <TransitionLink
             href="/scooters"
             scooterId={activeScooter.id}
-            className="font-ui inline-flex w-fit items-center gap-3 text-[0.74rem] font-bold uppercase tracking-[0.13em] text-[var(--showcase-text)] outline-none transition-colors duration-200 hover:text-[var(--showcase-accent)] focus-visible:ring-2 focus-visible:ring-[var(--showcase-accent)] focus-visible:ring-offset-4 focus-visible:ring-offset-[var(--page-background)] lg:min-h-12 lg:flex-none lg:self-start lg:rounded-full lg:border lg:border-[var(--showcase-rule)] lg:bg-white/[0.18] lg:px-5 lg:py-3 lg:hover:bg-white/[0.32]"
+            className="font-ui inline-flex w-fit items-center gap-3 text-[0.74rem] font-bold uppercase tracking-[0.13em] text-[var(--showcase-text)] outline-none transition-colors duration-200 hover:text-[var(--showcase-accent)] focus-visible:ring-2 focus-visible:ring-[var(--showcase-accent)] focus-visible:ring-offset-4 focus-visible:ring-offset-[var(--page-background)] lg:min-h-12 lg:flex-none lg:self-start lg:rounded-[0.9rem] lg:border lg:border-[var(--showcase-rule)] lg:bg-white/[0.18] lg:px-5 lg:py-3 lg:hover:bg-white/[0.32]"
           >
             <span className="border-b border-[var(--showcase-rule)] pb-1 lg:border-b-0 lg:pb-0">
               Confronta modelli
             </span>
-            <ArrowUpRight aria-hidden="true" className="h-4 w-4" strokeWidth={1.8} />
+            <ActionMark />
           </TransitionLink>
         </aside>
       </div>
@@ -708,9 +711,9 @@ function ScooterSlide({
         </div>
         <span
           aria-hidden="true"
-          className="pointer-events-none absolute right-[7%] bottom-[12%] z-20 flex h-10 w-10 items-center justify-center rounded-full border border-[var(--showcase-rule)] bg-white/55 text-[var(--showcase-text)] opacity-0 shadow-sm backdrop-blur-sm transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100 motion-reduce:transition-none"
+          className="pointer-events-none absolute right-[7%] bottom-[12%] z-20 flex h-10 w-10 items-center justify-center rounded-[0.8rem] border border-[var(--showcase-rule)] bg-white/55 text-[var(--showcase-text)] opacity-0 shadow-sm backdrop-blur-sm transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100 motion-reduce:transition-none"
         >
-          <ArrowUpRight className="h-4 w-4" strokeWidth={1.8} />
+          <ActionMark compact />
         </span>
       </TransitionLink>
     </motion.div>
@@ -760,21 +763,37 @@ function StaticShowcase() {
   return (
     <section
       aria-label="Scooter in evidenza"
-      className="bg-[var(--page-background)] px-4 py-14 text-[oklch(18%_0.014_56)] sm:px-6 sm:py-16 lg:px-10 lg:py-24"
+      className={clsx(
+        "bg-[var(--page-background)] text-[oklch(18%_0.014_56)]",
+        smartphone
+          ? "px-0 py-0"
+          : "px-4 py-14 sm:px-6 sm:py-16 lg:px-10 lg:py-24",
+      )}
       data-showcase-mode="static"
+      data-call-cta-theme="black"
     >
       <div className="mx-auto max-w-[92rem]">
-        <div className="border-t border-[oklch(20%_0.014_56/0.16)] pt-5">
-          <p className="font-ui text-xs font-bold uppercase tracking-[0.18em] text-[oklch(24%_0.014_56/0.54)]">
-            Gamma in evidenza
-          </p>
-          <h2 className="font-display mt-3 max-w-[12ch] text-[clamp(3rem,10vw,6rem)] font-bold leading-[0.92] tracking-normal text-[oklch(18%_0.014_56)]">
-            Scooter in showroom
-          </h2>
-        </div>
+        {!smartphone ? (
+          <div className="border-t border-[oklch(20%_0.014_56/0.16)] pt-5">
+            <p className="font-ui text-xs font-bold uppercase tracking-[0.18em] text-[oklch(24%_0.014_56/0.54)]">
+              Gamma in evidenza
+            </p>
+            <h2 className="font-display mt-3 max-w-[12ch] text-[clamp(3rem,10vw,6rem)] font-bold leading-[0.92] tracking-normal text-[oklch(18%_0.014_56)]">
+              Scooter in showroom
+            </h2>
+          </div>
+        ) : null}
 
         {smartphone ? (
-          <div className="-mx-4 mt-8">
+          <div className="relative" data-showroom-entry>
+            <div className="pointer-events-none absolute left-4 right-[5.75rem] top-[calc(1.25rem+env(safe-area-inset-top))] z-[60]">
+              <p className="font-ui text-[0.58rem] font-bold uppercase tracking-[0.18em] text-[oklch(24%_0.014_56/0.54)]">
+                Gamma in evidenza
+              </p>
+              <h2 className="font-display mt-1.5 max-w-[11rem] text-[clamp(1.7rem,7vw,2.2rem)] font-bold leading-[0.92] tracking-normal text-[oklch(18%_0.014_56)]">
+                Scooter in showroom
+              </h2>
+            </div>
             <StackedShowroomCards />
           </div>
         ) : (
@@ -825,9 +844,9 @@ function StaticShowcase() {
                     </div>
                     <span
                       aria-hidden="true"
-                      className="pointer-events-none absolute right-3 bottom-3 z-20 flex h-9 w-9 items-center justify-center rounded-full border border-black/10 bg-white/65 text-black/75 opacity-0 shadow-sm backdrop-blur-sm transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100 motion-reduce:transition-none"
+                      className="pointer-events-none absolute right-3 bottom-3 z-20 flex h-9 w-9 items-center justify-center rounded-[0.8rem] border border-black/10 bg-white/65 text-black/75 opacity-0 shadow-sm backdrop-blur-sm transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100 motion-reduce:transition-none"
                     >
-                      <ArrowUpRight className="h-4 w-4" strokeWidth={1.8} />
+                      <ActionMark compact />
                     </span>
                   </TransitionLink>
                   <div
@@ -862,10 +881,13 @@ function StaticShowcase() {
 
         <Link
           href="/scooters"
-          className="font-ui mt-7 inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[oklch(18%_0.014_56)] px-5 py-3 text-sm font-bold text-[oklch(96%_0.01_78)] transition-colors hover:bg-[oklch(26%_0.014_56)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(38%_0.08_28)] focus-visible:ring-offset-4"
+          className={clsx(
+            "font-ui inline-flex min-h-12 items-center justify-center gap-2 rounded-[0.9rem] bg-[oklch(18%_0.014_56)] px-5 py-3 text-sm font-bold text-[oklch(96%_0.01_78)] transition-colors hover:bg-[oklch(26%_0.014_56)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(38%_0.08_28)] focus-visible:ring-offset-4",
+            smartphone ? "mx-4 mb-14 mt-8" : "mt-7",
+          )}
         >
           Apri tutta la gamma
-          <ArrowUpRight aria-hidden="true" className="h-4 w-4" strokeWidth={1.8} />
+          <ActionMark />
         </Link>
       </div>
     </section>

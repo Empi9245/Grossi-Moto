@@ -2,14 +2,7 @@
 
 import Image from "next/image";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import {
-  ArrowUpRight,
-  Box,
-  Check,
-  Lock,
-  ShieldCheck,
-  Smartphone,
-} from "lucide-react";
+import { Box, Check, Lock, ShieldCheck, Smartphone } from "lucide-react";
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 
 import { accessories } from "@/data/accessories";
@@ -99,10 +92,10 @@ export function AccessoryRail() {
       </div>
 
       <div
-        className="mt-6 grid overflow-hidden rounded-[1.5rem] transition-colors duration-150 motion-reduce:transition-none lg:grid-cols-2 lg:rounded-[2rem]"
+        className="mt-6 grid overflow-hidden rounded-[1.5rem] border border-black/[0.055] transition-colors duration-150 motion-reduce:transition-none md:border-0 lg:grid-cols-2 lg:rounded-[2rem]"
         style={{ backgroundColor: currentColor }}
       >
-        <div className="relative aspect-[4/3] overflow-hidden bg-white/30 lg:aspect-auto lg:min-h-[27rem]">
+        <div className="relative h-[clamp(17.8rem,40svh,20.8rem)] shrink-0 md:h-auto md:aspect-[4/3] lg:aspect-auto lg:min-h-[27rem]">
           <AnimatePresence initial={false}>
             <motion.div
               key={current.image}
@@ -110,7 +103,7 @@ export function AccessoryRail() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: reduceMotion ? 0 : 0.18 }}
-              className="absolute inset-0"
+              className="absolute inset-x-2 bottom-2 top-2 overflow-hidden rounded-t-[1.3rem] rounded-b-[1.8rem] bg-white/30 ring-1 ring-black/[0.035] md:inset-0 md:rounded-none md:ring-0"
             >
               <Image
                 src={current.image}
@@ -127,7 +120,7 @@ export function AccessoryRail() {
           </span>
         </div>
 
-        <div className="p-6 sm:p-8 lg:flex lg:flex-col lg:justify-center lg:p-10">
+        <div className="px-4 pb-5 pt-2.5 sm:px-5 sm:pb-6 sm:pt-3 md:p-8 lg:flex lg:flex-col lg:justify-center lg:p-10">
           {accessories.map((item, index) => (
             <div
               key={item.id}
@@ -136,21 +129,21 @@ export function AccessoryRail() {
               aria-labelledby={`accessory-tab-${index}`}
               hidden={index !== active}
               tabIndex={0}
-              className="min-h-[17rem] rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#111111]"
+              className="min-h-[15.5rem] rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#111111] md:min-h-[17rem]"
             >
               <p className="font-ui text-xs font-semibold uppercase tracking-[0.12em] text-[#111111]/58">
                 {index + 1} di {accessories.length} · {item.title}
               </p>
 
-              <h3 className="font-display mt-4 max-w-[19ch] text-[clamp(1.9rem,3.2vw,3rem)] font-semibold leading-[1.04] tracking-tight">
+              <h3 className="font-display mt-2.5 max-w-[19ch] text-[clamp(1.9rem,3.2vw,3rem)] font-semibold leading-[1.04] tracking-tight md:mt-4">
                 {item.title}
               </h3>
 
-              <p className="mt-5 max-w-[42ch] text-base leading-7 text-[#111111]/78">
+              <p className="mt-3.5 max-w-[42ch] text-base leading-7 text-[#111111]/78 md:mt-5">
                 {item.description}
               </p>
 
-              <p className="mt-5 flex max-w-[42ch] items-start gap-2 text-sm leading-6 text-[#111111]/68">
+              <p className="mt-4 flex max-w-[42ch] items-start gap-2 text-sm leading-6 text-[#111111]/68 md:mt-5">
                 <Check aria-hidden="true" className="mt-1 h-4 w-4 shrink-0" />
                 {item.examples.join(" · ")}
               </p>
@@ -160,10 +153,10 @@ export function AccessoryRail() {
           <a
             href="tel:+393289185029"
             aria-label={`Chiedi compatibilità: ${current.title}`}
-            className="font-ui mt-6 inline-flex min-h-12 w-fit items-center gap-2 rounded-full bg-white/90 px-5 py-3 text-sm font-semibold text-[#111111] transition-colors hover:bg-white active:bg-white/80 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#111111]"
+            className="font-ui mt-4 inline-flex min-h-12 w-fit items-center gap-2 rounded-[0.9rem] bg-white/90 px-5 py-3 text-sm font-semibold text-[#111111] transition-colors hover:bg-white active:bg-white/80 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#111111] md:mt-6"
           >
             Chiedi compatibilità
-            <ArrowUpRight aria-hidden="true" className="h-4 w-4" />
+            
           </a>
         </div>
       </div>

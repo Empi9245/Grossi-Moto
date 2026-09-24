@@ -32,8 +32,6 @@
     "Segoe UI", "Helvetica Neue", Arial, ui-sans-serif, system-ui, sans-serif;
   --font-ui: var(--font-instrument-sans), "Aptos", "Segoe UI Variable",
     "Segoe UI", Arial, ui-sans-serif, system-ui, sans-serif;
-  --font-tech: var(--font-ibm-plex-mono), "Cascadia Mono", "Roboto Mono",
-    Consolas, ui-monospace, monospace;
   font-family: var(--font-body);
 }
 
@@ -64,11 +62,15 @@ body {
 
 .font-display {
   font-family: var(--font-display);
-  font-variation-settings: "wdth" 92;
+  font-variation-settings: "wdth" 94;
   font-feature-settings: "ss01" 1, "ss05" 1, "ss06" 1;
   overflow-wrap: normal !important;
   word-break: normal;
   hyphens: none;
+}
+
+.font-editorial {
+  font-variation-settings: "wdth" 88;
 }
 
 .font-ui {
@@ -78,10 +80,6 @@ body {
   overflow-wrap: normal !important;
   word-break: normal;
   hyphens: none;
-}
-
-.font-tech {
-  font-family: var(--font-tech);
 }
 
 .font-numeric {

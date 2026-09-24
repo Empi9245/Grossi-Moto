@@ -31,7 +31,9 @@ export type ProductCardToneId =
   | "dryChampagne"
   | "lightClay"
   | "smokedLavender"
-  | "mistTeal";
+  | "mistTeal"
+  | "powderPeriwinkle"
+  | "roseMauve";
 
 type ProductCardToneFamily =
   | "warmNeutral"
@@ -263,32 +265,60 @@ export const productCardSurfaceTones = {
     mutedTone: "oklch(29% 0.02 204 / 0.62)",
     shadowTone: "oklch(17% 0.02 204 / 0.16)",
   },
+  powderPeriwinkle: {
+    id: "powderPeriwinkle",
+    family: "stone",
+    featureSurface:
+      "linear-gradient(145deg in oklch, oklch(90% 0.02 274) 0%, oklch(81% 0.032 284) 100%)",
+    cardSurface:
+      "linear-gradient(145deg in oklch, oklch(93% 0.013 274) 0%, oklch(86% 0.023 284) 100%)",
+    accentTone: "oklch(38% 0.06 278)",
+    textTone: "oklch(19% 0.02 278)",
+    mutedTone: "oklch(29% 0.02 278 / 0.62)",
+    shadowTone: "oklch(17% 0.02 278 / 0.16)",
+  },
+  roseMauve: {
+    id: "roseMauve",
+    family: "warmTint",
+    featureSurface:
+      "linear-gradient(145deg in oklch, oklch(90% 0.022 342) 0%, oklch(81% 0.032 330) 100%)",
+    cardSurface:
+      "linear-gradient(145deg in oklch, oklch(93% 0.013 342) 0%, oklch(85% 0.022 330) 100%)",
+    accentTone: "oklch(38% 0.062 334)",
+    textTone: "oklch(20% 0.02 334)",
+    mutedTone: "oklch(30% 0.02 334 / 0.62)",
+    shadowTone: "oklch(17% 0.02 334 / 0.17)",
+  },
 } as const satisfies Record<ProductCardToneId, ProductCardSurfaceTone>;
 
 const productCardToneOrder: ProductCardToneId[] = [
   "warmIvory",
   "mineralBlueGrey",
-  "softSand",
-  "mutedSage",
   "dustyBlush",
-  "paleStone",
+  "mutedSage",
+  "powderPeriwinkle",
   "dryChampagne",
-  "lightClay",
-  "smokedLavender",
+  "roseMauve",
   "mistTeal",
+  "softSand",
+  "smokedLavender",
+  "lightClay",
+  "paleStone",
 ];
 
 const nearProductCardToneIds: Record<ProductCardToneId, ProductCardToneId[]> = {
-  warmIvory: ["softSand", "dryChampagne"],
+  warmIvory: ["softSand", "dryChampagne", "paleStone"],
   softSand: ["warmIvory", "dryChampagne", "paleStone"],
-  paleStone: ["softSand", "mutedSage"],
-  dustyBlush: ["lightClay"],
-  mutedSage: ["paleStone", "mineralBlueGrey"],
-  mineralBlueGrey: ["mutedSage"],
+  paleStone: ["warmIvory", "softSand", "mutedSage"],
+  dustyBlush: ["lightClay", "roseMauve"],
+  mutedSage: ["paleStone", "mineralBlueGrey", "mistTeal"],
+  mineralBlueGrey: ["mutedSage", "mistTeal", "powderPeriwinkle"],
   dryChampagne: ["warmIvory", "softSand", "lightClay"],
-  lightClay: ["dustyBlush", "dryChampagne"],
-  smokedLavender: ["paleStone", "mineralBlueGrey"],
+  lightClay: ["dustyBlush", "dryChampagne", "roseMauve"],
+  smokedLavender: ["powderPeriwinkle", "roseMauve"],
   mistTeal: ["mutedSage", "mineralBlueGrey"],
+  powderPeriwinkle: ["mineralBlueGrey", "smokedLavender"],
+  roseMauve: ["dustyBlush", "lightClay", "smokedLavender"],
 };
 
 const showroomCatalogToneMap: Record<
@@ -377,7 +407,11 @@ function getToneCandidates(
   );
   const start = seed % productCardToneOrder.length;
   const stride = seed % 2 === 0 ? 3 : 5;
-  const candidates = new Set<ProductCardToneId>([scooter.cardToneId]);
+  const showroomToneAssignment = getShowroomCatalogToneAssignment(scooter);
+  const candidates = new Set<ProductCardToneId>([
+    showroomToneAssignment?.toneId ?? scooter.cardToneId,
+    scooter.cardToneId,
+  ]);
 
   for (let offset = 0; offset < productCardToneOrder.length; offset += 1) {
     const toneIndex =
@@ -416,7 +450,15 @@ function selectCatalogTone(
     return firstOpenCandidate;
   }
 
+  const previousToneConflicts = previousToneId
+    ? new Set<ProductCardToneId>([
+        previousToneId,
+        ...nearProductCardToneIds[previousToneId],
+      ])
+    : new Set<ProductCardToneId>();
+
   return (
+    candidates.find((candidate) => !previousToneConflicts.has(candidate)) ??
     candidates.find((candidate) => candidate !== previousToneId) ??
     candidates[0] ??
     "warmIvory"
@@ -433,15 +475,9 @@ export function getCatalogCardToneAssignments(
   return scooters.reduce<Record<string, ProductCardToneAssignment>>(
     (assignments, scooter, visibleIndex) => {
       const showroomToneAssignment = getShowroomCatalogToneAssignment(scooter);
-
-      if (showroomToneAssignment) {
-        assignedToneIds.push(showroomToneAssignment.toneId);
-        assignments[scooter.id] = showroomToneAssignment;
-        return assignments;
-      }
-
       const columnIndex = visibleIndex % safeColumnCount;
       const previousToneId = assignedToneIds[visibleIndex - 1];
+      const previousTwoToneId = assignedToneIds[visibleIndex - 2];
       const rowLeftToneId =
         columnIndex > 0 ? assignedToneIds[visibleIndex - 1] : undefined;
       const rowUpToneId = assignedToneIds[visibleIndex - safeColumnCount];
@@ -450,6 +486,10 @@ export function getCatalogCardToneAssignments(
       blockToneAndNeighbors(blockedToneIds, previousToneId);
       blockToneAndNeighbors(blockedToneIds, rowLeftToneId);
       blockToneAndNeighbors(blockedToneIds, rowUpToneId);
+
+      if (previousTwoToneId) {
+        blockedToneIds.add(previousTwoToneId);
+      }
 
       const toneId = selectCatalogTone(
         getToneCandidates(scooter, visibleIndex),
@@ -461,7 +501,10 @@ export function getCatalogCardToneAssignments(
 
       assignments[scooter.id] = {
         toneId,
-        cardSurface: productCardSurfaceTones[toneId].cardSurface,
+        cardSurface:
+          showroomToneAssignment?.toneId === toneId
+            ? showroomToneAssignment.cardSurface
+            : productCardSurfaceTones[toneId].cardSurface,
       };
 
       return assignments;

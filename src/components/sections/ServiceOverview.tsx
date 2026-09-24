@@ -1,8 +1,9 @@
 "use client";
 
+import { ActionMark, DisclosureMark } from "@/components/ui/control-glyphs";
 import { useRef, useState } from "react";
 import Image from "next/image";
-import { ArrowUpRight, Minus, Plus } from "lucide-react";
+
 import { motion, useReducedMotion } from "framer-motion";
 
 const services = [
@@ -48,7 +49,7 @@ export function ServiceOverview() {
                 className={`font-display flex min-h-12 w-full items-center justify-between gap-4 py-3 text-left text-[clamp(1.15rem,1.6vw,1.8rem)] font-bold uppercase leading-none tracking-[-0.025em] transition-colors duration-150 hover:text-[#EF603B] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#F4F0E8] ${selected ? "text-[#EF603B]" : "text-[#F4F0E8]/80"}`}
               >
                 {service.title}
-                {selected ? <Minus aria-hidden="true" className="h-4 w-4 shrink-0" /> : <Plus aria-hidden="true" className="h-4 w-4 shrink-0" />}
+                <DisclosureMark expanded={selected} />
               </button>
             </h2>
             <div id={panelId} role="region" aria-labelledby={buttonId} hidden={!selected}>
@@ -66,8 +67,8 @@ export function ServiceOverview() {
                   <div className="min-w-0">
                     <p className="font-display text-[clamp(1.1rem,1.4vw,1.5rem)] font-semibold leading-tight">{service.headline}</p>
                     <p className="mt-2 text-sm leading-6 text-[#F4F0E8]/70">{service.description}</p>
-                    <a href={`#service-${service.id}`} className="font-ui mt-2 inline-flex min-h-11 items-center gap-2 text-sm font-semibold underline decoration-[#EF603B] underline-offset-4 hover:text-[#EF603B] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#F4F0E8]">
-                      {service.cta}<ArrowUpRight aria-hidden="true" className="h-4 w-4 shrink-0" />
+                    <a href={`#service-${service.id}`} className="font-ui mt-3 inline-flex min-h-11 items-center gap-2 rounded-[0.8rem] border border-[#EF603B]/45 px-3 text-sm font-semibold hover:border-[#EF603B] hover:text-[#EF603B] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#F4F0E8]">
+                      {service.cta}<ActionMark />
                     </a>
                   </div>
                 </motion.div>

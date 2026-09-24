@@ -1,10 +1,15 @@
 "use client";
 
-import { ArrowUpRight, CalendarCheck } from "lucide-react";
+import { ActionMark } from "@/components/ui/control-glyphs";
+import { CalendarCheck, Phone } from "lucide-react";
 import { motion, type MotionProps } from "framer-motion";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { preload } from "react-dom";
 
 import { useMediaQuery } from "@/hooks/useMediaQuery";
+
+import ScrollExpansionHero from "@/components/ui/scroll-expansion-hero";
 
 import { BottomLeftCard } from "./BottomLeftCard";
 import { BottomRightCorner } from "./BottomRightCorner";
@@ -18,14 +23,29 @@ type HeroProps = {
 };
 
 export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
+  preload("/hero-video.mp4", {
+    as: "video",
+    type: "video/mp4",
+    fetchPriority: "high",
+  });
+
   const shouldReduceMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
+  const isMobileViewport = useMediaQuery("(max-width: 767px)");
+  const heroRootRef = useRef<HTMLDivElement>(null);
   const { style: cardMotionStyle, ...cardMotionProps } = cardMotion ?? {};
   const videoRef = useRef<HTMLVideoElement>(null);
+  const callCtaRef = useRef<HTMLAnchorElement>(null);
   const [videoPlaying, setVideoPlaying] = useState(false);
+  const [callCtaTheme, setCallCtaTheme] = useState<"white" | "black">("white");
 
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
+
+    if (isMobileViewport) {
+      video.pause();
+      return;
+    }
 
     if (shouldReduceMotion) {
       video.pause();
@@ -49,12 +69,136 @@ export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
       active = false;
       video.pause();
     };
-  }, [shouldReduceMotion]);
+  }, [isMobileViewport, shouldReduceMotion]);
+
+  useEffect(() => {
+    if (!isMobileViewport) return;
+
+    let frameId = 0;
+
+    const updateCallCtaTheme = () => {
+      frameId = 0;
+      const cta = callCtaRef.current;
+      if (!cta) return;
+
+      const rect = cta.getBoundingClientRect();
+      const elements = document.elementsFromPoint(
+        rect.left + rect.width / 2,
+        rect.top + rect.height / 2,
+      );
+
+      let nextTheme: "white" | "black" | null = null;
+
+      for (const element of elements) {
+        if (element === cta || cta.contains(element)) continue;
+
+        const themeOwner = element.closest<HTMLElement>(
+          "[data-call-cta-theme]",
+        );
+        const theme = themeOwner?.dataset.callCtaTheme;
+
+        if (theme === "white" || theme === "black") {
+          nextTheme = theme;
+          break;
+        }
+      }
+
+      if (!nextTheme) return;
+
+      setCallCtaTheme((current) =>
+        current === nextTheme ? current : nextTheme,
+      );
+    };
+
+    const scheduleUpdate = () => {
+      if (frameId) return;
+      frameId = window.requestAnimationFrame(updateCallCtaTheme);
+    };
+
+    updateCallCtaTheme();
+    window.addEventListener("scroll", scheduleUpdate, { passive: true });
+    window.addEventListener("resize", scheduleUpdate);
+
+    return () => {
+      window.removeEventListener("scroll", scheduleUpdate);
+      window.removeEventListener("resize", scheduleUpdate);
+      if (frameId) window.cancelAnimationFrame(frameId);
+    };
+  }, [isMobileViewport]);
 
   return (
-    <div
+    <>
+      <div
+        ref={heroRootRef}
+        data-qa="hero-viewport"
+        data-call-cta-theme="white"
+        className="relative w-full overflow-x-clip bg-white md:hidden"
+      >
+        <Link
+          href="/"
+          aria-label="Grossimoto, pagina iniziale"
+          className="font-ui fixed left-4 top-[calc(1rem+env(safe-area-inset-top))] z-50 flex min-w-0 flex-col rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
+        >
+          <span className="text-sm font-medium tracking-normal text-white drop-shadow-[0_6px_18px_rgba(0,0,0,0.4)]">
+            Grossimoto
+          </span>
+          <span className="text-[0.6rem] font-medium uppercase tracking-[0.18em] text-white/75 drop-shadow-[0_6px_18px_rgba(0,0,0,0.4)]">
+            Moto e scooter a Roma
+          </span>
+        </Link>
+
+        <motion.a
+          ref={callCtaRef}
+          href="tel:+393289185029"
+          {...subtleHover(shouldReduceMotion)}
+          className={[
+            "font-ui fixed right-4 top-[calc(1rem+env(safe-area-inset-top))] z-[60] inline-flex min-h-10 shrink-0 items-center gap-2 rounded-[0.9rem] px-3.5 py-2.5 text-sm font-medium transition-[background-color,color,box-shadow,opacity] duration-200 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-4 focus-visible:ring-offset-transparent motion-reduce:transition-none",
+            callCtaTheme === "black"
+              ? "bg-[#0A0A0A] text-white shadow-[0_14px_38px_rgba(10,10,10,0.2)] focus-visible:ring-black/45"
+              : "bg-white text-[#0A0A0A] shadow-[0_14px_38px_rgba(20,14,11,0.22)] focus-visible:ring-white/85",
+          ].join(" ")}
+        >
+          <Phone aria-hidden="true" className="h-4 w-4" strokeWidth={1.8} />
+          <span>Chiama</span>
+        </motion.a>
+
+        <ScrollExpansionHero
+          mediaType="video"
+          mediaSrc="/hero-video.mp4"
+          posterSrc="/grossimoto/home-scroll/01-people-s-125-abs-lago.webp"
+          bgImageSrc="/grossimoto/home-scroll/01-people-s-125-abs-lago.webp"
+          title="ROMA, OGNI GIORNO."
+          date="KYMCO · VOGE · GROSSIMOTO"
+          scrollToExpand="Scorri per entrare"
+          endOverlay={
+            <div className="flex w-full max-w-[21rem] flex-col items-center text-center text-white">
+              <div className="-translate-y-12">
+                <p className="font-ui text-[0.58rem] font-semibold uppercase tracking-[0.24em] text-white/70">
+                  Roma · Scooter · Moto · Officina
+                </p>
+                <p className="font-display mt-1.5 text-[clamp(1.9rem,9vw,2.65rem)] leading-[0.9] font-normal tracking-normal text-white drop-shadow-[0_8px_22px_rgba(0,0,0,0.28)]">
+                  Grossi Moto
+                </p>
+              </div>
+              <Link
+                href="/scooters"
+                className="group font-ui mt-4 inline-flex min-h-11 items-center gap-2 rounded-[0.9rem] border border-white/25 bg-white px-4 py-2.5 text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-[oklch(17%_0.012_40)] shadow-[0_14px_36px_rgba(0,0,0,0.18)] backdrop-blur-md transition-[background-color,transform] duration-200 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-4 focus-visible:ring-offset-transparent active:scale-[0.98] motion-reduce:transition-none"
+              >
+                <span>Scopri la gamma</span>
+                <ActionMark />
+              </Link>
+            </div>
+          }
+          reducedMotion={shouldReduceMotion}
+          interactionEnabled={isMobileViewport}
+          mediaQuery="(max-width: 767px)"
+        />
+      </div>
+
+      <div
+      ref={heroRootRef}
       data-qa="hero-viewport"
-      className={`${cardMotion ? "h-full" : "min-h-[100svh]"} w-full bg-[var(--page-background)] p-2 sm:p-3 lg:p-4 2xl:p-5`}
+      className={`hidden md:block ${cardMotion ? "h-full" : "min-h-[100svh]"} w-full bg-[var(--page-background)] p-2 sm:p-3 lg:p-4 2xl:p-5`}
     >
       <motion.section
         {...cardMotionProps}
@@ -88,9 +232,9 @@ export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
             onError={() => setVideoPlaying(false)}
             onEmptied={() => setVideoPlaying(false)}
           >
-            <source src="/hero-video-mobile.mp4" media="(max-width: 767px)" type="video/mp4" />
             <source
               src="/hero-video.mp4"
+              media="(min-width: 768px)"
               type="video/mp4"
               onError={() => setVideoPlaying(false)}
             />
@@ -125,7 +269,7 @@ export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
                   scale: 0.975,
                   y: 22,
                 })}
-                className="font-display mt-4 w-full max-w-[20rem] [overflow-wrap:break-word] text-[clamp(2.85rem,12vw,4.35rem)] leading-[0.98] font-normal tracking-normal text-[oklch(95%_0.01_80)] sm:mt-5 sm:max-w-[38rem] md:max-w-[54rem] md:text-[clamp(4.5rem,7.8vw,6.5rem)] lg:max-w-[72rem] lg:text-[clamp(5.25rem,6.6vw,7.5rem)]"
+                className="font-display font-editorial mt-4 w-full max-w-[20rem] [overflow-wrap:break-word] text-[clamp(2.85rem,12vw,4.35rem)] leading-[0.98] font-normal tracking-normal text-[oklch(95%_0.01_80)] sm:mt-5 sm:max-w-[38rem] md:max-w-[54rem] md:text-[clamp(4.5rem,7.8vw,6.5rem)] lg:max-w-[72rem] lg:text-[clamp(5.25rem,6.6vw,7.5rem)]"
               >
                 Trova il mezzo giusto per Roma
               </motion.h1>
@@ -156,20 +300,16 @@ export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
                 <motion.a
                   href="/scooters"
                   {...subtleHover(shouldReduceMotion)}
-                  className="font-ui inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[oklch(93%_0.012_78)] px-4 py-3 text-sm leading-normal font-medium sm:px-6 text-[oklch(17%_0.012_40)] shadow-[0_16px_48px_rgba(13,9,7,0.24)] transition-opacity duration-200 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(84%_0.04_72)] focus-visible:ring-offset-4 focus-visible:ring-offset-[oklch(14%_0.012_40)] sm:text-base"
+                  className="font-ui inline-flex min-h-12 items-center justify-center gap-2 rounded-[0.9rem] bg-white px-4 py-3 text-sm leading-normal font-medium sm:px-6 text-[oklch(17%_0.012_40)] shadow-[0_16px_48px_rgba(13,9,7,0.24)] transition-opacity duration-200 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(84%_0.04_72)] focus-visible:ring-offset-4 focus-visible:ring-offset-[oklch(14%_0.012_40)] sm:text-base"
                 >
                   Confronta la gamma
-                  <ArrowUpRight
-                    aria-hidden="true"
-                    className="h-4 w-4"
-                    strokeWidth={1.8}
-                  />
+                  <ActionMark />
                 </motion.a>
 
                 <motion.a
                   href="tel:+393289185029"
                   {...subtleHover(shouldReduceMotion)}
-                  className="font-ui inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[oklch(11%_0.012_40/0.78)] px-4 py-3 text-sm leading-normal font-medium sm:px-6 text-[oklch(94%_0.01_80)] shadow-[inset_0_0_0_1px_oklch(94%_0.01_80/0.16)] transition-colors duration-200 hover:bg-[oklch(15%_0.012_40/0.84)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(84%_0.04_72)] focus-visible:ring-offset-4 focus-visible:ring-offset-[oklch(14%_0.012_40)] sm:text-base"
+                  className="font-ui inline-flex min-h-12 items-center justify-center gap-2 rounded-[0.9rem] bg-[oklch(11%_0.012_40/0.78)] px-4 py-3 text-sm leading-normal font-medium sm:px-6 text-[oklch(94%_0.01_80)] shadow-[inset_0_0_0_1px_oklch(94%_0.01_80/0.16)] transition-colors duration-200 hover:bg-[oklch(15%_0.012_40/0.84)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(84%_0.04_72)] focus-visible:ring-offset-4 focus-visible:ring-offset-[oklch(14%_0.012_40)] sm:text-base"
                 >
                   Chiamaci per scegliere
                   <CalendarCheck
@@ -189,6 +329,7 @@ export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
           </div>
         </div>
       </motion.section>
-    </div>
+      </div>
+    </>
   );
 }

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowUpRight, Phone } from "lucide-react";
+import { Phone } from "lucide-react";
 
 const navItems = [
   { label: "Gamma", href: "/scooters" },
@@ -56,16 +56,12 @@ export function CatalogNavbar() {
         <div className="order-2 flex shrink-0 items-center justify-end gap-2 lg:order-none">
           <a
             href="tel:+393289185029"
-            className="font-ui inline-flex min-h-11 items-center gap-2 rounded-full bg-[oklch(16%_0.014_48)] px-3.5 py-2 text-[0.72rem] font-bold uppercase tracking-[0.1em] text-[oklch(94%_0.01_78)] shadow-[0_12px_30px_oklch(18%_0.014_56/0.18)] outline-none transition-[background,transform] duration-200 hover:bg-[oklch(22%_0.016_50)] active:translate-y-px focus-visible:ring-2 focus-visible:ring-[oklch(38%_0.08_28)] focus-visible:ring-offset-4 focus-visible:ring-offset-[oklch(94%_0.01_78)] sm:px-4"
+            className="font-ui inline-flex min-h-11 items-center gap-2 rounded-[0.9rem] bg-[oklch(16%_0.014_48)] px-3.5 py-2 text-[0.72rem] font-bold uppercase tracking-[0.1em] text-[oklch(94%_0.01_78)] shadow-[0_12px_30px_oklch(18%_0.014_56/0.18)] outline-none transition-[background,transform] duration-200 hover:bg-[oklch(22%_0.016_50)] active:translate-y-px focus-visible:ring-2 focus-visible:ring-[oklch(38%_0.08_28)] focus-visible:ring-offset-4 focus-visible:ring-offset-[oklch(94%_0.01_78)] sm:px-4"
           >
             <Phone aria-hidden="true" className="h-4 w-4" strokeWidth={1.8} />
             <span className="hidden sm:inline">Chiama ora</span>
             <span className="sm:hidden">Chiama</span>
-            <ArrowUpRight
-              aria-hidden="true"
-              className="h-4 w-4"
-              strokeWidth={1.8}
-            />
+            
           </a>
         </div>
       </nav>

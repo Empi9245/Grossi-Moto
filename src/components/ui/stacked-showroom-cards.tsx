@@ -1,9 +1,10 @@
 "use client";
 
+import { ActionMark } from "@/components/ui/control-glyphs";
 import { useRef, useState } from "react";
 import Image from "next/image";
 import { useReducedMotion } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
+
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
@@ -49,21 +50,11 @@ function ShowroomCard({
     <article
       className="relative h-full w-full overflow-hidden rounded-[1.5rem] shadow-[0_-10px_36px_rgba(0,0,0,0.14),0_22px_56px_rgba(0,0,0,0.16)]"
       data-source-asset={scooter.sourceAsset}
-      style={{ background: scooter.backgroundSurface }}
+      style={{
+        background: scooter.mobileBackgroundSurface ?? scooter.backgroundSurface,
+      }}
     >
       <div className="absolute inset-x-0 top-[3%] z-10 aspect-[4/3]">
-        <div
-          aria-hidden="true"
-          className="absolute left-1/2 bottom-[9%] z-0 rounded-[50%] blur-[12px]"
-          style={{
-            width: scooter.shadowWidth,
-            height: scooter.shadowHeight,
-            opacity: scooter.shadowOpacity,
-            background: `radial-gradient(ellipse at center, ${scooter.shadowTone} 0%, ${scooter.shadowTone} 42%, transparent 74%)`,
-            transform: `translate(calc(-50% + ${scooter.shadowX}), ${scooter.shadowY})`,
-          }}
-        />
-
         <div
           className="relative z-10 h-full w-full px-2"
           style={{
@@ -76,7 +67,9 @@ function ShowroomCard({
             alt={`Scooter ${scooter.name} in vista laterale`}
             width={500}
             height={375}
-            priority={index === 0}
+            loading={index === 0 ? "eager" : "lazy"}
+            fetchPriority="auto"
+            decoding="async"
             sizes="(max-width: 767px) 92vw, 28rem"
             className="h-full w-full object-contain object-center"
           />
@@ -117,10 +110,10 @@ function ShowroomCard({
           scooterId={scooter.id}
           tabIndex={active ? 0 : -1}
           aria-label={`Scopri di più su ${scooter.name}`}
-          className="font-ui mt-5 inline-flex min-h-11 items-center gap-2 rounded-full bg-white px-5 py-2.5 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-black outline-none transition-transform duration-200 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-3 focus-visible:ring-offset-black/60"
+          className="font-ui mt-5 inline-flex min-h-11 items-center gap-2 rounded-[0.9rem] bg-white px-5 py-2.5 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-black outline-none transition-transform duration-200 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-3 focus-visible:ring-offset-black/60"
         >
           Scopri di più
-          <ArrowUpRight aria-hidden="true" className="h-4 w-4" strokeWidth={1.8} />
+          <ActionMark />
         </TransitionLink>
       </div>
     </article>
@@ -161,11 +154,6 @@ export function StackedShowroomCards() {
         });
       });
 
-      const snapPoints = Array.from(
-        { length: totalCards },
-        (_, index) => index / transitionCount,
-      );
-
       const timeline = gsap.timeline({
         scrollTrigger: {
           trigger: container,
@@ -173,12 +161,6 @@ export function StackedShowroomCards() {
           end: "bottom bottom",
           scrub: 0.62,
           invalidateOnRefresh: true,
-          snap: {
-            snapTo: (value) => gsap.utils.snap(snapPoints, value),
-            duration: { min: 0.2, max: 0.38 },
-            delay: 0.05,
-            ease: "power1.inOut",
-          },
           onUpdate: (self) => {
             const nextIndex = Math.min(
               totalCards - 1,
@@ -287,7 +269,7 @@ export function StackedShowroomCards() {
           role="status"
           aria-live="polite"
           aria-atomic="true"
-          className="font-ui absolute right-5 top-[calc(1.4rem+env(safe-area-inset-top))] z-50 flex items-center gap-2 rounded-full bg-black/78 px-3 py-2 text-[0.62rem] font-bold uppercase tracking-[0.14em] text-white backdrop-blur-sm"
+          className="font-ui absolute right-5 top-[calc(4.25rem+env(safe-area-inset-top))] z-50 flex items-center gap-2 rounded-full bg-black/78 px-3 py-2 text-[0.62rem] font-bold uppercase tracking-[0.14em] text-white backdrop-blur-sm"
         >
           <span className="font-numeric tabular-nums">
             {String(activeIndex + 1).padStart(2, "0")}

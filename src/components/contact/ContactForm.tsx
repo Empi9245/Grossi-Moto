@@ -1,258 +1,114 @@
 "use client";
 
-import { useEffect, useRef, useState, type FormEvent } from "react";
-import { useReducedMotion } from "framer-motion";
-import { ArrowLeft, ArrowRight, Check } from "lucide-react";
-import {
-  buildMessage,
-  buildPayload,
-  createAnswers,
-  getDeliveryLinks,
-  getSteps,
-  getSubject,
-  validateStep,
-  type Answers,
-  type ContactModel,
-  type Errors,
-  type Step,
-} from "./contact-flow";
-import {
-  ContactQuestions,
-  ContactReview,
-  ContactProgress,
-  ContactStep,
-  primaryButton,
-  quietButton,
-} from "./ContactFormUI";
+import { FormEvent, useRef, useState } from "react";
+import Link from "next/link";
 
 const endpoint =
   process.env.NEXT_PUBLIC_FORMSPREE_ENDPOINT ||
   "https://formspree.io/f/grossimoto";
-const titles: Record<Step, string> = {
-  topic: "Cosa ti serve oggi?",
-  known: "Hai già un modello in mente?",
-  model: "Quale modello ti interessa?",
-  usage: "Come useresti il tuo mezzo?",
-  interests: "Cosa vorresti sapere?",
-  service: "Di cosa ha bisogno il tuo mezzo?",
-  vehicle: "Che mezzo hai?",
-  symptoms: "Cosa hai notato?",
-  parts: "Cosa stai cercando?",
-  partsDetails: "Ci dai qualche dettaglio?",
-  question: "Cosa vorresti chiederci?",
-  contact: "Come preferisci essere ricontattato?",
-  review: "Il tuo messaggio è pronto.",
+
+type FieldName = "name" | "email" | "subject" | "message" | "privacy";
+type FieldErrors = Partial<Record<FieldName, string>>;
+
+const fieldErrorMessage: Record<FieldName, string> = {
+  name: "Inserisci nome e cognome.",
+  email: "Inserisci un indirizzo email valido.",
+  subject: "Scegli un argomento.",
+  message: "Scrivi il messaggio.",
+  privacy: "Per inviare la richiesta devi leggere e accettare la privacy.",
 };
-const hints: Partial<Record<Step, string>> = {
-  topic: "Una domanda alla volta. Scegli una risposta per continuare.",
-  known: "Scegli una risposta per continuare.",
-  model: "I modelli della nostra gamma. Seleziona il tuo per proseguire.",
-  usage:
-    "Scegli l’esigenza principale per continuare. Ti aiuteremo a trovare il mezzo adatto.",
-  interests: "Puoi scegliere più argomenti, poi continuare.",
-  service:
-    "Scegli una risposta per continuare. Basta anche un’indicazione generale.",
-  vehicle: "Marca e modello ci aiutano a capire come seguirti.",
-  symptoms: "Bastano poche parole per aiutarci a capire il problema.",
-  parts: "Scegli una risposta per continuare.",
-  partsDetails:
-    "Descrivi cosa cerchi. Se serve per il tuo mezzo, puoi indicarci il modello.",
-  question: "Scrivi liberamente, ti daremo una mano.",
-  contact: "Ti chiediamo soltanto il recapito che preferisci usare.",
-  review:
-    "Abbiamo raccolto le tue risposte. Puoi modificare il testo prima di inviarlo.",
-};
+
+const subjects = [
+  "Scelta di moto o scooter",
+  "Informazioni KYMCO",
+  "Informazioni Voge",
+  "Disponibilità e acquisto",
+  "Prenotazione officina",
+  "Accessori e abbigliamento",
+  "Altro",
+];
+
+function getErrors(form: HTMLFormElement): FieldErrors {
+  const name = form.elements.namedItem("name");
+  const email = form.elements.namedItem("email");
+  const subject = form.elements.namedItem("subject");
+  const message = form.elements.namedItem("message");
+  const privacy = form.elements.namedItem("privacy");
+
+  const values: Array<[FieldName, boolean]> = [
+    ["name", name instanceof HTMLInputElement && !name.value.trim()],
+    ["email", email instanceof HTMLInputElement && !email.validity.valid],
+    ["subject", subject instanceof HTMLSelectElement && !subject.value],
+    ["message", message instanceof HTMLTextAreaElement && !message.value.trim()],
+    ["privacy", privacy instanceof HTMLInputElement && !privacy.checked],
+  ];
+
+  return Object.fromEntries(
+    values
+      .filter(([, invalid]) => invalid)
+      .map(([field]) => [field, fieldErrorMessage[field]]),
+  );
+}
 
 export function ContactForm({
   initialSubject = "",
   initialMessage = "",
-  initialModelId,
-  models = [],
 }: {
   initialSubject?: string;
   initialMessage?: string;
-  initialModelId?: string;
-  models?: ContactModel[];
 }) {
-  const initialModel = models.find((m) => m.id === initialModelId);
-  const [answers, setAnswers] = useState(() =>
-    createAnswers(initialSubject, initialMessage, initialModel),
-  );
-  const [productEntry, setProductEntry] = useState(Boolean(initialModel));
-  const [step, setStep] = useState<Step>(() =>
-    initialModel ? "interests" : answers.topic ? getSteps(answers)[1] : "topic",
-  );
-  const [errors, setErrors] = useState<Errors>({});
+  const submitting = useRef(false);
+  const [errors, setErrors] = useState<FieldErrors>({});
   const [status, setStatus] = useState<
     "idle" | "sending" | "success" | "error"
   >("idle");
-  const [privacy, setPrivacy] = useState(false);
-  const [draft, setDraft] = useState({ text: "", source: "", edited: false });
-  const [pending, setPending] = useState(false);
-  const [instant, setInstant] = useState(true);
-  const [interacted, setInteracted] = useState(false);
-  const [externalNotice, setExternalNotice] = useState("");
-  const formRef = useRef<HTMLFormElement>(null);
-  const honeypotRef = useRef<HTMLInputElement>(null);
-  const submitting = useRef(false);
-  const advanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const keyboard = useRef(false);
-  const reduceMotion = useReducedMotion();
-  const generated = buildMessage(answers, models);
-  const draftOutdated = draft.edited && draft.source !== generated;
-  const steps = getSteps(answers, productEntry);
-  const subject = getSubject(answers, models);
-  const model =
-    answers.topic === "sales" && answers.known === "yes"
-      ? models.find((m) => m.id === answers.modelId)
-      : undefined;
-  const busy = pending || status === "sending";
 
-  useEffect(
-    () => () => {
-      if (advanceTimer.current) clearTimeout(advanceTimer.current);
-    },
-    [],
-  );
-
-  function change<K extends keyof Answers>(field: K, value: Answers[K]) {
-    setAnswers((current) => ({ ...current, [field]: value }));
-    setErrors((current) => ({ ...current, [field]: undefined }));
-    if (!submitting.current) setStatus("idle");
-    setExternalNotice("");
-  }
-
-  function navigate(next: Step, nextAnswers = answers) {
-    setInstant(Boolean(reduceMotion) || keyboard.current);
-    setInteracted(true);
-    setErrors({});
-    setExternalNotice("");
-    if (next === "review") {
-      const message = buildMessage(nextAnswers, models);
-      setDraft((current) =>
-        current.edited
-          ? current
-          : { text: message, source: message, edited: false },
-      );
-    }
-    setStep(next);
-  }
-
-  function choose<K extends keyof Answers>(field: K, value: Answers[K]) {
-    if (advanceTimer.current || submitting.current) return;
-    const nextAnswers = { ...answers, [field]: value };
-    change(field, value);
-    const path = getSteps(nextAnswers, productEntry);
-    const next = path[path.indexOf(step) + 1];
-    if (!next) return;
-    if (reduceMotion || keyboard.current) navigate(next, nextAnswers);
-    else {
-      setPending(true);
-      advanceTimer.current = setTimeout(() => {
-        advanceTimer.current = null;
-        setPending(false);
-        navigate(next, nextAnswers);
-      }, 100);
-    }
-  }
-
-  function focusError(nextErrors: Errors) {
-    setErrors(nextErrors);
-    requestAnimationFrame(() => {
-      const field = Object.keys(nextErrors).find(
-        (key) => nextErrors[key as keyof Errors],
-      );
-      const target =
-        field &&
-        formRef.current?.querySelector<HTMLElement>(`#contact-${field}`);
-      (
-        target ||
-        formRef.current?.querySelector<HTMLElement>(
-          "[aria-invalid='true'], [role='group'] button",
-        )
-      )?.focus();
+  function handleChange(field: FieldName) {
+    setErrors((current) => {
+      if (!current[field]) return current;
+      const next = { ...current };
+      delete next[field];
+      return next;
     });
+    if (status !== "idle" && !submitting.current) setStatus("idle");
   }
 
-  function nextStep() {
-    const nextErrors = validateStep(step, answers, models);
-    if (Object.keys(nextErrors).length) {
-      focusError(nextErrors);
-      return;
-    }
-    const next = steps[steps.indexOf(step) + 1];
-    if (next) navigate(next);
-  }
-
-  function back() {
-    if (busy) return;
-    const previous = steps[steps.indexOf(step) - 1];
-    if (previous) navigate(previous);
-    else {
-      setProductEntry(false);
-      navigate("topic");
-    }
-  }
-
-  function readyToSend() {
-    for (const requiredStep of steps.filter((s) => s !== "review")) {
-      const nextErrors = validateStep(requiredStep, answers, models);
-      if (Object.keys(nextErrors).length) {
-        navigate(requiredStep);
-        focusError(nextErrors);
-        return false;
-      }
-    }
-    if (!model && answers.topic === "sales" && answers.known === "yes") {
-      setProductEntry(false);
-      navigate("model");
-      focusError({ modelId: "Scegli un modello dall’elenco." });
-      return false;
-    }
-    if (draftOutdated) {
-      document.getElementById("contact-update-draft")?.focus();
-      return false;
-    }
-    const nextErrors: Errors = {};
-    if (!draft.text.trim())
-      nextErrors.message = "Scrivi il messaggio da inviare.";
-    if (!privacy)
-      nextErrors.privacy = "Leggi e accetta la privacy prima di proseguire.";
-    if (Object.keys(nextErrors).length) {
-      focusError(nextErrors);
-      return false;
-    }
-    return true;
+  function handleInvalid(field: FieldName) {
+    setErrors((current) => ({
+      ...current,
+      [field]: fieldErrorMessage[field],
+    }));
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (submitting.current || pending || status === "success") return;
-    if (step !== "review") {
-      nextStep();
+    if (submitting.current) return;
+    const form = event.currentTarget;
+    const nextErrors = getErrors(form);
+
+    if (Object.keys(nextErrors).length > 0) {
+      setErrors(nextErrors);
+      form.reportValidity();
       return;
     }
-    if (!readyToSend()) return;
+
     submitting.current = true;
     setStatus("sending");
     setErrors({});
-    setExternalNotice("");
+
     try {
       const response = await fetch(endpoint, {
         method: "POST",
         signal: AbortSignal.timeout(20000),
+        body: new FormData(form),
         headers: { Accept: "application/json" },
-        body: buildPayload(
-          answers,
-          draft.text,
-          privacy,
-          honeypotRef.current?.value ?? "",
-          models,
-        ),
       });
-      if (!response.ok)
+
+      if (!response.ok) {
         throw new Error("Formspree response was not successful");
-      setInteracted(true);
+      }
+
+      form.reset();
       setStatus("success");
     } catch {
       setStatus("error");
@@ -261,251 +117,264 @@ export function ContactForm({
     }
   }
 
-  function openExternal(channel: "whatsapp" | "email") {
-    if (submitting.current || !readyToSend()) return;
-    const links = getDeliveryLinks(draft.text, subject);
-    if (channel === "whatsapp")
-      window.open(links.whatsapp, "_blank", "noopener,noreferrer");
-    else window.location.assign(links.email);
-    setExternalNotice(
-      channel === "whatsapp"
-        ? "Completa l’invio in WhatsApp. Il testo resta disponibile anche qui."
-        : "Completa l’invio nella tua app email. Se non si apre, puoi inviare la richiesta dal sito.",
-    );
-  }
+  const inputClass = (hasError = false) =>
+    [
+      "min-h-12 w-full rounded-2xl border border-transparent bg-black/[0.035] px-4 py-3 text-base text-[#0A0A0A] outline-none transition-[border-color,box-shadow,background-color] duration-150 placeholder:text-black/32 sm:text-sm motion-reduce:transition-none",
+      hasError
+        ? "border-[#A34A3E] bg-[#A34A3E]/[0.035] ring-1 ring-[#A34A3E]/12 focus:border-[#A34A3E] focus:ring-2 focus:ring-[#A34A3E]/18"
+        : "hover:bg-black/[0.055] focus:border-[#A34A3E] focus:bg-white focus:ring-2 focus:ring-[#A34A3E]/16",
+    ].join(" ");
 
-  const autoAdvance = [
-    "topic",
-    "known",
-    "model",
-    "usage",
-    "service",
-    "parts",
-  ].includes(step);
+  const describedBy = (field: FieldName) =>
+    errors[field] ? `${field}-error` : undefined;
+
+  const requirement = (
+    <span className="ml-1 font-normal text-black/42">Obbligatorio</span>
+  );
+
   return (
     <form
-      ref={formRef}
       id="richiesta"
+      aria-busy={status === "sending"}
       action={endpoint}
       method="POST"
-      noValidate
-      aria-busy={status === "sending"}
+      className="grid gap-5 scroll-mt-6"
       onSubmit={handleSubmit}
-      onKeyDownCapture={() => {
-        keyboard.current = true;
-      }}
-      onPointerDownCapture={() => {
-        keyboard.current = false;
-      }}
-      className="min-w-0 scroll-mt-6"
     >
+      <input
+        type="hidden"
+        name="_subject"
+        value="Nuova richiesta dal sito Grossimoto"
+      />
       <div
-        className="absolute h-px w-px overflow-hidden [clip-path:inset(50%)]"
+        className="absolute -left-[9999px] h-px w-px overflow-hidden"
         aria-hidden="true"
       >
         <label htmlFor="contact-gotcha">Non compilare questo campo</label>
         <input
-          ref={honeypotRef}
           id="contact-gotcha"
           name="_gotcha"
           tabIndex={-1}
           autoComplete="off"
         />
       </div>
-      <p className="font-ui mb-5 text-[0.68rem] font-bold uppercase tracking-[0.18em] text-[#C72A09]">
-        Ti diamo una mano
-      </p>
-      <ContactProgress
-        stage={
-          status === "success" || step === "review"
-            ? 2
-            : step === "contact"
-              ? 1
-              : 0
-        }
-      />
-      {status === "success" ? (
-        <ContactStep
-          key="success"
-          title="Richiesta inviata."
-          description="Grazie. Ti ricontatteremo al recapito che hai indicato."
-          instant={Boolean(reduceMotion) || instant}
-          focusOnMount={interacted}
+
+      <div className="pb-2">
+        <p className="font-ui text-[0.68rem] font-bold uppercase tracking-[0.18em] text-[#A34A3E]">
+          La tua richiesta
+        </p>
+        <p className="mt-2 max-w-[42rem] text-sm leading-6 text-black/52">
+          Compila i campi essenziali. Il telefono resta facoltativo.
+        </p>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div className="flex flex-col gap-2">
+          <label
+            htmlFor="contact-name"
+            className="font-ui text-sm font-bold text-[#0A0A0A]"
+          >
+            Nome e cognome {requirement}
+          </label>
+          <input
+            id="contact-name"
+            name="name"
+            type="text"
+            autoComplete="name"
+            required
+            aria-invalid={Boolean(errors.name)}
+            aria-describedby={describedBy("name")}
+            placeholder="Mario Rossi"
+            className={inputClass(Boolean(errors.name))}
+            onChange={() => handleChange("name")}
+            onInvalid={() => handleInvalid("name")}
+          />
+          {errors.name && (
+            <p id="name-error" className="text-sm font-medium text-[#A34A3E]">
+              Errore: {errors.name}
+            </p>
+          )}
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <label
+            htmlFor="contact-email"
+            className="font-ui text-sm font-bold text-[#0A0A0A]"
+          >
+            Email {requirement}
+          </label>
+          <input
+            id="contact-email"
+            name="email"
+            type="email"
+            autoComplete="email"
+            required
+            aria-invalid={Boolean(errors.email)}
+            aria-describedby={describedBy("email")}
+            placeholder="mario.rossi@email.it"
+            className={inputClass(Boolean(errors.email))}
+            onChange={() => handleChange("email")}
+            onInvalid={() => handleInvalid("email")}
+          />
+          {errors.email && (
+            <p id="email-error" className="text-sm font-medium text-[#A34A3E]">
+              Errore: {errors.email}
+            </p>
+          )}
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <label
+          htmlFor="contact-phone"
+          className="font-ui text-sm font-bold text-[#0A0A0A]"
         >
-          <Check aria-hidden="true" className="mb-6 h-8 w-8 text-[#C72A09]" />
-          <button
-            type="button"
-            className={primaryButton}
-            onClick={() => {
-              const fresh = createAnswers(
-                initialSubject,
-                initialMessage,
-                initialModel,
-              );
-              setAnswers(fresh);
-              setProductEntry(Boolean(initialModel));
-              setPrivacy(false);
-              setDraft({ text: "", source: "", edited: false });
-              setStatus("idle");
-              if (honeypotRef.current) honeypotRef.current.value = "";
-              navigate(
-                initialModel
-                  ? "interests"
-                  : fresh.topic
-                    ? getSteps(fresh)[1]
-                    : "topic",
-                fresh,
-              );
-            }}
+          Telefono
+          <span className="ml-1 font-normal text-black/42">Opzionale</span>
+        </label>
+        <input
+          id="contact-phone"
+          name="phone"
+          type="tel"
+          autoComplete="tel"
+          placeholder="+39 333 000 0000"
+          className={inputClass()}
+        />
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <label
+          htmlFor="contact-subject"
+          className="font-ui text-sm font-bold text-[#0A0A0A]"
+        >
+          Argomento {requirement}
+        </label>
+        <select
+          id="contact-subject"
+          name="subject"
+          required
+          defaultValue={initialSubject}
+          aria-invalid={Boolean(errors.subject)}
+          aria-describedby={describedBy("subject")}
+          className={inputClass(Boolean(errors.subject))}
+          onChange={() => handleChange("subject")}
+          onInvalid={() => handleInvalid("subject")}
+        >
+          <option value="" disabled>
+            Scegli cosa ti serve…
+          </option>
+          {subjects.map((subject) => (
+            <option key={subject} value={subject}>
+              {subject}
+            </option>
+          ))}
+        </select>
+        {errors.subject && (
+          <p id="subject-error" className="text-sm font-medium text-[#A34A3E]">
+            Errore: {errors.subject}
+          </p>
+        )}
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <label
+          htmlFor="contact-message"
+          className="font-ui text-sm font-bold text-[#0A0A0A]"
+        >
+          Messaggio {requirement}
+        </label>
+        <textarea
+          id="contact-message"
+          name="message"
+          defaultValue={initialMessage}
+          rows={5}
+          required
+          aria-invalid={Boolean(errors.message)}
+          aria-describedby={describedBy("message")}
+          placeholder="Es. cerco un mezzo per andare al lavoro, oppure vorrei un tagliando per il mio modello…"
+          className={`${inputClass(Boolean(errors.message))} min-h-36 resize-y`}
+          onChange={() => handleChange("message")}
+          onInvalid={() => handleInvalid("message")}
+        />
+        {errors.message && (
+          <p id="message-error" className="text-sm font-medium text-[#A34A3E]">
+            Errore: {errors.message}
+          </p>
+        )}
+      </div>
+
+      <div className="rounded-2xl bg-black/[0.035] p-4">
+        <div className="flex items-start gap-3">
+          <input
+            id="contact-privacy"
+            name="privacy"
+            type="checkbox"
+            required
+            aria-invalid={Boolean(errors.privacy)}
+            aria-describedby={describedBy("privacy")}
+            className="mt-0.5 h-5 w-5 shrink-0 rounded accent-[#A34A3E] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A34A3E]/45 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+            onChange={() => handleChange("privacy")}
+            onInvalid={() => handleInvalid("privacy")}
+          />
+          <label
+            htmlFor="contact-privacy"
+            className="text-sm leading-6 text-black/62"
           >
-            Un’altra richiesta
-            <ArrowRight aria-hidden="true" className="h-4 w-4" />
-          </button>
-        </ContactStep>
-      ) : (
-        <>
-          <fieldset disabled={busy} className="min-w-0 border-0 p-0">
-            <legend className="sr-only">La tua richiesta a Grossi Moto</legend>
-            <ContactStep
-              key={step}
-              title={titles[step]}
-              description={hints[step]}
-              instant={Boolean(reduceMotion) || instant}
-              focusOnMount={interacted}
-              context={
-                step === "interests" && model ? (
-                  <div className="mb-5 border-b border-black/10 pb-4">
-                    <p className="text-sm font-semibold">
-                      Stai chiedendo informazioni su
-                      <br />
-                      <span className="text-[#C72A09]">
-                        {model.brand} {model.name}
-                      </span>
-                    </p>
-                    <button
-                      type="button"
-                      className={`${quietButton} mt-1 -ml-2`}
-                      onClick={() => {
-                        setProductEntry(false);
-                        navigate("model");
-                      }}
-                    >
-                      Cambia modello
-                    </button>
-                  </div>
-                ) : undefined
-              }
+            Ho letto e accetto il trattamento dei dati personali.
+            <span className="ml-1 font-medium text-black/46">Obbligatorio.</span>{" "}
+            <Link
+              href="/privacy"
+              className="font-semibold text-[#0A0A0A] underline decoration-black/30 underline-offset-2 outline-none transition-colors duration-150 hover:text-[#A34A3E] focus-visible:ring-2 focus-visible:ring-[#A34A3E]/45 focus-visible:ring-offset-2 motion-reduce:transition-none"
             >
-              {step === "review" ? (
-                <ContactReview
-                  answers={answers}
-                  errors={errors}
-                  text={draft.text}
-                  privacy={privacy}
-                  sending={status === "sending"}
-                  draftOutdated={draftOutdated}
-                  onChangeMessage={(text) => {
-                    setDraft((current) => ({ ...current, text, edited: true }));
-                    setErrors((current) => ({
-                      ...current,
-                      message: undefined,
-                    }));
-                    setStatus("idle");
-                  }}
-                  onPrivacyChange={(checked) => {
-                    setPrivacy(checked);
-                    setErrors((current) => ({
-                      ...current,
-                      privacy: undefined,
-                    }));
-                  }}
-                  onRebuild={() =>
-                    setDraft({
-                      text: generated,
-                      source: generated,
-                      edited: false,
-                    })
-                  }
-                  onKeep={() =>
-                    setDraft((current) => ({ ...current, source: generated }))
-                  }
-                  onExternal={openExternal}
-                />
-              ) : (
-                <ContactQuestions
-                  step={step}
-                  answers={answers}
-                  errors={errors}
-                  models={models}
-                  change={change}
-                  choose={choose}
-                />
-              )}
-            </ContactStep>
-            {step !== "review" && (
-              <div className="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-black/10 pt-5">
-                {step !== "topic" ? (
-                  <button
-                    type="button"
-                    onClick={back}
-                    className={`${quietButton} -ml-2`}
-                  >
-                    <ArrowLeft aria-hidden="true" className="h-4 w-4" />
-                    Indietro
-                  </button>
-                ) : (
-                  <span className="text-xs leading-5 text-[#666666]">
-                    I tuoi recapiti, solo alla fine.
-                  </span>
-                )}
-                {!autoAdvance && (
-                  <button type="submit" className={`${primaryButton} ml-auto`}>
-                    {step === "contact" ? "Prepara il messaggio" : "Continua"}
-                    <ArrowRight aria-hidden="true" className="h-4 w-4" />
-                  </button>
-                )}
-              </div>
-            )}
-            {step === "review" && (
-              <button
-                type="button"
-                onClick={back}
-                className={`${quietButton} mt-4 -ml-2`}
-              >
-                <ArrowLeft aria-hidden="true" className="h-4 w-4" />
-                Indietro
-              </button>
-            )}
-          </fieldset>
-          <div
-            aria-live="polite"
-            aria-atomic="true"
-            className="text-sm leading-6"
+              Leggi la privacy policy
+            </Link>
+            .
+          </label>
+        </div>
+        {errors.privacy && (
+          <p
+            id="privacy-error"
+            className="mt-2 pl-8 text-sm font-medium text-[#A34A3E]"
           >
-            {status === "sending" && (
-              <p className="mt-4 text-[#626262]">
-                Invio in corso. Attendi la conferma.
-              </p>
-            )}
-            {status === "error" && (
-              <p className="mt-5 rounded-2xl bg-[#C72A09]/[0.06] p-4 text-[#9D2208]">
-                Non abbiamo ricevuto conferma dell’invio. Il messaggio è ancora
-                qui: puoi riprovare o{" "}
-                <a
-                  className="font-bold underline underline-offset-2"
-                  href="tel:+393289185029"
-                >
-                  chiamarci al +39 328 918 5029
-                </a>
-                .
-              </p>
-            )}
-            {externalNotice && (
-              <p className="mt-4 text-[#525252]">{externalNotice}</p>
-            )}
-          </div>
-        </>
-      )}
+            Errore: {errors.privacy}
+          </p>
+        )}
+      </div>
+
+      <div
+        aria-live="polite"
+        aria-atomic="true"
+        className="min-h-6 text-sm leading-6"
+      >
+        {status === "success" && (
+          <p className="rounded-2xl bg-black/[0.035] px-4 py-3 font-medium text-[#0A0A0A]">
+            La tua richiesta è stata inviata. Ti ricontatteremo ai recapiti che
+            hai indicato.
+          </p>
+        )}
+        {status === "error" && (
+          <p className="rounded-2xl bg-[#A34A3E]/[0.06] px-4 py-3 font-medium text-[#8B3A31]">
+            Non abbiamo ricevuto conferma dell’invio. Il messaggio è ancora qui:
+            puoi riprovare o{" "}
+            <a
+              href="tel:+393289185029"
+              className="font-bold underline underline-offset-2"
+            >
+              chiamarci al +39 328 918 5029
+            </a>
+            .
+          </p>
+        )}
+      </div>
+
+      <button
+        type="submit"
+        disabled={status === "sending"}
+        aria-busy={status === "sending"}
+        className="font-ui inline-flex min-h-12 w-full items-center justify-center rounded-[0.9rem] border border-[#0A0A0A] bg-[#0A0A0A] px-6 py-3 text-sm font-bold uppercase tracking-[0.08em] text-white transition-[background-color,transform,opacity] duration-150 hover:bg-[#A34A3E] active:scale-[0.98] disabled:cursor-wait disabled:opacity-55 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A34A3E]/50 focus-visible:ring-offset-4 focus-visible:ring-offset-white motion-reduce:transform-none motion-reduce:transition-none sm:w-auto sm:min-w-52"
+      >
+        {status === "sending" ? "Invio in corso…" : "Invia la richiesta"}
+      </button>
     </form>
   );
 }

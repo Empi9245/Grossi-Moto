@@ -1,5 +1,25 @@
 # Project Memory
 
+## Pagine modello SEO /scooters/[slug] — audit copy e gallery 2026-09-21
+
+- Le 27 pagine modello restano generate staticamente da `catalogScooters` con `generateStaticParams()` e `dynamicParams = false`; `/scooters?focus=<id>` resta il deep link alla quick preview e non viene rediretto.
+- Metadata modello resi più naturali e coerenti con l'intento locale: title breve `<brand> <modello> a Roma`, description specifica con profilo/uso del modello e CTA prudente a prezzo/disponibilità; robots esplicito `index, follow`.
+- Structured data mantiene `ProductModel` + `BreadcrumbList` senza inventare prezzi, `InStock`, rating o recensioni di prodotto.
+- Aggiunta gallery server-side usando solo asset già presenti: Voge legge il manifest `index.json` del modello e preferisce `gallery` con fallback limitato a `spin360`; KYMCO usa `public/kymco-all/manifest.json`, filtrando per `modelSlug` e immagini gallery, con fallback colori.
+- Related products ordinati per pertinenza: stessa famiglia, poi stessa fascia filtro/cilindrata, sempre all'interno dello stesso brand; massimo quattro.
+- Le card catalogo aperte mantengono quick preview, CTA telefono/contatto e ora aggiungono `Scopri tutti i dettagli` verso `/scooters/<id>`.
+- `src/app/sitemap.ts` non è stato modificato perché includeva già automaticamente tutte le route modello dal dataset.
+
+
+## Hero Home mobile — handoff zoom/showroom 2026-09-19
+
+- Le scritte finali dell'overlay mobile (`Roma · Scooter · Moto · Officina` e `Grossi Moto`) sono state alzate di 3rem senza spostare la CTA `Scopri la gamma`.
+- `scroll-expansion-hero.tsx` ora separa esplicitamente la fine dello zoom dall'uscita verso lo showroom: il gesto che porta il progresso a 1 viene consumato e non può più avviare nello stesso frame/gesture la transizione alla sezione successiva.
+- A zoom completo viene applicato un breve settle di 280ms. Su touch serve un nuovo gesto iniziato a hero già espansa; su wheel l'uscita è accettata solo dopo il settle. La transizione verso lo showroom conserva easing premium `[0.22,1,0.36,1]` ma non scende più sotto 0.58s, evitando il salto percepito sui gesti veloci.
+- Modifica limitata alla hero mobile; il reveal desktop di `HeroRevealStage` non è stato toccato.
+- Verifica statica del codice completata sul master. Lint/build locale non eseguibili in questo runtime perché il container non riesce a risolvere `github.com`; usare CI/Vercel come verifica build quando disponibile.
+
+
 ## Home — Officina desktop compattata 2026-09-18
 
 - `src/components/sections/WorkshopSection.tsx`: corretto il titolo desktop “Il tuo mezzo, seguito nel tempo.” aumentando l'interlinea solo da `lg`, così la virgola non invade più la riga successiva.
@@ -585,3 +605,25 @@ Implementata.
 - 36 immagini operative convertite in WebP e collegate ai componenti: 27,1 → 3,4 MB complessivi (-87%), originali conservati. Video desktop 15,7 → 10,8 MB; variante mobile 5,8 MB con source media e faststart, senza tagliare la sequenza.
 - Zoom mobile alleggerito animando la superficie della foto anziché l’intera viewport; rimosse grandi ombre e prospettiva 3D mobile. Titoli credits più grandi e Anton locale WOFF2 con licenza OFL, 18,6 KB.
 - Test unitari della logica swipe (4 casi) passati; asset WebP decodificati. Dettagli API, metriche, limiti e comandi in `docs/MOBILE_SWIPE_MEDIA_2026-09-17.md`. Nessuna QA visuale/touch automatica o deploy.
+
+
+## Control box system — 2026-09-19
+
+- Unificato il linguaggio visivo di CTA e controlli: le azioni non usano più frecce diagonali come firma grafica; le CTA di esplorazione usano un piccolo segnale tipografico `+` o solo testo quando l'azione è già esplicita.
+- Previous/next usano chevron corti dentro control box squadrati; le stringhe tastiera `ArrowLeft`/`ArrowRight` restano invariate. Disclosure di card e pannelli usa `+ / −`.
+- Home e Gamma restano neutral/pastel senza nuovi accenti rossi. Servizi e Contatti mantengono bianco/nero/rosso con rosso riservato agli stati e alle CTA già previste.
+- Preservati layout di sezione, dati, immagini, routing, telefono, SEO, GSAP, snap, sticky, scrolling, drag pointer e logica dei caroselli.
+
+## Ripristino qualità video hero — 2026-09-19
+
+- Ripristinato `public/hero-video.mp4` alla versione precedente all'ottimizzazione del 17 settembre (circa 15,7 MB invece della ricodifica da circa 10,8 MB).
+- La hero home mobile usa ora lo stesso master video di qualità superiore del desktop; la variante `hero-video-mobile.mp4` resta nel repository ma non viene più selezionata dalla hero.
+- Preservati poster, autoplay muted, loop, playsInline, reduced motion, cover, animazioni, scroll handoff, CTA e layout responsive.
+
+
+## Gamma mobile: espansione in-place della card — 2026-09-21
+
+- Su mobile/tablet la card semantica attiva della Gamma si espande direttamente nello stack: mantiene header, modello e tone pastel, riduce leggermente la moto e rivela positioning, prime tre specifiche e CTA all'interno della stessa superficie.
+- Le copie laterali GSAP restano sempre compatte e non interattive. Triple-copy, infinite swipe, peeks, profondita, virtual indexes, ResizeObserver, recenter e controlli restano invariati; il ResizeObserver adegua l'altezza dello stack alla card centrale aperta.
+- L'espansione usa Framer Motion solo per size/layout e contenuto interno, senza bounce; con reduced motion il cambio e immediato. Swipe, tastiera e previous/next chiudono i dettagli del modello precedente.
+- Desktop continua a usare l'espansione originale della griglia. Il deep link `/scooters?focus=<id>` resta compatibile tramite `data-scooter-detail-id` sulla card aperta.

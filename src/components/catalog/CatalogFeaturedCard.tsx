@@ -1,5 +1,6 @@
+import { ActionMark } from "@/components/ui/control-glyphs";
 import type { ComponentType, CSSProperties } from "react";
-import { ArrowRight, Gauge, Layers2, MapPinned, Route, ShieldCheck } from "lucide-react";
+import { Gauge, Layers2, MapPinned, Route, ShieldCheck } from "lucide-react";
 import { motion } from "framer-motion";
 
 import type { CatalogScooter, CatalogSpecIcon } from "@/data/catalog-scooters";
@@ -134,12 +135,12 @@ export function CatalogFeaturedCard({
         <a
           href="tel:+393289185029"
           aria-label={`Richiedi consulenza per ${scooter.name}`}
-          className="font-ui inline-flex min-h-11 w-fit items-center gap-3 rounded-full text-[0.74rem] font-bold uppercase tracking-[0.12em] text-current outline-none transition-[color,transform] duration-200 hover:text-[var(--catalog-accent)] active:translate-y-px focus-visible:ring-2 focus-visible:ring-[var(--catalog-accent)] focus-visible:ring-offset-4 focus-visible:ring-offset-[oklch(88%_0.015_78)] lg:col-start-1"
+          className="font-ui inline-flex min-h-11 w-fit items-center gap-3 rounded-[0.9rem] text-[0.74rem] font-bold uppercase tracking-[0.12em] text-current outline-none transition-[color,transform] duration-200 hover:text-[var(--catalog-accent)] active:translate-y-px focus-visible:ring-2 focus-visible:ring-[var(--catalog-accent)] focus-visible:ring-offset-4 focus-visible:ring-offset-[oklch(88%_0.015_78)] lg:col-start-1"
         >
           <span className="border-b border-[oklch(18%_0.014_56/0.22)] pb-1">
             Vedi dettagli
           </span>
-          <ArrowRight aria-hidden="true" className="h-4 w-4" strokeWidth={1.8} />
+          <ActionMark />
         </a>
       </div>
     </motion.article>
