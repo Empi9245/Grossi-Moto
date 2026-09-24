@@ -20,6 +20,7 @@ import { useMediaQuery } from "@/hooks/useMediaQuery";
 type ParallaxImage = {
   src: string;
   alt?: string;
+  objectPosition?: string;
 };
 
 type ZoomParallaxProps = {
@@ -43,22 +44,32 @@ const defaultImages: ParallaxImage[] = [
   {
     src: "/kymco-all/sections/new/Smash/0612d67f-e208-4c0a-9b68-5417c0307662.jpeg",
     alt: "Scooter con pilota in un contesto urbano romano",
+    objectPosition: "50% 28%",
   },
   {
     src: "/kymco-all/sections/new/Smash/535d1099-fda5-4afc-8df1-62c2590811d1.jpeg",
     alt: "Dettaglio frontale di uno scooter in città",
+    objectPosition: "50% 34%",
   },
   {
     src: "/kymco-all/sections/new/Smash/c9c99a3f-b49f-482f-9ee7-593fa9ef7f2f.jpeg",
     alt: "Donna accanto a uno scooter in una strada urbana",
+    objectPosition: "50% 24%",
   },
   {
     src: "/kymco-all/sections/new/Smash/3E808E37-6DF0-4928-9CA4-6920E5688CAB.png",
     alt: "Moto e scooter in una scena urbana",
+    objectPosition: "50% 30%",
   },
   {
     src: "/kymco-all/sections/new/Smash/IMG_9489.png",
     alt: "Moto e scooter in una scena urbana",
+    objectPosition: "50% 30%",
+  },
+  {
+    src: "/kymco-all/sections/agility-125-r16-power-up-kymco-agility125-esterne-008-scaled-kymco-agility125-esterne-008-scaled.jpg",
+    alt: "Agility 125 R16 Power Up in esterno",
+    objectPosition: "50% 42%",
   },
 ];
 
@@ -1022,7 +1033,7 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
       className="relative h-[300svh] lg:h-[400svh] bg-[var(--home-experience-surface)]"
     >
       <div className="sticky top-0 h-[100svh] overflow-hidden">
-        {parallaxImages.map(({ src, alt }, index) => {
+        {parallaxImages.map(({ src, alt, objectPosition }, index) => {
           const scale = isDesktopViewport ? scales[index % scales.length] : compactScale;
           const idlePattern =
             idleFloatPatterns[index % idleFloatPatterns.length];
@@ -1154,6 +1165,7 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
                   alt={alt ?? `Parallax image ${index + 1}`}
                   fill
                   sizes={index === 0 ? "100vw" : "50vw"}
+                  style={objectPosition ? { objectPosition } : undefined}
                   className={`h-full w-full object-cover ${index === 0 ? "object-right" : ""}`}
                 />
                 <div
