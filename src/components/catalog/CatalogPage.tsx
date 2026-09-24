@@ -14,6 +14,16 @@ import {
   type CatalogVehicleFilter,
 } from "@/components/catalog/CatalogFilterBar";
 import { CatalogGrid } from "@/components/catalog/CatalogGrid";
+import {
+  CatalogComparison,
+  CatalogComparisonProvider,
+} from "@/components/catalog/CatalogComparison";
+import { CatalogUseCases } from "@/components/catalog/CatalogUseCases";
+import {
+  catalogUseCases,
+  getCatalogGuidance,
+  type CatalogUseCase,
+} from "@/data/catalog-guidance";
 import { CatalogNavbar } from "@/components/catalog/CatalogNavbar";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { usePageTransition } from "@/components/transitions/PageTransitionProvider";
@@ -123,11 +133,18 @@ function matchesCatalogFilters(
 function getVisibleScooters(
   activeFilters: CatalogFilterState,
   searchQuery: string,
+  activeUseCase: CatalogUseCase | "all" = "all",
 ) {
   const normalizedQuery = normalizeSearchValue(searchQuery);
   const queryTokens = normalizedQuery ? normalizedQuery.split(" ") : [];
 
   return catalogScooters.filter((scooter) => {
+    if (
+      activeUseCase !== "all" &&
+      !getCatalogGuidance(scooter).useCases.includes(activeUseCase)
+    ) {
+      return false;
+    }
     if (!matchesCatalogFilters(scooter, activeFilters)) {
       return false;
     }
@@ -144,9 +161,10 @@ function getVisibleScooters(
 function getFilterCounts(
   activeFilters: CatalogFilterState,
   searchQuery: string,
+  activeUseCase: CatalogUseCase | "all",
 ): CatalogFilterCounts {
   const countWith = (nextFilters: CatalogFilterState) =>
-    getVisibleScooters(nextFilters, searchQuery).length;
+    getVisibleScooters(nextFilters, searchQuery, activeUseCase).length;
 
   return {
     vehicleType: {
@@ -213,9 +231,7 @@ function keepVisibleExpansion(
     return null;
   }
 
-  return nextVisibleScooters.some(
-    (scooter) => scooter.id === currentExpandedId,
-  )
+  return nextVisibleScooters.some((scooter) => scooter.id === currentExpandedId)
     ? currentExpandedId
     : null;
 }
@@ -249,6 +265,9 @@ export function CatalogPage({ initialFocusId }: { initialFocusId?: string }) {
     () => ({ ...defaultCatalogFilters }),
   );
   const [searchQuery, setSearchQuery] = useState("");
+  const [activeUseCase, setActiveUseCase] = useState<CatalogUseCase | "all">(
+    "all",
+  );
   const [expandedId, setExpandedId] = useState<string | null>(
     () => initialExpandedId,
   );
@@ -272,9 +291,7 @@ export function CatalogPage({ initialFocusId }: { initialFocusId?: string }) {
         document.querySelector<HTMLElement>(
           `[data-scooter-detail-id="${escapedId}"]`,
         ) ??
-        document.querySelector<HTMLElement>(
-          `[data-scooter-id="${escapedId}"]`,
-        );
+        document.querySelector<HTMLElement>(`[data-scooter-id="${escapedId}"]`);
 
       target?.scrollIntoView({
         behavior: "auto",
@@ -287,16 +304,17 @@ export function CatalogPage({ initialFocusId }: { initialFocusId?: string }) {
   }, [initialExpandedId, shouldReduceMotion]);
 
   const visibleScooters = useMemo(
-    () => getVisibleScooters(activeFilters, searchQuery),
-    [activeFilters, searchQuery],
+    () => getVisibleScooters(activeFilters, searchQuery, activeUseCase),
+    [activeFilters, searchQuery, activeUseCase],
   );
 
   const filterCounts = useMemo(
-    () => getFilterCounts(activeFilters, searchQuery),
-    [activeFilters, searchQuery],
+    () => getFilterCounts(activeFilters, searchQuery, activeUseCase),
+    [activeFilters, searchQuery, activeUseCase],
   );
 
-  const hasActiveFilters = hasActiveCatalogFilters(activeFilters);
+  const hasActiveFilters =
+    hasActiveCatalogFilters(activeFilters) || activeUseCase !== "all";
   const effectiveActiveScooter =
     visibleScooters.find((scooter) => scooter.id === activeVisibleScooterId) ??
     visibleScooters[0];
@@ -308,14 +326,11 @@ export function CatalogPage({ initialFocusId }: { initialFocusId?: string }) {
 
   const handleFilterChange = useCallback(
     (group: CatalogFilterGroup, value: CatalogFilterValue) => {
-      const nextFilters = getNextCatalogFilters(
-        activeFilters,
-        group,
-        value,
-      );
+      const nextFilters = getNextCatalogFilters(activeFilters, group, value);
       const nextVisibleScooters = getVisibleScooters(
         nextFilters,
         searchQuery,
+        activeUseCase,
       );
 
       setActiveFilters(nextFilters);
@@ -323,7 +338,7 @@ export function CatalogPage({ initialFocusId }: { initialFocusId?: string }) {
         keepVisibleExpansion(currentExpandedId, nextVisibleScooters),
       );
     },
-    [activeFilters, searchQuery],
+    [activeFilters, searchQuery, activeUseCase],
   );
 
   const handleSearchChange = useCallback(
@@ -331,6 +346,7 @@ export function CatalogPage({ initialFocusId }: { initialFocusId?: string }) {
       const nextVisibleScooters = getVisibleScooters(
         activeFilters,
         nextQuery,
+        activeUseCase,
       );
 
       setSearchQuery(nextQuery);
@@ -338,7 +354,7 @@ export function CatalogPage({ initialFocusId }: { initialFocusId?: string }) {
         keepVisibleExpansion(currentExpandedId, nextVisibleScooters),
       );
     },
-    [activeFilters],
+    [activeFilters, activeUseCase],
   );
 
   const handleCollapseScooter = useCallback(() => {
@@ -354,13 +370,26 @@ export function CatalogPage({ initialFocusId }: { initialFocusId?: string }) {
     const nextVisibleScooters = getVisibleScooters(nextFilters, searchQuery);
 
     setActiveFilters(nextFilters);
+    setActiveUseCase("all");
     setExpandedId((currentExpandedId) =>
       keepVisibleExpansion(currentExpandedId, nextVisibleScooters),
     );
   }, [searchQuery]);
 
+  const handleUseCaseChange = (nextUseCase: CatalogUseCase | "all") => {
+    const nextVisibleScooters = getVisibleScooters(
+      activeFilters,
+      searchQuery,
+      nextUseCase,
+    );
+    setActiveUseCase(nextUseCase);
+    setExpandedId((current) =>
+      keepVisibleExpansion(current, nextVisibleScooters),
+    );
+  };
+
   return (
-    <>
+    <CatalogComparisonProvider>
       <main
         id="main-content"
         className="min-h-[100dvh] bg-white p-2.5 text-[#171717] sm:p-4 lg:p-5"
@@ -378,8 +407,9 @@ export function CatalogPage({ initialFocusId }: { initialFocusId?: string }) {
                   Tutta la gamma
                 </h1>
                 <p className="mt-5 max-w-[39rem] text-sm leading-6 text-black/65 sm:text-base">
-                  Esplora KYMCO e Voge e apri le schede per confrontare i modelli.
-                  Per prezzo, disponibilità e consigli sulla scelta, chiamaci.
+                  Parti dai tuoi tragitti, esplora KYMCO e Voge e confronta fino
+                  a tre modelli. Nelle schede trovi consigli per scegliere. Per
+                  prezzo e disponibilità, contattaci.
                 </p>
               </div>
 
@@ -436,7 +466,17 @@ export function CatalogPage({ initialFocusId }: { initialFocusId?: string }) {
             </div>
           </section>
 
+          <CatalogUseCases
+            activeUseCase={activeUseCase}
+            onChange={handleUseCaseChange}
+          />
+          <CatalogComparison />
+
           <CatalogFilterBar
+            activeUseCaseLabel={
+              catalogUseCases.find((item) => item.id === activeUseCase)?.label
+            }
+            onClearUseCase={() => handleUseCaseChange("all")}
             activeFilters={activeFilters}
             filterCounts={filterCounts}
             searchQuery={searchQuery}
@@ -476,6 +516,6 @@ export function CatalogPage({ initialFocusId }: { initialFocusId?: string }) {
         </div>
       </main>
       <SiteFooter />
-    </>
+    </CatalogComparisonProvider>
   );
 }

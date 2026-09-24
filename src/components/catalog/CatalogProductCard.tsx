@@ -16,6 +16,7 @@ import {
   type CatalogSpecIcon,
 } from "@/data/catalog-scooters";
 import type { ProductCardToneAssignment } from "@/data/scooter-color-system";
+import { CatalogCompareButton } from "@/components/catalog/CatalogComparison";
 
 type CatalogProductCardProps = {
   scooter: CatalogScooter;
@@ -265,7 +266,7 @@ export const CatalogProductCard = memo(function CatalogProductCard({
         className={clsx(
           "group relative overflow-hidden rounded-[1.35rem] border border-[oklch(18%_0.014_56/0.052)] p-4 sm:p-5",
           isExpanded
-            ? "h-full min-h-0 sm:min-h-[30rem] md:p-6 lg:min-h-[29rem] lg:p-7"
+            ? "flex h-full min-h-0 flex-col sm:min-h-[30rem] md:p-6 lg:min-h-[29rem] lg:p-7"
             : isCompactExpanded
               ? "min-h-0"
               : "min-h-[17.75rem] sm:min-h-[19.5rem]",
@@ -282,7 +283,7 @@ export const CatalogProductCard = memo(function CatalogProductCard({
           className={clsx(
             "relative z-10 grid gap-5",
             isExpanded
-              ? "grid h-full min-h-0 gap-4 sm:min-h-[26rem] sm:gap-5 md:grid-cols-[minmax(0,0.84fr)_minmax(0,1.16fr)] md:grid-rows-[auto_minmax(0,1fr)] md:gap-x-8 md:gap-y-5 lg:gap-x-10"
+              ? "grid min-h-0 flex-1 gap-4 sm:min-h-[26rem] sm:gap-5 md:grid-cols-[minmax(0,0.84fr)_minmax(0,1.16fr)] md:grid-rows-[auto_minmax(0,1fr)] md:gap-x-8 md:gap-y-5 lg:gap-x-10"
               : compactMode
                 ? clsx(
                     "grid-rows-[auto_auto_auto]",
@@ -536,6 +537,7 @@ export const CatalogProductCard = memo(function CatalogProductCard({
             </div>
           )}
         </div>
+        <CatalogCompareButton scooter={scooter} isSemanticInstance={isSemanticInstance} />
       </article>
     </div>
   );

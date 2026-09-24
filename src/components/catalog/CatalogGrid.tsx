@@ -711,6 +711,7 @@ function ProductShowroomChapter({
         style={{ touchAction: "pan-y" }}
         onPointerDown={(event) => {
           suppressClickRef.current = false;
+          swipeStartRef.current = null;
 
           if (
             totalCards < 2 ||
@@ -720,7 +721,12 @@ function ProductShowroomChapter({
             return;
           }
 
-          if (event.pointerType === "mouse") {
+          // Capturing a control's pointer retargets its click to the rail.
+          // Keep tracking swipes from controls, but let taps reach the control.
+          const isInteractiveTarget = (event.target as Element).closest(
+            "button, a, input, select, textarea",
+          );
+          if (event.pointerType === "mouse" && !isInteractiveTarget) {
             event.currentTarget.setPointerCapture(event.pointerId);
           }
 

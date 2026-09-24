@@ -9,6 +9,11 @@ import { CatalogNavbar } from "@/components/catalog/CatalogNavbar";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { ProductGallery } from "@/components/product/ProductGallery";
 import {
+  catalogUseCases,
+  getCatalogGuidance,
+  getModelAlternatives,
+} from "@/data/catalog-guidance";
+import {
   catalogScooters,
   getCatalogScooterBrand,
   getCatalogScooterById,
@@ -22,7 +27,9 @@ type ModelPageProps = {
 };
 
 function lowercaseLeading(value: string) {
-  return value ? value.charAt(0).toLocaleLowerCase("it-IT") + value.slice(1) : value;
+  return value
+    ? value.charAt(0).toLocaleLowerCase("it-IT") + value.slice(1)
+    : value;
 }
 
 function buildModelMetaDescription(scooter: CatalogScooter) {
@@ -30,30 +37,6 @@ function buildModelMetaDescription(scooter: CatalogScooter) {
   const useCase = lowercaseLeading(scooter.idealUse);
 
   return `Scopri ${brand} ${scooter.name} a Roma: ${lowercaseLeading(scooter.subtitle)}, pensato per ${useCase}. Caratteristiche e contatti Grossi Moto per prezzo e disponibilità.`;
-}
-
-function getRelatedScooters(scooter: CatalogScooter) {
-  const brand = getCatalogScooterBrand(scooter);
-
-  return catalogScooters
-    .filter(
-      (item) =>
-        item.id !== scooter.id && getCatalogScooterBrand(item) === brand,
-    )
-    .map((item) => ({
-      item,
-      score:
-        (item.family === scooter.family ? 4 : 0) +
-        (item.filterCategory === scooter.filterCategory ? 2 : 0) +
-        (item.displacement === scooter.displacement ? 1 : 0),
-    }))
-    .sort(
-      (left, right) =>
-        right.score - left.score ||
-        left.item.name.localeCompare(right.item.name, "it"),
-    )
-    .slice(0, 4)
-    .map(({ item }) => item);
 }
 
 export const dynamicParams = false;
@@ -103,7 +86,8 @@ export default async function ScooterModelPage({ params }: ModelPageProps) {
 
   const brand = getCatalogScooterBrand(scooter);
   const modelUrl = `${siteUrl}/scooters/${scooter.id}`;
-  const relatedScooters = getRelatedScooters(scooter);
+  const guidance = getCatalogGuidance(scooter);
+  const relatedScooters = getModelAlternatives(scooter);
   const galleryImages = await getProductGalleryImages(scooter);
 
   const productJsonLd = {
@@ -277,10 +261,23 @@ export default async function ScooterModelPage({ params }: ModelPageProps) {
                   {scooter.idealUse}
                 </h2>
                 <p className="mt-5 max-w-[32rem] text-sm leading-6 text-black/62 sm:text-base sm:leading-7">
-                  Nel catalogo Grossi Moto, {brand} {scooter.name} si colloca come{" "}
-                  {lowercaseLeading(scooter.subtitle)}, pensato per{" "}
-                  {lowercaseLeading(scooter.idealUse)}.
+                  {guidance.whyChoose}
                 </p>
+                <ul
+                  aria-label="Percorsi consigliati"
+                  className="mt-5 flex flex-wrap gap-2"
+                >
+                  {catalogUseCases
+                    .filter((useCase) => guidance.useCases.includes(useCase.id))
+                    .map((useCase) => (
+                      <li
+                        key={useCase.id}
+                        className="rounded-full border border-black/15 px-3 py-2 text-xs font-medium text-black/75"
+                      >
+                        {useCase.label}
+                      </li>
+                    ))}
+                </ul>
                 <p className="mt-3 max-w-[32rem] text-sm leading-6 text-black/52 sm:text-base sm:leading-7">
                   Per dotazioni, allestimenti, prezzo e disponibilità, chiedi
                   conferma direttamente a Grossi Moto.
@@ -304,6 +301,60 @@ export default async function ScooterModelPage({ params }: ModelPageProps) {
               </div>
             </section>
 
+            <section
+              aria-labelledby="model-advice-title"
+              className="mt-10 border-y border-black/10 py-8 sm:py-10"
+            >
+              <div className="grid gap-8 lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1.18fr)] lg:gap-10 xl:gap-14">
+                <div>
+                  <p className="font-ui text-[0.65rem] font-bold uppercase tracking-[0.16em] text-black/55">
+                    Prima di scegliere
+                  </p>
+                  <h2
+                    id="model-advice-title"
+                    className="font-display mt-4 max-w-[15ch] text-[clamp(2rem,5vw,3.5rem)] font-bold leading-[0.96] text-black"
+                  >
+                    Come si adatta alla tua giornata.
+                  </h2>
+                  <p className="mt-4 max-w-[32rem] text-sm leading-6 text-black/65">
+                    Parti dal percorso che fai davvero: le indicazioni d’uso
+                    aiutano a orientarti, la posizione giusta si valuta di
+                    persona.
+                  </p>
+                </div>
+                <div className="space-y-6">
+                  <div>
+                    <h3 className="text-base font-semibold text-black">
+                      Cosa valutare
+                    </h3>
+                    <p className="mt-2 text-sm leading-7 text-black/70 sm:text-base">
+                      {guidance.tradeoff}
+                    </p>
+                  </div>
+                  <div>
+                    <h3 className="text-base font-semibold text-black">
+                      Da verificare insieme in sede
+                    </h3>
+                    <p className="mt-2 text-sm leading-7 text-black/70 sm:text-base">
+                      {guidance.checkInStore}
+                    </p>
+                    <p className="mt-3 text-sm leading-6 text-black/65">
+                      Ti sposti spesso in due? Chiedi di valutare insieme
+                      seduta, spazio e appoggi per il passeggero sul modello che
+                      ti interessa.
+                    </p>
+                  </div>
+                  <Link
+                    href={`/contatti?modello=${encodeURIComponent(scooter.id)}#richiesta`}
+                    className="font-ui inline-flex min-h-12 items-center gap-3 rounded-[0.9rem] bg-black px-5 py-3 text-xs font-bold uppercase tracking-[0.08em] text-white transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/35 focus-visible:ring-offset-4"
+                  >
+                    Parliamone insieme
+                    <ActionMark />
+                  </Link>
+                </div>
+              </div>
+            </section>
+
             <ProductGallery
               modelName={`${brand} ${scooter.name}`}
               images={galleryImages}
@@ -314,7 +365,6 @@ export default async function ScooterModelPage({ params }: ModelPageProps) {
                 href="/scooters"
                 className="font-ui inline-flex min-h-11 items-center gap-2 rounded-[0.9rem] px-3 text-xs font-bold uppercase tracking-[0.08em] text-black transition-colors hover:text-black/58 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/35"
               >
-                
                 Torna alla gamma
               </Link>
               <Link
@@ -332,29 +382,34 @@ export default async function ScooterModelPage({ params }: ModelPageProps) {
                 className="mt-12 pt-4"
               >
                 <p className="font-ui text-[0.65rem] font-bold uppercase tracking-[0.16em] text-black/50">
-                  Da confrontare · {brand}
+                  Un altro modo di muoverti
                 </p>
                 <h2
                   id="related-models-title"
                   className="font-display mt-3 text-[clamp(2.2rem,5vw,4.4rem)] font-bold leading-[0.92] text-black"
                 >
-                  Modelli simili
+                  Alternative da valutare
                 </h2>
-                <div className="mt-6 grid gap-3 md:grid-cols-2 lg:grid-cols-4">
-                  {relatedScooters.map((related) => (
+                <p className="mt-4 max-w-[45rem] text-sm leading-7 text-black/65 sm:text-base">
+                  Cambia un’esigenza, cambia la scelta. Ecco cosa distingue
+                  queste proposte da {scooter.name}.
+                </p>
+                <div className="mt-6 grid gap-3 md:grid-cols-2">
+                  {relatedScooters.map(({ scooter: related, reason }) => (
                     <Link
                       key={related.id}
                       href={`/scooters/${related.id}`}
                       className="group rounded-[1.1rem] border border-black/8 bg-[#F7F7F7] p-5 transition-[background,transform] duration-200 hover:bg-[#F1F1F1] active:translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/35"
                     >
                       <p className="font-ui text-[0.6rem] font-bold uppercase tracking-[0.13em] text-black/48">
+                        {getCatalogScooterBrand(related)} ·{" "}
                         {related.displacement} · {related.family}
                       </p>
                       <p className="font-display mt-3 text-2xl font-bold leading-none text-black">
                         {related.name}
                       </p>
                       <p className="mt-3 text-sm leading-6 text-black/60">
-                        {related.idealUse}
+                        {reason}
                       </p>
                       <span className="font-ui mt-5 inline-flex min-h-10 items-center gap-2 text-[0.68rem] font-bold uppercase tracking-[0.1em] text-black">
                         Vedi il modello

@@ -42,6 +42,8 @@ type CatalogFilterBarProps = {
   totalCount: number;
   activePosition: number;
   activeBrand?: string;
+  activeUseCaseLabel?: string;
+  onClearUseCase?: () => void;
   onFilterChange: (
     group: CatalogFilterGroup,
     value: CatalogFilterValue,
@@ -146,6 +148,8 @@ export function CatalogFilterBar({
   totalCount,
   activePosition,
   activeBrand,
+  activeUseCaseLabel,
+  onClearUseCase,
   onFilterChange,
   onResetFilters,
   onSearchChange,
@@ -158,9 +162,9 @@ export function CatalogFilterBar({
   const isScrollVisible = useScrollDirection();
   const hasSearchQuery = searchQuery.trim().length > 0;
   const resultLabel = getResultLabel(resultCount, hasSearchQuery);
-  const activeFilterCount = Object.values(activeFilters).filter(
-    (value) => value !== "all",
-  ).length;
+  const activeFilterCount =
+    Object.values(activeFilters).filter((value) => value !== "all").length +
+    (activeUseCaseLabel ? 1 : 0);
   const hasActiveFilter = activeFilterCount > 0;
   const compactToolbarVisible =
     showCompactToolbar && (compactSearchOpen || isScrollVisible);
@@ -361,6 +365,17 @@ export function CatalogFilterBar({
             className="mt-3 flex flex-wrap items-center gap-2"
             aria-label="Filtri applicati"
           >
+            {activeUseCaseLabel ? (
+              <button
+                type="button"
+                onClick={onClearUseCase}
+                aria-label={`Rimuovi utilizzo: ${activeUseCaseLabel}`}
+                className="font-ui inline-flex min-h-11 items-center gap-2 rounded-[0.75rem] border border-black/10 bg-white px-3 text-xs font-semibold text-black outline-none hover:bg-[#F3F3F3] focus-visible:ring-2 focus-visible:ring-black/35"
+              >
+                {activeUseCaseLabel}
+                <X aria-hidden="true" className="h-3.5 w-3.5" />
+              </button>
+            ) : null}
             {filterGroups.map((group) => {
               const activeValue = getActiveFilterValue(activeFilters, group.id);
 
@@ -378,7 +393,11 @@ export function CatalogFilterBar({
                 >
                   <span className="text-black/45">{group.label}</span>
                   <span>{getFilterOptionLabel(group.id, activeValue)}</span>
-                  <X aria-hidden="true" className="h-3.5 w-3.5" strokeWidth={2} />
+                  <X
+                    aria-hidden="true"
+                    className="h-3.5 w-3.5"
+                    strokeWidth={2}
+                  />
                 </button>
               );
             })}
@@ -544,6 +563,21 @@ export function CatalogFilterBar({
           </div>
 
           <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5">
+            {activeUseCaseLabel ? (
+              <div className="mb-5 flex items-center justify-between gap-3 rounded-xl bg-[#F3F3F3] p-3 text-sm">
+                <span>
+                  Utilizzo: <strong>{activeUseCaseLabel}</strong>
+                </span>
+                <button
+                  type="button"
+                  onClick={onClearUseCase}
+                  aria-label={`Rimuovi utilizzo: ${activeUseCaseLabel}`}
+                  className="grid h-11 w-11 shrink-0 place-items-center rounded-lg outline-none hover:bg-black/10 focus-visible:ring-2 focus-visible:ring-black"
+                >
+                  <X aria-hidden="true" className="h-4 w-4" />
+                </button>
+              </div>
+            ) : null}
             <div className="grid gap-6">
               {filterGroups.map((group) => {
                 const activeValue = getActiveFilterValue(
@@ -572,9 +606,7 @@ export function CatalogFilterBar({
                             type="button"
                             aria-pressed={isActive}
                             disabled={isDisabled}
-                            onClick={() =>
-                              onFilterChange(group.id, option.id)
-                            }
+                            onClick={() => onFilterChange(group.id, option.id)}
                             className={clsx(
                               "font-ui flex min-h-12 w-full items-center justify-between rounded-[0.95rem] border px-3.5 text-left text-sm font-bold outline-none transition-colors motion-reduce:transition-none focus-visible:ring-2 focus-visible:ring-black/35 disabled:cursor-not-allowed disabled:opacity-35",
                               isActive

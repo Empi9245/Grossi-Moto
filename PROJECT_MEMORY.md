@@ -1,5 +1,15 @@
 # Project Memory
 
+## Gamma: scelta per utilizzo, confronto e consigli modello — 2026-09-24
+
+- `/scooters` aggiunge tre percorsi editoriali (Città ogni giorno, Casa e lavoro, Gite e viaggi), combinabili con ricerca, tipo, marca e cilindrata. Conteggi, indicatore filtri, chip di rimozione, pannello mobile e azzeramento tengono conto dell'utilizzo; le schede non più visibili vengono richiuse.
+- Confronto inline di 2–3 modelli, selezionabili dalle card o dal menu con tutta la gamma. La selezione rimane durante ricerca e filtri, ma è locale alla pagina (nessuna persistenza tra navigazioni). Tabella semantica con cilindrata, impostazione, uso, motivi di scelta e aspetti da valutare; link a scheda e contatto con modello preselezionato. Limite, rimozione, azzeramento e annunci accessibili gestiti dal reducer; nessun overlay o nuovo motion.
+- Nuovo `src/data/catalog-guidance.ts`: 27 profili espliciti, classificazione d'uso, motivo di scelta, compromesso da valutare, verifica in sede e due alternative motivate per modello, anche tra marchi. Sono interpretazioni editoriali del dataset esistente, non nuove misurazioni o dichiarazioni su patente, omologazione, stock o prezzo. Aggiornare la guida quando cambiano i dati modello.
+- `/scooters/[slug]` mostra consigli e alternative nel contenuto server-side; preservati gallery, metadata, ProductModel, BreadcrumbList, parametri statici e CTA precompilate. Il passeggero è un'esigenza da valutare fisicamente in sede, non un filtro non supportato dai dati.
+- Card desktop espansa con spazio dedicato al confronto; copie dello stack mobile restano inerti e mantengono lo stesso ingombro. La cattura mouse del rail esclude pulsanti/link per non intercettarne i click; swipe e protezione dai click dopo trascinamento conservati.
+- Verifiche: build produzione completata, 22 test superati (confronto, guida, contatti e swipe), lint mirato superato; tutti i 27 HTML statici includono consigli, alternative, JSON-LD e link modello precompilato. Lint generale segnala due errori esterni a questo intervento (`set-state-in-effect` nei fallback IntersectionObserver di `AccessoryRail.tsx` e `zoom-parallax.tsx`). Build eseguita con accesso rete per il font Google Instrument Sans. Nessuna QA visuale/browser o pubblicazione eseguita.
+
+
 ## Home — performance/motion gating 2026-09-24
 
 - `src/components/ui/zoom-parallax.tsx`: le animazioni idle infinite e i listener/interazioni della Zoom Parallax vengono attivati solo quando la sezione si trova entro circa un viewport dalla finestra, tramite `IntersectionObserver`. Quando è lontana le immagini restano ferme e non vengono eseguite misurazioni globali di scroll della sezione; entrando nell'area di pre-attivazione, step, lock, easing, durate e comportamento visibile restano invariati.
