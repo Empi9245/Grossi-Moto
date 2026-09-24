@@ -329,6 +329,7 @@ const topicOptions = [
 ] as const;
 
 export function ContactQuestions({
+  hasInitialNote,
   step,
   answers,
   errors,
@@ -337,6 +338,7 @@ export function ContactQuestions({
   choose,
 }: {
   step: Step;
+  hasInitialNote: boolean;
   answers: Answers;
   errors: Errors;
   models: ContactModel[];
@@ -491,7 +493,7 @@ export function ContactQuestions({
               ))}
             </div>
             <FieldError id="contact-interests" error={errors.interests} />
-            {answers.interests.includes("Altro") || answers.salesNote
+            {answers.interests.includes("Altro") || hasInitialNote
               ? field("salesNote", "La tua richiesta", {
                   multiline: true,
                   optional: !answers.interests.includes("Altro"),
@@ -506,7 +508,7 @@ export function ContactQuestions({
             {field("vehicle", "Marca e modello", {
               placeholder: "Es. KYMCO Agility 125",
             })}
-            {answers.workshopNote &&
+            {hasInitialNote &&
               field("workshopNote", "La tua nota iniziale", {
                 multiline: true,
                 optional: true,

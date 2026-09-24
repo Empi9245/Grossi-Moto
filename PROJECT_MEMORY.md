@@ -627,3 +627,11 @@ Implementata.
 - Le copie laterali GSAP restano sempre compatte e non interattive. Triple-copy, infinite swipe, peeks, profondita, virtual indexes, ResizeObserver, recenter e controlli restano invariati; il ResizeObserver adegua l'altezza dello stack alla card centrale aperta.
 - L'espansione usa Framer Motion solo per size/layout e contenuto interno, senza bounce; con reduced motion il cambio e immediato. Swipe, tastiera e previous/next chiudono i dettagli del modello precedente.
 - Desktop continua a usare l'espansione originale della griglia. Il deep link `/scooters?focus=<id>` resta compatibile tramite `data-scooter-detail-id` sulla card aperta.
+
+## Form contatti conversazionale — 2026-09-24
+
+- Implementati percorsi condizionali acquisto, officina, ricambi e altra domanda, una domanda per schermata; dalla scheda prodotto tre schermate con modello già selezionato.
+- Nome e solo recapito necessario, anteprima modificabile, WhatsApp/mailto e invio Formspree. Conservati privacy, honeypot, timeout, errori recuperabili e protezione doppio invio.
+- Logica pura in contact-flow.ts, UI in ContactFormUI.tsx e controller in ContactForm.tsx. Note iniziali modificabili anche dopo cancellazione completa; nessuna nuova dipendenza.
+- Reintegrato il controller dopo la fusione che aveva ripristinato il form precedente, preservando la nuova grafica della pagina. Lint/build e 13 test passati; QA responsive, tastiera e invio simulato. Nessuna verifica della ricezione email reale.
+- Dettagli: docs/CONTACT_FORM_2026-09-24.md.

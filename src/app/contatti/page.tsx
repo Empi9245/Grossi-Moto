@@ -5,7 +5,7 @@ import { Clock, Mail, MapPin, Phone, PhoneCall } from "lucide-react";
 
 import { ContactForm } from "@/components/contact/ContactForm";
 import { SiteFooter } from "@/components/layout/SiteFooter";
-import { catalogScooters } from "@/data/catalog-scooters";
+import { catalogScooters, getCatalogScooterBrand } from "@/data/catalog-scooters";
 
 export const metadata = pageMetadata(
   "Contatti e orari a Roma",
@@ -242,6 +242,12 @@ export default async function ContattiPage({
                 key={model?.id ?? initialSubject}
                 initialSubject={initialSubject}
                 initialMessage={initialMessage}
+                initialModelId={model?.id}
+                models={catalogScooters.map(({ id, name, brand }) => ({
+                  id,
+                  name,
+                  brand: getCatalogScooterBrand({ brand }),
+                }))}
               />
             </div>
           </div>
