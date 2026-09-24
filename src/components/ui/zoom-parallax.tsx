@@ -29,42 +29,38 @@ type ZoomParallaxProps = {
 
 const defaultImages: ParallaxImage[] = [
   {
-    src: "/kymco-all/sections/agility-125-r16-power-up-kymco-agility125-esterne-003-scaled-kymco-agility125-esterne-003-scaled.jpg",
-    alt: "Agility 125 R16 Power Up in esterno",
+    src: "/kymco-all/sections/new/thumbnail (1).jpg",
+    alt: "Scooter in un contesto urbano romano",
   },
   {
-    src: "/grossimoto/home-scroll/02-dtx-360-strada.webp",
-    alt: "DTX 360 350 in movimento su strada",
+    src: "/kymco-all/sections/new/agility-125-r16-power-up-kymco-agility125-esterne-006-scaled-kymco-agility125-esterne-006-scaled.jpg",
+    alt: "Agility 125 R16 Power Up con due persone in movimento",
   },
   {
-    src: "/grossimoto/home-scroll/03-agility-125-esterno.webp",
-    alt: "Agility 125 R16 in esterno urbano",
+    src: "/kymco-all/sections/new/thumbnail.jpg",
+    alt: "Moto adventure con pilota in un contesto urbano",
   },
   {
-    src: "/grossimoto/home-scroll/04-people-s-125-abs-dettaglio.webp",
-    alt: "Dettaglio People S 125 ABS",
+    src: "/kymco-all/sections/new/Smash/0612d67f-e208-4c0a-9b68-5417c0307662.jpeg",
+    alt: "Scooter con pilota in un contesto urbano romano",
   },
   {
-    src: "/grossimoto/home-scroll/05-dtx-360-dettaglio.webp",
-    alt: "Dettaglio DTX 360 350",
+    src: "/kymco-all/sections/new/Smash/535d1099-fda5-4afc-8df1-62c2590811d1.jpeg",
+    alt: "Dettaglio frontale di uno scooter in città",
   },
   {
-    src: "/grossimoto/home-scroll/06-agility-125-urbano.webp",
-    alt: "Agility 125 R16 in scenario cittadino",
+    src: "/kymco-all/sections/new/Smash/c9c99a3f-b49f-482f-9ee7-593fa9ef7f2f.jpeg",
+    alt: "Donna accanto a uno scooter in una strada urbana",
   },
   {
-    src: "/grossimoto/home-scroll/07-people-s-125-abs-faro.webp",
-    alt: "Dettaglio frontale People S 125 ABS",
+    src: "/kymco-all/sections/new/Smash/3E808E37-6DF0-4928-9CA4-6920E5688CAB.png",
+    alt: "Moto e scooter in una scena urbana",
   },
   {
-    src: "/kymco-all/sections/agility-125-r16-power-up-kymco-agility125-esterne-006-scaled-kymco-agility125-esterne-006-scaled.jpg",
-    alt: "Agility 125 R16 Power Up in esterno",
+    src: "/kymco-all/sections/new/Smash/IMG_9489.png",
+    alt: "Moto e scooter in una scena urbana",
   },
-  {
-    src: "/kymco-all/sections/agility-125-r16-power-up-kymco-agility125-esterne-008-scaled-kymco-agility125-esterne-008-scaled.jpg",
-    alt: "Agility 125 R16 Power Up in esterno",
-  },
-];
+]
 
 function StaticParallaxFallback({ images }: { images: ParallaxImage[] }) {
   return (
@@ -72,7 +68,7 @@ function StaticParallaxFallback({ images }: { images: ParallaxImage[] }) {
       <Image
         src={
           images[0]?.src ??
-          "/kymco-all/sections/agility-125-r16-power-up-kymco-agility125-esterne-003-scaled-kymco-agility125-esterne-003-scaled.jpg"
+          "/kymco-all/sections/new/thumbnail (1).jpg"
         }
         alt={images[0]?.alt ?? "Scooter in viaggio"}
         fill
@@ -248,7 +244,6 @@ function AlternatingCreditBlock({
     ],
     [0, 1, 1, 1, 1, 0],
   );
-
   const titleClassName = `${creditsFont.className} max-w-[18ch] uppercase leading-[0.94] tracking-[-0.015em] ${
     compact
       ? tablet
@@ -498,7 +493,6 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
           const nextY = isDesktopViewport
             ? entryStartY + (liveSectionTop - entryStartY) * latest
             : latest;
-
           window.scrollTo({
             top: nextY,
             left: 0,
@@ -747,8 +741,7 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
         touchControlsSection =
           rect.top <= entrySnapDistance &&
           rect.bottom >= window.innerHeight - 4;
-      } else {
-        touchControlsSection = false;
+      } else {        touchControlsSection = false;
       }
     };
 
@@ -997,8 +990,7 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
   const mobileScale = useTransform(zoomProgress, [0, 1], [1, 2.4]);
   const tabletScale = useTransform(zoomProgress, [0, 1], [1, 2.15]);
   const compactScale = useTabletLayout ? tabletScale : mobileScale;
-  const scale4 = useTransform(zoomProgress, [0, 1], [1, 4.08]);
-  const scale5 = useTransform(zoomProgress, [0, 1], [1, 5]);
+  const scale4 = useTransform(zoomProgress, [0, 1], [1, 4.08]);  const scale5 = useTransform(zoomProgress, [0, 1], [1, 5]);
   const scale6 = useTransform(zoomProgress, [0, 1], [1, 6]);
   const scale8 = useTransform(zoomProgress, [0, 1], [1, 8]);
   const scale9 = useTransform(zoomProgress, [0, 1], [1, 9]);
@@ -1247,6 +1239,5 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
       </div>
     </div>
     <ExperienceContact />
-    </>
-  );
+    </>  );
 }
