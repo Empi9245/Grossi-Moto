@@ -1,5 +1,11 @@
 # Project Memory
 
+## Home — performance/motion gating 2026-09-24
+
+- `src/components/ui/zoom-parallax.tsx`: le animazioni idle infinite e i listener/interazioni della Zoom Parallax vengono attivati solo quando la sezione si trova entro circa un viewport dalla finestra, tramite `IntersectionObserver`. Quando è lontana le immagini restano ferme e non vengono eseguite misurazioni globali di scroll della sezione; entrando nell'area di pre-attivazione, step, lock, easing, durate e comportamento visibile restano invariati.
+- `src/components/sections/AccessoryRail.tsx`: l'auto-advance da 6 secondi viene sospeso quando il rail è lontano dal viewport e riparte nella fascia di pre-attivazione. Navigazione manuale, tastiera, reduced motion, immagini, CTA e stile non sono stati modificati.
+- Nessuna dipendenza, dato, asset, SEO, copy o comportamento responsive è stato modificato. L'obiettivo è ridurre lavoro JavaScript/animazioni fuori schermo, soprattutto sulla Home lunga e su dispositivi mobili.
+
 ## Pagine modello SEO /scooters/[slug] — audit copy e gallery 2026-09-21
 
 - Le 27 pagine modello restano generate staticamente da `catalogScooters` con `generateStaticParams()` e `dynamicParams = false`; `/scooters?focus=<id>` resta il deep link alla quick preview e non viene rediretto.
