@@ -20,6 +20,7 @@ import { useMediaQuery } from "@/hooks/useMediaQuery";
 type ParallaxImage = {
   src: string;
   alt?: string;
+  objectPosition?: string;
 };
 
 type ZoomParallaxProps = {
@@ -29,40 +30,46 @@ type ZoomParallaxProps = {
 
 const defaultImages: ParallaxImage[] = [
   {
-    src: "/kymco-all/sections/agility-125-r16-power-up-kymco-agility125-esterne-003-scaled-kymco-agility125-esterne-003-scaled.jpg",
-    alt: "Agility 125 R16 Power Up in esterno",
+    src: "/kymco-all/sections/new/thumbnail (1).jpg",
+    alt: "Scooter in un contesto urbano romano",
   },
   {
-    src: "/grossimoto/home-scroll/02-dtx-360-strada.webp",
-    alt: "DTX 360 350 in movimento su strada",
+    src: "/kymco-all/sections/new/agility-125-r16-power-up-kymco-agility125-esterne-006-scaled-kymco-agility125-esterne-006-scaled.jpg",
+    alt: "Agility 125 R16 Power Up con due persone in movimento",
   },
   {
-    src: "/grossimoto/home-scroll/03-agility-125-esterno.webp",
-    alt: "Agility 125 R16 in esterno urbano",
+    src: "/kymco-all/sections/new/thumbnail.jpg",
+    alt: "Moto adventure con pilota in un contesto urbano",
   },
   {
-    src: "/grossimoto/home-scroll/04-people-s-125-abs-dettaglio.webp",
-    alt: "Dettaglio People S 125 ABS",
+    src: "/kymco-all/sections/new/Smash/0612d67f-e208-4c0a-9b68-5417c0307662.jpeg",
+    alt: "Scooter con pilota in un contesto urbano romano",
+    objectPosition: "50% 28%",
   },
   {
-    src: "/grossimoto/home-scroll/05-dtx-360-dettaglio.webp",
-    alt: "Dettaglio DTX 360 350",
+    src: "/kymco-all/sections/new/Smash/535d1099-fda5-4afc-8df1-62c2590811d1.jpeg",
+    alt: "Dettaglio frontale di uno scooter in città",
+    objectPosition: "50% 34%",
   },
   {
-    src: "/grossimoto/home-scroll/06-agility-125-urbano.webp",
-    alt: "Agility 125 R16 in scenario cittadino",
+    src: "/kymco-all/sections/new/Smash/c9c99a3f-b49f-482f-9ee7-593fa9ef7f2f.jpeg",
+    alt: "Donna accanto a uno scooter in una strada urbana",
+    objectPosition: "50% 24%",
   },
   {
-    src: "/grossimoto/home-scroll/07-people-s-125-abs-faro.webp",
-    alt: "Dettaglio frontale People S 125 ABS",
+    src: "/kymco-all/sections/new/Smash/3E808E37-6DF0-4928-9CA4-6920E5688CAB.png",
+    alt: "Moto e scooter in una scena urbana",
+    objectPosition: "50% 30%",
   },
   {
-    src: "/kymco-all/sections/agility-125-r16-power-up-kymco-agility125-esterne-006-scaled-kymco-agility125-esterne-006-scaled.jpg",
-    alt: "Agility 125 R16 Power Up in esterno",
+    src: "/kymco-all/sections/new/Smash/IMG_9489.png",
+    alt: "Moto e scooter in una scena urbana",
+    objectPosition: "50% 30%",
   },
   {
-    src: "/kymco-all/sections/agility-125-r16-power-up-kymco-agility125-esterne-008-scaled-kymco-agility125-esterne-008-scaled.jpg",
-    alt: "Agility 125 R16 Power Up in esterno",
+    src: "/kymco-all/sections/dtx-360-350-dt-x-dsf7275-scaled-dt-x-dsf7275-scaled.jpg",
+    alt: "DTX 360 350 su una strada di montagna",
+    objectPosition: "50% 42%",
   },
 ];
 
@@ -72,7 +79,7 @@ function StaticParallaxFallback({ images }: { images: ParallaxImage[] }) {
       <Image
         src={
           images[0]?.src ??
-          "/kymco-all/sections/agility-125-r16-power-up-kymco-agility125-esterne-003-scaled-kymco-agility125-esterne-003-scaled.jpg"
+          "/kymco-all/sections/new/thumbnail (1).jpg"
         }
         alt={images[0]?.alt ?? "Scooter in viaggio"}
         fill
@@ -1026,7 +1033,7 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
       className="relative h-[300svh] lg:h-[400svh] bg-[var(--home-experience-surface)]"
     >
       <div className="sticky top-0 h-[100svh] overflow-hidden">
-        {parallaxImages.map(({ src, alt }, index) => {
+        {parallaxImages.map(({ src, alt, objectPosition }, index) => {
           const scale = isDesktopViewport ? scales[index % scales.length] : compactScale;
           const idlePattern =
             idleFloatPatterns[index % idleFloatPatterns.length];
@@ -1158,6 +1165,7 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
                   alt={alt ?? `Parallax image ${index + 1}`}
                   fill
                   sizes={index === 0 ? "100vw" : "50vw"}
+                  style={objectPosition ? { objectPosition } : undefined}
                   className={`h-full w-full object-cover ${index === 0 ? "object-right" : ""}`}
                 />
                 <div

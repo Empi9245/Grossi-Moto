@@ -12,8 +12,8 @@ import {
 import { Navbar } from "@/components/hero/Navbar";
 
 const HERO_IMAGE = {
-  src: "/grossimoto/servizi-hero/agility-s-125-consulenza.jpg",
-  alt: "Consulenza scooter Grossimoto con Agility S 125 in contesto urbano",
+  src: "/kymco-all/sections/new/hero servizi.jpg",
+  alt: "Meccanico al lavoro su uno scooter nell’officina Grossi Moto",
 };
 
 const easeOut = [0.22, 1, 0.36, 1] as const;
