@@ -635,3 +635,7 @@ Implementata.
 - Logica pura in contact-flow.ts, UI in ContactFormUI.tsx e controller in ContactForm.tsx. Note iniziali modificabili anche dopo cancellazione completa; nessuna nuova dipendenza.
 - Reintegrato il controller dopo la fusione che aveva ripristinato il form precedente, preservando la nuova grafica della pagina. Lint/build e 13 test passati; QA responsive, tastiera e invio simulato. Nessuna verifica della ricezione email reale.
 - Dettagli: docs/CONTACT_FORM_2026-09-24.md.
+
+### Canali diretti del form — 2026-09-24
+- Rimossa la frase sui recapiti alla fine. WhatsApp ed email non richiedono più numero o indirizzo del cliente: il pulsante finale apre rispettivamente la chat +39 328 918 5029 o una mail a info@grossimoto.it, con testo preparato.
+- Il solo canale Telefono richiede un numero e invia la richiesta di richiamata tramite Formspree. Invio da tastiera coerente con il canale scelto; nessun invio Formspree privo di recapito nei canali esterni. Preservati nome, anteprima modificabile e privacy.

@@ -204,18 +204,13 @@ export function validateStep(
         errors.channel = "Scegli come preferisci essere ricontattato.";
       if (!a.name.trim()) errors.name = "Inserisci il tuo nome.";
       if (
-        a.channel === "email" &&
-        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(a.email.trim())
-      )
-        errors.email = "Inserisci un indirizzo email valido.";
-      if (
-        (a.channel === "phone" || a.channel === "whatsapp") &&
+        a.channel === "phone" &&
         !/^\+?[\d\s().-]+$/.test(a.phone.trim())
       )
         errors.phone = "Inserisci un numero di telefono valido.";
       const digits = a.phone.replace(/\D/g, "");
       if (
-        (a.channel === "phone" || a.channel === "whatsapp") &&
+        a.channel === "phone" &&
         (digits.length < 7 || digits.length > 15)
       )
         errors.phone =
@@ -307,12 +302,6 @@ export function buildMessage(a: Answers, models: ContactModel[]) {
     if (a.partsVehicle.trim())
       text.push(`Il mio mezzo è ${sentence(a.partsVehicle)}`);
   } else text.push(sentence(a.question));
-  if (a.channel === "email")
-    text.push(`Preferisco essere ricontattato via email: ${a.email.trim()}.`);
-  if (a.channel === "whatsapp")
-    text.push(
-      `Preferisco essere ricontattato su WhatsApp al ${a.phone.trim()}.`,
-    );
   if (a.channel === "phone")
     text.push(
       `Preferisco essere ricontattato telefonicamente al ${a.phone.trim()}.`,
@@ -342,8 +331,7 @@ export function buildPayload(
   data.set("name", a.name.trim());
   data.set("message", message.trim());
   data.set("preferred_contact", a.channel ? channelLabels[a.channel] : "");
-  if (a.channel === "email") data.set("email", a.email.trim());
-  else data.set("phone", a.phone.trim());
+  if (a.channel === "phone") data.set("phone", a.phone.trim());
   if (privacy) data.set("privacy", "on");
   return data;
 }

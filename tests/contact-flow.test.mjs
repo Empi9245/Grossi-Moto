@@ -139,7 +139,7 @@ test("required answers reject whitespace, unknown models and empty multi-selecti
   );
 });
 
-test("only the preferred contact method is validated or transmitted", () => {
+test("external channels need no contact details; callback validates only phone", () => {
   const a = {
     ...createAnswers("Altro", "Informazioni"),
     ...contact,
@@ -149,7 +149,7 @@ test("only the preferred contact method is validated or transmitted", () => {
   let payload = Object.fromEntries(
     buildPayload(a, "Edited message", true, "", models),
   );
-  assert.equal(payload.phone, contact.phone);
+  assert.ok(!("phone" in payload));
   assert.ok(!("email" in payload));
   assert.equal(payload.message, "Edited message");
   assert.equal(payload.privacy, "on");
@@ -159,11 +159,17 @@ test("only the preferred contact method is validated or transmitted", () => {
   payload = Object.fromEntries(
     buildPayload(a, "Edited message", true, "bot", models),
   );
-  assert.equal(payload.email, "stale@example.com");
+  assert.ok(!("email" in payload));
   assert.ok(!("phone" in payload));
   assert.equal(payload._gotcha, "bot");
   assert.equal(payload._subject, "Nuova richiesta dal sito Grossimoto");
-  assert.ok(validateStep("contact", { ...a, email: "invalid" }, models).email);
+  for (const channel of ["email", "whatsapp"]) {
+    const external = { ...a, channel, email: "", phone: "" };
+    assert.deepEqual(validateStep("contact", external, models), {});
+    assert.doesNotMatch(buildMessage(external, models), /ricontattato|stale@example/);
+  }
+  const callback = { ...a, channel: "phone", phone: contact.phone };
+  assert.equal(buildPayload(callback, "Message", true, "", models).get("phone"), contact.phone);
   assert.ok(
     validateStep("contact", { ...a, channel: "phone", phone: "+39" }, models)
       .phone,

@@ -40,7 +40,7 @@ const titles: Record<Step, string> = {
   parts: "Cosa stai cercando?",
   partsDetails: "Ci dai qualche dettaglio?",
   question: "Cosa vorresti chiederci?",
-  contact: "Come preferisci essere ricontattato?",
+  contact: "Come preferisci contattarci?",
   review: "Il tuo messaggio è pronto.",
 };
 const hints: Partial<Record<Step, string>> = {
@@ -58,7 +58,7 @@ const hints: Partial<Record<Step, string>> = {
   partsDetails:
     "Descrivi cosa cerchi. Se serve per il tuo mezzo, puoi indicarci il modello.",
   question: "Scrivi liberamente, ti daremo una mano.",
-  contact: "Ti chiediamo soltanto il recapito che preferisci usare.",
+  contact: "WhatsApp ed email aprono la tua app con il messaggio pronto. Per essere richiamato, scegli Telefono.",
   review:
     "Abbiamo raccolto le tue risposte. Puoi modificare il testo prima di inviarlo.",
 };
@@ -232,6 +232,10 @@ export function ContactForm({
       nextStep();
       return;
     }
+    if (answers.channel === "whatsapp" || answers.channel === "email") {
+      openExternal(answers.channel);
+      return;
+    }
     if (!readyToSend()) return;
     submitting.current = true;
     setStatus("sending");
@@ -270,7 +274,7 @@ export function ContactForm({
     setExternalNotice(
       channel === "whatsapp"
         ? "Completa l’invio in WhatsApp. Il testo resta disponibile anche qui."
-        : "Completa l’invio nella tua app email. Se non si apre, puoi inviare la richiesta dal sito.",
+        : "Completa l’invio nella tua app email. Se non si apre, scrivici a info@grossimoto.it.",
     );
   }
 
@@ -429,7 +433,6 @@ export function ContactForm({
                   onKeep={() =>
                     setDraft((current) => ({ ...current, source: generated }))
                   }
-                  onExternal={openExternal}
                 />
               ) : (
                 <ContactQuestions
@@ -443,9 +446,8 @@ export function ContactForm({
                 />
               )}
             </ContactStep>
-            {step !== "review" && (
+            {step !== "review" && step !== "topic" && (
               <div className="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-black/10 pt-5">
-                {step !== "topic" ? (
                   <button
                     type="button"
                     onClick={back}
@@ -454,11 +456,6 @@ export function ContactForm({
                     <ArrowLeft aria-hidden="true" className="h-4 w-4" />
                     Indietro
                   </button>
-                ) : (
-                  <span className="text-xs leading-5 text-[#666666]">
-                    I tuoi recapiti, solo alla fine.
-                  </span>
-                )}
                 {!autoAdvance && (
                   <button type="submit" className={`${primaryButton} ml-auto`}>
                     {step === "contact" ? "Prepara il messaggio" : "Continua"}

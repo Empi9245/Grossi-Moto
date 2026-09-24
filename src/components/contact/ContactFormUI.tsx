@@ -10,7 +10,6 @@ import {
   Wrench,
   ShoppingBag,
   MessageCircle,
-  Mail,
   type LucideIcon,
 } from "lucide-react";
 import {
@@ -38,7 +37,7 @@ export function ContactProgress({ stage }: { stage: number }) {
       aria-label="Le fasi della richiesta"
       className="font-ui mb-8 grid grid-cols-3 gap-3 text-[0.68rem] font-semibold sm:mb-10 sm:text-xs"
     >
-      {["Richiesta", "Recapito", "Messaggio"].map((label, index) => (
+      {["Richiesta", "Canale", "Messaggio"].map((label, index) => (
         <li
           key={label}
           aria-current={index === stage ? "step" : undefined}
@@ -572,23 +571,9 @@ export function ContactQuestions({
                   autoComplete: "name",
                   placeholder: "Nome e cognome",
                 })}
-                {answers.channel === "email"
-                  ? field("email", "Indirizzo email", {
-                      type: "email",
-                      autoComplete: "email",
-                      placeholder: "nome@esempio.it",
-                    })
-                  : field(
-                      "phone",
-                      answers.channel === "whatsapp"
-                        ? "Numero WhatsApp"
-                        : "Numero di telefono",
-                      {
-                        type: "tel",
-                        autoComplete: "tel",
-                        placeholder: "Es. +39 333 123 4567",
-                      },
-                    )}
+                {answers.channel === "phone" && field("phone", "Numero di telefono", {
+                  type: "tel", autoComplete: "tel", placeholder: "Es. +39 333 123 4567",
+                })}
               </div>
             )}
           </div>
@@ -611,7 +596,6 @@ export function ContactReview({
   onPrivacyChange,
   onRebuild,
   onKeep,
-  onExternal,
 }: {
   answers: Answers;
   errors: Errors;
@@ -623,14 +607,13 @@ export function ContactReview({
   onPrivacyChange: (checked: boolean) => void;
   onRebuild: () => void;
   onKeep: () => void;
-  onExternal: (channel: "whatsapp" | "email") => void;
 }) {
   return (
     <div className="space-y-5">
       <p className="break-words text-sm leading-6 text-[#626262]">
         {answers.name} · {answers.channel ? channelLabels[answers.channel] : ""}
         <br />
-        {answers.channel === "email" ? answers.email : answers.phone}
+        {answers.channel === "phone" ? answers.phone : null}
       </p>
       {draftOutdated && (
         <div className="rounded-2xl border border-[#C72A09]/30 p-4 text-sm leading-6">
@@ -707,34 +690,12 @@ export function ContactReview({
         className={`${primaryButton} w-full`}
         disabled={sending}
       >
-        {sending ? "Invio in corso…" : "Invia la richiesta"}
+        {answers.channel === "whatsapp" ? "Apri WhatsApp" : answers.channel === "email" ? "Apri la tua email" : sending ? "Invio in corso…" : "Invia la richiesta"}
         <ArrowRight aria-hidden="true" className="h-4 w-4" />
       </button>
-      <div className="grid gap-2 sm:grid-cols-2">
-        <button
-          type="button"
-          className={quietButton}
-          onClick={() => onExternal("whatsapp")}
-        >
-          <MessageCircle aria-hidden="true" className="h-4 w-4" />
-          Apri WhatsApp
-          <span className="sr-only">
-            {" "}
-            con il messaggio, in una nuova scheda
-          </span>
-        </button>
-        <button
-          type="button"
-          className={quietButton}
-          onClick={() => onExternal("email")}
-        >
-          <Mail aria-hidden="true" className="h-4 w-4" />
-          Apri la tua email
-        </button>
-      </div>
-      <p className="text-xs leading-5 text-[#666666]">
-        Con WhatsApp o email, confermerai l’invio nell’app che si apre.
-      </p>
+      {answers.channel !== "phone" && <p className="text-xs leading-5 text-[#666666]">
+        Confermerai l’invio nell’app che si apre, con il messaggio già pronto per Grossi Moto.
+      </p>}
     </div>
   );
 }
