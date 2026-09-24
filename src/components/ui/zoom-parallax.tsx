@@ -67,8 +67,8 @@ const defaultImages: ParallaxImage[] = [
     objectPosition: "50% 30%",
   },
   {
-    src: "/kymco-all/sections/agility-125-r16-power-up-kymco-agility125-esterne-008-scaled-kymco-agility125-esterne-008-scaled.jpg",
-    alt: "Agility 125 R16 Power Up in esterno",
+    src: "/kymco-all/sections/dtx-360-350-dt-x-dsf7275-scaled-dt-x-dsf7275-scaled.jpg",
+    alt: "DTX 360 350 su una strada di montagna",
     objectPosition: "50% 42%",
   },
 ];
