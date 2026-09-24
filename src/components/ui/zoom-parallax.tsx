@@ -343,6 +343,7 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
   const useTabletLayout = isTabletViewport && !isDesktopViewport;
   const introAssembledRef = useRef(false);
   const [isIntroAssembled, setIsIntroAssembled] = useState(false);
+  const [isNearViewport, setIsNearViewport] = useState(false);
   const parallaxImages = images.slice(0, isDesktopViewport ? 9 : 1);
   const zoomEnd = isDesktopViewport ? desktopZoomEnd : compactZoomEnd;
   const creditsLockProgress = isDesktopViewport
@@ -361,6 +362,33 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
     const section = container.current;
 
     if (!section || shouldReduceMotion) {
+      return;
+    }
+
+    if (!("IntersectionObserver" in window)) {
+      setIsNearViewport(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsNearViewport(Boolean(entry?.isIntersecting));
+      },
+      {
+        rootMargin: "100% 0px 100% 0px",
+        threshold: 0,
+      },
+    );
+
+    observer.observe(section);
+
+    return () => observer.disconnect();
+  }, [shouldReduceMotion]);
+
+  useEffect(() => {
+    const section = container.current;
+
+    if (!section || shouldReduceMotion || !isNearViewport) {
       return;
     }
 
@@ -945,7 +973,7 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
         capture: true,
       });
     };
-  }, [isDesktopViewport, shouldReduceMotion]);
+  }, [isDesktopViewport, isNearViewport, shouldReduceMotion]);
   // The zoom completes first; the same controlled step then carries the credits into their centered lock.
   const zoomProgress = useTransform(scrollYProgress, [0, zoomEnd], [0, 1]);
   const introExitEnd = isDesktopViewport ? 0.28 : 0.15;
@@ -1010,35 +1038,39 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
               key={src}
               style={{ scale: isDesktopViewport ? scale : 1 }}
               animate={
-                isIntroAssembled
+                !isNearViewport
                   ? { x: 0, y: 0 }
-                  : {
-                      x: [
-                        0,
-                        idlePattern.x * idleStrength,
-                        idlePattern.x * -0.45 * idleStrength,
-                        0,
-                      ],
-                      y: [
-                        0,
-                        idlePattern.y * idleStrength,
-                        idlePattern.y * -0.35 * idleStrength,
-                        0,
-                      ],
-                    }
+                  : isIntroAssembled
+                    ? { x: 0, y: 0 }
+                    : {
+                        x: [
+                          0,
+                          idlePattern.x * idleStrength,
+                          idlePattern.x * -0.45 * idleStrength,
+                          0,
+                        ],
+                        y: [
+                          0,
+                          idlePattern.y * idleStrength,
+                          idlePattern.y * -0.35 * idleStrength,
+                          0,
+                        ],
+                      }
               }
               transition={
-                isIntroAssembled
-                  ? {
-                      duration: 0.5,
-                      delay: settleDelay,
-                      ease: steppedScrollEntryEase,
-                    }
-                  : {
-                      duration: idlePattern.duration,
-                      repeat: Infinity,
-                      ease: idleFloatEase,
-                    }
+                !isNearViewport
+                  ? { duration: 0 }
+                  : isIntroAssembled
+                    ? {
+                        duration: 0.5,
+                        delay: settleDelay,
+                        ease: steppedScrollEntryEase,
+                      }
+                    : {
+                        duration: idlePattern.duration,
+                        repeat: Infinity,
+                        ease: idleFloatEase,
+                      }
               }
               className={`absolute top-0 flex h-full w-full items-center justify-center ${
                 index === 0 ? "z-20" : "z-10"
@@ -1078,29 +1110,33 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
             >
               <motion.div
                 animate={
-                  isIntroAssembled
+                  !isNearViewport
                     ? { rotate: 0 }
-                    : {
-                        rotate: [
-                          0,
-                          idlePattern.rotate * idleStrength,
-                          idlePattern.rotate * -0.65 * idleStrength,
-                          0,
-                        ],
-                      }
+                    : isIntroAssembled
+                      ? { rotate: 0 }
+                      : {
+                          rotate: [
+                            0,
+                            idlePattern.rotate * idleStrength,
+                            idlePattern.rotate * -0.65 * idleStrength,
+                            0,
+                          ],
+                        }
                 }
                 transition={
-                  isIntroAssembled
-                    ? {
-                        duration: 0.48,
-                        delay: settleDelay,
-                        ease: steppedScrollEntryEase,
-                      }
-                    : {
-                        duration: idlePattern.duration * 1.08,
-                        repeat: Infinity,
-                        ease: idleFloatEase,
-                      }
+                  !isNearViewport
+                    ? { duration: 0 }
+                    : isIntroAssembled
+                      ? {
+                          duration: 0.48,
+                          delay: settleDelay,
+                          ease: steppedScrollEntryEase,
+                        }
+                      : {
+                          duration: idlePattern.duration * 1.08,
+                          repeat: Infinity,
+                          ease: idleFloatEase,
+                        }
                 }
                 style={{
                   scale: isDesktopViewport ? 1 : compactScale,

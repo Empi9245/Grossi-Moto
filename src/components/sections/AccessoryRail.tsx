@@ -19,20 +19,47 @@ const accessoryIcons = [ShieldCheck, Box, Lock, Smartphone] as const;
 
 export function AccessoryRail() {
   const [active, setActive] = useState(0);
+  const [isNearViewport, setIsNearViewport] = useState(false);
   const reduceMotion = useReducedMotion();
+  const root = useRef<HTMLDivElement | null>(null);
   const tabs = useRef<Array<HTMLButtonElement | null>>([]);
   const current = accessories[active];
   const currentColor = pastelColors[active];
 
   useEffect(() => {
-    if (reduceMotion) return;
+    const rail = root.current;
+
+    if (!rail) return;
+
+    if (!("IntersectionObserver" in window)) {
+      setIsNearViewport(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsNearViewport(Boolean(entry?.isIntersecting));
+      },
+      {
+        rootMargin: "50% 0px 50% 0px",
+        threshold: 0,
+      },
+    );
+
+    observer.observe(rail);
+
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (reduceMotion || !isNearViewport) return;
 
     const timer = window.setTimeout(() => {
       setActive((currentActive) => (currentActive + 1) % accessories.length);
     }, autoAdvanceDelayMs);
 
     return () => window.clearTimeout(timer);
-  }, [active, reduceMotion]);
+  }, [active, isNearViewport, reduceMotion]);
 
   function onKeyDown(event: KeyboardEvent<HTMLButtonElement>, index: number) {
     const next =
@@ -54,7 +81,7 @@ export function AccessoryRail() {
   }
 
   return (
-    <div>
+    <div ref={root}>
       <div
         role="tablist"
         aria-label="Categorie accessori"
