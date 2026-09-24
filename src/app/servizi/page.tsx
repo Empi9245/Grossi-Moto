@@ -6,6 +6,7 @@ import { PhoneCall } from "lucide-react";
 import { ServicesHero } from "@/components/ui/services-hero";
 import { StickyScrollShowcase } from "@/components/sections/StickyScrollShowcase";
 import { ServiceProcess } from "@/components/sections/ServiceProcess";
+import { BrandLogo } from "@/components/layout/BrandLogo";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 
 export const metadata = pageMetadata("Officina scooter a Roma: tagliandi e assistenza", "Tagliandi, diagnosi, ricambi e accessori per il tuo scooter a Roma. Contatta l’officina Grossi Moto in Via Festo Porzio 22 e raccontaci cosa ti serve.", "/servizi");
@@ -27,14 +28,9 @@ function ServicesNav() {
         <Link
           href="/"
           aria-label="Torna alla home Grossimoto"
-          className="font-ui group flex min-w-0 flex-col rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-black/40 focus-visible:ring-offset-4 focus-visible:ring-offset-white"
+          className="group inline-flex min-w-0 items-center rounded-xl bg-white px-2 py-1.5 outline-none focus-visible:ring-2 focus-visible:ring-black/40 focus-visible:ring-offset-4 focus-visible:ring-offset-white"
         >
-          <span className="text-base font-bold leading-none transition-opacity duration-150 group-hover:opacity-68 sm:text-lg">
-            Grossimoto
-          </span>
-          <span className="mt-1 text-[0.62rem] font-bold uppercase tracking-[0.17em] text-black/48">
-            Moto e scooter a Roma
-          </span>
+          <BrandLogo alt="" className="w-[8.25rem] sm:w-[9rem]" />
         </Link>
 
         <div className="font-ui hidden min-h-11 items-center gap-1 rounded-full bg-[#0A0A0A] p-1 text-sm font-bold text-white/72 lg:flex">

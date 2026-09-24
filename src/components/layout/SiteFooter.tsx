@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { BrandLogo } from "@/components/layout/BrandLogo";
+
 const footerLinks = [
   { label: "Home", href: "/" },
   { label: "Gamma", href: "/scooters" },
@@ -14,7 +16,9 @@ export function SiteFooter() {
     <footer data-call-cta-theme="white" className="bg-[var(--gm-black)] px-4 py-10 text-white sm:px-6 lg:px-10">
       <div className="mx-auto grid max-w-[92rem] gap-8 pt-8 md:grid-cols-[minmax(0,1fr)_auto] md:items-start">
         <div>
-          <p className="font-ui text-lg font-bold tracking-normal">Grossimoto</p>
+          <div className="inline-flex rounded-xl bg-white px-2 py-1.5">
+            <BrandLogo className="w-[9.5rem]" />
+          </div>
           <p className="mt-1 text-sm text-white/62">
             Grossi Moto di Angelo Grossi
           </p>
