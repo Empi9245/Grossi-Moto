@@ -1,5 +1,11 @@
 # Project Memory
 
+## Navigazione — cleanup transizioni pagina 2026-09-24
+
+- Il mantenimento temporaneo della pagina uscente per la morph showroom → Gamma è ora limitato alla Home (`pathname === "/"`). La pagina `/scooters` appena montata e tutte le altre route usano cleanup immediato, quindi cambi pagina rapidi e back/forward non possono ereditare la finestra di sovrapposizione da 420ms.
+- Preservati `LayoutGroup`, shared `layoutId` dell'immagine scooter, query `focus`, reset su `popstate`/`pageshow`, reduced motion e durata della morph Home → Gamma. Nessuna modifica a layout, card, dati, SEO o animazioni interne.
+
+
 ## Gamma: scelta per utilizzo, confronto e consigli modello — 2026-09-24
 
 - `/scooters` aggiunge tre percorsi editoriali (Città ogni giorno, Casa e lavoro, Gite e viaggi), combinabili con ricerca, tipo, marca e cilindrata. Conteggi, indicatore filtri, chip di rimozione, pannello mobile e azzeramento tengono conto dell'utilizzo; le schede non più visibili vengono richiuse.

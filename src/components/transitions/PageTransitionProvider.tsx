@@ -112,6 +112,7 @@ export function PageTransitionProvider({ children }: { children: ReactNode }) {
     ],
   );
   const shouldKeepExitingPageForMorph =
+    pathname === "/" &&
     Boolean(transitionState.activeScooterId) &&
     transitionState.source === "showroom" &&
     !shouldReduceMotion;
