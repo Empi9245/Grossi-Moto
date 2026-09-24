@@ -63,7 +63,7 @@ export function ServicesHero() {
               fill
               priority
               sizes="100vw"
-              className="object-cover object-center"
+              className="scale-[1.035] object-cover object-[53%_61%]"
             />
 
             <div
@@ -292,7 +292,7 @@ export function ServicesHero() {
             />
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute inset-0 z-[1] bg-[linear-gradient(90deg,rgba(244,244,242,0.98)_0%,rgba(244,244,242,0.93)_48%,rgba(244,244,242,0.62)_100%)]"
+              className="pointer-events-none absolute inset-0 z-[1] bg-[linear-gradient(90deg,rgba(244,244,242,0.70)_0%,rgba(244,244,242,0.50)_48%,rgba(244,244,242,0.18)_100%)]"
             />
 
             <motion.section
