@@ -11,7 +11,7 @@ import {
 
 import { ContactForm } from "@/components/contact/ContactForm";
 import { SiteFooter } from "@/components/layout/SiteFooter";
-import { catalogScooters } from "@/data/catalog-scooters";
+import { catalogScooters, getCatalogScooterBrand } from "@/data/catalog-scooters";
 
 export const metadata = pageMetadata(
   "Contatti e orari a Roma",
@@ -234,7 +234,7 @@ export default async function ContattiPage({
               <p className="font-ui text-[0.68rem] font-bold uppercase tracking-[0.2em] text-white/70 sm:text-xs">
                 Invia una richiesta
               </p>
-              <h2 className="font-display mt-4 max-w-[8ch] text-[clamp(3.2rem,8vw,7rem)] font-bold uppercase leading-[0.86] tracking-[-0.04em]">
+              <h2 className="font-display mt-4 max-w-[8ch] text-[clamp(3.2rem,8vw,7rem)] font-bold uppercase leading-[0.86] tracking-[-0.04em] lg:text-[clamp(3.2rem,5.2vw,5.5rem)]">
                 Raccontaci cosa ti serve.
               </h2>
               <p className="mt-6 max-w-[30rem] text-base leading-7 text-white/78 sm:text-lg sm:leading-8">
@@ -256,6 +256,12 @@ export default async function ContattiPage({
                 key={model?.id ?? initialSubject}
                 initialSubject={initialSubject}
                 initialMessage={initialMessage}
+                initialModelId={model?.id}
+                models={catalogScooters.map(({ id, name, brand }) => ({
+                  id,
+                  name,
+                  brand: getCatalogScooterBrand({ brand }),
+                }))}
               />
             </div>
           </div>
