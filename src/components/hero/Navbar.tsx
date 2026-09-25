@@ -1,5 +1,6 @@
 "use client";
 
+import { BrandLogo } from "@/components/layout/BrandLogo";
 import { Phone } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 
@@ -27,12 +28,7 @@ export function Navbar() {
         })}
         className="font-ui group flex min-w-0 flex-col rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-[oklch(84%_0.04_72)] focus-visible:ring-offset-4 focus-visible:ring-offset-[oklch(14%_0.012_40)]"
       >
-        <span className="text-sm font-medium tracking-normal text-[oklch(96%_0.008_78)] transition-opacity duration-200 group-hover:opacity-80 sm:text-base xl:text-lg">
-          Grossimoto
-        </span>
-        <span className="text-[0.62rem] font-medium uppercase tracking-[0.18em] text-[oklch(82%_0.016_78)] sm:text-[0.68rem]">
-          Moto e scooter a Roma
-        </span>
+        <BrandLogo tone="white" priority />
       </motion.a>
 
       <motion.div

@@ -655,3 +655,11 @@ Implementata.
 ### Canali diretti del form — 2026-09-24
 - Rimossa la frase sui recapiti alla fine. WhatsApp ed email non richiedono più numero o indirizzo del cliente: il pulsante finale apre rispettivamente la chat +39 328 918 5029 o una mail a info@grossimoto.it, con testo preparato.
 - Il solo canale Telefono richiede un numero e invia la richiesta di richiamata tramite Formspree. Invio da tastiera coerente con il canale scelto; nessun invio Formspree privo di recapito nei canali esterni. Preservati nome, anteprima modificabile e privacy.
+
+## Loghi ufficiali e posizione mobile — 2026-09-25
+
+- Nuovo componente `BrandLogo`: usa i due PNG originali in `public/logo`, già dotati di trasparenza, tramite Next Image con proporzioni intrinseche e dimensioni responsive. Nessuna modifica ai file originali, nessuno sfondo o filtro sul marchio.
+- Versione bianca nella hero Home e nel footer scuro; versione nera nelle intestazioni chiare di Gamma, Servizi e Contatti. Header Servizi visibile anche su mobile, nel flusso della pagina.
+- Il logo Home mobile passa da `fixed` ad `absolute` rispetto alla hero: resta nella propria sezione e non segue lo scroll sopra gli altri contenuti. CTA telefono e navigazione inferiore conservate.
+- Lint dei sette file modificati e diff check superati. Lint generale bloccato dai due errori preesistenti `set-state-in-effect` in AccessoryRail e zoom-parallax. Nessuna QA visuale/browser richiesta o eseguita.
+- Build produzione completata con successo, incluse TypeScript e generazione delle 38 pagine, consentendo il download del font Google già configurato.

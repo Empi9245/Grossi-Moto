@@ -1,3 +1,4 @@
+import { BrandLogo } from "@/components/layout/BrandLogo";
 import { ActionMark } from "@/components/ui/control-glyphs";
 import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
@@ -19,7 +20,7 @@ const navItems = [
 
 function ServicesNav() {
   return (
-    <header className="hidden bg-white px-2 sm:px-4 md:block lg:absolute lg:inset-x-2 lg:top-0 lg:z-30 lg:bg-transparent lg:px-0">
+    <header className="bg-white px-2 sm:px-4 lg:absolute lg:inset-x-2 lg:top-0 lg:z-30 lg:bg-transparent lg:px-0">
       <nav
         aria-label="Navigazione Grossimoto"
         className="mx-auto flex min-h-[5.6rem] max-w-[122rem] items-center justify-between gap-3 px-3 py-3 text-[#0A0A0A] sm:px-4 lg:grid lg:w-full lg:grid-cols-[1fr_auto_1fr] lg:px-5"
@@ -29,12 +30,7 @@ function ServicesNav() {
           aria-label="Torna alla home Grossimoto"
           className="font-ui group flex min-w-0 flex-col rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-black/40 focus-visible:ring-offset-4 focus-visible:ring-offset-white"
         >
-          <span className="text-base font-bold leading-none transition-opacity duration-150 group-hover:opacity-68 sm:text-lg">
-            Grossimoto
-          </span>
-          <span className="mt-1 text-[0.62rem] font-bold uppercase tracking-[0.17em] text-black/48">
-            Moto e scooter a Roma
-          </span>
+          <BrandLogo tone="black" priority />
         </Link>
 
         <div className="font-ui hidden min-h-11 items-center gap-1 rounded-full bg-[#0A0A0A] p-1 text-sm font-bold text-white/72 lg:flex">

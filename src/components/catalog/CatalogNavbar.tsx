@@ -1,3 +1,4 @@
+import { BrandLogo } from "@/components/layout/BrandLogo";
 import Link from "next/link";
 import { Phone } from "lucide-react";
 
@@ -20,12 +21,7 @@ export function CatalogNavbar() {
           aria-label="Torna alla home Grossimoto"
           className="font-ui group flex min-w-0 flex-col rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-[oklch(38%_0.08_28)] focus-visible:ring-offset-4 focus-visible:ring-offset-[oklch(94%_0.01_78)]"
         >
-          <span className="text-base font-bold leading-none tracking-normal text-[oklch(17%_0.014_56)] transition-opacity duration-200 group-hover:opacity-75 sm:text-lg">
-            Grossimoto
-          </span>
-          <span className="mt-1 text-[0.62rem] font-bold uppercase tracking-[0.17em] text-[oklch(30%_0.014_56/0.62)]">
-            Moto e scooter a Roma
-          </span>
+          <BrandLogo tone="black" priority />
         </Link>
 
         <div className="font-ui hidden min-h-11 items-center gap-1 rounded-full bg-[#0A0A0A] p-1 text-sm font-bold text-white/72 lg:flex">

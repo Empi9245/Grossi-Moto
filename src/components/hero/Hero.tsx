@@ -1,5 +1,6 @@
 "use client";
 
+import { BrandLogo } from "@/components/layout/BrandLogo";
 import { ActionMark } from "@/components/ui/control-glyphs";
 import { CalendarCheck, Phone } from "lucide-react";
 import { motion, type MotionProps } from "framer-motion";
@@ -137,14 +138,9 @@ export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
         <Link
           href="/"
           aria-label="Grossimoto, pagina iniziale"
-          className="font-ui fixed left-4 top-[calc(1rem+env(safe-area-inset-top))] z-50 flex min-w-0 flex-col rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
+          className="font-ui absolute left-4 top-[calc(1rem+env(safe-area-inset-top))] z-50 flex min-w-0 flex-col rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
         >
-          <span className="text-sm font-medium tracking-normal text-white drop-shadow-[0_6px_18px_rgba(0,0,0,0.4)]">
-            Grossimoto
-          </span>
-          <span className="text-[0.6rem] font-medium uppercase tracking-[0.18em] text-white/75 drop-shadow-[0_6px_18px_rgba(0,0,0,0.4)]">
-            Moto e scooter a Roma
-          </span>
+          <BrandLogo tone="white" priority />
         </Link>
 
         <motion.a
