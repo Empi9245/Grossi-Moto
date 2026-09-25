@@ -1,5 +1,6 @@
 import { BrandLogo } from "@/components/layout/BrandLogo";
 import Link from "next/link";
+
 import { Phone } from "lucide-react";
 
 const navItems = [
@@ -19,9 +20,9 @@ export function CatalogNavbar() {
         <Link
           href="/"
           aria-label="Torna alla home Grossimoto"
-          className="font-ui group flex min-w-0 flex-col rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-[oklch(38%_0.08_28)] focus-visible:ring-offset-4 focus-visible:ring-offset-[oklch(94%_0.01_78)]"
+          className="group inline-flex min-w-0 items-center rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-[oklch(38%_0.08_28)] focus-visible:ring-offset-4 focus-visible:ring-offset-[oklch(94%_0.01_78)]"
         >
-          <BrandLogo tone="black" priority />
+          <BrandLogo tone="black" priority className="w-[8.25rem] sm:w-[9rem]" />
         </Link>
 
         <div className="font-ui hidden min-h-11 items-center gap-1 rounded-full bg-[#0A0A0A] p-1 text-sm font-bold text-white/72 lg:flex">

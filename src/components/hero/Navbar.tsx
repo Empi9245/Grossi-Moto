@@ -4,6 +4,7 @@ import { BrandLogo } from "@/components/layout/BrandLogo";
 import { Phone } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 
+
 import { revealMotion, subtleHover } from "./motion";
 
 const navItems = [
@@ -26,9 +27,9 @@ export function Navbar() {
           scale: 0.99,
           y: 8,
         })}
-        className="font-ui group flex min-w-0 flex-col rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-[oklch(84%_0.04_72)] focus-visible:ring-offset-4 focus-visible:ring-offset-[oklch(14%_0.012_40)]"
+        className="group inline-flex min-w-0 items-center rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-[oklch(84%_0.04_72)] focus-visible:ring-offset-4 focus-visible:ring-offset-[oklch(14%_0.012_40)]"
       >
-        <BrandLogo tone="white" priority />
+        <BrandLogo tone="white" priority className="w-[7.5rem] sm:w-[8rem] xl:w-[8.5rem]" />
       </motion.a>
 
       <motion.div

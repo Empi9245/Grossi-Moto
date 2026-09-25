@@ -138,9 +138,9 @@ export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
         <Link
           href="/"
           aria-label="Grossimoto, pagina iniziale"
-          className="font-ui absolute left-4 top-[calc(1rem+env(safe-area-inset-top))] z-50 flex min-w-0 flex-col rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
+          className="absolute left-4 top-[calc(1rem+env(safe-area-inset-top))] z-50 inline-flex min-w-0 items-center rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
         >
-          <BrandLogo tone="white" priority />
+          <BrandLogo tone="white" priority className="w-[6.75rem]" />
         </Link>
 
         <motion.a
