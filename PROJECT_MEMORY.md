@@ -1,5 +1,14 @@
 # Project Memory
 
+## Gamma — confronto con selezione esplicita 2026-10-01
+
+- Il confronto segue tre fasi nel reducer: consultazione, selezione, tabella. Un solo ingresso `Confronta modelli` nella barra filtri (ripreso dalla toolbar mobile fuori schermo); durante la normale consultazione le card non mostrano comandi di confronto. In selezione, ciascuna card mostra in alto un toggle `Seleziona` / `Selezionato`, senza aperture o contatori ripetuti sotto la scheda.
+- Riepilogo centrale con nomi, rimozione, `Svuota` e CTA `Confronta (n)` abilitata da due modelli. Altezza riservata per mantenere stabili le card durante la selezione; nomi scorrono orizzontalmente sui telefoni, con svuotamento sempre visibile. Toolbar compatta mantiene accessibili conteggio e apertura durante la selezione, senza aggiungere navigazione inferiore.
+- Nessuna apertura automatica: la tabella richiede un'azione esplicita e 2–3 modelli. Chiudere torna alla selezione; `Esci` conserva gli ID e permette di riprendere. Ricerca, filtri combinati e zero risultati preservano la selezione. Svuotare o scendere sotto due modelli chiude la tabella mantenendo la modalità di selezione.
+- Tabella semantica con nomi, immagini, rimozione dentro ciascuna colonna, aggiunta del terzo modello e link a dettaglio/contatto. Su mobile la colonna descrittiva rimane fissa durante lo scorrimento orizzontale. Apertura focalizza il titolo; chiusura, rimozione, svuotamento e uscita dalla toolbar resa inerte ripristinano un controllo usabile. Copie del carosello conservano ingombro coerente, `inert`, `aria-hidden` e assenza di handler interattivi.
+- Verifica Chrome sulla build di produzione a 320, 375, 768, 1024 e 1440px, più reduced motion a 375 e 1440px: nessun overflow globale o errore JavaScript; controllati stabilità di scroll/focus, ingresso/uscita/ripresa, filtri, stato vuoto, aggiunta/rimozione 2–3, scorrimento della tabella e deep link modello. Riscontri in `qa-screenshots/comparison-mode-verification-2026-10-01.json` (ignorati da Git). Revisione statica dedicata completata. Nessun test su dispositivo fisico.
+- Build completata (TypeScript e 38 pagine), 14 test confronto/guida superati, lint dei file modificati e diff check passati. Lint generale ancora bloccato dai due errori preesistenti `set-state-in-effect` in `AccessoryRail.tsx` e `zoom-parallax.tsx`. Nessuna dipendenza, nuova animazione, dato o route modificata; intervento separato dalle modifiche locali precedenti a `MobileAppNav.tsx`.
+
 ## Gamma — modelli nel primo viewport 2026-10-01
 
 - Intervento limitato all'accesso alla gamma `/scooters`: titolo compatto, informazioni su numero modelli/marchi/cilindrate in una riga, eliminati i tre riquadri statistici e l'introduzione estesa. Preservati identità visiva, 27 modelli, schede, caroselli per cilindrata, dati, route e metadata.

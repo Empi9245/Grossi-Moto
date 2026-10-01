@@ -264,7 +264,7 @@ export const CatalogProductCard = memo(function CatalogProductCard({
         aria-labelledby={cardTitleId}
         onClick={isSemanticInstance ? handleCardClick : undefined}
         className={clsx(
-          "group relative overflow-hidden rounded-[1.35rem] border border-[oklch(18%_0.014_56/0.052)] p-4 sm:p-5",
+          "group relative overflow-hidden rounded-[1.35rem] border border-[oklch(18%_0.014_56/0.052)] p-4 has-[[data-comparison-selected=true]]:shadow-[inset_0_0_0_2px_#171717] sm:p-5",
           isExpanded
             ? "flex h-full min-h-0 flex-col sm:min-h-[30rem] md:p-6 lg:min-h-[29rem] lg:p-7"
             : isCompactExpanded
@@ -279,6 +279,7 @@ export const CatalogProductCard = memo(function CatalogProductCard({
         )}
         style={style}
       >
+        <CatalogCompareButton scooter={scooter} isSemanticInstance={isSemanticInstance} />
         <div
           className={clsx(
             "relative z-10 grid gap-5",
@@ -537,7 +538,6 @@ export const CatalogProductCard = memo(function CatalogProductCard({
             </div>
           )}
         </div>
-        <CatalogCompareButton scooter={scooter} isSemanticInstance={isSemanticInstance} />
       </article>
     </div>
   );

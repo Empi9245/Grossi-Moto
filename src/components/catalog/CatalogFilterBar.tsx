@@ -8,6 +8,7 @@ import { useScrollDirection } from "@/hooks/useScrollDirection";
 import { CatalogUseCases } from "@/components/catalog/CatalogUseCases";
 import {
   CatalogComparisonTrigger,
+  CatalogComparisonSummary,
   useCatalogComparison,
 } from "@/components/catalog/CatalogComparison";
 import type { CatalogUseCase } from "@/data/catalog-guidance";
@@ -165,7 +166,7 @@ export function CatalogFilterBar({
   onSearchChange,
 }: CatalogFilterBarProps) {
   const controlsRef = useRef<HTMLDivElement>(null);
-  const { ids: comparisonIds } = useCatalogComparison();
+  const { isSelecting: isComparing } = useCatalogComparison();
   const filterDialogRef = useRef<HTMLDialogElement>(null);
   const lastFilterTriggerRef = useRef<HTMLButtonElement | null>(null);
   const [showCompactToolbar, setShowCompactToolbar] = useState(false);
@@ -178,7 +179,7 @@ export function CatalogFilterBar({
     (activeUseCaseLabel ? 1 : 0);
   const hasActiveFilter = activeFilterCount > 0;
   const compactToolbarVisible =
-    showCompactToolbar && (compactSearchOpen || isScrollVisible);
+    showCompactToolbar && (compactSearchOpen || isScrollVisible || isComparing);
 
   useEffect(() => {
     const controls = controlsRef.current;
@@ -383,7 +384,7 @@ export function CatalogFilterBar({
                 <span className="ml-2 text-black/35">su {totalCount}</span>
               ) : null}
             </div>
-            {comparisonIds.length > 0 ? <CatalogComparisonTrigger /> : null}
+            <CatalogComparisonTrigger />
           </div>
         </div>
 
@@ -438,6 +439,7 @@ export function CatalogFilterBar({
             </button>
           </div>
         ) : null}
+        <CatalogComparisonSummary />
       </div>
 
       <div
@@ -543,11 +545,9 @@ export function CatalogFilterBar({
               </button>
 
               <div className="ml-auto min-w-0 shrink-0">
-                {comparisonIds.length > 0 ? (
-                  <CatalogComparisonTrigger compact />
-                ) : (
+                {!isComparing ? (
                   <div
-                    className="px-2 text-right"
+                    className="hidden px-2 text-right min-[600px]:block"
                     aria-label="Posizione nel catalogo"
                   >
                     <span className="font-ui block truncate text-[0.55rem] font-bold uppercase tracking-[0.12em] text-black/45">
@@ -559,10 +559,12 @@ export function CatalogFilterBar({
                         : resultLabel}
                     </span>
                   </div>
-                )}
+                ) : null}
               </div>
+              <CatalogComparisonTrigger compact />
             </div>
           )}
+          <CatalogComparisonSummary compact />
         </div>
       </div>
 
