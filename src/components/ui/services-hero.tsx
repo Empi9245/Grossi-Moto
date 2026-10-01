@@ -9,7 +9,6 @@ import {
   useReducedMotion,
 } from "framer-motion";
 
-import { Navbar } from "@/components/hero/Navbar";
 
 const HERO_IMAGE = {
   src: "/kymco-all/sections/new/hero servizi.jpg",
@@ -76,8 +75,6 @@ export function ServicesHero() {
             />
 
             <div className="relative z-10 flex min-h-[calc(100svh-1rem)] flex-col sm:min-h-[calc(100svh-1.5rem)]">
-              <Navbar />
-
               <motion.main
                 className="mx-auto flex w-full max-w-[32rem] flex-1 flex-col justify-center px-4 pt-[clamp(0.75rem,2.2svh,1.5rem)] pb-[calc(5.75rem+env(safe-area-inset-bottom))] text-left sm:px-5 [@media(max-height:700px)]:pt-1.5 [@media(max-height:700px)]:pb-[calc(5.25rem+env(safe-area-inset-bottom))]"
                 variants={containerVariants}
