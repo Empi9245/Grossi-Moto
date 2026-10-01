@@ -5,6 +5,12 @@ import { ChevronDown, Search, SlidersHorizontal, X } from "lucide-react";
 import { clsx } from "clsx";
 
 import { useScrollDirection } from "@/hooks/useScrollDirection";
+import { CatalogUseCases } from "@/components/catalog/CatalogUseCases";
+import {
+  CatalogComparisonTrigger,
+  useCatalogComparison,
+} from "@/components/catalog/CatalogComparison";
+import type { CatalogUseCase } from "@/data/catalog-guidance";
 
 export type CatalogVehicleFilter = "all" | "scooter" | "moto";
 export type CatalogBrandFilter = "all" | "KYMCO" | "Voge";
@@ -35,6 +41,8 @@ export type CatalogFilterCounts = {
 };
 
 type CatalogFilterBarProps = {
+  activeUseCase: CatalogUseCase | "all";
+  onUseCaseChange: (value: CatalogUseCase | "all") => void;
   activeFilters: CatalogFilterState;
   filterCounts: CatalogFilterCounts;
   searchQuery: string;
@@ -141,6 +149,8 @@ function getFilterOptionLabel(
 }
 
 export function CatalogFilterBar({
+  activeUseCase,
+  onUseCaseChange,
   activeFilters,
   filterCounts,
   searchQuery,
@@ -155,6 +165,7 @@ export function CatalogFilterBar({
   onSearchChange,
 }: CatalogFilterBarProps) {
   const controlsRef = useRef<HTMLDivElement>(null);
+  const { ids: comparisonIds } = useCatalogComparison();
   const filterDialogRef = useRef<HTMLDialogElement>(null);
   const lastFilterTriggerRef = useRef<HTMLButtonElement | null>(null);
   const [showCompactToolbar, setShowCompactToolbar] = useState(false);
@@ -206,14 +217,20 @@ export function CatalogFilterBar({
 
   return (
     <>
+      <div className="hidden px-7 pt-6 lg:block lg:px-10">
+        <CatalogUseCases
+          activeUseCase={activeUseCase}
+          onChange={onUseCaseChange}
+        />
+      </div>
       <div
         ref={controlsRef}
-        className="catalog-filter-bar relative z-30 bg-white px-5 pb-3 pt-5 sm:px-7 sm:pt-7 lg:sticky lg:top-0 lg:px-10"
+        className="catalog-filter-bar relative z-30 bg-white px-5 pb-2 pt-5 sm:px-7 lg:sticky lg:top-0 lg:px-10 lg:pb-3 lg:pt-4"
       >
-        <div className="grid gap-3 lg:grid-cols-[minmax(17rem,0.52fr)_minmax(34rem,1.2fr)_auto] lg:items-center">
-          <div className="relative min-w-0 sm:max-w-[30rem] lg:max-w-none">
+        <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 lg:grid-cols-[minmax(12rem,0.8fr)_minmax(0,1.4fr)_auto] lg:gap-3">
+          <div className="relative min-w-0">
             <label htmlFor="catalog-search" className="sr-only">
-              Cerca nella gamma
+              Cerca modello, marca o cilindrata
             </label>
             <Search
               aria-hidden="true"
@@ -225,9 +242,12 @@ export function CatalogFilterBar({
               type="search"
               value={searchQuery}
               onChange={(event) => onSearchChange(event.target.value)}
-              placeholder="Cerca modello, marca o cilindrata"
+              placeholder="Cerca un modello"
               autoComplete="off"
-              className="font-ui min-h-14 w-full rounded-full border border-black/10 bg-[#F7F7F7] py-3 pl-11 pr-12 text-sm font-medium text-black outline-none transition-[border-color,box-shadow,background] duration-200 placeholder:text-black/42 focus:border-black/30 focus:bg-white focus:ring-2 focus:ring-black/10"
+              className={clsx(
+                "font-ui min-h-14 w-full rounded-full border border-black/10 bg-[#F7F7F7] py-3 pl-10 text-sm font-medium text-black outline-none transition-[border-color,box-shadow,background] duration-200 placeholder:text-black/42 focus:border-black/30 focus:bg-white focus:ring-2 focus:ring-black/10 lg:pl-11",
+                hasSearchQuery ? "pr-12" : "pr-4",
+              )}
             />
             {hasSearchQuery ? (
               <button
@@ -307,25 +327,30 @@ export function CatalogFilterBar({
             })}
           </div>
 
-          <div
-            aria-live="polite"
-            aria-atomic="true"
-            className="font-ui hidden min-h-11 items-center justify-end gap-3 whitespace-nowrap text-[0.7rem] font-bold uppercase tracking-[0.12em] text-black/55 lg:flex"
-          >
-            <span>{resultLabel}</span>
-            {resultCount !== totalCount ? (
-              <span className="text-black/35">su {totalCount}</span>
-            ) : null}
+          <div className="hidden items-center justify-end gap-3 lg:flex">
+            <div
+              aria-live="polite"
+              aria-atomic="true"
+              className="font-ui whitespace-nowrap text-[0.65rem] font-bold uppercase tracking-[0.1em] text-black/55"
+            >
+              <span>{resultLabel}</span>
+              {resultCount !== totalCount ? (
+                <span className="mt-1 block text-black/45">
+                  su {totalCount}
+                </span>
+              ) : null}
+            </div>
+            <CatalogComparisonTrigger />
           </div>
 
-          <div className="flex items-center justify-between gap-3 lg:hidden">
+          <div className="lg:hidden">
             <button
               type="button"
               aria-haspopup="dialog"
               aria-pressed={hasActiveFilter}
               onClick={(event) => openFilterDialog(event.currentTarget)}
               className={clsx(
-                "font-ui inline-flex min-h-12 items-center gap-2 rounded-[0.9rem] border px-4 text-[0.7rem] font-bold uppercase tracking-[0.08em] outline-none transition-colors focus-visible:ring-2 focus-visible:ring-black/35",
+                "font-ui inline-flex min-h-14 items-center gap-2 rounded-[0.9rem] border px-3.5 text-[0.7rem] font-bold uppercase tracking-[0.08em] outline-none transition-colors focus-visible:ring-2 focus-visible:ring-black/35",
                 hasActiveFilter
                   ? "border-black bg-black text-white"
                   : "border-black/10 bg-[#F3F3F3] text-black hover:bg-black/[0.07]",
@@ -346,7 +371,8 @@ export function CatalogFilterBar({
                 </span>
               ) : null}
             </button>
-
+          </div>
+          <div className="col-span-2 flex min-h-12 items-center justify-between gap-3 lg:hidden">
             <div
               aria-live="polite"
               aria-atomic="true"
@@ -357,6 +383,7 @@ export function CatalogFilterBar({
                 <span className="ml-2 text-black/35">su {totalCount}</span>
               ) : null}
             </div>
+            {comparisonIds.length > 0 ? <CatalogComparisonTrigger /> : null}
           </div>
         </div>
 
@@ -475,17 +502,17 @@ export function CatalogFilterBar({
               </button>
             </div>
           ) : (
-            <div className="flex min-h-12 items-center gap-1">
+            <div className="flex min-h-12 flex-wrap items-center gap-1">
               <button
                 type="button"
                 aria-expanded={false}
                 aria-controls="compact-catalog-search"
                 onClick={() => setCompactSearchOpen(true)}
-                className="font-ui inline-flex min-h-11 items-center gap-2 rounded-[0.85rem] px-3 text-[0.7rem] font-bold uppercase tracking-[0.08em] text-black outline-none transition-colors hover:bg-black/[0.05] focus-visible:ring-2 focus-visible:ring-black/35"
+                className="font-ui inline-flex min-h-12 shrink-0 items-center gap-2 rounded-[0.85rem] px-1.5 text-[0.7rem] font-bold uppercase tracking-[0.08em] text-black outline-none transition-colors hover:bg-black/[0.05] focus-visible:ring-2 focus-visible:ring-black/35 min-[400px]:px-3"
               >
                 <Search
                   aria-hidden="true"
-                  className="h-4 w-4"
+                  className="hidden h-4 w-4 min-[400px]:block"
                   strokeWidth={1.8}
                 />
                 Cerca
@@ -496,7 +523,7 @@ export function CatalogFilterBar({
                 aria-pressed={hasActiveFilter}
                 onClick={(event) => openFilterDialog(event.currentTarget)}
                 className={clsx(
-                  "font-ui inline-flex min-h-11 items-center gap-2 rounded-[0.85rem] px-3 text-[0.7rem] font-bold uppercase tracking-[0.08em] outline-none transition-colors focus-visible:ring-2 focus-visible:ring-black/35",
+                  "font-ui inline-flex min-h-12 shrink-0 items-center gap-2 rounded-[0.85rem] px-1.5 text-[0.7rem] font-bold uppercase tracking-[0.08em] outline-none transition-colors focus-visible:ring-2 focus-visible:ring-black/35 min-[400px]:px-3",
                   hasActiveFilter
                     ? "bg-black text-white hover:bg-black/85"
                     : "text-black hover:bg-black/[0.05]",
@@ -504,7 +531,7 @@ export function CatalogFilterBar({
               >
                 <SlidersHorizontal
                   aria-hidden="true"
-                  className="h-4 w-4"
+                  className="hidden h-4 w-4 min-[400px]:block"
                   strokeWidth={1.8}
                 />
                 Filtri
@@ -515,18 +542,24 @@ export function CatalogFilterBar({
                 ) : null}
               </button>
 
-              <div
-                className="ml-auto min-w-0 px-2 text-right"
-                aria-label="Posizione nel catalogo"
-              >
-                <span className="font-ui block truncate text-[0.55rem] font-bold uppercase tracking-[0.12em] text-black/45">
-                  {activeBrand ?? "Gamma"}
-                </span>
-                <span className="font-ui mt-0.5 block whitespace-nowrap text-[0.72rem] font-bold text-black">
-                  {resultCount > 0 && activePosition > 0
-                    ? `${activePosition} di ${resultCount}`
-                    : resultLabel}
-                </span>
+              <div className="ml-auto min-w-0 shrink-0">
+                {comparisonIds.length > 0 ? (
+                  <CatalogComparisonTrigger compact />
+                ) : (
+                  <div
+                    className="px-2 text-right"
+                    aria-label="Posizione nel catalogo"
+                  >
+                    <span className="font-ui block truncate text-[0.55rem] font-bold uppercase tracking-[0.12em] text-black/45">
+                      {activeBrand ?? "Gamma"}
+                    </span>
+                    <span className="font-ui mt-0.5 block whitespace-nowrap text-[0.72rem] font-bold text-black">
+                      {resultCount > 0 && activePosition > 0
+                        ? `${activePosition} di ${resultCount}`
+                        : resultLabel}
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
           )}
@@ -563,22 +596,12 @@ export function CatalogFilterBar({
           </div>
 
           <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5">
-            {activeUseCaseLabel ? (
-              <div className="mb-5 flex items-center justify-between gap-3 rounded-xl bg-[#F3F3F3] p-3 text-sm">
-                <span>
-                  Utilizzo: <strong>{activeUseCaseLabel}</strong>
-                </span>
-                <button
-                  type="button"
-                  onClick={onClearUseCase}
-                  aria-label={`Rimuovi utilizzo: ${activeUseCaseLabel}`}
-                  className="grid h-11 w-11 shrink-0 place-items-center rounded-lg outline-none hover:bg-black/10 focus-visible:ring-2 focus-visible:ring-black"
-                >
-                  <X aria-hidden="true" className="h-4 w-4" />
-                </button>
-              </div>
-            ) : null}
             <div className="grid gap-6">
+              <CatalogUseCases
+                activeUseCase={activeUseCase}
+                onChange={onUseCaseChange}
+                inFilterDialog
+              />
               {filterGroups.map((group) => {
                 const activeValue = getActiveFilterValue(
                   activeFilters,

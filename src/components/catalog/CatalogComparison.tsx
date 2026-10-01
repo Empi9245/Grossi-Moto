@@ -3,6 +3,7 @@
 import {
   createContext,
   useContext,
+  useEffect,
   useReducer,
   useRef,
   useState,
@@ -10,7 +11,7 @@ import {
 } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Check, Plus, X } from "lucide-react";
+import { Check, Columns2, Plus, X } from "lucide-react";
 import {
   catalogScooters,
   getCatalogScooterBrand,
@@ -24,14 +25,14 @@ type ComparisonContextValue = {
   message: string;
   toggle: (scooter: CatalogScooter) => void;
   clear: () => void;
-  open: () => void;
+  open: (trigger: HTMLElement) => void;
   isOpen: boolean;
   close: () => void;
 };
 
 const ComparisonContext = createContext<ComparisonContextValue | null>(null);
 
-function useComparison() {
+export function useCatalogComparison() {
   const context = useContext(ComparisonContext);
   if (!context)
     throw new Error("Comparison controls require CatalogComparisonProvider");
@@ -48,14 +49,48 @@ export function CatalogComparisonProvider({
     message: "",
   });
   const [isOpen, setIsOpen] = useState(false);
+  const triggerRef = useRef<HTMLElement | null>(null);
+  const focusFrameRef = useRef(0);
 
-  const open = () => {
+  useEffect(() => () => cancelAnimationFrame(focusFrameRef.current), []);
+
+  const scheduleFocus = (action: () => void) => {
+    cancelAnimationFrame(focusFrameRef.current);
+    focusFrameRef.current = requestAnimationFrame(() => {
+      focusFrameRef.current = 0;
+      action();
+    });
+  };
+
+  const restoreFocus = () => {
+    scheduleFocus(() => {
+      const trigger = triggerRef.current;
+      const canRestoreTrigger =
+        trigger?.isConnected &&
+        !trigger.closest("[inert], [hidden]") &&
+        trigger.getClientRects().length > 0;
+      const target = canRestoreTrigger
+        ? trigger
+        : document.getElementById("catalog-search");
+      target?.focus({ preventScroll: true });
+      target?.scrollIntoView({ behavior: "instant", block: "nearest" });
+    });
+  };
+
+  const open = (trigger: HTMLElement) => {
+    if (state.ids.length === 0) return;
+    triggerRef.current = trigger;
     setIsOpen(true);
-    requestAnimationFrame(() => {
+    scheduleFocus(() => {
       const heading = document.getElementById("catalog-comparison-title");
       heading?.focus({ preventScroll: true });
       heading?.scrollIntoView({ behavior: "instant", block: "start" });
     });
+  };
+
+  const close = () => {
+    setIsOpen(false);
+    restoreFocus();
   };
 
   return (
@@ -64,12 +99,20 @@ export function CatalogComparisonProvider({
         ...state,
         isOpen,
         open,
-        close: () => setIsOpen(false),
-        toggle: (scooter) =>
-          dispatch({ type: "toggle", id: scooter.id, name: scooter.name }),
+        close,
+        toggle: (scooter) => {
+          if (state.ids.length === 1 && state.ids.includes(scooter.id)) {
+            setIsOpen(false);
+            if (isOpen && document.activeElement?.closest("#confronto")) {
+              restoreFocus();
+            }
+          }
+          dispatch({ type: "toggle", id: scooter.id, name: scooter.name });
+        },
         clear: () => {
           dispatch({ type: "clear" });
           setIsOpen(false);
+          if (isOpen) restoreFocus();
         },
       }}
     >
@@ -81,6 +124,29 @@ export function CatalogComparisonProvider({
   );
 }
 
+export function CatalogComparisonTrigger({
+  compact = false,
+}: {
+  compact?: boolean;
+}) {
+  const { ids, open, close, isOpen } = useCatalogComparison();
+  if (ids.length === 0) return null;
+
+  return (
+    <button
+      type="button"
+      aria-expanded={isOpen}
+      aria-controls="confronto"
+      aria-label={`${isOpen ? "Chiudi" : "Apri"} confronto: ${ids.length} ${ids.length === 1 ? "modello selezionato" : "modelli selezionati"}`}
+      onClick={(event) => (isOpen ? close() : open(event.currentTarget))}
+      className={`font-ui inline-flex min-h-12 shrink-0 items-center justify-center rounded-[0.9rem] bg-[#171717] font-semibold text-white outline-none hover:bg-[#333] focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 ${compact ? "gap-1.5 px-2.5 text-[0.7rem]" : "gap-2 px-3 text-sm sm:px-4"}`}
+    >
+      <Columns2 aria-hidden="true" className="h-4 w-4 shrink-0" />
+      Confronto <span className="tabular-nums">({ids.length})</span>
+    </button>
+  );
+}
+
 export function CatalogCompareButton({
   scooter,
   isSemanticInstance = true,
@@ -88,7 +154,7 @@ export function CatalogCompareButton({
   scooter: CatalogScooter;
   isSemanticInstance?: boolean;
 }) {
-  const { ids, toggle, open } = useComparison();
+  const { ids, toggle, open, isOpen } = useCatalogComparison();
   const selected = ids.includes(scooter.id);
   const isFull = ids.length >= comparisonLimit;
 
@@ -96,7 +162,7 @@ export function CatalogCompareButton({
     <div
       aria-hidden={!isSemanticInstance}
       inert={!isSemanticInstance}
-      className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-current/15 pt-2"
+      className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 border-t border-current/15 pt-2"
     >
       <button
         type="button"
@@ -120,12 +186,19 @@ export function CatalogCompareButton({
       {ids.length > 0 ? (
         <button
           type="button"
-          onClick={isSemanticInstance ? open : undefined}
-          className="min-h-11 rounded-lg px-1 text-sm underline underline-offset-4 outline-none focus-visible:ring-2 focus-visible:ring-current"
+          aria-expanded={isOpen}
+          aria-controls="confronto"
+          aria-label={`Apri il confronto, ${ids.length} ${ids.length === 1 ? "modello selezionato" : "modelli selezionati"}`}
+          title="Apri il confronto"
+          onClick={
+            isSemanticInstance
+              ? (event) => open(event.currentTarget)
+              : undefined
+          }
+          className="font-ui inline-flex min-h-11 min-w-11 items-center justify-center gap-1 rounded-lg border border-current/15 px-2 text-xs font-semibold outline-none hover:bg-black/5 focus-visible:ring-2 focus-visible:ring-current"
         >
-          {ids.length >= 2
-            ? `Apri confronto (${ids.length})`
-            : "Scegli un altro modello"}
+          <Columns2 aria-hidden="true" className="h-3.5 w-3.5" />
+          <span className="tabular-nums">{ids.length}</span>
         </button>
       ) : null}
     </div>
@@ -153,7 +226,7 @@ const rowDefinitions = [
 ];
 
 export function CatalogComparison() {
-  const { ids, toggle, clear, open, close, isOpen } = useComparison();
+  const { ids, toggle, clear, close, isOpen } = useCatalogComparison();
   const addRef = useRef<HTMLSelectElement>(null);
   const selectedScooters = ids.flatMap((id) =>
     catalogScooters.filter((scooter) => scooter.id === id),
@@ -164,40 +237,44 @@ export function CatalogComparison() {
 
   const remove = (scooter: CatalogScooter) => {
     toggle(scooter);
-    requestAnimationFrame(() => addRef.current?.focus({ preventScroll: true }));
+    if (ids.length > 1) {
+      requestAnimationFrame(() =>
+        addRef.current?.focus({ preventScroll: true }),
+      );
+    }
   };
+
+  if (!isOpen || ids.length === 0) return <div id="confronto" hidden />;
 
   return (
     <section
       id="confronto"
       aria-labelledby="catalog-comparison-title"
-      className="mx-5 mt-7 scroll-mt-24 border-y border-black/10 py-6 sm:mx-7 lg:mx-10"
+      className="mx-5 mb-3 mt-3 scroll-mt-32 border-y border-black/10 py-6 sm:mx-7 lg:mx-10"
     >
       <div className="flex flex-wrap items-start justify-between gap-5">
         <div>
           <h2
             id="catalog-comparison-title"
             tabIndex={-1}
-            className="font-display scroll-mt-24 rounded-sm text-2xl font-bold outline-none focus-visible:ring-2 focus-visible:ring-black sm:text-3xl"
+            className="font-display scroll-mt-32 rounded-sm text-2xl font-bold outline-none focus-visible:ring-2 focus-visible:ring-black sm:text-3xl"
           >
             La tua scelta, a confronto.
           </h2>
           <p className="mt-2 text-sm leading-6 text-black/65">
-            Scegli due o tre modelli e leggi le differenze. La selezione resta
-            mentre cambi i filtri.
+            {ids.length === 1
+              ? "Aggiungi un secondo modello per leggere le differenze."
+              : "Leggi le differenze tra i modelli che hai scelto."}{" "}
+            La selezione resta mentre cambi i filtri.
           </p>
         </div>
         <button
           type="button"
-          aria-expanded={isOpen}
-          aria-controls="catalog-comparison-panel"
-          disabled={ids.length < 2 && !isOpen}
-          onClick={isOpen ? close : open}
-          className="font-ui min-h-12 rounded-[0.9rem] bg-[#171717] px-5 py-3 text-sm font-semibold text-white outline-none hover:bg-[#333] focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-4 disabled:cursor-not-allowed disabled:bg-black/10 disabled:text-black/55"
+          onClick={close}
+          className="font-ui inline-flex min-h-12 items-center gap-2 rounded-[0.9rem] border border-black/15 px-4 py-3 text-sm font-semibold outline-none hover:bg-black/5 focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
         >
-          {isOpen
-            ? "Chiudi confronto"
-            : `Confronta${ids.length ? ` (${ids.length})` : " i modelli"}`}
+          Chiudi confronto
+          <X aria-hidden="true" className="h-4 w-4" />
         </button>
       </div>
 
@@ -251,12 +328,7 @@ export function CatalogComparison() {
         {ids.length > 0 ? (
           <button
             type="button"
-            onClick={() => {
-              clear();
-              requestAnimationFrame(() =>
-                addRef.current?.focus({ preventScroll: true }),
-              );
-            }}
+            onClick={clear}
             className="min-h-12 rounded-lg px-3 text-sm underline underline-offset-4 outline-none focus-visible:ring-2 focus-visible:ring-black"
           >
             Svuota

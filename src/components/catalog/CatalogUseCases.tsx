@@ -5,62 +5,72 @@ import { catalogUseCases, type CatalogUseCase } from "@/data/catalog-guidance";
 export function CatalogUseCases({
   activeUseCase,
   onChange,
+  inFilterDialog = false,
 }: {
   activeUseCase: CatalogUseCase | "all";
   onChange: (value: CatalogUseCase | "all") => void;
+  inFilterDialog?: boolean;
 }) {
   const description = catalogUseCases.find(
     (item) => item.id === activeUseCase,
   )?.description;
 
   return (
-    <section
-      aria-labelledby="catalog-use-title"
-      className="px-5 pt-9 sm:px-7 lg:px-10 lg:pt-12"
+    <fieldset
+      className={
+        inFilterDialog ? "min-w-0" : "min-w-0 border-b border-black/10 pb-4"
+      }
     >
-      <div className="border-t border-black/10 pt-6 lg:flex lg:items-start lg:justify-between lg:gap-10">
-        <div className="shrink-0">
-          <h2
-            id="catalog-use-title"
-            className="font-display text-2xl font-bold text-[#171717] sm:text-3xl"
-          >
-            Come lo userai?
-          </h2>
-          <p className="mt-2 max-w-sm text-sm leading-6 text-black/65">
-            Parti dai tuoi tragitti, poi affina per marca e cilindrata.
-          </p>
-        </div>
-        <div className="mt-5 min-w-0 lg:mt-0 lg:max-w-2xl">
-          <div
-            className="flex flex-wrap gap-2"
-            role="group"
-            aria-label="Scegli il tuo utilizzo"
-          >
-            {[
-              { id: "all" as const, label: "Tutti gli utilizzi" },
-              ...catalogUseCases,
-            ].map((item) => (
-              <button
-                key={item.id}
-                type="button"
-                aria-pressed={activeUseCase === item.id}
-                onClick={() => onChange(item.id)}
-                className={`font-ui min-h-12 rounded-full border px-4 py-3 text-sm font-semibold outline-none focus-visible:ring-2 focus-visible:ring-[#171717] focus-visible:ring-offset-2 ${activeUseCase === item.id ? "border-[#171717] bg-[#171717] text-white" : "border-black/20 bg-white text-[#171717] hover:bg-black/5"}`}
-              >
-                {item.label}
-              </button>
-            ))}
-          </div>
+      <legend
+        className={
+          inFilterDialog
+            ? "font-ui mb-2.5 text-[0.62rem] font-bold uppercase tracking-[0.14em] text-black/45"
+            : "sr-only"
+        }
+      >
+        Come lo userai?
+      </legend>
+      <div className={inFilterDialog ? "" : "flex items-center gap-5"}>
+        {!inFilterDialog ? (
           <p
-            className="mt-3 max-w-xl text-sm leading-6 text-black/65"
-            aria-live="polite"
-            aria-atomic="true"
+            aria-hidden="true"
+            className="shrink-0 text-sm font-semibold text-black/65"
           >
-            {description ??
-              "Tutta la gamma, senza preferenze d’uso. Scegli un percorso per restringere la selezione."}
+            Per i tuoi tragitti
           </p>
+        ) : null}
+        <div
+          className={
+            inFilterDialog ? "grid grid-cols-2 gap-2" : "flex flex-wrap gap-2"
+          }
+          role="group"
+          aria-label="Scegli il tuo utilizzo"
+        >
+          {[
+            { id: "all" as const, label: "Tutti gli utilizzi" },
+            ...catalogUseCases,
+          ].map((item) => (
+            <button
+              key={item.id}
+              type="button"
+              aria-pressed={activeUseCase === item.id}
+              onClick={() => onChange(item.id)}
+              className={`font-ui min-h-12 rounded-[0.9rem] border px-3.5 py-2.5 text-left text-sm font-semibold outline-none hover:bg-black/5 focus-visible:ring-2 focus-visible:ring-[#171717] focus-visible:ring-offset-2 ${activeUseCase === item.id ? "border-[#171717] bg-[#171717] text-white hover:bg-[#333]" : "border-black/15 bg-white text-[#171717]"}`}
+            >
+              {item.label}
+            </button>
+          ))}
         </div>
       </div>
-    </section>
+      <p
+        className={
+          inFilterDialog && description
+            ? "mt-3 text-sm leading-6 text-black/65"
+            : "sr-only"
+        }
+      >
+        {description ?? "Tutta la gamma, senza preferenze d’uso."}
+      </p>
+    </fieldset>
   );
 }

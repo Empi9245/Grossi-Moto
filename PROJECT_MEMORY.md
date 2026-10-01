@@ -1,5 +1,14 @@
 # Project Memory
 
+## Gamma — modelli nel primo viewport 2026-10-01
+
+- Intervento limitato all'accesso alla gamma `/scooters`: titolo compatto, informazioni su numero modelli/marchi/cilindrate in una riga, eliminati i tre riquadri statistici e l'introduzione estesa. Preservati identità visiva, 27 modelli, schede, caroselli per cilindrata, dati, route e metadata.
+- `CatalogUseCases.tsx` è ora un fieldset compatto: riga di utilizzi su desktop, scelta e descrizione nel pannello Filtri esistente su mobile/tablet. Ricerca e pulsante Filtri condividono una riga mobile; chip, conteggi, combinazioni e reset continuano a includere l'utilizzo.
+- Il confronto non occupa spazio all'apertura della pagina. Dopo la prima selezione compare un comando con conteggio nella barra filtri e nella toolbar compatta; le card offrono un'apertura con icona e numero per mantenere stabile il loro ingombro. Il pannello inline viene aperto esplicitamente e permette aggiunta, rimozione e confronto di 2–3 modelli; la selezione sopravvive ai filtri. Nessuna nuova barra inferiore o animazione.
+- Apertura del confronto: focus sul titolo. Chiusura: ritorno al comando invocante se ancora visibile e attivo; svuotamento o rimozione dell'ultimo modello: fallback alla ricerca quando il comando scompare. La selezione da card mantiene focus e scroll. Toolbar verificata anche a 320px con due filtri attivi e due modelli selezionati.
+- Misurazioni Chrome: primo prodotto a 375px da 1.364px a 432px; a 1440px da 965px a 418px. Verifica reale sulla build di produzione a 320, 375, 768, 1024 e 1440px, più reduced motion a 375 e 1440px: nessun overflow globale o errore JavaScript; controllati tastiera, focus, confronto 2–3, conservazione selezione, filtri combinati, stato vuoto, reset e deep link `?focus=agility-s-125`. Riscontri locali in `qa-screenshots/gamma-discovery-verification-2026-10-01.json` (directory ignorata da Git); non sostituiscono un test su dispositivo fisico.
+- Build produzione completata (TypeScript e 38 pagine), 9 test guida/confronto superati, lint dei quattro componenti modificati e diff check passati. Lint generale ancora bloccato dai due errori preesistenti `set-state-in-effect` in `AccessoryRail.tsx` e `zoom-parallax.tsx`. Nessuna modifica alle dipendenze, nessun deploy.
+
 ## Identità visiva — logo Grossi Moto 2026-09-24
 
 - Integrato il logo fornito dall'utente come brand mark nelle navigazioni Home, Gamma, Servizi, Contatti e nel footer.
