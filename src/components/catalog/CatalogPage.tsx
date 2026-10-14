@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import {
   CatalogFilterBar,
@@ -277,28 +277,106 @@ export function CatalogPage({ initialFocusId }: { initialFocusId?: string }) {
       ? activeScooterId
       : null;
 
+  const initialFocusAppliedRef = useRef(false);
+
   useEffect(() => {
-    if (!initialExpandedId) {
+    if (!initialExpandedId || initialFocusAppliedRef.current) {
       return;
     }
 
-    const timeout = window.setTimeout(() => {
-      const escapedId = CSS.escape(initialExpandedId);
-      const target =
-        document.querySelector<HTMLElement>(
-          `[data-scooter-detail-id="${escapedId}"]`,
-        ) ??
-        document.querySelector<HTMLElement>(`[data-scooter-id="${escapedId}"]`);
+    // The compact grid is selected after mount; wait for the correct variant.
+    const compactViewport =
+      window.matchMedia("(max-width: 1023px)").matches ||
+      window.matchMedia("(any-pointer: coarse)").matches;
+    if (compactViewport !== isCompactViewport) {
+      return;
+    }
 
-      target?.scrollIntoView({
-        behavior: "auto",
-        block: "start",
-        inline: "nearest",
-      });
-    }, 80);
+    const escapedId = CSS.escape(initialExpandedId);
+    let frame = 0;
+    let attempts = 0;
+    let stableFrames = 0;
+    let previousTop = Number.NaN;
+    let previousHeight = Number.NaN;
+    let previousListHeight = Number.NaN;
+    let interrupted = false;
 
-    return () => window.clearTimeout(timeout);
-  }, [initialExpandedId, shouldReduceMotion]);
+    const cancelOnUserInput = () => {
+      interrupted = true;
+      window.cancelAnimationFrame(frame);
+    };
+
+    const alignFocusedCard = () => {
+      if (interrupted) {
+        return;
+      }
+
+      const list = document.getElementById("catalog-list");
+      const card = list?.querySelector<HTMLElement>(
+        `[data-scooter-detail-id="${escapedId}"]`,
+      );
+      // GSAP positions compact cards absolutely; their chapter is the stable
+      // vertical anchor and includes the heading above the selected model.
+      const chapter =
+        isCompactViewport && !shouldReduceMotion
+          ? card?.closest<HTMLElement>("[data-catalog-chapter]")
+          : null;
+      const target = chapter ?? card;
+      const stack = chapter?.querySelector<HTMLElement>(
+        "[data-product-stack-card]",
+      )?.parentElement;
+
+      if (target) {
+        const rect = target.getBoundingClientRect();
+        const top = window.scrollY + rect.top;
+        const listHeight = list?.offsetHeight ?? 0;
+        const stable =
+          Math.abs(top - previousTop) < 1 &&
+          Math.abs(rect.height - previousHeight) < 1 &&
+          Math.abs(listHeight - previousListHeight) < 1;
+
+        stableFrames = stable ? stableFrames + 1 : 0;
+        previousTop = top;
+        previousHeight = rect.height;
+        previousListHeight = listHeight;
+
+        if (
+          (stableFrames >= 4 && (!chapter || Boolean(stack?.style.height))) ||
+          attempts >= 90
+        ) {
+          const stickyOffset = window.matchMedia("(min-width: 1024px)").matches
+            ? (document.querySelector<HTMLElement>(".catalog-filter-bar")
+                ?.offsetHeight ?? 0) + 20
+            : 84;
+
+          window.scrollTo({
+            top: Math.max(0, top - stickyOffset),
+            left: 0,
+            behavior: "auto",
+          });
+          initialFocusAppliedRef.current = true;
+          return;
+        }
+      }
+
+      attempts += 1;
+      if (attempts <= 90) {
+        frame = window.requestAnimationFrame(alignFocusedCard);
+      }
+    };
+
+    window.addEventListener("wheel", cancelOnUserInput, { passive: true });
+    window.addEventListener("touchstart", cancelOnUserInput, { passive: true });
+    window.addEventListener("keydown", cancelOnUserInput);
+    frame = window.requestAnimationFrame(alignFocusedCard);
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("wheel", cancelOnUserInput);
+      window.removeEventListener("touchstart", cancelOnUserInput);
+      window.removeEventListener("keydown", cancelOnUserInput);
+    };
+  }, [initialExpandedId, isCompactViewport, shouldReduceMotion]);
 
   const visibleScooters = useMemo(
     () => getVisibleScooters(activeFilters, searchQuery, activeUseCase),
