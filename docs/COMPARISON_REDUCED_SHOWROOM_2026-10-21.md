@@ -1,5 +1,7 @@
 # Confronto e showroom con movimento ridotto
 
+> Rettifica successiva del 21 ottobre: l'utente ha rifiutato `ManualShowcase`. Il componente non è più montato; con movimento ridotto si usano le grandi card originali in scorrimento naturale. Confronto e dati tecnici di questo blocco restano invariati. La decisione corrente e le verifiche sono documentate in apertura di `HOME_OFFICINA_CONTATTI_2026-10-21.md`; le descrizioni di `ManualShowcase` sotto sono storiche.
+
 Risultato locale del 21 ottobre 2026. Un solo agente. Perimetro: confronto, etichette dello showroom e composizione con movimento ridotto. Preservate le modifiche locali precedenti a hero, schede, navigazione e Servizi. Nessun commit, push o deploy.
 
 ## Comportamento consegnato

@@ -5,8 +5,7 @@ import type { CSSProperties } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { StackedShowroomCards } from "@/components/ui/stacked-showroom-cards";
-import { ManualShowcase } from "@/components/sections/ManualShowcase";
+import { ShowroomCard, StackedShowroomCards } from "@/components/ui/stacked-showroom-cards";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import {
   AnimatePresence,
@@ -316,7 +315,7 @@ export function ScooterShowcase({
   ]);
 
   if (shouldReduceMotion) {
-    return <ManualShowcase />;
+    return <ScrollShowcase />;
   }
 
   if (mode === "static") {
@@ -359,6 +358,20 @@ export function ScooterShowcase({
   );
 }
 
+/** Keep the original full-screen card composition with natural scrolling when motion is reduced. */
+function ScrollShowcase() {
+  const wide = useMediaQuery("(min-width: 1024px)");
+  return (
+    <section aria-label="Showroom scooter Grossi Moto" data-showcase-mode="scroll" data-call-cta-theme="black">
+      {showcaseScooters.map((scooter, index) => (
+        <article key={scooter.id} aria-label={scooter.name} className="h-[100svh] min-h-[42rem] bg-white p-2 pb-[calc(5.5rem+env(safe-area-inset-bottom))] sm:p-4 sm:pb-[calc(6rem+env(safe-area-inset-bottom))] lg:min-h-[38rem] lg:p-4 xl:p-5">
+          {wide ? <ShowcaseFrame activeIndex={index} disableMotion /> : <ShowroomCard scooter={scooter} index={index} active stacked={false} />}
+        </article>
+      ))}
+    </section>
+  );
+}
+
 function ShowcaseFrame({
   activeIndex,
   transitionDirection = 1,
@@ -387,7 +400,7 @@ function ShowcaseFrame({
 
   return (
     <div
-      className="relative h-full overflow-hidden text-[var(--showcase-text)] lg:rounded-[48px] xl:rounded-[56px]"
+      className="relative h-full overflow-hidden rounded-[32px] text-[var(--showcase-text)] sm:rounded-[40px] lg:rounded-[48px] xl:rounded-[56px]"
       data-active-model={activeScooter.id}
       data-active-source={activeScooter.sourceAsset}
       style={showcaseStyle}
@@ -428,8 +441,8 @@ function ShowcaseFrame({
         <div className="relative min-h-0 overflow-hidden lg:h-full">
           {disableMotion ? (
             <ScooterSlide
-              activeIndex={0}
-              slideIndex={0}
+              activeIndex={activeIndex}
+              slideIndex={activeIndex}
               direction={1}
               disableMotion
             />
@@ -665,6 +678,7 @@ function ScooterSlide({
           aria-hidden="true"
           data-shadow-for={scooter.id}
           data-active-shadow={isActive}
+          initial={disableMotion ? false : undefined}
           className="absolute left-1/2 bottom-[6%] z-0 rounded-[50%] blur-[10px] sm:blur-[13px]"
           animate={{
             opacity: isActive ? scooter.shadowOpacity : 0,

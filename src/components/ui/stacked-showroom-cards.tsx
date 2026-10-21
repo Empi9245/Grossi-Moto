@@ -35,7 +35,7 @@ function specLine(scooter: ShowcaseScooter) {
     .join(" · ");
 }
 
-function ShowroomCard({
+export function ShowroomCard({
   scooter,
   index,
   active,
