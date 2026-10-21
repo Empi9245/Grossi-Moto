@@ -1,0 +1,49 @@
+.section { --journey-gutter: 1.25rem; padding: 3.5rem var(--journey-gutter); }
+.inset { padding-inline: calc(var(--journey-gutter) - 0.5rem); }
+.frame { width: 100%; max-width: 80rem; margin-inline: auto; }
+.heading {
+  max-width: 22ch;
+  font-size: clamp(2.125rem, 4.8vw, 3.75rem);
+  font-weight: 700;
+  line-height: 1.04;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+.body { max-width: 48ch; font-size: 1rem; line-height: 1.75; }
+.actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.75rem; }
+.primary, .secondary {
+  display: inline-flex;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.9rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1.5;
+  text-align: center;
+  transition: opacity 150ms;
+}
+.primary { background: var(--journey-action, #0a0a0a); color: var(--journey-action-ink, #fff); }
+.secondary { background: var(--journey-quiet, rgb(0 0 0 / 0.055)); color: inherit; }
+.primary:hover, .secondary:hover { opacity: 0.8; }
+.primary:focus-visible, .secondary:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
+.primary:focus-visible { outline-color: var(--journey-focus, #0a0a0a); }
+.inverse { --journey-action: #fff; --journey-action-ink: #0a0a0a; --journey-quiet: rgb(255 255 255 / 0.12); --journey-focus: #fff; }
+/* Reserve the tallest text so selecting a category never moves the CTA. */
+.panels { display: grid; }
+.panel { grid-area: 1 / 1; }
+@media (min-width: 640px) {
+  .section { --journey-gutter: 1.75rem; padding-block: 4.5rem; }
+  .inset { padding-inline: calc(var(--journey-gutter) - 1rem); }
+  .body { font-size: 1.125rem; }
+}
+@media (min-width: 768px) { .section { --journey-gutter: 2.5rem; } }
+@media (min-width: 1024px) {
+  .section { --journey-gutter: 3.5rem; padding-block: 5.5rem; }
+  .inset { padding-inline: calc(var(--journey-gutter) - 1.25rem); }
+}
+@media (min-width: 1280px) { .section { --journey-gutter: 5rem; } }
+@media (max-width: 639px) { .actions > * { flex: 1 1 100%; } }
+@media (prefers-reduced-motion: reduce) { .primary, .secondary { transition: none; } }

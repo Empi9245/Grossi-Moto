@@ -6,11 +6,11 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { StackedShowroomCards } from "@/components/ui/stacked-showroom-cards";
+import { ManualShowcase } from "@/components/sections/ManualShowcase";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import {
   AnimatePresence,
   motion,
-  useReducedMotion,
 } from "framer-motion";
 
 import { clsx } from "clsx";
@@ -55,7 +55,7 @@ export function ScooterShowcase({
   const [activeIndex, setActiveIndex] = useState(0);
   const [transitionDirection, setTransitionDirection] =
     useState<ShowcaseDirection>(1);
-  const shouldReduceMotion = useReducedMotion();
+  const shouldReduceMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
 
   useEffect(() => {
     activeIndexRef.current = activeIndex;
@@ -315,7 +315,11 @@ export function ScooterShowcase({
     shouldReduceMotion,
   ]);
 
-  if (mode === "static" || shouldReduceMotion) {
+  if (shouldReduceMotion) {
+    return <ManualShowcase />;
+  }
+
+  if (mode === "static") {
     return <StaticShowcase />;
   }
 
@@ -563,7 +567,7 @@ function ShowcaseFrame({
             className="font-ui inline-flex w-fit items-center gap-3 text-[0.74rem] font-bold uppercase tracking-[0.13em] text-[var(--showcase-text)] outline-none transition-colors duration-200 hover:text-[var(--showcase-accent)] focus-visible:ring-2 focus-visible:ring-[var(--showcase-accent)] focus-visible:ring-offset-4 focus-visible:ring-offset-[var(--page-background)] lg:min-h-12 lg:flex-none lg:self-start lg:rounded-[0.9rem] lg:border lg:border-[var(--showcase-rule)] lg:bg-white/[0.18] lg:px-5 lg:py-3 lg:hover:bg-white/[0.32]"
           >
             <span className="border-b border-[var(--showcase-rule)] pb-1 lg:border-b-0 lg:pb-0">
-              Confronta modelli
+              Scopri il modello
             </span>
             <ActionMark />
           </TransitionLink>
@@ -588,7 +592,7 @@ function ScooterSlide({
 }) {
   const scooter = showcaseScooters[slideIndex] ?? showcaseScooters[0];
   const isActive = activeIndex === slideIndex;
-  const shouldReduceMotion = useReducedMotion();
+  const shouldReduceMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
   const { activeScooterId, source } = usePageTransition();
   const sharedImageLayoutId =
     isActive &&

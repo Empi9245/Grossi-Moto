@@ -29,46 +29,53 @@ export function MobileAppNav() {
   useEffect(() => {
     let frameId = 0;
 
-    const scheduleVisibilityUpdate = (visible: boolean) => {
-      frameId = window.requestAnimationFrame(() => {
-        setHomeHeroVisibility({ pathname, visible });
-      });
+    const updateVisibility = () => {
+      frameId = 0;
+      const heroRects = Array.from(
+        document.querySelectorAll<HTMLElement>('[data-qa="hero-viewport"]'),
+      )
+        .map((hero) => hero.getBoundingClientRect())
+        .filter((rect) => rect.width > 0 && rect.height > 0);
+
+      // Clipping during the zoom must not count as leaving the hero.
+      // Ignore the display:none variant and wait until the whole hero is above us.
+      const visible =
+        pathname === "/" &&
+        (heroRects.length === 0 || heroRects.some((rect) => rect.bottom > 0));
+
+      setHomeHeroVisibility((current) =>
+        current.pathname === pathname && current.visible === visible
+          ? current
+          : { pathname, visible },
+      );
     };
 
+    const scheduleVisibilityUpdate = () => {
+      if (frameId) return;
+      frameId = window.requestAnimationFrame(updateVisibility);
+    };
+
+    scheduleVisibilityUpdate();
+
     if (pathname !== "/") {
-      scheduleVisibilityUpdate(false);
       return () => window.cancelAnimationFrame(frameId);
     }
 
-    const hero = document.querySelector<HTMLElement>(
-      '[data-qa="hero-viewport"]',
-    );
+    const observer = new ResizeObserver(scheduleVisibilityUpdate);
+    document
+      .querySelectorAll<HTMLElement>('[data-qa="hero-viewport"]')
+      .forEach((hero) => observer.observe(hero));
 
-    if (!hero) {
-      scheduleVisibilityUpdate(false);
-      return () => window.cancelAnimationFrame(frameId);
-    }
-
-    frameId = window.requestAnimationFrame(() => {
-      const heroRect = hero.getBoundingClientRect();
-      setHomeHeroVisibility({
-        pathname,
-        visible: heroRect.bottom > 0 && heroRect.top < window.innerHeight,
-      });
-    });
-
-    const observer = new IntersectionObserver(([entry]) => {
-      setHomeHeroVisibility({
-        pathname,
-        visible: Boolean(entry?.isIntersecting),
-      });
-    });
-
-    observer.observe(hero);
+    window.addEventListener("scroll", scheduleVisibilityUpdate, { passive: true });
+    window.addEventListener("resize", scheduleVisibilityUpdate);
+    window.addEventListener("pageshow", scheduleVisibilityUpdate);
 
     return () => {
       window.cancelAnimationFrame(frameId);
       observer.disconnect();
+      window.removeEventListener("scroll", scheduleVisibilityUpdate);
+      window.removeEventListener("resize", scheduleVisibilityUpdate);
+      window.removeEventListener("pageshow", scheduleVisibilityUpdate);
     };
   }, [pathname]);
 

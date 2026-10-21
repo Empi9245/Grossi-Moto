@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { PhoneCall } from "lucide-react";
+import { ArrowLeft, PhoneCall } from "lucide-react";
 
 import { CatalogNavbar } from "@/components/catalog/CatalogNavbar";
 import { SiteFooter } from "@/components/layout/SiteFooter";
@@ -85,6 +85,9 @@ export default async function ScooterModelPage({ params }: ModelPageProps) {
   }
 
   const brand = getCatalogScooterBrand(scooter);
+  const category =
+    scooter.specs.find((spec) => spec.label === "Categoria")?.value ??
+    scooter.family;
   const modelUrl = `${siteUrl}/scooters/${scooter.id}`;
   const guidance = getCatalogGuidance(scooter);
   const relatedScooters = getModelAlternatives(scooter);
@@ -155,17 +158,19 @@ export default async function ScooterModelPage({ params }: ModelPageProps) {
         <div className="mx-auto max-w-[122rem] overflow-hidden rounded-[1.55rem] bg-white shadow-[0_0_0_1px_rgba(0,0,0,0.05),0_28px_70px_rgba(0,0,0,0.08)]">
           <CatalogNavbar />
 
-          <div className="px-5 pb-8 pt-6 sm:px-7 sm:pb-10 sm:pt-8 lg:px-10 lg:pb-12">
+          <div className="px-3 pb-8 pt-2 sm:px-7 sm:pb-10 sm:pt-4 lg:px-10 lg:pb-12 lg:pt-6">
             <Link
               href={`/scooters?focus=${encodeURIComponent(scooter.id)}`}
-              className="font-ui inline-flex min-h-11 items-center rounded-[0.9rem] px-2 text-[0.68rem] font-bold uppercase tracking-[0.1em] text-black/62 transition-colors hover:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/35"
+              data-model-back
+              className="font-ui inline-flex min-h-12 items-center gap-2 rounded-lg px-1 text-sm font-semibold text-black/75 transition-colors hover:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/50 motion-reduce:transition-none"
             >
+              <ArrowLeft aria-hidden="true" className="h-4 w-4" />
               Torna al catalogo
             </Link>
 
             <nav
               aria-label="Breadcrumb"
-              className="font-ui flex flex-wrap items-center gap-2 text-[0.68rem] font-bold uppercase tracking-[0.11em] text-black/52"
+              className="font-ui hidden flex-wrap items-center gap-2 text-[0.68rem] font-bold uppercase tracking-[0.11em] text-black/52 lg:flex"
             >
               <Link
                 href="/"
@@ -187,61 +192,67 @@ export default async function ScooterModelPage({ params }: ModelPageProps) {
             </nav>
 
             <article
-              className="mt-6 overflow-hidden rounded-[1.35rem] p-5 shadow-[0_0_0_1px_oklch(18%_0.014_56/0.052),0_18px_46px_oklch(18%_0.014_56/0.09)] sm:p-7 lg:p-8 xl:p-10"
+              aria-labelledby="model-title"
+              data-model-opening
+              className="mt-2 overflow-hidden rounded-[1.35rem] p-4 sm:p-6 lg:mt-6 lg:p-8 xl:p-10"
               style={{
                 background: scooter.cardSurface,
                 color: scooter.textTone,
               }}
             >
-              <div className="grid gap-8 lg:grid-cols-[minmax(0,0.82fr)_minmax(28rem,1.18fr)] lg:items-center lg:gap-8 xl:gap-12">
-                <div className="min-w-0">
-                  <p className="font-ui text-[0.68rem] font-bold uppercase tracking-[0.16em] text-current/60">
-                    {brand} · {scooter.displacement} · {scooter.family}
+              <div className="grid gap-x-8 gap-y-3 lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1.18fr)] lg:grid-rows-[auto_1fr] lg:gap-y-5 xl:gap-x-12">
+                <h1
+                  id="model-title"
+                  className="font-display min-w-0 text-[clamp(2.2rem,9.4vw,3rem)] font-bold leading-[0.98] tracking-[-0.035em] text-current [text-wrap:balance] sm:max-w-[22ch] sm:text-[clamp(3rem,6.5vw,4.3rem)] lg:col-start-1 lg:row-start-1 lg:self-end lg:text-[clamp(3rem,4.8vw,6.6rem)]"
+                >
+                  <span className="sr-only">{brand} </span>
+                  {scooter.name}
+                </h1>
+
+                <div
+                  data-model-photo
+                  className="relative -mx-2 h-[clamp(14rem,68vw,18rem)] min-w-0 sm:mx-0 sm:h-[clamp(20rem,48vw,26rem)] lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:h-[clamp(25rem,36vw,36rem)] lg:self-center"
+                >
+                  <Image
+                    src={scooter.image}
+                    alt={scooter.imageAlt}
+                    fill
+                    sizes="(max-width: 639px) calc(100vw - 60px), (max-width: 1023px) calc(100vw - 136px), 50vw"
+                    priority
+                    className="object-contain object-center"
+                  />
+                </div>
+
+                <div className="min-w-0 lg:col-start-1 lg:row-start-2">
+                  <p className="font-ui text-sm font-semibold leading-6 text-current sm:text-base">
+                    {brand} · {scooter.displacement} · {category}
                   </p>
-                  <h1 className="font-display mt-4 max-w-[10ch] text-[clamp(2.9rem,11vw,6.6rem)] font-bold leading-[0.88] tracking-normal text-current">
-                    {scooter.name}
-                  </h1>
-                  <p className="mt-5 max-w-[36rem] text-base leading-7 text-current/70 sm:text-lg sm:leading-8">
+                  <p className="mt-2 max-w-[36rem] text-base leading-6 text-current sm:mt-3 sm:text-lg sm:leading-7">
                     {scooter.positioning}
                   </p>
 
-                  <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                  <div className="mt-4 flex flex-col gap-1 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-5 lg:mt-6">
+                    <Link
+                      href={`/contatti?modello=${encodeURIComponent(scooter.id)}#richiesta`}
+                      data-model-primary
+                      className="font-ui inline-flex min-h-12 scroll-mb-28 items-center justify-center gap-3 rounded-full bg-[#0A0A0A] px-6 py-3 text-base font-semibold text-white transition-opacity duration-150 hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/55 focus-visible:ring-offset-4 motion-reduce:transition-none"
+                    >
+                      Chiedi informazioni
+                      <ActionMark />
+                    </Link>
                     <a
                       href="tel:+393289185029"
-                      className="font-ui inline-flex min-h-12 items-center justify-center gap-2 rounded-[0.9rem] bg-black px-6 py-3 text-sm font-bold uppercase tracking-[0.08em] text-white transition-[opacity,transform] duration-200 hover:opacity-82 active:translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/35 focus-visible:ring-offset-4"
+                      aria-label={`Chiama Grossi Moto per ${brand} ${scooter.name}`}
+                      className="font-ui inline-flex min-h-12 scroll-mb-28 items-center justify-center gap-2 rounded-lg px-2 text-base font-semibold text-current underline decoration-current/40 underline-offset-4 transition-opacity duration-150 hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/55 motion-reduce:transition-none"
                     >
-                      Chiama per disponibilità
                       <PhoneCall
                         aria-hidden="true"
                         className="h-4 w-4"
                         strokeWidth={1.8}
                       />
+                      Chiama
                     </a>
-                    <Link
-                      href={`/contatti?modello=${encodeURIComponent(scooter.id)}#richiesta`}
-                      className="font-ui inline-flex min-h-12 items-center justify-center gap-2 rounded-[0.9rem] border border-black/14 bg-white/35 px-6 py-3 text-sm font-bold uppercase tracking-[0.08em] text-current transition-colors duration-200 hover:bg-white/58 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/35 focus-visible:ring-offset-4"
-                    >
-                      Chiedi prezzo e disponibilità
-                      <ActionMark />
-                    </Link>
                   </div>
-                </div>
-
-                <div className="relative flex min-h-[17rem] items-center justify-center sm:min-h-[24rem] lg:min-h-[28rem]">
-                  <div
-                    aria-hidden="true"
-                    className="absolute bottom-[12%] left-1/2 h-[9%] w-[72%] -translate-x-1/2 rounded-[50%] blur-[15px]"
-                    style={{ background: scooter.shadowTone }}
-                  />
-                  <Image
-                    src={scooter.image}
-                    alt={scooter.imageAlt}
-                    width={780}
-                    height={585}
-                    sizes="(max-width: 1023px) 92vw, 48vw"
-                    priority
-                    className="relative z-10 h-auto max-h-[31rem] w-full object-contain object-center"
-                  />
                 </div>
               </div>
             </article>

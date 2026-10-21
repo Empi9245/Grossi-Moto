@@ -3,7 +3,8 @@
 import Image from "next/image";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Check, MessageCircle, ScanLine, Wrench, KeyRound } from "lucide-react";
-import { useEffect, useRef, useState, type KeyboardEvent } from "react";
+import { useRef, useState, type KeyboardEvent } from "react";
+import styles from "./journey.module.css";
 
 const steps = [
   {
@@ -48,23 +49,11 @@ const steps = [
   },
 ] as const;
 
-const autoAdvanceDelayMs = 6000;
-
 export function ServiceProcess() {
   const [active, setActive] = useState(0);
   const reduceMotion = useReducedMotion();
   const tabs = useRef<Array<HTMLButtonElement | null>>([]);
   const current = steps[active];
-
-  useEffect(() => {
-    if (reduceMotion) return;
-
-    const timer = window.setTimeout(() => {
-      setActive((currentActive) => (currentActive + 1) % steps.length);
-    }, autoAdvanceDelayMs);
-
-    return () => window.clearTimeout(timer);
-  }, [active, reduceMotion]);
 
   function onKeyDown(event: KeyboardEvent<HTMLButtonElement>, index: number) {
     const next =
@@ -85,10 +74,11 @@ export function ServiceProcess() {
 
   return (
     <div>
+      <p className="mb-5 text-sm leading-6">Scegli una fase per leggerne i dettagli. Il contenuto cambia solo quando lo decidi tu.</p>
       <div
         role="tablist"
         aria-label="Le fasi del servizio"
-        className="grid grid-cols-2 gap-2 rounded-[1.5rem] bg-[#F7F4EF]/[0.06] p-2 sm:grid-cols-4"
+        className="grid grid-cols-2 gap-2 sm:grid-cols-4"
       >
         {steps.map((step, index) => {
           const Icon = step.icon;
@@ -115,9 +105,9 @@ export function ServiceProcess() {
         })}
       </div>
 
-      <div className="mt-6 grid overflow-hidden rounded-[1.5rem] bg-[#F7F4EF]/[0.04] lg:grid-cols-2 lg:rounded-[2rem]">
+      <div className="mt-5 grid overflow-hidden rounded-[1.5rem] bg-[#F7F4EF]/[0.04] md:grid-cols-[0.9fr_1.1fr] lg:rounded-[2rem]">
         <div
-          className="relative aspect-[4/3] overflow-hidden bg-[#F7F4EF]/[0.06] lg:aspect-auto lg:min-h-[27rem]"
+          className="relative aspect-[4/3] overflow-hidden bg-[#F7F4EF]/[0.06] md:aspect-auto md:min-h-[26rem]"
           aria-hidden="true"
         >
           <AnimatePresence initial={false}>
@@ -133,30 +123,26 @@ export function ServiceProcess() {
                 src={current.image}
                 alt=""
                 fill
-                sizes="(min-width: 1280px) 640px, (min-width: 1024px) 50vw, 100vw"
+                sizes="(min-width: 1440px) 560px, (min-width: 768px) 42vw, 100vw"
                 className="object-cover"
               />
             </motion.div>
           </AnimatePresence>
-          <span className="absolute bottom-4 left-4 rounded-full bg-[#111111]/85 px-3 py-1.5 text-xs text-[#F7F4EF]">
-            Immagini illustrative
-          </span>
         </div>
         <div className="p-6 sm:p-8 lg:flex lg:flex-col lg:justify-center lg:p-10">
+          <div className={styles.panels}>
           {steps.map((step, index) => (
             <div
               key={step.title}
               id={`process-panel-${index}`}
               role="tabpanel"
               aria-labelledby={`process-tab-${index}`}
-              hidden={index !== active}
-              tabIndex={0}
-              className="min-h-[17rem] rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#F7F4EF]"
+              inert={index !== active}
+              aria-hidden={index !== active}
+              tabIndex={index === active ? 0 : -1}
+              className={`${styles.panel} ${index === active ? "" : "invisible"} rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#F7F4EF]`}
             >
-              <p className="font-ui text-xs font-semibold uppercase tracking-[0.12em] text-[#F7F4EF]/65">
-                {index + 1} di 4 · {step.title}
-              </p>
-              <h3 className="font-display mt-4 max-w-[19ch] text-[clamp(1.9rem,3.2vw,3rem)] font-semibold leading-[1.04] tracking-tight">
+              <h3 className="font-display max-w-[21ch] text-[clamp(1.65rem,2.6vw,2.5rem)] font-semibold leading-[1.08] tracking-tight">
                 {step.heading}
               </h3>
               <p className="mt-5 max-w-[42ch] text-base leading-7 text-[#F7F4EF]/80">
@@ -168,13 +154,15 @@ export function ServiceProcess() {
               </p>
             </div>
           ))}
+          </div>
           <a
             href="tel:+393289185029"
-            className="font-ui mt-6 inline-flex min-h-12 w-fit items-center gap-2 rounded-[0.9rem] bg-[#F7F4EF] px-5 py-3 text-sm font-semibold text-[#111111] transition-colors hover:bg-[#E7E3DC] active:bg-[#D5CFC6] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#F7F4EF]"
+            className={`font-ui mt-6 w-fit ${styles.inverse} ${styles.primary}`}
           >
-            Parla del tuo scooter{" "}
-            
+            Chiama l’officina
+
           </a>
+          <p className="mt-4 text-sm leading-6">Immagini illustrative</p>
         </div>
       </div>
     </div>

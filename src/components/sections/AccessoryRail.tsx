@@ -1,11 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { Box, Check, Lock, ShieldCheck, Smartphone } from "lucide-react";
-import { useEffect, useRef, useState, type KeyboardEvent } from "react";
+import { useRef, useState, type KeyboardEvent } from "react";
 
 import { accessories } from "@/data/accessories";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
+import styles from "./journey.module.css";
 
 const pastelColors = [
   "oklch(91% 0.028 240)",
@@ -14,52 +16,18 @@ const pastelColors = [
   "oklch(92% 0.03 88)",
 ] as const;
 
-const autoAdvanceDelayMs = 6000;
 const accessoryIcons = [ShieldCheck, Box, Lock, Smartphone] as const;
 
 export function AccessoryRail() {
   const [active, setActive] = useState(0);
-  const [isNearViewport, setIsNearViewport] = useState(false);
-  const reduceMotion = useReducedMotion();
-  const root = useRef<HTMLDivElement | null>(null);
+  const reduceMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
   const tabs = useRef<Array<HTMLButtonElement | null>>([]);
   const current = accessories[active];
   const currentColor = pastelColors[active];
 
-  useEffect(() => {
-    const rail = root.current;
-
-    if (!rail) return;
-
-    if (!("IntersectionObserver" in window)) {
-      setIsNearViewport(true);
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsNearViewport(Boolean(entry?.isIntersecting));
-      },
-      {
-        rootMargin: "50% 0px 50% 0px",
-        threshold: 0,
-      },
-    );
-
-    observer.observe(rail);
-
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    if (reduceMotion || !isNearViewport) return;
-
-    const timer = window.setTimeout(() => {
-      setActive((currentActive) => (currentActive + 1) % accessories.length);
-    }, autoAdvanceDelayMs);
-
-    return () => window.clearTimeout(timer);
-  }, [active, isNearViewport, reduceMotion]);
+  function choose(index: number) {
+    setActive(index);
+  }
 
   function onKeyDown(event: KeyboardEvent<HTMLButtonElement>, index: number) {
     const next =
@@ -76,16 +44,16 @@ export function AccessoryRail() {
     if (next === null) return;
 
     event.preventDefault();
-    setActive(next);
+    choose(next);
     tabs.current[next]?.focus({ preventScroll: true });
   }
 
   return (
-    <div ref={root}>
+    <div>
       <div
         role="tablist"
         aria-label="Categorie accessori"
-        className="grid grid-cols-2 gap-2 rounded-[1.5rem] bg-white/55 p-2 sm:grid-cols-4"
+        className="grid grid-cols-2 gap-2 sm:grid-cols-4"
       >
         {accessories.map((item, index) => {
           const Icon = accessoryIcons[index];
@@ -102,7 +70,7 @@ export function AccessoryRail() {
               aria-selected={active === index}
               aria-controls={`accessory-panel-${index}`}
               tabIndex={active === index ? 0 : -1}
-              onClick={() => setActive(index)}
+              onClick={() => choose(index)}
               onKeyDown={(event) => onKeyDown(event, index)}
               className={`flex min-h-14 items-center justify-center gap-2 rounded-[1rem] px-3 py-3 text-sm font-semibold text-[#111111] transition-colors duration-150 active:bg-white/78 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#111111] motion-reduce:transition-none ${
                 active === index ? "" : "hover:bg-white/32"
@@ -119,10 +87,10 @@ export function AccessoryRail() {
       </div>
 
       <div
-        className="mt-6 grid overflow-hidden rounded-[1.5rem] border border-black/[0.055] transition-colors duration-150 motion-reduce:transition-none md:border-0 lg:grid-cols-2 lg:rounded-[2rem]"
+        className="mt-5 grid overflow-hidden rounded-[1.5rem] transition-colors duration-150 motion-reduce:transition-none md:grid-cols-[0.9fr_1.1fr] lg:rounded-[2rem]"
         style={{ backgroundColor: currentColor }}
       >
-        <div className="relative h-[clamp(17.8rem,40svh,20.8rem)] shrink-0 md:h-auto md:aspect-[4/3] lg:aspect-auto lg:min-h-[27rem]">
+        <div aria-hidden="true" className="relative h-[clamp(15rem,32svh,19rem)] shrink-0 md:h-auto md:min-h-[24rem] lg:min-h-[26rem]">
           <AnimatePresence initial={false}>
             <motion.div
               key={current.image}
@@ -134,35 +102,30 @@ export function AccessoryRail() {
             >
               <Image
                 src={current.image}
-                alt={current.alt}
+                alt=""
                 fill
-                sizes="(min-width: 1280px) 640px, (min-width: 1024px) 50vw, 100vw"
-                className="object-cover"
+                sizes="(min-width: 1440px) 560px, (min-width: 768px) 42vw, 100vw"
+                className="object-contain"
               />
             </motion.div>
           </AnimatePresence>
 
-          <span className="absolute bottom-4 left-4 rounded-full bg-white/90 px-3 py-1.5 text-xs font-medium text-[#111111]">
-            Immagini illustrative
-          </span>
         </div>
 
         <div className="px-4 pb-5 pt-2.5 sm:px-5 sm:pb-6 sm:pt-3 md:p-8 lg:flex lg:flex-col lg:justify-center lg:p-10">
+          <div className={styles.panels}>
           {accessories.map((item, index) => (
             <div
               key={item.id}
               id={`accessory-panel-${index}`}
               role="tabpanel"
               aria-labelledby={`accessory-tab-${index}`}
-              hidden={index !== active}
-              tabIndex={0}
-              className="min-h-[15.5rem] rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#111111] md:min-h-[17rem]"
+              inert={index !== active}
+              aria-hidden={index !== active}
+              tabIndex={index === active ? 0 : -1}
+              className={`${styles.panel} ${index === active ? "" : "invisible"} rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#111111]`}
             >
-              <p className="font-ui text-xs font-semibold uppercase tracking-[0.12em] text-[#111111]/58">
-                {index + 1} di {accessories.length} · {item.title}
-              </p>
-
-              <h3 className="font-display mt-2.5 max-w-[19ch] text-[clamp(1.9rem,3.2vw,3rem)] font-semibold leading-[1.04] tracking-tight md:mt-4">
+              <h3 className="font-display max-w-[19ch] text-[clamp(1.65rem,2.6vw,2.5rem)] font-semibold leading-[1.08] tracking-tight">
                 {item.title}
               </h3>
 
@@ -176,15 +139,9 @@ export function AccessoryRail() {
               </p>
             </div>
           ))}
+          </div>
 
-          <a
-            href="tel:+393289185029"
-            aria-label={`Chiedi compatibilità: ${current.title}`}
-            className="font-ui mt-4 inline-flex min-h-12 w-fit items-center gap-2 rounded-[0.9rem] bg-white/90 px-5 py-3 text-sm font-semibold text-[#111111] transition-colors hover:bg-white active:bg-white/80 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#111111] md:mt-6"
-          >
-            Chiedi compatibilità
-            
-          </a>
+          <p className="mt-4 text-sm leading-6">Immagini illustrative</p>
         </div>
       </div>
     </div>

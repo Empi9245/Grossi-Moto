@@ -489,6 +489,12 @@ function ProductShowroomChapter({
 
         if (nextIndex === currentIndex && !immediate) return;
 
+        // The outgoing card becomes inert after changing the active model.
+        // Keep keyboard focus on the rail while its controls are replaced.
+        if (nextIndex !== currentIndex && container.contains(document.activeElement)) {
+          container.parentElement?.focus({ preventScroll: true });
+        }
+
         if (immediate) {
           focusTween?.kill();
           focusTween = null;
@@ -764,6 +770,7 @@ function ProductShowroomChapter({
           if (!suppressClickRef.current) return;
 
           suppressClickRef.current = false;
+          if (event.detail === 0) return;
           event.preventDefault();
           event.stopPropagation();
         }}

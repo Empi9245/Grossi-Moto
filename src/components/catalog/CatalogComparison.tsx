@@ -17,6 +17,11 @@ import {
   type CatalogScooter,
 } from "@/data/catalog-scooters";
 import { getCatalogGuidance } from "@/data/catalog-guidance";
+import {
+  comparisonAdvice,
+  comparisonSpecs,
+} from "@/data/catalog-comparison-specs";
+import { getComparisonRows } from "@/lib/comparison-rows";
 import { comparisonLimit, comparisonReducer } from "@/lib/catalog-comparison";
 
 type ComparisonContextValue = {
@@ -354,26 +359,6 @@ export function CatalogComparisonSummary({
   );
 }
 
-const rowDefinitions = [
-  {
-    label: "Cilindrata",
-    value: (scooter: CatalogScooter) => scooter.displacement,
-  },
-  { label: "Impostazione", value: (scooter: CatalogScooter) => scooter.family },
-  {
-    label: "Per i tuoi tragitti",
-    value: (scooter: CatalogScooter) => scooter.idealUse,
-  },
-  {
-    label: "Perché sceglierlo",
-    value: (scooter: CatalogScooter) => getCatalogGuidance(scooter).whyChoose,
-  },
-  {
-    label: "Cosa valutare",
-    value: (scooter: CatalogScooter) => getCatalogGuidance(scooter).tradeoff,
-  },
-];
-
 export function CatalogComparison() {
   const { ids, toggle, clear, close, isOpen } = useCatalogComparison();
   const addRef = useRef<HTMLSelectElement>(null);
@@ -383,6 +368,7 @@ export function CatalogComparison() {
   const availableScooters = catalogScooters.filter(
     (scooter) => !ids.includes(scooter.id),
   );
+  const technicalRows = getComparisonRows(ids);
 
   const remove = (scooter: CatalogScooter) => {
     toggle(scooter);
@@ -399,37 +385,32 @@ export function CatalogComparison() {
     <section
       id="confronto"
       aria-labelledby="catalog-comparison-title"
-      className="mx-5 mb-3 mt-3 scroll-mt-32 border-y border-black/10 py-6 sm:mx-7 lg:mx-10"
+      className="mx-5 mb-3 mt-3 scroll-mt-4 py-4 sm:mx-7 lg:mx-10 lg:scroll-mt-32"
     >
-      <div className="flex flex-wrap items-start justify-between gap-5">
-        <div>
+      <div className="flex items-center justify-between gap-2">
+        <div className="min-w-0">
           <h2
             id="catalog-comparison-title"
             tabIndex={-1}
-            className="font-display scroll-mt-32 rounded-sm text-2xl font-bold outline-none focus-visible:ring-2 focus-visible:ring-black sm:text-3xl"
+            className="font-display scroll-mt-4 rounded-sm text-xl font-bold outline-none focus-visible:ring-2 focus-visible:ring-black sm:text-3xl lg:scroll-mt-32"
           >
-            Il tuo confronto
+            Confronto ({ids.length})
           </h2>
-          <p className="mt-2 text-sm leading-6 text-black/65">
-            {ids.length} modelli, le differenze che contano per i tuoi tragitti.
-          </p>
         </div>
         <button
           type="button"
           onClick={close}
-          className="font-ui inline-flex min-h-12 items-center gap-2 rounded-[0.9rem] border border-black/15 px-4 py-3 text-sm font-semibold outline-none hover:bg-black/5 focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
+          aria-label="Torna alla selezione"
+          className="font-ui inline-flex min-h-11 shrink-0 items-center gap-2 rounded-lg px-2 text-sm font-semibold outline-none hover:bg-black/5 focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
         >
-          Torna alla selezione
+          Modifica
           <X aria-hidden="true" className="h-4 w-4" />
         </button>
       </div>
 
-      <div className="mt-5 flex flex-wrap items-end gap-3">
-        <div className="w-full sm:max-w-sm">
-          <label
-            htmlFor="comparison-add"
-            className="mb-2 block text-sm font-semibold"
-          >
+      <div className="mt-2 flex items-center gap-2">
+        <div className="min-w-0 flex-1 sm:max-w-sm">
+          <label htmlFor="comparison-add" className="sr-only">
             {ids.length < comparisonLimit
               ? "Aggiungi un terzo modello"
               : "3 di 3 modelli selezionati"}
@@ -458,12 +439,12 @@ export function CatalogComparison() {
                 });
               }
             }}
-            className="min-h-12 w-full min-w-0 rounded-[0.9rem] border border-black/20 bg-white px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-black disabled:bg-black/5 disabled:text-black/60"
+            className="min-h-11 w-full min-w-0 rounded-lg border border-black/20 bg-white px-2 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-black disabled:bg-black/5 disabled:text-black/60"
           >
             <option value="">
               {ids.length >= comparisonLimit
-                ? "Rimuovi un modello per cambiarlo"
-                : "Scegli dalla gamma"}
+                ? "3 modelli selezionati"
+                : "Aggiungi terzo modello"}
             </option>
             {availableScooters.map((scooter) => (
               <option key={scooter.id} value={scooter.id}>
@@ -475,18 +456,19 @@ export function CatalogComparison() {
         <button
           type="button"
           onClick={clear}
-          className="min-h-12 rounded-lg px-3 text-sm underline underline-offset-4 outline-none focus-visible:ring-2 focus-visible:ring-black"
+          aria-label="Svuota la selezione"
+          className="min-h-11 shrink-0 rounded-lg px-2 text-sm underline underline-offset-4 outline-none focus-visible:ring-2 focus-visible:ring-black"
         >
-          Svuota la selezione
+          Svuota
         </button>
       </div>
 
       <div id="catalog-comparison-panel">
         <p
           id="comparison-scroll-hint"
-          className="mt-6 text-xs leading-5 text-black/65 lg:sr-only"
+          className="mt-3 text-xs leading-5 text-black/70"
         >
-          Scorri lateralmente per vedere tutti i modelli.
+          Prima le differenze verificate. Scorri la tabella se necessario.
         </p>
         <div
           role="region"
@@ -496,7 +478,7 @@ export function CatalogComparison() {
           className="mt-3 max-w-full overflow-x-auto overscroll-x-contain rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-black"
         >
           <table
-            className={`w-full table-fixed border-collapse text-left text-sm ${ids.length === 3 ? "min-w-[38rem]" : "min-w-[27rem]"}`}
+            className={`w-full table-fixed border-collapse text-left text-sm ${ids.length === 3 ? "min-w-[34rem]" : "min-w-0"}`}
           >
             <caption className="sr-only">
               Confronto tra{" "}
@@ -506,26 +488,33 @@ export function CatalogComparison() {
               <tr className="border-b border-black/15">
                 <th
                   scope="col"
-                  className="sticky left-0 z-10 w-20 bg-[#F7F7F7] p-2 align-bottom text-xs font-semibold sm:w-40 sm:p-3 sm:text-sm"
+                  className="sticky left-0 z-10 w-[5.5rem] bg-[#F7F7F7] p-2 align-bottom text-xs font-semibold sm:w-40 sm:p-3 sm:text-sm"
                 >
-                  Il modello
+                  Dati tecnici
                 </th>
                 {selectedScooters.map((scooter) => (
-                  <th scope="col" key={scooter.id} className="p-3 align-top">
+                  <th
+                    scope="col"
+                    key={scooter.id}
+                    className="p-2 align-top sm:p-3"
+                  >
                     <Image
                       src={scooter.image}
                       alt=""
                       width={320}
                       height={240}
                       sizes="(max-width: 767px) 220px, 30vw"
-                      className="mb-4 h-28 w-full object-contain"
+                      className="mb-2 h-14 w-full object-contain sm:h-24"
                     />
                     <span className="block text-xs font-medium text-black/60">
                       {getCatalogScooterBrand(scooter)}
                     </span>
+                    <span className="block text-xs font-medium text-black/60">
+                      Classe {scooter.displacement}
+                    </span>
                     <Link
                       href={`/scooters/${scooter.id}`}
-                      className="mt-1 inline-block rounded-sm font-display text-xl font-bold underline decoration-black/20 underline-offset-4 outline-none hover:decoration-black focus-visible:ring-2 focus-visible:ring-black"
+                      className="mt-1 inline-block rounded-sm font-display text-base font-bold leading-tight underline decoration-black/20 underline-offset-4 outline-none hover:decoration-black focus-visible:ring-2 focus-visible:ring-black sm:text-xl"
                     >
                       {scooter.name}
                     </Link>
@@ -544,24 +533,118 @@ export function CatalogComparison() {
               </tr>
             </thead>
             <tbody>
-              {rowDefinitions.map((row) => (
-                <tr key={row.label} className="border-b border-black/10">
+              {technicalRows.map((row) => (
+                <tr
+                  key={row.key}
+                  data-comparison-difference={row.differs}
+                  className={
+                    row.differs
+                      ? "border-b border-black/10 bg-[#EBEFEB]"
+                      : "border-b border-black/10"
+                  }
+                >
                   <th
                     scope="row"
                     className="sticky left-0 z-10 bg-[#F7F7F7] p-2 align-top text-xs font-semibold leading-5 sm:p-3 sm:text-sm sm:leading-6"
                   >
                     {row.label}
+                    {row.differs ? (
+                      <span className="sr-only">, valori diversi</span>
+                    ) : null}
                   </th>
-                  {selectedScooters.map((scooter) => (
+                  {selectedScooters.map((scooter, index) => (
                     <td
                       key={scooter.id}
-                      className="p-3 align-top leading-6 text-black/75"
+                      className="p-2 align-top leading-6 text-[#171717] sm:p-3"
                     >
-                      {row.value(scooter)}
+                      {row.values[index] ?? (
+                        <span className="text-xs text-black/65">
+                          Non verificato
+                        </span>
+                      )}
                     </td>
                   ))}
                 </tr>
               ))}
+              <tr className="border-b border-black/10">
+                <th
+                  scope="row"
+                  className="sticky left-0 z-10 bg-[#F7F7F7] p-2 align-top text-xs sm:p-3 sm:text-sm"
+                >
+                  Versione e fonte
+                </th>
+                {selectedScooters.map((scooter) => {
+                  const spec = comparisonSpecs[scooter.id];
+                  return (
+                    <td
+                      key={scooter.id}
+                      className="p-2 align-top text-xs leading-5 sm:p-3"
+                    >
+                      {spec ? (
+                        <>
+                          <span className="block">{spec.version}</span>
+                          <a
+                            href={spec.source}
+                            className="mt-1 inline-flex min-h-11 items-center rounded-sm font-semibold underline underline-offset-4 outline-none focus-visible:ring-2 focus-visible:ring-black"
+                            aria-label={`Scheda tecnica KYMCO ${spec.version} (PDF)`}
+                          >
+                            Scheda KYMCO (PDF)
+                          </a>
+                        </>
+                      ) : (
+                        "Dati tecnici non verificati per questa versione"
+                      )}
+                    </td>
+                  );
+                })}
+              </tr>
+            </tbody>
+            <tbody aria-label="Consigli editoriali">
+              <tr>
+                <th
+                  colSpan={ids.length + 1}
+                  scope="rowgroup"
+                  className="bg-black/5 p-3 text-base font-semibold"
+                >
+                  Consigli editoriali
+                </th>
+              </tr>
+              <tr className="border-b border-black/10">
+                <th
+                  scope="row"
+                  className="sticky left-0 z-10 bg-[#F7F7F7] p-2 align-top text-xs sm:p-3 sm:text-sm"
+                >
+                  Impostazione e tragitti
+                </th>
+                {selectedScooters.map((scooter) => (
+                  <td
+                    key={scooter.id}
+                    className="p-2 align-top leading-6 sm:p-3"
+                  >
+                    <span className="block font-semibold">
+                      {scooter.family}
+                    </span>
+                    {scooter.idealUse}
+                  </td>
+                ))}
+              </tr>
+              <tr className="border-b border-black/10">
+                <th
+                  scope="row"
+                  className="sticky left-0 z-10 bg-[#F7F7F7] p-2 align-top text-xs sm:p-3 sm:text-sm"
+                >
+                  Da provare in sede
+                </th>
+                {selectedScooters.map((scooter) => (
+                  <td
+                    key={scooter.id}
+                    className="p-2 align-top leading-6 sm:p-3"
+                  >
+                    {comparisonAdvice[scooter.id] ??
+                      getCatalogGuidance(scooter).checkInStore}
+                  </td>
+                ))}
+              </tr>
               <tr>
                 <th
                   scope="row"
@@ -585,9 +668,11 @@ export function CatalogComparison() {
           </table>
         </div>
         <p className="mt-4 max-w-3xl text-sm leading-6 text-black/65">
-          Una prima lettura della gamma. In sede valutiamo insieme posizione di
-          guida, esigenze del passeggero e dotazioni della versione scelta.
-          Prezzo e disponibilità sono da confermare.
+          “Non verificato” indica un dato mancante, non una dotazione assente. I
+          dati si riferiscono alle versioni delle schede citate; allestimento,
+          prezzo e disponibilità vanno confermati in sede. Per il sottosella,
+          verifica la compatibilità con il tuo casco. I consigli sono
+          indicazioni editoriali, da valutare provando il mezzo.
         </p>
       </div>
     </section>

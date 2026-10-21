@@ -4,7 +4,6 @@ import {
   animate,
   motion,
   type MotionValue,
-  useReducedMotion,
   useScroll,
   useTransform,
 } from "framer-motion";
@@ -12,7 +11,6 @@ import Image from "next/image";
 import localFont from "next/font/local";
 
 const creditsFont = localFont({ src: "../../../public/fonts/anton-latin.woff2", display: "swap", preload: false });
-import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 import { useMediaQuery } from "@/hooks/useMediaQuery";
@@ -99,45 +97,28 @@ function StaticParallaxFallback({ images }: { images: ParallaxImage[] }) {
 
 const story = [
   {
-    title: "Le tue strade. La tua scelta.",
-    detail: "Partiamo dai tuoi tragitti. Confrontiamo insieme posizione di guida, spazio e modelli KYMCO e Voge.",
+    title: "Pronto a partire.",
+    detail: "Alla consegna ti spieghiamo comandi e controlli del mezzo.",
   },
   {
-    title: "Un riferimento. Anche dopo.",
-    detail: "La consegna è un inizio. Per tagliandi, assistenza e accessori, ritrovi Grossi Moto e la sua officina.",
-  },
-  {
-    title: "Parliamone. Di persona.",
-    detail: "Un modello in mente o ancora qualche dubbio? Ti aspettiamo in Via Festo Porzio 22, a Roma.",
+    title: "Al prossimo tagliando.",
+    detail: "Per manutenzione, diagnosi e accessori, l’officina è allo stesso indirizzo.",
   },
 ];
 
 function ExperienceCopy() {
   return (
-    <div className="max-w-3xl space-y-12 py-12 drop-shadow-[0_3px_20px_rgba(0,0,0,0.65)]">
-      <p className="font-ui text-xs font-bold uppercase tracking-[0.18em]">Dallo showroom all’officina</p>
+    <div className="max-w-3xl space-y-8 py-8">
       {story.map(({ title, detail }, index) => (
         <div key={title}>
           {index === 0 ? (
-            <h2 className="font-display text-[clamp(3rem,8vw,5rem)] font-bold leading-[0.95]">{title}</h2>
+            <h2 className="font-display text-[clamp(2.125rem,4.8vw,3.75rem)] font-bold leading-[1.04]">{title}</h2>
           ) : (
-            <h3 className="font-display text-[clamp(2.5rem,7vw,4rem)] font-bold leading-[0.95]">{title}</h3>
+            <h3 className="font-display text-[clamp(2rem,4vw,3rem)] font-bold leading-[1.04]">{title}</h3>
           )}
           <p className="mt-5 max-w-xl text-base leading-7 text-white/85">{detail}</p>
         </div>
       ))}
-    </div>
-  );
-}
-
-function ExperienceContact() {
-  return (
-    <div className="relative bg-[var(--home-experience-surface)] px-5 py-12 text-center text-[var(--gm-ink)] sm:py-16">
-      <p className="font-ui text-sm">Il prossimo passo? Raccontaci cosa cerchi.</p>
-      <div className="mt-6 flex flex-wrap justify-center gap-4">
-        <a href="tel:+393289185029" className="font-ui inline-flex min-h-12 items-center justify-center rounded-[0.9rem] bg-[var(--gm-black)] px-7 py-3 text-sm font-bold text-white transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black">Chiama Grossi Moto</a>
-        <Link href="/contatti#richiesta" className="font-ui inline-flex min-h-12 items-center justify-center rounded-[0.9rem] border border-black/25 px-7 py-3 text-sm font-bold text-black transition-colors hover:bg-black/5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black">Scrivici cosa cerchi</Link>
-      </div>
     </div>
   );
 }
@@ -150,15 +131,15 @@ const desktopCreditsHoldEndProgress = 0.84;
 const compactCreditsHoldEndProgress = 0.875;
 const steppedScrollEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
 const steppedScrollTriggerDelta = 6;
-const steppedScrollCooldownMs = 260;
+const steppedScrollCooldownMs = 180;
 const steppedScrollProgressTolerance = 0.015;
 const steppedScrollEntryEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
 const steppedScrollEntryDuration = 0.68;
 const steppedScrollFocusTolerancePx = 0.75;
 const steppedScrollFocusSettleFrames = 2;
 const creditsLockSettleFrames = 3;
-const creditsLockStepDuration = 2.04;
-const creditsExitStepDuration = 0.92;
+const creditsLockStepDuration = 1.55;
+const creditsExitStepDuration = 0.72;
 const creditsReverseStepDuration = 1.18;
 const creditsReverseToIntroDuration = 1.42;
 const wheelGestureResetMs = 280;
@@ -260,14 +241,14 @@ function AlternatingCreditBlock({
     compact
       ? tablet
         ? "text-[clamp(2.6rem,min(6vw,7svh),4.8rem)]"
-        : "text-[clamp(2rem,min(8vw,7svh),5.6rem)]"
-      : "text-[clamp(3rem,5.1vw,6.5rem)]"
+        : "text-[clamp(2rem,min(8vw,7svh),4rem)]"
+      : "text-[clamp(2.75rem,4vw,4.75rem)]"
   }`;
   const detailClassName = `mt-3 max-w-[44rem] font-normal leading-[1.45] text-white/82 ${
     compact
       ? tablet
         ? "text-[clamp(0.9rem,1.6vw,1.05rem)]"
-        : "text-[clamp(0.78rem,1.7vw,1.1rem)]"
+        : "text-base"
       : "text-[clamp(0.9rem,1.2vw,1.15rem)]"
   }`;
 
@@ -338,8 +319,17 @@ function CinematicCredits({
 }
 
 export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
+  const shouldReduceMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
+
+  if (shouldReduceMotion) {
+    return <StaticParallaxFallback images={images} />;
+  }
+
+  return <AnimatedZoomParallax images={images} />;
+}
+
+function AnimatedZoomParallax({ images }: { images: ParallaxImage[] }) {
   const container = useRef<HTMLDivElement | null>(null);
-  const shouldReduceMotion = useReducedMotion();
   const isTabletViewport = useMediaQuery("(min-width: 768px)");
   const isWideViewport = useMediaQuery("(min-width: 1024px)");
   const canHover = useMediaQuery("(hover: hover)");
@@ -351,7 +341,7 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
   const introAssembledRef = useRef(false);
   const [isIntroAssembled, setIsIntroAssembled] = useState(false);
   const [isNearViewport, setIsNearViewport] = useState(false);
-  const parallaxImages = images.slice(0, isDesktopViewport ? 9 : 1);
+  const parallaxImages = images.slice(0, isDesktopViewport ? 7 : 1);
   const zoomEnd = isDesktopViewport ? desktopZoomEnd : compactZoomEnd;
   const creditsLockProgress = isDesktopViewport
     ? desktopCreditsLockProgress
@@ -368,13 +358,13 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
   useEffect(() => {
     const section = container.current;
 
-    if (!section || shouldReduceMotion) {
+    if (!section) {
       return;
     }
 
-    if (!("IntersectionObserver" in window)) {
-      setIsNearViewport(true);
-      return;
+    if (typeof window.IntersectionObserver !== "function") {
+      const frame = window.requestAnimationFrame(() => setIsNearViewport(true));
+      return () => window.cancelAnimationFrame(frame);
     }
 
     const observer = new IntersectionObserver(
@@ -390,12 +380,12 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
     observer.observe(section);
 
     return () => observer.disconnect();
-  }, [shouldReduceMotion]);
+  }, []);
 
   useEffect(() => {
     const section = container.current;
 
-    if (!section || shouldReduceMotion || !isNearViewport) {
+    if (!section || !isNearViewport) {
       return;
     }
 
@@ -980,7 +970,7 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
         capture: true,
       });
     };
-  }, [isDesktopViewport, isNearViewport, shouldReduceMotion]);
+  }, [isDesktopViewport, isNearViewport]);
   // The zoom completes first; the same controlled step then carries the credits into their centered lock.
   const zoomProgress = useTransform(scrollYProgress, [0, zoomEnd], [0, 1]);
   const introExitEnd = isDesktopViewport ? 0.28 : 0.15;
@@ -1022,15 +1012,11 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
     ["1.25rem", "1.25rem", "0rem"],
   );
 
-  if (shouldReduceMotion) {
-    return <><StaticParallaxFallback images={parallaxImages} /><ExperienceContact /></>;
-  }
-
   return (
     <>
     <div
       ref={container}
-      className="relative h-[300svh] lg:h-[400svh] bg-[var(--home-experience-surface)]"
+      className="relative h-[260svh] lg:h-[320svh] bg-[var(--home-experience-surface)]"
     >
       <div className="sticky top-0 h-[100svh] overflow-hidden">
         {parallaxImages.map(({ src, alt, objectPosition }, index) => {
@@ -1204,7 +1190,7 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
                     : "text-[clamp(1.9rem,7.4vw,3.15rem)]"
               }`}
             >
-              La tua prossima strada.
+              Dalla consegna alla strada.
             </p>
           </motion.div>
           <motion.div
@@ -1228,7 +1214,7 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
                     : "text-[clamp(1.95rem,7.6vw,3.25rem)]"
               }`}
             >
-              Parte da qui.
+              Poi, ci ritrovi qui.
             </p>
             <p
               className={`font-ui mt-3 max-w-[30rem] leading-[1.45] tracking-normal text-black/62 ${
@@ -1239,7 +1225,7 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
                     : "text-[0.78rem]"
               }`}
             >
-              Dalla scelta del mezzo, a ogni nuovo viaggio.
+              Accessori e officina, in Via Festo Porzio 22.
             </p>
           </motion.div>
         </div>
@@ -1254,7 +1240,6 @@ export function ZoomParallax({ images = defaultImages }: ZoomParallaxProps) {
         />
       </div>
     </div>
-    <ExperienceContact />
     </>
   );
 }

@@ -11,7 +11,6 @@ import {
 import {
   animate,
   useAnimationControls,
-  useReducedMotion,
 } from "framer-motion";
 
 import { Hero } from "@/components/hero/Hero";
@@ -58,8 +57,10 @@ export function HeroRevealStage() {
   const lastReverseScrollIntentAtRef = useRef(0);
   const hasHeroRevealedRef = useRef(false);
   const isHeroAnimatingRef = useRef(false);
+  const scrollAnimationRef = useRef<{ stop: () => void } | null>(null);
+  const animationIdRef = useRef(0);
   const heroControls = useAnimationControls();
-  const shouldReduceMotion = useReducedMotion();
+  const shouldReduceMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
   const isWideViewport = useMediaQuery("(min-width: 1024px)");
   const canHover = useMediaQuery("(hover: hover)");
   const hasFinePointer = useMediaQuery("(pointer: fine)");
@@ -83,6 +84,14 @@ export function HeroRevealStage() {
   useEffect(() => {
     hasHeroRevealedRef.current = hasHeroRevealed;
   }, [hasHeroRevealed]);
+
+  useEffect(() => () => {
+    animationIdRef.current += 1;
+    heroControls.stop();
+    scrollAnimationRef.current?.stop();
+    scrollAnimationRef.current = null;
+    isHeroAnimatingRef.current = false;
+  }, [heroControls, isDesktopViewport, shouldReduceMotion]);
 
   const getShowcaseTop = useCallback(() => {
     const showcase = showcaseRef.current;
@@ -155,6 +164,7 @@ export function HeroRevealStage() {
     const targetTop = getShowcaseTop();
 
     isHeroAnimatingRef.current = true;
+    const animationId = ++animationIdRef.current;
 
     const scrollControls = animate(window.scrollY, targetTop, {
       duration: heroRevealDuration,
@@ -167,6 +177,7 @@ export function HeroRevealStage() {
         });
       },
     });
+    scrollAnimationRef.current = scrollControls;
 
     try {
       await Promise.all([
@@ -180,6 +191,8 @@ export function HeroRevealStage() {
         scrollControls,
       ]);
 
+      if (animationId !== animationIdRef.current) return;
+
       window.scrollTo({
         top: getShowcaseTop(),
         left: 0,
@@ -189,7 +202,10 @@ export function HeroRevealStage() {
       hasHeroRevealedRef.current = true;
       setHasHeroRevealed(true);
     } finally {
-      isHeroAnimatingRef.current = false;
+      if (animationId === animationIdRef.current) {
+        scrollAnimationRef.current = null;
+        isHeroAnimatingRef.current = false;
+      }
     }
   }, [
     getShowcaseTop,
@@ -209,6 +225,7 @@ export function HeroRevealStage() {
     const targetTop = getStageTop();
 
     isHeroAnimatingRef.current = true;
+    const animationId = ++animationIdRef.current;
 
     const scrollControls = animate(window.scrollY, targetTop, {
       duration: heroReverseDuration,
@@ -221,6 +238,7 @@ export function HeroRevealStage() {
         });
       },
     });
+    scrollAnimationRef.current = scrollControls;
 
     try {
       await Promise.all([
@@ -234,6 +252,8 @@ export function HeroRevealStage() {
         scrollControls,
       ]);
 
+      if (animationId !== animationIdRef.current) return;
+
       window.scrollTo({
         top: getStageTop(),
         left: 0,
@@ -243,7 +263,10 @@ export function HeroRevealStage() {
       hasHeroRevealedRef.current = false;
       setHasHeroRevealed(false);
     } finally {
-      isHeroAnimatingRef.current = false;
+      if (animationId === animationIdRef.current) {
+        scrollAnimationRef.current = null;
+        isHeroAnimatingRef.current = false;
+      }
     }
   }, [
     getStageTop,

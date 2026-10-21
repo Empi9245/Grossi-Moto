@@ -6,7 +6,7 @@ import {
 } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Gauge, Layers2, MapPinned, PhoneCall, Route, ShieldCheck } from "lucide-react";
+import { ArrowUpRight, Gauge, Layers2, MapPinned, PhoneCall, Route, ShieldCheck } from "lucide-react";
 import { motion } from "framer-motion";
 import { clsx } from "clsx";
 
@@ -168,6 +168,40 @@ function ProductContactActions({
   );
 }
 
+function CompactProductDetails({
+  scooter,
+  onOpenDetails,
+}: {
+  scooter: CatalogScooter;
+  onOpenDetails: () => void;
+}) {
+  return (
+    <div>
+      <p className="font-ui text-sm leading-5 text-current">
+        <span className="font-semibold">{scooter.displacement}</span>
+        <span aria-hidden="true" className="px-2 text-[var(--product-muted)]">·</span>
+        {scooter.idealUse}
+      </p>
+      <Link
+        href={`/scooters/${scooter.id}`}
+        onClick={onOpenDetails}
+        className="font-ui mt-4 inline-flex min-h-11 w-full items-center justify-between gap-3 rounded-[0.9rem] bg-[oklch(18%_0.014_56)] px-4 py-3 text-sm font-semibold text-[oklch(94%_0.01_78)] outline-none transition-[background,transform] duration-200 hover:bg-[oklch(23%_0.016_56)] active:translate-y-px focus-visible:ring-2 focus-visible:ring-[var(--product-accent)] focus-visible:ring-offset-2"
+        aria-label={`Scopri il modello ${scooter.name}: pagina completa`}
+      >
+        Scopri il modello
+        <ArrowUpRight aria-hidden="true" className="h-4 w-4 shrink-0" />
+      </Link>
+      <Link
+        href={`/contatti?modello=${encodeURIComponent(scooter.id)}#richiesta`}
+        className="font-ui mt-1 inline-flex min-h-11 items-center rounded-[0.6rem] px-1 text-sm font-semibold underline decoration-current/50 underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2"
+        aria-label={`Chiedi disponibilità per ${scooter.name}`}
+      >
+        Chiedi disponibilità
+      </Link>
+    </div>
+  );
+}
+
 export const CatalogProductCard = memo(function CatalogProductCard({
   scooter,
   shouldReduceMotion,
@@ -208,7 +242,7 @@ export const CatalogProductCard = memo(function CatalogProductCard({
     isExpanded
       ? "h-[12.5rem] max-h-[20rem] sm:h-[15.5rem] md:h-full md:max-h-[28rem]"
       : isCompactExpanded
-        ? "h-[9rem] max-h-[9rem] sm:h-[10.5rem] sm:max-h-[10.5rem]"
+        ? "h-[12.25rem] max-h-[12.25rem] sm:h-[14rem] sm:max-h-[14rem]"
         : "h-[12.25rem] max-h-[12.25rem]",
   );
   const expandedContentMotion = shouldReduceMotion
@@ -232,6 +266,13 @@ export const CatalogProductCard = memo(function CatalogProductCard({
     });
   };
 
+  const handleCompactExpand = () => {
+    onExpandScooter(scooter.id);
+    requestAnimationFrame(() => {
+      document.getElementById(cardTriggerId)?.focus({ preventScroll: true });
+    });
+  };
+
   const handleCardClick = (event: React.MouseEvent<HTMLElement>) => {
     if (
       !isSemanticInstance ||
@@ -241,7 +282,11 @@ export const CatalogProductCard = memo(function CatalogProductCard({
       return;
     }
 
-    onExpandScooter(scooter.id);
+    if (compactMode) {
+      handleCompactExpand();
+    } else {
+      onExpandScooter(scooter.id);
+    }
   };
 
   return (
@@ -263,6 +308,11 @@ export const CatalogProductCard = memo(function CatalogProductCard({
       <article
         aria-labelledby={cardTitleId}
         onClick={isSemanticInstance ? handleCardClick : undefined}
+        onKeyDown={isSemanticInstance && isCompactExpanded ? (event) => {
+          if (event.key !== "Escape") return;
+          event.stopPropagation();
+          handleCompactCollapse();
+        } : undefined}
         className={clsx(
           "group relative overflow-hidden rounded-[1.35rem] border border-[oklch(18%_0.014_56/0.052)] p-4 has-[[data-comparison-selected=true]]:shadow-[inset_0_0_0_2px_#171717] sm:p-5",
           isExpanded
@@ -291,7 +341,7 @@ export const CatalogProductCard = memo(function CatalogProductCard({
                     !shouldReduceMotion &&
                       "transition-[gap,min-height] duration-300 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)]",
                     isCompactExpanded
-                      ? "min-h-0 gap-4 sm:gap-5"
+                      ? "min-h-0 gap-3 sm:gap-4"
                       : "min-h-[15.75rem] gap-5 sm:min-h-[17rem]",
                   )
                 : "min-h-[15.75rem] grid-rows-[auto_minmax(10rem,1fr)_auto] sm:min-h-[17rem] sm:grid-rows-[auto_minmax(11.25rem,1fr)_auto]",
@@ -299,6 +349,11 @@ export const CatalogProductCard = memo(function CatalogProductCard({
         >
           <div className="flex min-w-0 items-start justify-between gap-4 md:col-start-1 md:row-start-1">
             <div className="min-w-0">
+              {compactMode ? (
+                <p className="font-ui mb-1 text-xs font-semibold leading-5 text-[var(--product-muted)]">
+                  {brand}
+                </p>
+              ) : (
               <div className="mb-3 flex min-w-0 flex-wrap items-center gap-2">
                 <span className="font-ui inline-flex min-h-7 items-center rounded-full bg-[oklch(96%_0.006_78/0.42)] px-2.5 text-[0.58rem] font-bold uppercase tracking-[0.14em] text-current shadow-[inset_0_0_0_1px_oklch(18%_0.014_56/0.1)]">
                   {brand}
@@ -326,20 +381,25 @@ export const CatalogProductCard = memo(function CatalogProductCard({
                   </span>
                 )}
               </div>
+              )}
               <h2
                 id={cardTitleId}
                 className={clsx(
                   "font-display font-bold tracking-normal text-current",
                   isExpanded
                     ? "text-[clamp(2.1rem,9vw,3.7rem)] leading-[0.92] md:max-w-[10ch] md:text-[clamp(2.5rem,4vw,4.2rem)]"
-                    : "text-[1.55rem] leading-none",
+                    : compactMode
+                      ? "break-words text-[1.65rem] leading-[1.04] sm:text-[1.85rem]"
+                      : "text-[1.55rem] leading-none",
                 )}
               >
                 {scooter.name}
               </h2>
-              <p className="font-ui mt-2 text-[0.68rem] font-bold uppercase tracking-[0.13em] text-[var(--product-muted)]">
-                {scooter.subtitle}
-              </p>
+              {!compactMode ? (
+                <p className="font-ui mt-2 text-[0.68rem] font-bold uppercase tracking-[0.13em] text-[var(--product-muted)]">
+                  {scooter.subtitle}
+                </p>
+              ) : null}
             </div>
 
             {isOpen ? (
@@ -376,7 +436,7 @@ export const CatalogProductCard = memo(function CatalogProductCard({
               isExpanded
                 ? "min-h-[13rem] md:col-start-2 md:row-span-2 md:row-start-1 md:min-h-0"
                 : isCompactExpanded
-                  ? "min-h-[8.75rem] sm:min-h-[10.5rem]"
+                  ? "min-h-[12.25rem] sm:min-h-[14rem]"
                   : "min-h-[11.25rem]",
             )}
           >
@@ -449,7 +509,7 @@ export const CatalogProductCard = memo(function CatalogProductCard({
               >
                 <div className="flex items-end justify-between gap-4">
                   <div className="min-w-0">
-                    <p className="font-ui text-[0.62rem] font-bold uppercase tracking-[0.13em] text-[var(--product-muted)]">
+                    <p className="font-ui text-sm font-semibold leading-5 text-current">
                       {scooter.displacement}
                     </p>
                     <p className="mt-1 truncate text-sm leading-5 text-[var(--product-muted)]">
@@ -463,16 +523,16 @@ export const CatalogProductCard = memo(function CatalogProductCard({
                       type="button"
                       aria-expanded={false}
                       aria-controls={expandedContentId}
-                      aria-label={`Apri la scheda di ${scooter.name}`}
-                      onClick={() => onExpandScooter(scooter.id)}
-                      className="font-ui inline-flex min-h-11 shrink-0 items-center gap-3 rounded-[0.9rem] border border-current/12 px-3 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-current outline-none transition-[background,color] duration-200 hover:bg-[oklch(96%_0.006_78/0.38)] group-hover:text-[var(--product-accent)] focus-visible:ring-2 focus-visible:ring-[var(--product-accent)] focus-visible:ring-offset-2"
+                      aria-label={`Apri i dettagli di ${scooter.name}`}
+                      onClick={handleCompactExpand}
+                      className="font-ui inline-flex min-h-11 shrink-0 items-center gap-2 rounded-[0.9rem] px-2 text-sm font-semibold text-current outline-none transition-[background,color] duration-200 hover:bg-[oklch(96%_0.006_78/0.38)] group-hover:text-[var(--product-accent)] focus-visible:ring-2 focus-visible:ring-[var(--product-accent)] focus-visible:ring-offset-2"
                     >
-                      Apri la scheda
+                      Dettagli
                       <DisclosureMark expanded={false} />
                     </button>
                   ) : (
-                    <span className="font-ui inline-flex min-h-11 shrink-0 items-center gap-3 rounded-full px-2 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-current">
-                      Apri la scheda
+                    <span className="font-ui inline-flex min-h-11 shrink-0 items-center gap-2 px-2 text-sm font-semibold text-current">
+                      Dettagli
                       <DisclosureMark expanded={false} />
                     </span>
                   )}
@@ -492,17 +552,12 @@ export const CatalogProductCard = memo(function CatalogProductCard({
                 inert={!isCompactExpanded ? true : undefined}
                 className="min-w-0 overflow-hidden"
               >
-                <p className="font-ui text-[0.58rem] font-bold uppercase tracking-[0.14em] text-[var(--product-muted)]">
-                  Dettagli modello
-                </p>
-                <p className="mt-2.5 text-[0.9rem] leading-6 text-[var(--product-muted)] sm:text-base sm:leading-7">
-                  {scooter.positioning}
-                </p>
-                <ProductSpecs scooter={scooter} compact />
-                <ProductContactActions
-                scooter={scooter}
-                onOpenDetails={onCollapseScooter}
-              />
+                {isSemanticInstance ? (
+                  <CompactProductDetails
+                    scooter={scooter}
+                    onOpenDetails={onCollapseScooter}
+                  />
+                ) : null}
               </motion.div>
             </div>
           ) : (

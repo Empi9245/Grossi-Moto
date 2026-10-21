@@ -163,26 +163,29 @@ export function Hero({ cardAriaHidden, cardMotion }: HeroProps = {}) {
           mediaSrc="/hero-video.mp4"
           posterSrc="/grossimoto/home-scroll/01-people-s-125-abs-lago.webp"
           bgImageSrc="/grossimoto/home-scroll/01-people-s-125-abs-lago.webp"
-          title="ROMA, OGNI GIORNO."
-          date="KYMCO · VOGE · GROSSIMOTO"
+          title="Roma, ogni giorno."
+          description="Moto, scooter e officina a Roma."
+          action={
+            <Link
+              href="/scooters"
+              data-qa="hero-range-cta"
+              className="group font-ui inline-flex min-h-12 items-center justify-center gap-3 rounded-full bg-white px-6 py-3 text-base font-semibold text-[#0A0A0A] transition-colors duration-150 hover:bg-[#ededed] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white motion-reduce:transition-none"
+            >
+              <span>Scopri la gamma</span>
+              <ActionMark compact />
+            </Link>
+          }
           scrollToExpand="Scorri per entrare"
           endOverlay={
             <div className="flex w-full max-w-[21rem] flex-col items-center text-center text-white">
-              <div className="-translate-y-12">
-                <p className="font-ui text-[0.58rem] font-semibold uppercase tracking-[0.24em] text-white/70">
-                  Roma · Scooter · Moto · Officina
-                </p>
-                <p className="font-display mt-1.5 text-[clamp(1.9rem,9vw,2.65rem)] leading-[0.9] font-normal tracking-normal text-white drop-shadow-[0_8px_22px_rgba(0,0,0,0.28)]">
+              <div>
+                <p className="font-display text-[clamp(1.9rem,9vw,2.65rem)] leading-[0.9] font-normal tracking-normal text-white">
                   Grossi Moto
                 </p>
+                <p className="font-ui mt-3 text-sm font-medium text-white">
+                  Moto, scooter e officina a Roma
+                </p>
               </div>
-              <Link
-                href="/scooters"
-                className="group font-ui mt-4 inline-flex min-h-11 items-center gap-2 rounded-[0.9rem] border border-white/25 bg-white px-4 py-2.5 text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-[oklch(17%_0.012_40)] shadow-[0_14px_36px_rgba(0,0,0,0.18)] backdrop-blur-md transition-[background-color,transform] duration-200 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-4 focus-visible:ring-offset-transparent active:scale-[0.98] motion-reduce:transition-none"
-              >
-                <span>Scopri la gamma</span>
-                <ActionMark />
-              </Link>
             </div>
           }
           reducedMotion={shouldReduceMotion}

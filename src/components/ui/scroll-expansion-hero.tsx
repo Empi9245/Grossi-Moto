@@ -17,7 +17,8 @@ interface ScrollExpansionHeroProps {
   posterSrc?: string;
   bgImageSrc: string;
   title?: string;
-  date?: string;
+  description?: string;
+  action?: ReactNode;
   scrollToExpand?: string;
   textBlend?: boolean;
   children?: ReactNode;
@@ -36,7 +37,8 @@ export default function ScrollExpansionHero({
   posterSrc,
   bgImageSrc,
   title,
-  date,
+  description,
+  action,
   scrollToExpand,
   textBlend = false,
   children,
@@ -57,9 +59,28 @@ export default function ScrollExpansionHero({
   const pendingExitTimerRef = useRef<number | null>(null);
   const isScrollTransitioningRef = useRef(false);
   const isExpansionTransitioningRef = useRef(false);
+  const expansionAnimationRef = useRef<{ stop: () => void } | null>(null);
+  const scrollAnimationRef = useRef<{ stop: () => void } | null>(null);
 
   const [scrollProgress, setScrollProgress] = useState(0);
   const [showContent, setShowContent] = useState(false);
+
+  const stopHeroAnimations = useCallback(() => {
+    expansionAnimationRef.current?.stop();
+    scrollAnimationRef.current?.stop();
+    expansionAnimationRef.current = null;
+    scrollAnimationRef.current = null;
+    isExpansionTransitioningRef.current = false;
+    isScrollTransitioningRef.current = false;
+    touchStartYRef.current = null;
+    touchExitArmedRef.current = false;
+    touchCollapseArmedRef.current = false;
+
+    if (pendingExitTimerRef.current !== null) {
+      window.clearTimeout(pendingExitTimerRef.current);
+      pendingExitTimerRef.current = null;
+    }
+  }, []);
 
   const titleParts = useMemo(() => {
     if (!title) {
@@ -95,8 +116,11 @@ export default function ScrollExpansionHero({
       syncProgress(reducedMotion ? 1 : 0);
     });
 
-    return () => window.cancelAnimationFrame(frame);
-  }, [mediaType, reducedMotion, syncProgress]);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      stopHeroAnimations();
+    };
+  }, [interactionEnabled, mediaType, reducedMotion, stopHeroAnimations, syncProgress]);
 
   const canExitHero = useCallback(
     () =>
@@ -139,12 +163,13 @@ export default function ScrollExpansionHero({
     isExpansionTransitioningRef.current = true;
     touchExitArmedRef.current = false;
 
-    void animate(startProgress, 1, {
+    expansionAnimationRef.current = animate(startProgress, 1, {
       duration: clamp(1.15 * remainingProgress, 0.24, 1.15),
       ease: [0.16, 1, 0.3, 1],
       onUpdate: syncProgress,
       onComplete: () => {
         syncProgress(1);
+        expansionAnimationRef.current = null;
         isExpansionTransitioningRef.current = false;
       },
     });
@@ -169,12 +194,13 @@ export default function ScrollExpansionHero({
     touchExitArmedRef.current = false;
     touchCollapseArmedRef.current = false;
 
-    void animate(startProgress, 0, {
+    expansionAnimationRef.current = animate(startProgress, 0, {
       duration: clamp(1.15 * startProgress, 0.24, 1.15),
       ease: [0.16, 1, 0.3, 1],
       onUpdate: syncProgress,
       onComplete: () => {
         syncProgress(0);
+        expansionAnimationRef.current = null;
         isExpansionTransitioningRef.current = false;
       },
     });
@@ -204,7 +230,7 @@ export default function ScrollExpansionHero({
 
     isScrollTransitioningRef.current = true;
 
-    void animate(window.scrollY, targetTop, {
+    scrollAnimationRef.current = animate(window.scrollY, targetTop, {
       duration,
       ease: [0.22, 1, 0.36, 1],
       onUpdate: (latest) => {
@@ -225,6 +251,7 @@ export default function ScrollExpansionHero({
         touchVelocityRef.current = 0;
         touchExitArmedRef.current = false;
         touchCollapseArmedRef.current = false;
+        scrollAnimationRef.current = null;
         isScrollTransitioningRef.current = false;
         window.dispatchEvent(new Event("grossimoto:showroom-entry"));
       },
@@ -486,11 +513,13 @@ export default function ScrollExpansionHero({
   ]);
 
   const mediaWidth = `calc(${300 * (1 - scrollProgress)}px + ${100 * scrollProgress}vw)`;
-  const mediaHeight = `calc(${400 * (1 - scrollProgress)}px + ${100 * scrollProgress}lvh)`;
+  const mediaHeight = `calc(min(400px, 48svh) * ${1 - scrollProgress} + ${100 * scrollProgress}lvh)`;
   const mediaTopRadius = 16 * (1 - scrollProgress);
   const mediaBottomRadius = 16 * (1 - scrollProgress) + 24 * scrollProgress;
-  const textTranslateX = scrollProgress * 180;
-  const initialCopyOpacity = clamp(1 - scrollProgress * 1.45, 0, 1);
+  const textTranslateX = reducedMotion ? 0 : scrollProgress * 180;
+  const initialCopyOpacity = reducedMotion
+    ? 1
+    : clamp(1 - scrollProgress * 1.45, 0, 1);
   const endOverlayProgress = reducedMotion
     ? 1
     : clamp((scrollProgress - 0.9) / 0.1, 0, 1);
@@ -554,6 +583,8 @@ export default function ScrollExpansionHero({
                         loop
                         playsInline
                         preload="auto"
+                        poster={posterSrc}
+                        aria-hidden="true"
                         className="h-full w-full scale-[1.16] object-cover object-center"
                         controls={false}
                         disablePictureInPicture
@@ -598,67 +629,86 @@ export default function ScrollExpansionHero({
                 )}
               </div>
 
-              {!reducedMotion ? (
-                <div
-                  className={`relative z-10 flex w-full flex-col items-center justify-center gap-2 px-6 text-center transition-none ${
-                    textBlend ? "mix-blend-difference" : "mix-blend-normal"
-                  }`}
-                  style={{ opacity: initialCopyOpacity }}
-                >
-                  {date ? (
-                    <p
-                      className="font-ui mb-3 text-[0.64rem] font-medium uppercase tracking-[0.22em] text-white/75"
-                      style={{
-                        transform: `translateX(-${textTranslateX}vw)`,
-                      }}
-                    >
-                      {date}
-                    </p>
-                  ) : null}
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-x-0 top-0 z-[5] h-[17rem] bg-[linear-gradient(180deg,rgba(4,6,9,0.32)_0%,rgba(4,6,9,0.32)_72%,transparent_100%)]"
+                style={{ opacity: initialCopyOpacity }}
+              />
 
-                  <motion.h2
-                    className="font-display max-w-[19rem] text-[clamp(2.5rem,12vw,3.8rem)] leading-[0.92] font-normal tracking-normal text-white"
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-x-0 bottom-0 z-[5] h-[20rem] bg-[linear-gradient(180deg,transparent_0%,rgba(4,6,9,0.7)_60%,rgba(4,6,9,0.7)_100%)]"
+                style={{ opacity: reducedMotion ? 0 : endOverlayProgress }}
+              />
+
+              <div
+                data-qa="hero-mobile-copy"
+                className={`absolute inset-x-0 top-[calc(4.75rem+env(safe-area-inset-top))] z-10 flex flex-col items-center px-6 text-center ${
+                  textBlend ? "mix-blend-difference" : "mix-blend-normal"
+                }`}
+                style={{ opacity: initialCopyOpacity }}
+              >
+                <h1
+                  className="font-display max-w-full text-[clamp(2.25rem,5.4svh,2.875rem)] leading-[0.96] font-normal tracking-[-0.025em] text-white"
+                >
+                  <span className="sr-only">Grossi Moto. </span>
+                  <span
+                    className="block"
                     style={{
                       transform: `translateX(-${textTranslateX}vw)`,
                     }}
                   >
-                    {titleParts[0]}
-                  </motion.h2>
-
+                    {titleParts[0]}{" "}
+                  </span>
                   {titleParts[1] ? (
-                    <motion.h2
-                      className="font-display max-w-[19rem] text-[clamp(2.5rem,12vw,3.8rem)] leading-[0.92] font-normal tracking-normal text-white"
+                    <span
+                      className="block"
                       style={{
                         transform: `translateX(${textTranslateX}vw)`,
                       }}
                     >
                       {titleParts[1]}
-                    </motion.h2>
+                    </span>
                   ) : null}
+                </h1>
 
-                  {scrollToExpand ? (
-                    <p
-                      className="font-ui mt-4 text-[0.68rem] font-medium uppercase tracking-[0.18em] text-white/80"
-                      style={{
-                        transform: `translateX(${textTranslateX}vw)`,
-                      }}
-                    >
-                      {scrollToExpand}
-                    </p>
-                  ) : null}
+                {description ? (
+                  <p
+                    className="font-ui mt-3 max-w-[21rem] text-base leading-snug text-white"
+                  >
+                    {description}
+                  </p>
+                ) : null}
+              </div>
+
+              {action ? (
+                <div
+                  className="absolute inset-x-0 bottom-[calc(4.25rem+env(safe-area-inset-bottom)+100lvh-100svh)] z-30 flex justify-center px-6"
+                  onClickCapture={stopHeroAnimations}
+                >
+                  {action}
                 </div>
               ) : null}
 
-              {endOverlay ? (
+              {scrollToExpand && !reducedMotion ? (
+                <p
+                  aria-hidden="true"
+                  className="font-ui pointer-events-none absolute inset-x-6 bottom-[calc(1.5rem+env(safe-area-inset-bottom)+100lvh-100svh)] z-10 text-center text-sm text-white"
+                  style={{ opacity: initialCopyOpacity }}
+                >
+                  {scrollToExpand}
+                </p>
+              ) : null}
+
+              {endOverlay && !reducedMotion ? (
                 <motion.div
-                  className="absolute inset-x-0 bottom-[calc(4.25rem+env(safe-area-inset-bottom))] z-20 flex justify-center px-4"
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-x-0 bottom-[calc(8.25rem+env(safe-area-inset-bottom)+100lvh-100svh)] z-20 flex justify-center px-4"
                   initial={false}
                   style={{
                     opacity: endOverlayProgress,
                     y: 14 * (1 - endOverlayProgress),
                     scale: 0.985 + endOverlayProgress * 0.015,
-                    pointerEvents:
-                      endOverlayProgress >= 0.94 ? "auto" : "none",
                   }}
                 >
                   {endOverlay}

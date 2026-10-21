@@ -166,7 +166,8 @@ export function CatalogFilterBar({
   onSearchChange,
 }: CatalogFilterBarProps) {
   const controlsRef = useRef<HTMLDivElement>(null);
-  const { isSelecting: isComparing } = useCatalogComparison();
+  const { isSelecting: isComparing, isOpen: comparisonOpen } =
+    useCatalogComparison();
   const filterDialogRef = useRef<HTMLDialogElement>(null);
   const lastFilterTriggerRef = useRef<HTMLButtonElement | null>(null);
   const [showCompactToolbar, setShowCompactToolbar] = useState(false);
@@ -179,7 +180,9 @@ export function CatalogFilterBar({
     (activeUseCaseLabel ? 1 : 0);
   const hasActiveFilter = activeFilterCount > 0;
   const compactToolbarVisible =
-    showCompactToolbar && (compactSearchOpen || isScrollVisible || isComparing);
+    !comparisonOpen &&
+    showCompactToolbar &&
+    (compactSearchOpen || isScrollVisible || isComparing);
 
   useEffect(() => {
     const controls = controlsRef.current;

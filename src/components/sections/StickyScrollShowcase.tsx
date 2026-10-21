@@ -3,7 +3,8 @@
 import Image from "next/image";
 
 import { motion, useReducedMotion } from "framer-motion";
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
+import styles from "./journey.module.css";
 
 import { ServiceSwipe, type Service } from "./ServiceSwipe";
 
@@ -19,7 +20,7 @@ const services: Service[] = [
       "Controllo del veicolo",
     ],
     image: "/grossimoto/servizi/officina-autorizzata.webp",
-    alt: "Officina scooter Grossi Moto a Roma",
+    alt: "Immagine illustrativa di una diagnosi su uno scooter.",
   },
   {
     title: "Tagliandi",
@@ -32,7 +33,7 @@ const services: Service[] = [
       "Lavori concordati",
     ],
     image: "/grossimoto/servizi/tagliandi.webp",
-    alt: "Tagliando scooter a Roma, Grossi Moto",
+    alt: "Immagine illustrativa della manutenzione di uno scooter.",
   },
   {
     title: "Ricambi e accessori",
@@ -45,7 +46,7 @@ const services: Service[] = [
       "Montaggio in officina",
     ],
     image: "/grossimoto/servizi/ricambi-originali.webp",
-    alt: "Ricambi e accessori scooter a Roma, Grossi Moto",
+    alt: "Immagine illustrativa di componenti per scooter.",
   },
   {
     title: "Finanziamenti",
@@ -58,7 +59,7 @@ const services: Service[] = [
       "Condizioni da valutare",
     ],
     image: "/grossimoto/servizi/finanziamenti.webp",
-    alt: "Finanziamento scooter a Roma, Grossi Moto",
+    alt: "Immagine illustrativa di una consulenza per un acquisto.",
   },
   {
     title: "Permute",
@@ -71,7 +72,7 @@ const services: Service[] = [
       "Possibilità di permuta",
     ],
     image: "/grossimoto/servizi/permute.webp",
-    alt: "Valutazione permuta scooter usato a Roma, Grossi Moto",
+    alt: "Immagine illustrativa della valutazione di uno scooter.",
   },
   {
     title: "Consulenza",
@@ -84,12 +85,11 @@ const services: Service[] = [
       "Accessori adatti al mezzo",
     ],
     image: "/grossimoto/servizi/consulenza.webp",
-    alt: "Consulenza per scegliere uno scooter a Roma, Grossi Moto",
+    alt: "Immagine illustrativa di una consulenza accanto a uno scooter.",
   },
 ];
 
 const easeOut = [0.22, 1, 0.36, 1] as const;
-const desktopAutoplayInterval = 4200;
 const desktopItemHeight = 72;
 
 function wrap(min: number, max: number, value: number) {
@@ -100,25 +100,9 @@ function wrap(min: number, max: number, value: number) {
 export function StickyScrollShowcase() {
   const reduceMotion = useReducedMotion();
   const [desktopStep, setDesktopStep] = useState(0);
-  const [desktopPaused, setDesktopPaused] = useState(false);
 
   const currentDesktopIndex =
     ((desktopStep % services.length) + services.length) % services.length;
-
-  const advanceDesktop = useCallback(() => {
-    setDesktopStep((current) => current + 1);
-  }, []);
-
-  useEffect(() => {
-    if (reduceMotion || desktopPaused) return;
-
-    const interval = window.setInterval(
-      advanceDesktop,
-      desktopAutoplayInterval,
-    );
-
-    return () => window.clearInterval(interval);
-  }, [advanceDesktop, desktopPaused, reduceMotion]);
 
   const selectDesktopService = (index: number) => {
     let distance = index - currentDesktopIndex;
@@ -146,19 +130,18 @@ export function StickyScrollShowcase() {
   return (
     <section
       aria-labelledby="services-showcase-heading"
-      className="bg-white px-5 py-16 text-[#0A0A0A] sm:px-7 sm:py-20 md:px-10 lg:px-2 lg:py-12 xl:py-14"
+      className={`bg-white text-[#0A0A0A] ${styles.section}`}
     >
-      <div className="mx-auto max-w-7xl">
-        <div className="lg:px-2">
+      <div className={styles.frame}>
+        <div>
           <h2
             id="services-showcase-heading"
-            className="font-display font-editorial text-[clamp(3rem,6vw,5.8rem)] font-bold uppercase leading-[0.9] tracking-[-0.04em]"
+            className={`font-display ${styles.heading}`}
           >
-            Cosa possiamo fare per te.
+            Scegli il servizio.
           </h2>
           <p className="mt-4 max-w-2xl text-base leading-7 text-black/60 sm:text-lg sm:leading-8">
-            Dalla manutenzione alla scelta del mezzo: un unico punto di
-            riferimento per capire cosa serve e come procedere.
+            Per il tuo mezzo o il prossimo acquisto: apri il servizio che ti interessa.
           </p>
         </div>
 
@@ -167,16 +150,6 @@ export function StickyScrollShowcase() {
 
           <div
             className="relative hidden min-h-[610px] overflow-hidden rounded-[2.75rem] border border-black/10 bg-white lg:grid lg:grid-cols-[minmax(20rem,0.82fr)_minmax(0,1.18fr)] xl:min-h-[650px] xl:rounded-[3.5rem]"
-            onMouseEnter={() => setDesktopPaused(true)}
-            onMouseLeave={() => setDesktopPaused(false)}
-            onFocusCapture={() => setDesktopPaused(true)}
-            onBlurCapture={(event) => {
-              if (
-                !event.currentTarget.contains(event.relatedTarget as Node | null)
-              ) {
-                setDesktopPaused(false);
-              }
-            }}
           >
             <div className="relative z-20 flex min-h-[610px] items-center overflow-hidden bg-[#A34A3E] px-10 xl:min-h-[650px] xl:px-14">
               <div className="relative h-[420px] w-full">
@@ -394,6 +367,7 @@ export function StickyScrollShowcase() {
             </div>
           </div>
         </div>
+        <p className="mt-5 text-sm leading-6">Immagini illustrative. Il servizio selezionato resta aperto durante la lettura.</p>
       </div>
     </section>
   );

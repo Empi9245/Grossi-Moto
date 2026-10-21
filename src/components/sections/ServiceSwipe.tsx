@@ -4,11 +4,12 @@ import { DirectionMark, DisclosureMark } from "@/components/ui/control-glyphs";
 import Image from "next/image";
 import { PhoneCall } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 
 import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { updateServiceGesture, type ServiceGesture } from "@/lib/service-gesture";
 
 export type Service = {
   title: string;
@@ -25,7 +26,6 @@ const stackShadeStep = 0.055;
 const stackRotationStep = 1.35;
 const stackTiltStep = 2.4;
 const maxVisibleDepth = 5;
-const mobileSwipeThreshold = 36;
 const mobileTapTolerance = 10;
 
 function stackLayer(slot: number) {
@@ -54,11 +54,7 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
   const mobileFocusRef = useRef<(index: number, immediate?: boolean) => void>(
     () => {},
   );
-  const swipeStartRef = useRef<{
-    x: number;
-    y: number;
-    pointerId: number;
-  } | null>(null);
+  const swipeStartRef = useRef<ServiceGesture | null>(null);
   const railMouseDragRef = useRef<{
     x: number;
     scrollLeft: number;
@@ -73,7 +69,8 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
   );
   const isTabletViewport = useMediaQuery("(min-width: 768px)");
   const isMobileViewport = !isTabletViewport;
-  const shouldReduceMotion = useReducedMotion();
+  // Keep the server and first client render identical before choosing the rail.
+  const shouldReduceMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
   const totalCards = services.length;
   const useMobileStack = isMobileViewport && !shouldReduceMotion;
 
@@ -310,6 +307,13 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
     if (useMobileStack) {
       if (totalCards === 0) return;
 
+      // The old semantic card becomes inert when advancing. Keep keyboard focus
+      // in the carousel instead of leaving it on an inert/removed button.
+      const region = stackContainerRef.current?.parentElement;
+      if (document.activeElement?.closest("[data-service-stack-card]") &&
+          region?.contains(document.activeElement)) {
+        region.focus({ preventScroll: true });
+      }
       setOpenMobileService(null);
       mobileFocusRef.current(index, keyboard);
       return;
@@ -477,45 +481,58 @@ export function ServiceSwipe({ services }: { services: Service[] }) {
 
             suppressMobileTapRef.current = false;
 
-            if (event.pointerType === "mouse") {
-              event.currentTarget.setPointerCapture(event.pointerId);
-            }
-
             swipeStartRef.current = {
               x: event.clientX,
               y: event.clientY,
               pointerId: event.pointerId,
+              axis: "pending",
+              moved: false,
             };
+          }}
+          onPointerMove={(event) => {
+            const gesture = swipeStartRef.current;
+            if (!gesture || gesture.pointerId !== event.pointerId) return;
+
+            updateServiceGesture(gesture, event.clientX, event.clientY);
+            if (gesture.moved) suppressMobileTapRef.current = true;
+            // Capturing at pointerdown retargets the subsequent click from the
+            // disclosure button to this region. Capture only an actual drag.
+            if (gesture.axis === "horizontal") {
+              event.currentTarget.setPointerCapture(event.pointerId);
+              event.preventDefault();
+            }
           }}
           onPointerUp={(event) => {
             const start = swipeStartRef.current;
+            if (!start || start.pointerId !== event.pointerId) return;
             swipeStartRef.current = null;
 
-            if (!start || start.pointerId !== event.pointerId) return;
-
-            const deltaX = event.clientX - start.x;
-            const deltaY = event.clientY - start.y;
-            const horizontalDistance = Math.abs(deltaX);
-            const verticalDistance = Math.abs(deltaY);
-
-            const isHorizontalSwipe =
-              horizontalDistance >= mobileSwipeThreshold &&
-              horizontalDistance > verticalDistance * 1.15;
-
-            if (isHorizontalSwipe) {
-              suppressMobileTapRef.current = true;
-              goTo(activeRef.current + (deltaX < 0 ? 1 : -1));
-              return;
+            const direction = updateServiceGesture(start, event.clientX, event.clientY);
+            suppressMobileTapRef.current = start.moved;
+            if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+              event.currentTarget.releasePointerCapture(event.pointerId);
             }
-
-            if (
-              Math.max(horizontalDistance, verticalDistance) >
-              mobileTapTolerance
-            ) {
-              suppressMobileTapRef.current = true;
+            if (direction) {
+              goTo(activeRef.current + direction);
             }
           }}
-          onPointerCancel={() => {
+          onPointerCancel={(event) => {
+            if (swipeStartRef.current?.pointerId !== event.pointerId) return;
+            swipeStartRef.current = null;
+            suppressMobileTapRef.current = true;
+          }}
+          onLostPointerCapture={(event) => {
+            // Touch starts with implicit capture on the button. Its capture-loss
+            // event bubbles here when a real drag transfers capture to us.
+            if (event.target !== event.currentTarget) return;
+            if (swipeStartRef.current?.pointerId !== event.pointerId) return;
+            swipeStartRef.current = null;
+            suppressMobileTapRef.current = true;
+          }}
+          onPointerLeave={(event) => {
+            if (event.pointerType !== "mouse" ||
+                event.currentTarget.hasPointerCapture(event.pointerId) ||
+                swipeStartRef.current?.pointerId !== event.pointerId) return;
             swipeStartRef.current = null;
             suppressMobileTapRef.current = true;
           }}
